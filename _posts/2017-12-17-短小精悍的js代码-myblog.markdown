@@ -1246,6 +1246,58 @@ async function getAdListByRequest(data = {}) {
 
 
 
+### 不要用点.或者方括号[ ]判断对象中是否有某属性
+
+举一个错误的例子
+
+```javascript
+  let obj = {
+    aaa: ''
+  }
+
+  if (obj.aaa) {
+    console.log("含有此属性")   //无法打印
+  }
+```
+
+正确的做法时使用hasOwnProperty
+
+```javascript
+  let obj = {
+    // aaa: null
+    // aaa:""
+    aaa: undefined
+  }
+
+  if (obj.hasOwnProperty("aaa")) {
+    // 上面三种情况 均可以console到
+    console.log("含有此属性")
+  }
+```
+
+
+
+
+### 获取元素节点中的文字
+```html
+<p id="intro">Hello World!</p>
+```
+
+```javascript
+<script type="text/javascript">
+  x = document.getElementById("intro");
+  console.log(x.firstChild.nodeValue);  //  Hello World!
+</script>
+```
+
+
+
+
+
+
+
+
+**可以看到，只有自身存在该属性时，才会返回true。适用于只判断自身属性的场景。**
 
 
 

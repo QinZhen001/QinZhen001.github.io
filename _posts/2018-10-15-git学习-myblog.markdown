@@ -350,9 +350,47 @@ $ git status
 
 
 
+### 解决提交到GitHub不显示提交记录
+
+[https://www.jianshu.com/p/3bc863b48f69](https://www.jianshu.com/p/3bc863b48f69)
 
 
 
+**这个问题出现的原因是提交文件的电脑上的git的email地址不是github上的email地址。**
+
+
+那么如何一台电脑两个邮箱分别用于GitHub和GitLab
+
+
+我的做法是 git config --global user.email "youremail@email.com"   这里使用的是公司提供的邮箱 用于公司项目 gitlab上面提交
+
+
+
+在自己的github项目中
+
+
+执行
+
+```bash
+ $ git config user.email "qz519189636@qq.com"
+```
+
+
+手动将邮箱设置为和github上的邮箱一致。
+
+
+
+
+
+
+
+-----------------
+
+
+另外，如何补充上那些丢失的Contributions呢
+
+
+[https://help.github.com/en/articles/changing-author-info](https://help.github.com/en/articles/changing-author-info)
 
 
 ### 补充

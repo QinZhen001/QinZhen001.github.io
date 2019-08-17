@@ -37,7 +37,7 @@ document.write("Result: " + result);
 replace() :查找符合正则的字符串，就替换成对应的字符串。返回替换后的内容。
 
  用法： 字符串.replace(正则,新的字符串/回调函数)（在回调函数中，第一个参数指的是每次匹配成功的字符）
-```
+```javascript
 var str = "我爱北京天安门，天安门上太阳升。";
 var re = /北京|天安门/g;  //  找到北京 或者天安门 全局匹配
 var str2 = str.replace(re,'*'); 
@@ -46,7 +46,9 @@ alert(str2)  //我爱**，*上太阳升
 //这种只是把找到的变成了一个*，并不能几个字就对应几个*。
 ```
 要想实现几个字对应几个*，我们可以用回调函数实现：
-```
+
+
+```javascript
 var str = "我爱北京天安门，天安门上太阳升。";
 var re = /北京|天安门/g;  //  找到北京 或者天安门 全局匹配
 var str2 = str.replace(re,function(str){
@@ -69,7 +71,7 @@ alert(str2)  //我爱*****，***上太阳升
 ### match
  match()  在字符串中搜索复合规则的内容，搜索成功就返回内容，格式为数组，失败就返回null。
  
-```
+```javascript
 例子：找出指定格式的所有数字，如下找到 123，54，33，879
 
 var str = 'haj123sdk54hask33dkhalsd879';
@@ -93,7 +95,7 @@ exec与match的关联就是exec**(g有没有都无影响)**就等价于**不含�
 
 
 当exec和match中具有相同的子表达式且为非全局匹配时两者的输出也是相同的
-```
+```javascript
 var str="visit W3cschool  a W3cschool bull";
 var reg=new RegExp("W3c(school)");
 var b=reg.exec(str);
@@ -107,7 +109,7 @@ console.log(str.match(/W3c(school)/));
 
 
 当为全局匹配时
-```
+```javascript
 var str="visit W3cschool  a W3cschool bull";
 var reg=new RegExp("W3cschool",'g');
 var b=reg.exec(str);
@@ -120,7 +122,7 @@ Exec中没有子表达式其输出为W3cschool，其输出只一个，match全�
 ### match和exec总结
 exec中不管是不是全局的匹配，只要没有子表达式，**其返回的都只有一个元素的数组**，如果是全局匹配，可以利用lastIndex进行下一个匹配(**更好的办法是反复调用exec方法**)，匹配成功后reg的lastIndex的值将会变为上次匹配的字符的最后一个位置的索引。在设置g属性后，虽然匹配结果不受g的影响，返回结果仍然是一个数组（第一个值是第一个匹配到的字符串，以后的为分组匹配内容），但是会改变index和 lastIndex等的值
 
-```
+```javascript
   var patt = new RegExp('ab', 'g');
   var str = 'abcdef12ab34cd56ef';
   var ret;
@@ -133,7 +135,7 @@ exec中不管是不是全局的匹配，只要没有子表达式，**其返回�
 ```
 
 输出结果：
-```
+```javascript
 ab
 ret.input=abcdef12ab34cd56ef
 ret.index=0
@@ -161,7 +163,7 @@ var re1 = /\d-+/g;  // 全局匹配数字，横杠，横杠数量至少为1，�
 var re1 = /(\d-）+/g;  // 全局匹配数字，横杠，数字和横杠整体数量至少为1   3-6-
 var re2  = /(\d+)(-)/g;   //  全局匹配至少一个数字，匹配一个横杠 匹配结果：2013- 6-
 
-```
+```javascript
 var str = '2013-6-7';
 var re = /(\d+)(-)/g;
 
@@ -178,7 +180,10 @@ str = str.replace(re,function($0,$1,$2){
 alert( str );   //2013.6.7
 //整个过程就是利用子项把2013- 6- 分别替换成了2013. 6.  最终弹出2013.6.7
 ```
-```
+
+
+
+```javascript
 match方法也会返回自己的子项，如下：
 var str = 'abc';
 var re = /(a)(b)(c)/;
@@ -203,7 +208,7 @@ alert( str.match(re) );  //[abc,a,b,c]( 返回的是匹配结果 以及每个子
 [^a] 整体代表一个字符   ：^写在[]里面的话，就代表排除的意思
 
 例子：匹配HTML标签 比如`<div class="b">hahahah </div>` 找出标签
-```
+```javascript
 var re = /<[^>]+>/g; //匹配左括号 中间至少一个非右括号的内容(因为标签里面还有属性等一些东西)，然后匹配右括号
 var re = /<[\w\W]+>/g; //匹配左括号 中间至少一个字符或者非字符的内容，然后匹配右括号
 // 其实就是找到左括号，然后中间可以有至少一个内容，一直到找到右括号就代表是一个标签。
@@ -232,7 +237,7 @@ alert( re.test(str) ); //false
 alert( re.test(str2) );//true  
 ```
 找重复项最多的字符个数
-```
+```javascript
 var str = 'assssjdssskssalsssdkjsssdss';
 
 var arr = str.split(''); //把字符串转换为数组
@@ -265,13 +270,13 @@ alert('最多的字符:'+value+',重复的次数:'+index);  // s   17
 +：一次或任意次相当于 {1,}
 {n}： 正好n次
 
-```
+```javascript
 //^ : 放在正则的最开始位置，就代表起始的意思，注意  /[^a] /   和   /^[a]/是不一样的，前者是排除的意思，后者是代表首位。
 //$ : 正则的最后位置 , 就代表结束的意思
 ```
 
 ### 匹配中文的正则表达式
-```
+```javascript
 [\\u4e00-\\u9fa5]
 ```
 
@@ -279,7 +284,7 @@ alert('最多的字符:'+value+',重复的次数:'+index);  // s   17
 
 ### .字符
 
-```
+```javascript
 . 特殊字符在中括号表达式时 如 [.] 只会匹配 .字符，等价于 \.，而非匹配除换行符 \n 外的所有字符。
 ```
 
@@ -342,7 +347,32 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 **(?:pattern)**
 
-非获取匹配，匹配pattern但不获取匹配结果，不进行存储供以后使用。这在使用或字符“(|)”来组合一个模式的各个部分是很有用。例如“industr(?:y|ies)”就是一个比“industry|industries”更简略的表达式。
+非获取匹配，匹配pattern但不获取匹配结果，不进行存储供以后使用。这在**使用或字符“(|)”来组合一个模式的各个部分是很有用**。例如“industr(?:y|ies)”就是一个比“industry|industries”更简略的表达式。
+
+
+
+举个例子：
+
+```javascript
+/\W|^(?:value|checked|selected|muted)$/
+```
+
+
+![enter description here][1]
+
+
+
+```javascript
+/\W|^value|checked|selected|muted$/
+```
+
+
+
+![enter description here][2]
+
+
+
+
 
 
 **(?=pattern)**
@@ -366,6 +396,18 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 
 非获取匹配，反向否定预查，与正向否定预查类似，只是方向相反。例如“(?<!95|98|NT|2000)Windows”能匹配“3.1Windows”中的“Windows”，但不能匹配“2000Windows”中的“Windows”。这个地方不正确，有问题 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 常用的正则
@@ -416,3 +458,6 @@ const s = '3[a2[c]]' 返回accaccacc
     console.log(decodeString(str))  //accaccacc
 ```
 
+
+  [1]: https://s2.ax1x.com/2019/08/16/mZyck9.png
+  [2]: https://s2.ax1x.com/2019/08/16/mZyo0e.png
