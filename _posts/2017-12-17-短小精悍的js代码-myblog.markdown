@@ -368,11 +368,28 @@ const isFirefox = typeof navigator !== 'undefined' && navigator.userAgent.toLowe
 
 ### isPromise 
 
+判断对象是否为Promise 
+
 ```javascript
 function isPromise (val) {
   return val && typeof val.then === 'function'
 }
 ```
+
+这个方法也适用于async函数
+
+
+例子：
+
+```javascript
+  let aaa = async function () {
+    return "asdasd"
+  }
+
+  console.log("aaa()", aaa())   //aaa() true
+```
+
+
 
 
 ### 如何判定一个脚本已经执行完毕

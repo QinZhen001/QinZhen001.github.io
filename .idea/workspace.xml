@@ -3,14 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1df0920b-4d77-4945-b0fa-c69b2a76e4b8" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2017-02-01-css的权重-myblog.markdown" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2017-10-11-Transitions, Transforms和Animation-myblog.markdown" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2017-11-03-before和after伪元素-myblog.markdown" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2017-12-17-短小精悍的js代码-myblog.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2017-12-17-短小精悍的js代码-myblog.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2018-01-11-常用网站-myblog.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2018-01-11-常用网站-myblog.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2018-02-01-CSS伪类和伪元素-myblog.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2018-02-01-CSS伪类和伪元素-myblog.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2018-05-01-css基础相关-myblog.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2018-05-01-css基础相关-myblog.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_posts/2018-10-15-git学习-myblog.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2018-10-15-git学习-myblog.markdown" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -69,10 +61,10 @@
     <session id="-390592675">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
-          <entry key="project.open.time.0" value="1" />
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.0" value="2" />
           <entry key="project.open.time.1" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -96,8 +88,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_config.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-627">
-              <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+            <state relative-caret-position="44">
+              <caret line="32" selection-start-line="32" selection-end-line="32" />
             </state>
           </provider>
         </entry>
@@ -105,7 +97,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_layouts/post.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="705">
+            <state relative-caret-position="1748">
               <caret line="120" column="34" selection-start-line="120" selection-start-column="34" selection-end-line="120" selection-end-column="34" />
               <folding>
                 <element signature="n#div#0;n#div#1;n#header#0;n#!!top" />
@@ -126,7 +118,7 @@
         <entry file="file://$PROJECT_DIR$/js/scroll-to-top.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="76">
-              <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+              <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
             </state>
           </provider>
         </entry>
@@ -139,7 +131,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sw.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3009">
+            <state relative-caret-position="4769">
               <caret line="257" column="59" selection-start-line="257" selection-start-column="59" selection-end-line="257" selection-end-column="59" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
@@ -275,8 +267,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="200" />
-    <option name="y" value="43" />
+    <option name="x" value="184" />
+    <option name="y" value="73" />
     <option name="width" value="1530" />
     <option name="height" value="959" />
   </component>
@@ -337,7 +329,7 @@
   <component name="PropertiesComponent">
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../leetcode" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -429,6 +421,7 @@
       <workItem from="1550136572153" duration="286000" />
       <workItem from="1565775916221" duration="149000" />
       <workItem from="1565776141163" duration="636000" />
+      <workItem from="1566187999571" duration="637000" />
     </task>
     <task id="LOCAL-00001" summary="qz commit">
       <created>1516513364464</created>
@@ -777,12 +770,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90227000" />
+    <option name="totallyTimeSpent" value="90864000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="200" y="43" width="1530" height="959" extended-state="0" />
+    <frame x="184" y="73" width="1530" height="959" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.11461126" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.11461126" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Grunt " order="3" side_tool="true" />
@@ -794,7 +788,7 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32962963" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
@@ -964,9 +958,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="266">
           <caret line="14" column="7" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#header#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1008,6 +999,49 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_config.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="44">
+          <caret line="32" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_layouts/post.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1748">
+          <caret line="120" column="34" selection-start-line="120" selection-start-column="34" selection-end-line="120" selection-end-column="34" />
+          <folding>
+            <element signature="n#div#0;n#div#1;n#header#0;n#!!top" />
+            <element signature="n#style#0;n#hr#0;n#div#0;n#div#0;n#div#0;n#article#0;n#!!top" expanded="true" />
+            <element signature="n#li#0;n#ul#0;n#div#0;n#div#0;n#div#0;n#article#0;n#!!top" />
+            <element signature="n#li#1;n#ul#0;n#div#0;n#div#0;n#div#0;n#article#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/animatescroll.min.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/scroll-to-top.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gruntfile.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sw.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4769">
+          <caret line="257" column="59" selection-start-line="257" selection-start-column="59" selection-end-line="257" selection-end-column="59" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/_includes/nav.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1273">
@@ -1031,49 +1065,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/less/hux-blog.less">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_layouts/post.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="120" column="34" selection-start-line="120" selection-start-column="34" selection-end-line="120" selection-end-column="34" />
-          <folding>
-            <element signature="n#div#0;n#div#1;n#header#0;n#!!top" />
-            <element signature="n#style#0;n#hr#0;n#div#0;n#div#0;n#div#0;n#article#0;n#!!top" expanded="true" />
-            <element signature="n#li#0;n#ul#0;n#div#0;n#div#0;n#div#0;n#article#0;n#!!top" />
-            <element signature="n#li#1;n#ul#0;n#div#0;n#div#0;n#div#0;n#article#0;n#!!top" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/animatescroll.min.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/scroll-to-top.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="31" lean-forward="true" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Gruntfile.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sw.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3009">
-          <caret line="257" column="59" selection-start-line="257" selection-start-column="59" selection-end-line="257" selection-end-column="59" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_config.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-627">
-          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
-        </state>
-      </provider>
     </entry>
   </component>
 </project>

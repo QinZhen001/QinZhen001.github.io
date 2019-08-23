@@ -12,6 +12,11 @@ tags:
 > “Yeah It's on. ”
 
 
+
+
+[Parser API](https://developer.mozilla.org/zh-CN/docs/Mozilla/Projects/SpiderMonkey/Parser_API#Builder_objects)
+
+
 ## 正文
 
 [在线AST转换器](https://astexplorer.net/)
@@ -203,6 +208,10 @@ acorn是一个符合estree规范的高性能的的js解析器，输出的ast符�
 
 
 
+
+## 自己写一个babel插件
+
+[https://juejin.im/post/5b9dbd7a5188255c6a042b71](https://juejin.im/post/5b9dbd7a5188255c6a042b71)
 
 
 
