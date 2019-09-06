@@ -99,7 +99,9 @@ git branch --unset-upstream
 
 ### 删除本地分支 
 ```
-命令行 : $ git branch -a
+删除本地分支：git branch -d 分支名（remotes/origin/分支名）
+
+强制删本地：git branch -D 分支名
 ```
 
 
@@ -120,8 +122,11 @@ git checkout .
 git reset --hard HEAD^
 ```
 
-
-
+### git log (查看commit hash值)
+查看commit日志 执行下面命令
+```
+git log
+```
 
 
 ### 解决.gitignore文件不起作用
@@ -139,11 +144,6 @@ git commit -m 'update .gitignore'
 
 
 
-### git log (查看commit hash值)
-查看commit日志 执行下面命令
-```
-git log
-```
 
 
 ### 回滚、取消之前的提交
@@ -155,11 +155,66 @@ git reset --hard commit_id
 //退到/进到 指定commit的sha码 commit_id:239afed0857cc2e77c17c01014077808619af64d
 ```
 
+再用“git log”查看版本信息，此时本地的HEAD已经指向之前的版本：
+
+
+
+**使用“git push -f”提交更改**
+
+
+此时如果用“git push”会报错，因为我们本地库HEAD指向的版本比远程库的要旧
+
+
+所以我们要用“git push -f”强制推上去，就可以了
+
+
+
+
+
+### reset和revert的区别
+
+[https://blog.csdn.net/yxlshk/article/details/79944535](https://blog.csdn.net/yxlshk/article/details/79944535)
+
+
+在利用github实现多人合作程序开发的过程中，我们有时会出现错误提交的情况，此时我们希望能撤销提交操作，让程序回到提交前的样子，两种解决方法：回退（reset）、反做（revert）。
+
+
+>使用git的每次提交，Git都会自动把它们串成一条时间线，这条时间线就是一个分支。如果没有新建分支，那么只有一条时间线，即只有一个分支，在Git里，这个分支叫主分支，即master分支。有一个HEAD指针指向当前分支（只有一个分支的情况下会指向master，而master是指向最新提交）。
+
+
+-----
+
+git reset
+
+**git reset的作用是修改HEAD的位置，即将HEAD指向的位置改变为之前存在的某个版本**
+
+
+
+**适用场景： 如果想恢复到之前某个提交的版本，且那个版本之后提交的版本我们都不要了，就可以用这种方法。**
+
+
+------
+
+git revert
+
+**原理： git revert是用于“反做”某一个版本，以达到撤销该版本的修改的目的。比如，我们commit了三个版本（版本一、版本二、 版本三），突然发现版本二不行（如：有bug），想要撤销版本二，但又不想影响撤销版本三的提交，就可以用 git revert 命令来反做版本二，生成新的版本四，这个版本四里会保留版本三的东西，但撤销了版本二的东西。**
+
+
+![enter description here][1]
+
+
+**适用场景： 如果我们想撤销之前的某一版本，但是又想保留该目标版本后面的版本，记录下这整个版本变动流程，就可以用这种方法。**
+
+------
+
+
 
 >**注意:这是个必须掌握的操作**
 
 
 ### git stash
+
+>**注意:这是个必须掌握的操作**
 
 [https://www.cnblogs.com/tocy/p/git-stash-reference.html](https://www.cnblogs.com/tocy/p/git-stash-reference.html)
 
@@ -393,6 +448,9 @@ $ git status
 [https://help.github.com/en/articles/changing-author-info](https://help.github.com/en/articles/changing-author-info)
 
 
+
+
+
 ### 补充
 
 
@@ -401,23 +459,4 @@ $ git status
 [github小窍门](http://youngxhui.github.io/2016/08/28/GitHub-for-Windows%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E5%9B%9B%EF%BC%89/)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  [1]: https://s2.ax1x.com/2019/09/02/niK9fA.png

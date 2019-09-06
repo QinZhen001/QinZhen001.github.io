@@ -87,6 +87,62 @@ console.log(ary);//-->[12,23,24,42,1]；  原数组并未发生变化
 
 
 
+## 重要
+
+### forEach()中无法return和break
+
+**我们都知道for循环里要跳出整个循环是使用break，但在数组中用forEach循环如要退出整个循环使用break会报错，使用return也不能跳出循环。**
+
+
+
+
+
+针对这个问题可以使用数组的另外两个方法some()与every()：
+
+
+```javascript
+var arr = [1,2,3,4,5];
+var num = 3;
+arr.some(function(v){
+   if(v == num) {
+       return true;
+   }
+   console.log(v);
+});
+```
+
+
+之所以不能break, return
+
+是因为它不是简单的for循环。内部实现类似callback(context, arg1, arg2)。
+
+
+在forEach中return，不执行下面的代码。但是回调callback，在它内部实现中还是要执行下一个callback
+
+
+并且break，会出现如下错误
+
+**Illegal break statement**
+
+
+**因为break是用在循环内部的，不是回调函数执行内部**
+
+
+
+
+
+### forEach避免循环原型
+
+
+javascript中for in 会把自定义到原型上的属性和函数遍历出来。感觉怪怪的。自然可以通过 arr.hasOwnProperty(key) 这个方法过滤
+
+用forEach可以避免这样的问题；
+
+
+
+
+
+
 
 
 ## 补充

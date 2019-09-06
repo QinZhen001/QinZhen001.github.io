@@ -421,6 +421,13 @@ ECMAScript 5 引入严格模式('strict mode')概念。通过严格模式，在�
 
 ### Object.create(proto [, propertiesObject ]) 
 
+
+[https://juejin.im/post/5c08bb18e51d451de22a4723](https://juejin.im/post/5c08bb18e51d451de22a4723)
+
+
+
+**Object.create()方法创建一个新对象，使用现有的对象来提供新创建的对象的__proto__**
+
 propertiesObject 参数的详细解释：（默认都为false）
 数据属性： 
 * writable:是否可任意写 
@@ -745,6 +752,7 @@ a >= 5 && alert("你好");
 [网页链接](http://www.w3school.com.cn/jsref/jsref_eval.asp)
 
 ##### 定义和用法
+
 eval() 函数可计算某个字符串，并执行其中的的 JavaScript 代码。
 
 #### 语法
@@ -1230,7 +1238,7 @@ var str = '{"name":"小明","age":18}';
 2.  var json = eval("(" + str + ")");
 3.  var json = (new Function("return " + str))();
 
-### 坑点
+#### 坑点
 1.字符串的数据格式
 以上举例 str = '{"name":"小明","age":18}'; 属性name和age都用双引号引住，
 有的人可能会习惯写成对象形式的字符串，如：str = '{name:"小明",age:18}';
@@ -1245,20 +1253,95 @@ var str = '{"name":"小明","age":18}';
 
 
 
+### 连等号中的一个注意点
+
+
+
+
+```javascript
+function runMe(){
+var c = d = e = f = a =2;
+console.log('在函数里面的c=' + c);
+console.log('在函数里面的d=' + d);
+}
+
+var c = 123,
+a = 321;
+console.log('这里是函数执行前的c', typeof(c), c);
+console.log('这里是函数执行前的a', typeof(a), a);
+
+runMe();
+
+console.log('这里是函数执行后的c', typeof(c), c);
+console.log('这里是函数执行后的a', typeof(a), a);
+console.log(typeof(d), d === window.d, '在函数外面的d=' + d, e, f );
+```
+
+
+
+```javascript
+这里是函数执行前的c number 123
+这里是函数执行前的a number 321
+在函数里面的c=2
+在函数里面的d=2
+这里是函数执行后的c number 123
+这里是函数执行后的a number 2
+number true 在函数外面的d=2 2 2
+```
+
+>把var换成let情况一样
+
+
+在使用 = 进行赋值操作时，如果是在全局作用域下，当然不用说所有的变量都为全局的；
+
+
+**但是如果是在函数里面赋值，在var后面的第一个变量会是局部变量， = 后面的所有其它变量都升级为了全局变量；**
+
+这是一个小坑，使用时需多多注意，避免修改了全局变量的值。
+
+
+如果你非要这样赋值，但是又不想变为全局变量你可以这样。
+
+
+```javascript
+function runMe(){
+var c,
+d,
+e,
+f,
+a;
+c = d = e = f = a =2;
+console.log('在函数里面的c=' + c);
+console.log('在函数里面的d=' + d);
+}
+```
 
 
 
 
 
+作者：Xiaodongsu
+链接：https://www.jianshu.com/p/34baea9051a2
+来源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
 
 
 
 
+### 获取函数的参数个数
+[https://blog.csdn.net/ycdyx/article/details/80501550](https://blog.csdn.net/ycdyx/article/details/80501550)
 
+```javascript
+  function webyang(a, b) {
+    console.log(webyang.length);
+    console.log(arguments.length);
+  }
 
+  webyang(1, 2, 3);
 
-
-
+  //2 为定义的参数个数
+  //3 为实际传入的参数个数
+```
 
 
 

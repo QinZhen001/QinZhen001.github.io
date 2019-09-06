@@ -166,7 +166,7 @@ getTitle('https://tc39.github.io/ecma262/').then(console.log)
 
 
 ### await 命令
-**正常情况下，await命令后面是一个 Promise 对象。如果不是，会被转成一个立即resolve的 Promise 对象。**
+**正常情况下，await命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，就直接返回对应的值。**
 
 ```javascript
 async function f() {

@@ -249,6 +249,58 @@ loose mode 我翻译为松散模式，loose mode在babel中通常是不推荐使
 ```
 
 
+
+### @babel/preset-env中配置polyfill
+
+[https://www.babeljs.cn/docs/babel-preset-env#usebuiltins](https://www.babeljs.cn/docs/babel-preset-env#usebuiltins)
+
+useBuiltIns
+
+```
+"usage" | "entry" | false, defaults to false.
+```
+
+
+
+>This option adds direct references to the core-js module as bare imports. Thus core-js will be resolved relative to the file itself and needs to be accessible. You may need to specify core-js@2 as a top level dependency in your application if there isn't a core-js dependency or there are multiple versions.
+
+This option configures how @babel/preset-env handles polyfills.
+
+
+
+-----
+
+**useBuiltIns: 'entry'**
+
+
+>NOTE: Only use require("@babel/polyfill"); once in your whole app. Multiple imports or requires of @babel/polyfill will throw an error since it can cause global collisions and other issues that are hard to trace. **We recommend creating a single entry file that only contains the require statement.**
+
+
+
+
+This option enables a new plugin that replaces the statement import "@babel/polyfill" or require("@babel/polyfill") with individual requires for @babel/polyfill based on environment.
+
+
+---------------
+
+
+**useBuiltIns: 'usage' (experimental)**
+
+Adds specific imports for polyfills when they are used in each file. We take advantage of the fact that a bundler will load the same polyfill only once.
+
+
+------------
+
+**useBuiltIns: false**
+
+Don't add polyfills automatically per file, or transform import "@babel/polyfill" to individual polyfills.
+
+
+
+
+
+
+
 ## 大坑
 
 ### presets
@@ -388,4 +440,38 @@ gulp-babel don't produce any output file or doesn't work properly
 
 
 **官方默认babel-loader | babel 对应的版本需要一致: 即babel-loader需要搭配最新版本babel**
+
+
+
+
+
+### Couldn't find preset "@babel/env" 
+
+[https://github.com/babel/babel/issues/9016](https://github.com/babel/babel/issues/9016)
+
+
+
+Couldn't find preset "@babel/env" relative to directory 
+
+
+解决：
+
+
+I change npm package's .babelrc to .babelrc.js,and it work
+
+
+```javascript
+module.exports = {
+  presets: [
+    require('@babel/preset-env')
+  ]
+}
+```
+
+
+
+
+
+
+
 

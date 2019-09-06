@@ -153,9 +153,70 @@ Run webpack as a stream to conveniently integrate with gulp.
 运行webpack作为一个流，方便地与gulp集成。
 
 
+## 补充
+
+
+### **crash on error**
+
+最近写babel插件，发现在gulp-babel中很难定位错误。
+
+所以这里引出一个非常重要的知识点，通常情况gulp报错的信息非常模糊，我们很难定位到具体的错误，所以我们要自己监听error事件
+
+**Yep, you need to add an error handler to your gulp task.**
+
+
+```javascript
+var gulp = require("gulp");
+var babel = require('gulp-babel');
+var sourcemaps = require('gulp-sourcemaps');
+
+gulp.task("default", function(){
+  gulp.watch("src/js/**/*.js", ["babel"]);
+});
+
+gulp.task("babel", function(){
+  gulp.src("src/js/**/*.js")
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .on('error', console.error.bind(console));
+    .pipe(gulp.dest("www/js/"));
+});
+```
+
+**非常重要**
+
+**.on('error', console.error.bind(console));**
 
 
 
+
+
+打印出很清晰的信息
+
+```javascript
+{ SyntaxError: F:\前端项目\xhwBase\src\config\baseConfig.js: Unexpected token (15:18)
+  13 | switch (baseConfig.env) {
+  14 |   case "development":
+> 15 |     baseConfig = {...baseConfig, ...devConfig};
+     |                   ^
+  16 |     break;
+  17 |   case "production":
+  18 |     baseConfig = {...baseConfig, ...proConfig};
+    at Parser.pp$5.raise (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:4454:13)
+    at Parser.pp.unexpected (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:1761:8)
+    at Parser.pp$3.parseIdentifier (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:4332:10)
+    at Parser.pp$3.parsePropertyName (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:4156:96)
+    at Parser.pp$3.parseObj (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:4045:12)
+    at Parser.pp$3.parseExprAtom (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:3719:19)
+    at Parser.pp$3.parseExprSubscripts (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:3494:19)
+    at Parser.pp$3.parseMaybeUnary (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:3474:19)
+    at Parser.pp$3.parseExprOps (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:3404:19)
+    at Parser.pp$3.parseMaybeConditional (F:\前端项目\xhwBase\node_modules\babylon\lib\index.js:3381:19)
+  pos: 379,
+  loc: Position { line: 15, column: 18 },
+  _babel: true,
+  codeFrame:
+```
 
 
 

@@ -196,7 +196,23 @@ require(process.cwd() + '/a');
 ----------
 
 
-但是import则不同，它是**编译时的（require是运行时的）**，它必须放在文件开头，而且使用格式也是确定的，不容置疑。它不会将整个模块运行后赋值给某个变量，而是只选择import的接口进行编译，这样在性能上比require好很多。
+[http://es6.ruanyifeng.com/#docs/module](http://es6.ruanyifeng.com/#docs/module)
+
+mport命令会被 JavaScript 引擎静态分析，先于模块内的其他语句执行
+
+```javascript
+// 报错
+if (x === 2) {
+  import MyModual from './myModual';
+}
+```
+
+
+上面代码中，引擎处理import语句是在编译时，这时不会去分析或执行if语句，所以import语句放在if代码块之中毫无意义，因此会报句法错误，而不是执行时错误。也就是说，import和export命令只能在模块的顶层，不能在代码块之中（比如，在if代码块之中，或在函数之中）。
+
+
+
+但是import则不同，它是**编译时的，require是运行时的**它不会将整个模块运行后赋值给某个变量，而是只选择import的接口进行编译，这样在性能上比require好很多。
 
 从理解上，require是赋值过程，import是解构过程，当然，require也可以将结果解构赋值给一组变量，但是import在遇到default时，和require则完全不同： var =require(′jquery′);和import from ‘jquery’ 是完全不同的两种概念。
 

@@ -572,10 +572,6 @@ const router = new VueRouter({
 ### Vue嵌套路由
 
 
-
-
-
-s
 [网页链接](https://router.vuejs.org/zh-cn/essentials/nested-routes.html)
 
 实际生活中的应用界面，通常由多层嵌套的组件组合而成。同样地，URL 中各段动态路径也按某种结构对应嵌套的各层组件，例如：
@@ -650,16 +646,115 @@ const router = new VueRouter({
 
 
 
+### 异步组件
+
+
+[vue异步组件](https://cn.vuejs.org/v2/guide/components-dynamic-async.html#%E5%BC%82%E6%AD%A5%E7%BB%84%E4%BB%B6)
+
+
+最近看到一篇blog，里面讲述了关于vue的异步组件的应用，这部分平时用的少，所以记录一下。
+
+[https://github.com/DDFE/DDFE-blog/issues/13](https://github.com/DDFE/DDFE-blog/issues/13)
+
+
+
+-------------------
+
+
+
+
+在大型应用中，我们可能需要将应用分割成小一些的代码块，并且只在需要的时候才从服务器加载一个模块。为了简化，Vue 允许你以一个工厂函数的方式定义你的组件，这个工厂函数会异步解析你的组件定义。**Vue 只有在这个组件需要被渲染的时候才会触发该工厂函数，且会把结果缓存起来供未来重渲染。**
+
+
+例如：
+
+
+```javascript
+Vue.component('async-example', function (resolve, reject) {
+  setTimeout(function () {
+    // 向 `resolve` 回调传递组件定义
+    resolve({
+      template: '<div>I am async!</div>'
+    })
+  }, 1000)
+})
+```
+
+
+
+
+如你所见，这个工厂函数会收到一个 resolve 回调，这个回调函数会在你从服务器得到组件定义的时候被调用。你也可以调用 reject(reason) 来表示加载失败。这里的 setTimeout 是为了演示用的，如何获取组件取决于你自己。
+
+
+
+
+一个推荐的做法是将异步组件和 webpack 的 code-splitting 功能一起配合使用：
+
+
+
+```javascript
+Vue.component('async-webpack-example', function (resolve) {
+  // 这个特殊的 `require` 语法将会告诉 webpack
+  // 自动将你的构建代码切割成多个包，这些包
+  // 会通过 Ajax 请求加载
+  require(['./my-async-component'], resolve)
+})
+```
+
+
+你也可以在工厂函数中返回一个 Promise，所以把 webpack  和 ES2015 语法加在一起，我们可以写成这样：
+
+
+```javascript
+Vue.component(
+  'async-webpack-example',
+  // 这个 `import` 函数会返回一个 `Promise` 对象。
+  () => import('./my-async-component')
+)
+```
+
+
+
+
+当使用局部注册的时候，你也可以直接提供一个返回 Promise 的函数：
+
+
+```javascript
+new Vue({
+  // ...
+  components: {
+    'my-component': () => import('./my-async-component')
+  }
+})
+```
+
+
+处理加载状态
 
 
 
 
 
 
+这里的异步组件工厂函数也可以返回一个如下格式的对象：
+```javascript
+const AsyncComponent = () => ({
+  // 需要加载的组件 (应该是一个 `Promise` 对象)
+  component: import('./MyComponent.vue'),
+  // 异步组件加载时使用的组件
+  loading: LoadingComponent,
+  // 加载失败时使用的组件
+  error: ErrorComponent,
+  // 展示加载时组件的延时时间。默认值是 200 (毫秒)
+  delay: 200,
+  // 如果提供了超时时间且组件加载也超时了，
+  // 则使用加载失败时使用的组件。默认值是：`Infinity`
+  timeout: 3000
+})
+```
 
 
-
-
+>注意如果你希望在 Vue Router 的路由组件中使用上述语法的话，你必须使用 Vue Router 2.4.0+ 版本。
 
 
 

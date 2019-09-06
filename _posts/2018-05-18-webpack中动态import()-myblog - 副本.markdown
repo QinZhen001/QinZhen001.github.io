@@ -15,6 +15,10 @@ tags:
 ## 正文
 [网页链接](https://segmentfault.com/a/1190000008787672)
 
+
+
+>需要翻墙 [https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655](https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655)
+
 目前，类函模import()块加载的语法建议——syntax proposal整体交给ECMAScript。
 ES2015(es6)加载器说明定义import()作为一个方法用来动在运行时态加载es6模块。
 
@@ -23,7 +27,7 @@ ES2015(es6)加载器说明定义import()作为一个方法用来动在运行时�
 
 
 index.js
-```
+```javascript
 function determineDate() {
   import('moment').then(function(moment) {
     console.log(moment().format());
@@ -34,3 +38,7 @@ function determineDate() {
 
 determineDate();
 ```
+
+
+
+

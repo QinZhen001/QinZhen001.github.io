@@ -325,6 +325,81 @@ export default function({ types: t }) {
 
 
 
+## 遇到的问题
+
+### 获取当前文件的文件名
+
+[http://cn.voidcc.com/question/p-aqzjwhiv-gx.html](http://cn.voidcc.com/question/p-aqzjwhiv-gx.html)
+
+
+
+我正在尝试为babel编写一个插件，如何可以拿到当前文件的文件名？
+
+```javascript
+export default function({ types: t }) { 
+    return { 
+    visitor: { 
+     Identifier(path) { 
+     // something here?? 
+     } 
+    } 
+    }; 
+} 
+```
+
+方法一:
+
+```javascript
+ console.log("this", this.filename)
+```
+
+
+方法二：
+
+
+```javascript
+Identifier(path, state) { 
+    console.log(state.file.opts.filename); 
+} 
+```
+
+
+
+### Maximum call stack size exceeded while using path.replaceWith
+
+
+[https://stackoverflow.com/questions/37539432/babel-maximum-call-stack-size-exceeded-while-using-path-replacewith](https://stackoverflow.com/questions/37539432/babel-maximum-call-stack-size-exceeded-while-using-path-replacewith)
+
+当使用path.replaceWith的时候一定要注意，是否用了相同节点替换了节点
+
+
+
+例子：
+
+
+
+
+
+```javascript
+  FunctionDeclaration(path, state) {
+    // .....
+    // 这种情况会导致不断重复FunctionDeclaration
+    
+    
+    path.replaceWith(t.functionDeclaration(t.identifier("aaa"), [], ...))
+  }
+```
+
+报错：
+the program crashed with Maximum call stack size exceeded
+
+
+
+
+
+
+
+
 
 
 

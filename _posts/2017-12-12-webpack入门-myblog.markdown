@@ -392,6 +392,65 @@ webpack-dev-middleware 是一个封装器(wrapper)，它可以把 webpack 处理
 
 
 
+### 预取/预加载模块
+
+[https://webpack.js.org/guides/code-splitting/](https://webpack.js.org/guides/code-splitting/)
+
+
+**webpack 4.6.0+增加了对预取和预加载的支持。**
+
+
+在声明导入时使用这些内联指​​令允许webpack输出“Resource Hint”，它告诉浏览器：
+
+
+
+
+
+* prefetch：将来某些导航可能需要资源
+* preload：当前导航期间可能需要资源
+
+
+简单的预取示例可以是一个HomePage组件，该组件呈现一个LoginButton组件，然后在LoginModal点击后按需加载组件。
+
+```javascript
+LoginButton.js
+
+//...
+import(/* webpackPrefetch: true */ 'LoginModal');
+```
+
+
+这将导致`<link rel="prefetch" href="login-modal-chunk.js">`被附加在页面的头部，这将指示浏览器在空闲时间预取login-modal-chunk.js文件。
+
+
+与prefetch相比，Preload指令有很多不同之处：
+
+
+
+* 预加载的块开始与父块并行加载。父块完成加载后，将启动预取的块。
+* 预加载的块具有中等优先级并立即下载。浏览器空闲时下载预取的块。
+* 父组块应立即请求预加载的块。未来的任何时候都可以使用预取的块。
+* 浏览器支持是不同的。
+
+
+简单的预加载示例可以是一个Component总是依赖于应该位于单独块中的大型库。
+
+让我们想象一个ChartComponent需要巨大的组件ChartingLibrary。它会LoadingIndicator在呈现时显示并立即执行按需导入ChartingLibrary：
+```javascript
+ChartComponent.js
+
+//...
+import(/* webpackPreload: true */ 'ChartingLibrary');
+```
+
+当ChartComponent请求使用该页面的页面时，也会通过请求图表库`<link rel="preload">`。假设页面块较小并且完成得更快，则页面将显示为a LoadingIndicator，直到已经请求charting-library-chunk完成为止。这将提供一点加载时间，因为它只需要一次往返而不是两次。特别是在高延迟环境中。
+
+>错误地使用webpackPreload实际上会损害性能，因此在使用它时要小心。
+
+
+
+
+
 ## 遇到的问题
 
 ### webpack安装出错,webpack不是内部或者外部命令
