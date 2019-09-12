@@ -294,6 +294,46 @@ http://localhost:8888/start?foo=bar&hello=world
 ```
 
 
+
+### Node.js 中的进程
+
+
+process 模块
+
+
+Node.js 中的进程 Process 是一个全局对象，无需 require 直接使用，给我们提供了当前进程中的相关信息。官方文档提供了详细的说明，感兴趣的可以亲自实践下 Process 文档。
+
+
+
+* process.env：环境变量，例如通过  process.env.NODE_ENV 获取不同环境项目配置信息
+* process.nextTick：这个在谈及 Event Loop 时经常为会提到
+* process.pid：获取当前进程id
+* process.ppid：当前进程对应的父进程
+* process.cwd()：获取当前进程工作目录，
+* process.platform：获取当前进程运行的操作系统平台
+* process.uptime()：当前进程已运行时间，例如：pm2 守护进程的 uptime 值
+
+
+作者：大西轰已在服务区
+链接：https://juejin.im/post/5d43017be51d4561f40adcf9
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+**child_process模块**
+
+
+* child_process.spawn()：适用于返回大量数据，例如图像处理，二进制数据处理。
+* child_process.exec()：适用于小量数据，maxBuffer 默认值为 200 * 1024 超出这个默认值将会导致程序崩溃，数据量过大可采用 spawn。
+* child_process.execFile()：类似 child_process.exec()，区别是不能通过 shell 来执行，不支持像 I/O 重定向和文件查找这样的行为
+* child_process.fork()： 衍生新的进程，进程之间是相互独立的，每个进程都有自己的 V8 实例、内存，系统资源是有限的，不建议衍生太多的子进程出来，通长根据系统** CPU 核心数**设置。
+
+
+>CPU 核心数这里特别说明下，fork 确实可以开启多个进程，但是并不建议衍生出来太多的进程，cpu核心数的获取方式const cpus = require('os').cpus();,这里 cpus 返回一个对象数组，包含所安装的每个 CPU/内核的信息，二者总和的数组哦。假设主机装有两个cpu，每个cpu有4个核，那么总核数就是8。
+
+
+
+
 ### 全局对象
  JavaScript 中有一个特殊的对象，称为全局对象（Global Object），它及其所有属性都可以在程序的任何地方访问，即全局变量。
 

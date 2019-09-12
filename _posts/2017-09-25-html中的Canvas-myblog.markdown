@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "html中的Canvas"
+title:      "canvas相关"
 date:       2017-09-25 12:56:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -14,6 +14,10 @@ tags:
 
 ## 正文
 [网页链接](http://www.w3school.com.cn/tags/html_ref_canvas.asp)
+
+
+[https://www.canvasapi.cn/CanvasRenderingContext2D/](https://www.canvasapi.cn/CanvasRenderingContext2D/)
+
 
 HTML5 `<canvas>` 标签用于绘制图像（通过脚本，通常是 JavaScript）。
 不过，`<canvas>` 元素本身并没有绘制能力（它仅仅是图形的容器）-您必须使用脚本来完成实际的绘图任务。
@@ -237,6 +241,135 @@ drawImage 方法的格式如下所示：
 	
 
 context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+
+
+
+
+## 补充
+
+### 图片纯前端JS压缩的实现
+
+[https://juejin.im/post/5bec3c6cf265da614312a0fa](https://juejin.im/post/5bec3c6cf265da614312a0fa)
+
+
+
+### **toDataURL**
+
+此方法可以返回Canvas图像对应的data URI，也就是平常我们所说的base64地址。格式如下：
+
+
+
+[https://www.canvasapi.cn/HTMLCanvasElement/toDataURL](https://www.canvasapi.cn/HTMLCanvasElement/toDataURL)
+
+
+**这个方法非常重要，当我们需要在canvas上画网络图片时就用到这个，无需把图片下载下来**
+
+
+
+例子
+
+```javascript
+  let url = "http://oalbumres.heywoodsminiprogram.com/uploads/photo/dev/1568107740423.png"
+      var img = new Image()
+      img.src = url;
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      context.drawImage(img, 0, 0, 800, 800);
+      let rrr = canvas.toDataURL('image/png');
+      console.log("111", rrr)
+```
+
+
+>如果不调用canvas.toDataURL，这张网络图片就无法绘制
+
+
+canvas.toDataURL(mimeType, quality);
+
+
+
+
+
+* mimeType（可选）String
+mimeType表示需要转换的图像的mimeType类型。默认值是image/png，还可以是image/jpeg，甚至image/webp（前提浏览器支持）等。
+* quality（可选）Number
+quality表示转换的图片质量。范围是0到1。此参数要想有效，图片的mimeType需要是image/jpeg或者image/webp，其他mimeType值无效。默认压缩质量是0.92。
+根据自己的肉眼分辨，如果使用toDataURL()的quality参数对图片进行压缩，同样的压缩百分比呈现效果要比Adobe Photoshop差一些。
+
+
+返回值
+返回base64 data图片数据。
+
+
+#### 跨域的问题
+
+如果Canvas中绘制的图片资源跨域，则浏览器会报跨域相关的错误，而导致toDataURL()方法执行失败。解决方法是：首先，图片服务器需要配置Access-Control-Allow-Origin，然后借助HTML crossOrigin属性设置图片匿名。
+
+
+```javascript
+var img = new Image();
+img.crossOrigin = '';
+img.onload = function () {};
+img.src = 'https://www.otherdomain.com/example.jpg';
+
+```
+
+
+#### 同步与异步
+
+
+toBlob()方法是异步的，而toDataURL()方法是同步的，这就有个问题，如果需要转换的Canvas尺寸很大，则会阻塞脚本的运行，因此主要注意控制Canvas的尺寸。
+
+
+
+### toBlob
+
+
+toBlob()方法可以Canvas图像对应的Blob对象（binary large object）。此方法可以把Canvas图像缓存在磁盘上，或者存储在内存中，这个往往由浏览器决定。
+
+
+void canvas.toBlob(callback, mimeType, quality);
+
+
+
+这里的void表示无返回值。
+
+
+
+* callback Function
+toBlob()方法执行成功后的回调方法，支持一个参数，表示当前转换的Blob对象。
+* mimeType（可选）String
+mimeType表示需要转换的图像的mimeType类型。默认值是image/png，还可以是image/jpeg，甚至image/webp（前提浏览器支持）等。
+* quality（可选）Number
+quality表示转换的图片质量。范围是0到1。由于Canvas的toBlob()方法转PNG是无损的，因此，此参数默认是没有效的，除非，指定图片mimeType是image/jpeg或者image/webp，此时默认压缩值是0.92。
+
+```javascript
+var canvas = document.querySelector('canvas');
+// canvas转为blob并上传
+canvas.toBlob(function (blob) {
+    var data = new FormData();
+    // 装载图片数据
+    data.append('image', blob);
+    // 图片ajax上传，字段名是image
+    var xhr = new XMLHttpRequest();
+    // 文件上传成功
+    xhr.onload = function() {
+        // xhr.responseText就是返回的数据
+    };
+    // 开始上传
+    xhr.open('POST', 'upload.php', true);
+    xhr.send(data);    
+});
+
+```
+
+
+#### IMG图像数据为Blob
+
+
+如果我们希望把`<canvas>`元素图像使用`<img>`元素显示，toBlob()和toDataURL()方法都是可以的，但个人推荐使用toBlob()方法（如果不用顾及兼容性）。
+
+
+blob数据对象是无法直接作为`<img>`的src属性值呈现的，需要URL.createObjectURL()方法处理下。
 
 
 

@@ -376,6 +376,39 @@ if (module.hot) {
 }
 ```
 
+### 输出文件分析
+[https://segmentfault.com/a/1190000015088834#articleHeader8](https://segmentfault.com/a/1190000015088834#articleHeader8)
+
+
+```javascript
+(function(modules) {
+
+  // 模拟 require 语句
+  function __webpack_require__() {
+  }
+
+  // 执行存放所有模块数组中的第0个模块
+  __webpack_require__(0);
+
+})([/*存放所有模块的数组*/])
+```
+
+
+
+bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过 __webpack_require__ 函数定义了一个可以在浏览器中执行的加载函数来模拟 Node.js 中的 require 语句。
+
+
+
+原来一个个独立的模块文件被合并到了一个单独的 bundle.js 的原因在于浏览器不能像 Node.js 那样快速地去本地加载一个个模块文件，而必须通过网络请求去加载还未得到的文件。 如果模块数量很多，加载时间会很长，因此把所有模块都存放在了数组中，执行一次网络加载。
+
+
+
+如果仔细分析 __webpack_require__ 函数的实现，你还有发现 Webpack 做了缓存优化： 执行加载过的模块不会再执行第二次，执行结果会缓存在内存中，当某个模块第二次被访问时会直接去内存中读取被缓存的返回值。
+
+
+
+
+
 
 
 
@@ -666,6 +699,192 @@ const func = context(filename); // => Success
 }));
 
 ```
+
+
+
+
+
+
+### 代码分割
+
+
+[https://segmentfault.com/a/1190000015088834#articleHeader8](https://segmentfault.com/a/1190000015088834#articleHeader8)
+
+
+[https://codepen.io/whjin/pen/yjmRyG/](https://codepen.io/whjin/pen/yjmRyG/)
+
+```
+// 异步加载 show.js
+import('./show').then((show) => {
+  // 执行 show 函数
+  show('Webpack');
+});
+```
+
+重新构建后会输出两个文件，分别是执行入口文件 bundle.js 和 异步加载文件 0.bundle.js。
+
+
+其中 0.bundle.js 内容如下：
+
+```javascript
+// 加载在本文件(0.bundle.js)中包含的模块
+webpackJsonp(
+  // 在其它文件中存放着的模块的 ID
+  [0],
+  // 本文件所包含的模块
+  [
+    // show.js 所对应的模块
+    (function (module, exports) {
+      function show(content) {
+        window.document.getElementById('app').innerText = 'Hello,' + content;
+      }
+
+      module.exports = show;
+    })
+  ]
+);
+```
+
+
+bundle.js 内容如下：
+
+
+
+```javascript
+(function (modules) {
+  /***
+   * webpackJsonp 用于从异步加载的文件中安装模块。
+   * 把 webpackJsonp 挂载到全局是为了方便在其它文件中调用。
+   *
+   * @param chunkIds 异步加载的文件中存放的需要安装的模块对应的 Chunk ID
+   * @param moreModules 异步加载的文件中存放的需要安装的模块列表
+   * @param executeModules 在异步加载的文件中存放的需要安装的模块都安装成功后，需要执行的模块对应的 index
+   */
+  window["webpackJsonp"] = function webpackJsonpCallback(chunkIds, moreModules, executeModules) {
+    // 把 moreModules 添加到 modules 对象中
+    // 把所有 chunkIds 对应的模块都标记成已经加载成功 
+    var moduleId, chunkId, i = 0, resolves = [], result;
+    for (; i < chunkIds.length; i++) {
+      chunkId = chunkIds[i];
+      if (installedChunks[chunkId]) {
+        resolves.push(installedChunks[chunkId][0]);
+      }
+      installedChunks[chunkId] = 0;
+    }
+    for (moduleId in moreModules) {
+      if (Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
+        modules[moduleId] = moreModules[moduleId];
+      }
+    }
+    while (resolves.length) {
+      resolves.shift()();
+    }
+  };
+
+  // 缓存已经安装的模块
+  var installedModules = {};
+
+  // 存储每个 Chunk 的加载状态；
+  // 键为 Chunk 的 ID，值为0代表已经加载成功
+  var installedChunks = {
+    1: 0
+  };
+
+  // 模拟 require 语句，和上面介绍的一致
+  function __webpack_require__(moduleId) {
+    // ... 省略和上面一样的内容
+  }
+
+  /**
+   * 用于加载被分割出去的， 对应的文件
+   * @param chunkId 需要异步加载的 Ch需要异步加载的 Chunkunk 对应的 ID
+   * @returns {Promise}
+   */
+  __webpack_require__.e = function requireEnsure(chunkId) {
+    // 从上面定义的 installedChunks 中获取 chunkId  Chunk 的对应的加载状态
+    var installedChunkData = installedChunks[chunkId];
+    // 如果加载状态为0表示该 Chunk 已经加载成功了，直接返回 resolve Promise
+    if (installedChunkData === 0) {
+      return new Promise(function (resolve) {
+        resolve();
+      });
+    }
+
+    // installedChunkData 不为空且不为0表示该 Chunk 正在网络加载中
+    if (installedChunkData) {
+      // 返回存放在 installedChunkData 数组中的 Promise 对象
+      return installedChunkData[2];
+    }
+
+    // installedChunkData 为空，表示该 Chunk 还没有加载过，去加载该 Chunk 对应的文件
+    var promise = new Promise(function (resolve, reject) {
+      installedChunkData = installedChunks[chunkId] = [resolve, reject];
+    });
+    installedChunkData[2] = promise;
+
+    // 通过 DOM 操作，往 HTML head 中插入一个 script 标签去异步加载 Chunk 对应的 JavaScript 文件
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.charset = 'utf-8';
+    script.async = true;
+    script.timeout = 120000;
+
+    // 文件的路径为配置的 publicPath、chunkId 拼接而成
+    script.src = __webpack_require__.p + "" + chunkId + ".bundle.js";
+
+    // 设置异步加载的最长超时时间
+    var timeout = setTimeout(onScriptComplete, 120000);
+    script.onerror = script.onload = onScriptComplete;
+
+    // 在 script 加载和执行完成时回调
+    function onScriptComplete() {
+      // 防止内存泄露
+      script.onerror = script.onload = null;
+      clearTimeout(timeout);
+
+      // 去检查 chunkId 对应的 Chunk 是否安装成功，安装成功时才会存在于 installedChunks 中
+      var chunk = installedChunks[chunkId];
+      if (chunk !== 0) {
+        if (chunk) {
+          chunk[1](new Error('Loading chunk ' + chunkId + ' failed.'));
+        }
+        installedChunks[chunkId] = undefined;
+      }
+    };
+    head.appendChild(script);
+
+    return promise;
+  };
+
+  // 加载并执行入口模块，和上面介绍的一致
+  return __webpack_require__(__webpack_require__.s = 0);
+})
+(
+  // 存放所有没有经过异步加载的，随着执行入口文件加载的模块
+  [
+    // main.js 对应的模块
+    (function (module, exports, __webpack_require__) {
+      // 通过 __webpack_require__.e 去异步加载 show.js 对应的 Chunk
+      __webpack_require__.e(0).then(__webpack_require__.bind(null, 1)).then((show) => {
+        // 执行 show 函数
+        show('Webpack');
+      });
+    })
+  ]
+);
+```
+
+
+
+* 多了一个 `__webpack_require__.e` 用于加载被分割出去的，需要异步加载的 Chunk 对应的文件;
+* 多了一个 webpackJsonp 函数用于从异步加载的文件中安装模块。
+
+
+
+在使用了 CommonsChunkPlugin 去提取公共代码时输出的文件和使用了异步加载时输出的文件是一样的，都会有 `__webpack_require__.e` 和 webpackJsonp。 原因在于提取公共代码和异步加载本质上都是代码分割。
+
+
 
 
 

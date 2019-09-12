@@ -436,5 +436,116 @@ style-loader!css-loader!sass-loader
 
 
 
+## 编写loader
+
+Loader 就像是一个翻译员，能把源文件经过转化后输出新的结果，并且一个文件还可以链式的经过多个翻译员翻译。
+
+### Loader 的职责
+
+
+
+一个 Loader 的职责是单一的，只需要完成一种转换。 如果一个源文件需要经历多步转换才能正常使用，就通过多个 Loader 去转换。 在调用多个 Loader 去转换一个文件时，每个 Loader 会链式的顺序执行， 第一个 Loader 将会拿到需处理的原内容，上一个 Loader 处理后的结果会传给下一个接着处理，最后的 Loader 将处理后的最终结果返回给 Webpack。
+
+**所以，在你开发一个 Loader 时，请保持其职责的单一性，你只需关心输入和输出。**
+
+
+由于 Webpack 是运行在 Node.js 之上的，一个 Loader 其实就是一个 Node.js 模块，这个模块需要导出一个函数。 这个导出的函数的工作就是获得处理前的原内容，对原内容执行处理后，返回处理后的内容。
+
+
+一个最简单的 Loader 的源码如下：
+
+
+```javascript
+module.exports = function(source) {
+  // source 为 compiler 传递给 Loader 的一个文件的原内容
+  // 该函数需要返回处理后的内容，这里简单起见，直接把原内容返回了，相当于该 Loader 没有做任何转换
+  return source;
+};
+```
+
+
+由于 Loader 运行在 Node.js 中，你可以调用任何 Node.js 自带的 API，或者安装第三方模块进行调用：
+
+
+
+```javascript
+const sass = require('node-sass');
+module.exports = function(source) {
+  return sass(source);
+};
+```
+
+
+
+### 获得 Loader 的 options
+
+
+
+在最上面处理 SCSS 文件的 Webpack 配置中，给 css-loader 传了 options 参数，以控制 css-loader。 如何在自己编写的 Loader 中获取到用户传入的 options 呢？需要这样做：
+
+
+
+
+```javascript
+const loaderUtils = require('loader-utils');
+module.exports = function(source) {
+  // 获取到用户给当前 Loader 传入的 options
+  const options = loaderUtils.getOptions(this);
+  return source;
+};
+```
+
+
+
+
+
+上面的 Loader 都只是返回了原内容转换后的内容，但有些场景下还需要返回除了内容之外的东西。
+
+例如以用 babel-loader 转换 ES6 代码为例，它还需要输出转换后的 ES5 代码对应的 Source Map，以方便调试源码。 为了把 Source Map 也一起随着 ES5 代码返回给 Webpack，可以这样写：
+
+
+```javascript
+module.exports = function(source) {
+  // 通过 this.callback 告诉 Webpack 返回的结果
+  this.callback(null, source, sourceMaps);
+  // 当你使用 this.callback 返回内容时，该 Loader 必须返回 undefined，
+  // 以让 Webpack 知道该 Loader 返回的结果在 this.callback 中，而不是 return 中 
+  return;
+};
+```
+
+
+### 加载本地 Loader
+
+
+Npm link 专门用于开发和调试本地 Npm 模块，能做到在不发布模块的情况下，把本地的一个正在开发的模块的源码链接到项目的 node_modules 目录下，让项目可以直接使用本地的 Npm 模块。 由于是通过软链接的方式实现的，编辑了本地的 Npm 模块代码，在项目中也能使用到编辑后的代码。
+
+
+
+
+* 确保正在开发的本地 Npm 模块（也就是正在开发的 Loader）的 package.json 已经正确配置好；
+* 在本地 Npm 模块根目录下执行 npm link，把本地模块注册到全局；
+* 在项目根目录下执行 npm link loader-name，把第2步注册到全局的本地 Npm 模块链接到项目的 node_moduels 下，其中的 loader-name 是指在第1步中的 package.json 文件中配置的模块名称。
+
+
+
+链接好 Loader 到项目后你就可以像使用一个真正的 Npm 模块一样使用本地的 Loader 了。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   [1]: http://blog.evanyou.me/images/vue-component.png
