@@ -86,6 +86,54 @@ console.log(ary);//-->[12,23,24,42,1]；  原数组并未发生变化
 ```
 
 
+#### map()会跳过空项
+
+```javascript
+  const length = 3;
+  const init = 1;
+  const result = Array(length).map(() => init);
+
+  console.log(result)  //[empty × 3]
+```
+
+
+
+
+map() 方法似乎不正常，创建出来的数组不是预期的 [1, 1, 1]，而是一个有3个空项的数组。
+
+
+
+
+**这是因为 Array(length) 创建了一个有3个空项的数组(也称为稀疏数组)，但是 map() 方法会跳过空项。**
+
+
+#### map()是深拷贝
+
+
+**map()遍历之后返回的数组是深拷贝**
+
+
+返回的是一个全新的数组，与原来的数组并存
+
+```javascript
+  const result = [{aa: "aa"}, {bb: "bb"}]
+
+  const res = result.map(item => ({
+    ...item,
+    cc: "cccc"
+  }))
+
+
+  res[0] = {d: "d"}
+
+
+  console.log(res, result)
+
+  //res[0] 会改变  而result[0] 不会改变
+
+  //证明res已经脱离了result  map()是深拷贝
+```
+
 
 ## 重要
 

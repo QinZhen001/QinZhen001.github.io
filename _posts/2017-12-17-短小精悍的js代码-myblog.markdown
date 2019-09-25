@@ -1318,4 +1318,56 @@ async function getAdListByRequest(data = {}) {
 
 
 
+
+
+### （a&3）==（a%4）
+
+
+表达式（a&3）==（a%4）的值是1
+
+因为无论a的值为多少a&3的结果只保留a的最后2位
+
+
+### 最多接受n个参数的函数
+
+[https://www.30secondsofcode.org/snippet/ary](https://www.30secondsofcode.org/snippet/ary)
+
+
+Creates a function that accepts up to n arguments, ignoring any additional arguments.
+
+
+创建一个最多接受n个参数的函数，忽略任何其他参数。
+
+
+```javascript
+const ary = (fn, n) => (...args) => fn(...args.slice(0, n));
+```
+
+```javascript
+EXAMPLES
+
+const firstTwoMax = ary(Math.max, 2);
+[[2, 6, 'a'], [6, 4, 8], [10]].map(x => firstTwoMax(...x)); // [6, 6, 10]
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   [1]: https://pic1.zhimg.com/50/fa4f6a40ff9696dc2453d6b30ddc1838_hd.jpg

@@ -152,7 +152,37 @@ CSS中更多的选择器是不会匹配的，所以在考虑性能问题时，�
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
+## 补充 
 
+
+### UI 调试技巧
+
+[https://juejin.im/post/5d74b29d6fb9a06aea61b8b9?utm_source=gold_browser_extension](https://juejin.im/post/5d74b29d6fb9a06aea61b8b9?utm_source=gold_browser_extension)
+
+在业务开发过程中，想必大家经常会需要查看一个元素的位置及大小并修改它的 CSS，因此就会频繁使用到 DevTools 中的选择元素功能。
+
+
+
+其实我们可以使用一个 CSS 技巧给所有元素加上 outline，这样就能迅速了解自己所需的元素位置信息，无须再选择元素查看了。
+
+
+我们只需要添加以下 CSS 就能为任何网站添加这样的效果
+
+
+```html
+html * {
+    outline: 1px solid red
+}
+```
+
+
+
+
+>需要注意的是这里我没有使用 border 的原因是 border 会增加元素的大小但是 outline 不会。
+
+
+
+**用这个技巧来查看元素是否对齐。**
 
 
 

@@ -527,6 +527,43 @@ function spawn(genF) {
 ```
 
 
+### while包裹await会异步执行
+
+一直有个疑问，就是使用while一个接一个执行await，里面的await会等待上一个await结束才去执行吗？
+
+也就是while包裹await会异步执行吗？
+
+答案是会的。
+
+```
+let num = 1;
+
+function test() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log("1111", num++);
+      resolve(true);
+    }, 5000);
+  });
+}
+
+
+async function initBucketA() {
+  let arr = [1, 1, 1, 1, 1, 1, 1, 1];
+  let item = null;
+  while (item = arr.shift()) {
+    await test();
+  }
+}
+
+initBucketA()
+
+
+// 测试成功
+```
+
+
+
 
 
 

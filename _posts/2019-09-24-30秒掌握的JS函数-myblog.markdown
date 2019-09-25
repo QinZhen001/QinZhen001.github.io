@@ -1,0 +1,381 @@
+---
+layout:     post
+title:      "30秒掌握的JS函数"
+date:       2019-09-24 12:09:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - JavaScript
+---
+
+> “Yeah It's on. ”
+
+
+## 正文
+
+[https://www.30secondsofcode.org/list](https://www.30secondsofcode.org/list)
+
+
+
+### call
+
+
+Given a key and a set of arguments, call them when given a context. Primarily useful in composition.
+
+
+给定一个键和一组参数，在给定上下文时调用它们。主要用于作文。
+
+
+
+```javascript
+const call = (key, ...args) => context => context[key](...args);
+
+
+
+EXAMPLES
+
+Promise.resolve([1, 2, 3])
+  .then(call('map', x => 2 * x))
+  .then(console.log); // [ 2, 4, 6 ]
+const map = call.bind(null, 'map');
+Promise.resolve([1, 2, 3])
+  .then(map(x => 2 * x))
+  .then(console.log); // [ 2, 4, 6 ]
+
+```
+
+
+### collectInto
+
+Changes a function that accepts an array into a variadic function.
+
+
+
+将接受数组的函数更改为可变参数函数。
+
+
+```javascript
+const collectInto = fn => (...args) => fn(args);
+
+
+
+EXAMPLES
+
+const Pall = collectInto(Promise.all.bind(Promise));
+let p1 = Promise.resolve(1);
+let p2 = Promise.resolve(2);
+let p3 = new Promise(resolve => setTimeout(resolve, 2000, 3));
+Pall(p1, p2, p3).then(console.log); // [1, 2, 3] (after about 2 seconds)
+```
+
+### flip
+
+Flip takes a function as an argument, then makes the first argument the last.
+
+
+Flip将函数作为参数，然后将第一个参数作为最后一个参数。
+
+
+```javascript
+const flip = fn => (first, ...rest) => fn(...rest, first);
+
+EXAMPLES
+
+let a = { name: 'John Smith' };
+let b = {};
+const mergeFrom = flip(Object.assign);
+let mergePerson = mergeFrom.bind(null, a);
+mergePerson(b); // == b
+b = {};
+Object.assign(b, a); // == b
+```
+
+
+### pipeAsyncFunctions
+
+Performs left-to-right function composition for asynchronous functions.
+
+
+为异步函数执行从左到右的函数组合。
+
+
+```javascript
+  const pipeAsyncFunctions = (...fns) => arg => fns.reduce((p, f) => p.then(f), Promise.resolve(arg))
+```
+
+
+```javascript
+  const sum = pipeAsyncFunctions(
+    x => x + 1,
+    x => new Promise(resolve => setTimeout(() => resolve(x + 2), 1000)),
+    x => x + 3,
+    async x => (await x) + 4
+  )
+
+
+  sum(5).then(res => {
+    console.log("111", res)
+  })
+```
+
+
+### pipeFunctions
+
+Performs left-to-right function composition.
+
+
+执行从左到右的函数组合。
+
+
+
+
+```javascript
+  const pipeFunctions = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)))
+```
+
+```javascript
+  const add5 = x => x + 5
+  const multiply = (x, y) => x * y
+
+  const multiplyAndAdd5 = pipeFunctions(multiply, add5)
+
+  console.log(multiplyAndAdd5(5, 2))// 15
+```
+
+### promisify 
+
+Converts an asynchronous function to return a promise.
+
+>In Node 8+, you can use util.promisify
+
+将异步函数转换为返回承诺。
+
+
+
+
+```javascript
+  const promisify = func => (...args) =>
+    new Promise((resolve, reject) =>
+      func(...args, (err, result) => (err ? reject(err) : resolve(result)))
+    );
+```
+
+```javascript
+  const delay = promisify((d, cb) => setTimeout(cb, d));
+
+
+  delay(2000).then(() => console.log('Hi!')); // // Promise resolves after 2s
+```
+
+
+## Array
+
+
+### all
+
+Returns true if the provided predicate function returns true for all elements in a collection, false otherwise.
+
+如果提供的谓词函数为集合中的所有元素返回true，则返回true，否则返回false。
+
+
+
+
+
+```javascript
+  const all = (arr, fn = Boolean) => arr.every(fn)
+```
+
+
+```javascript
+  let res1 = all([1, 2, 3], x => x > 1)
+  console.log(res1) //false
+  let res2 = all([3, 4, 5], x => x >= 3)
+  console.log(res2) //true
+```
+
+
+### bifurcate
+
+```javascript
+const bifurcate = (arr, filter) =>
+  arr.reduce((acc, val, i) => (acc[filter[i] ? 0 : 1].push(val), acc), [[], []]);
+```
+
+```javascript
+EXAMPLES
+
+bifurcate(['beep', 'boop', 'foo', 'bar'], [true, true, false, true]); // [ ['beep', 'boop', 'bar'], ['foo'] ]
+```
+
+
+### chunk
+
+
+Chunks an array into smaller arrays of a specified size.
+
+
+将数组块化为指定大小的较小数组。
+
+```javascript
+const chunk = (arr, size) =>
+  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    arr.slice(i * size, i * size + size)
+  );
+```
+
+```javascript
+EXAMPLES
+chunk([1, 2, 3, 4, 5], 2);
+
+// [[1,2],[3,4],[5]]
+```
+
+
+### countOccurrences
+
+
+Counts the occurrences of a value in an array.
+
+计算数组中值的出现次数。
+
+
+
+
+
+```javascript
+  const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0)
+```
+
+```javascript
+  let num = countOccurrences([1, 2, 2, 3, 4, 5, 6, 2], 2)
+
+  console.log(num) //3
+```
+
+
+
+
+
+### deepFlatten
+
+Deep flattens an array.
+
+深平一个数组。
+
+
+```javascript
+const deepFlatten = arr => [].concat(...arr.map(v => (Array.isArray(v) ? deepFlatten(v) : v)));
+```
+
+```javascript
+EXAMPLES
+
+deepFlatten([1, [2], [[3], 4], 5]); // [1,2,3,4,5]
+```
+
+
+
+
+### drop
+
+Returns a new array with n elements removed from the left.
+
+
+返回一个新数组，从左侧删除n个元素。
+
+
+
+
+```javascript
+const drop = (arr, n = 0) => arr.slice(n)
+```
+
+
+```
+  let num = drop([1, 2, 3], 2);
+  console.log(num) //[3]
+```
+
+
+### dropRight
+
+
+Returns a new array with n elements removed from the right.
+
+
+返回一个新数组，从右边删除n个元素。
+
+
+```javascript
+const dropRight = (arr, n = 0) => arr.slice(0, -n);
+```
+
+```javascript
+const dropRight = (arr, n = 1) => arr.slice(0, -n);
+EXAMPLES
+dropRight([1, 2, 3],1); // [1,2]
+```
+
+
+
+### dropRightWhile
+
+Removes elements from the end of an array until the passed function returns true. Returns the remaining elements in the array.
+
+从数组末尾移除元素，直到传递的函数返回true。返回数组中剩余的元素。
+
+
+
+
+
+```javascript
+ const dropRightWhile = (arr, func) => {
+    let rightIndex = arr.length
+    while (rightIndex-- && !func(arr[rightIndex])) {
+    }
+    return arr.slice(0, rightIndex + 1)
+  }
+```
+
+
+```javascript
+  let res = dropRightWhile([1, 2, 3, 4], n => n < 3)
+  console.log(res) // [1, 2]
+```
+
+
+
+
+
+
+
+### findLast
+
+Returns the last element for which the provided function returns a truthy value.
+
+返回所提供函数返回true值的最后一个元素。
+
+
+
+```javascript
+  const findLast = (arr, fn) => arr.filter(fn).pop()
+```
+
+```javascript
+  let num = findLast([1, 2, 3, 4], n => n % 2 === 1)
+
+  console.log(num) //3
+```
+
+
+
+
+
+
+
+
+
+
+
+
