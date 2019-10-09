@@ -1353,6 +1353,29 @@ const firstTwoMax = ary(Math.max, 2);
 
 
 
+###  isElement
+
+[https://www.w3school.com.cn/jsref/prop_node_nodetype.asp](https://www.w3school.com.cn/jsref/prop_node_nodetype.asp)
+
+```javascript
+function isElement(value) {
+  return (
+    typeof HTMLElement === 'object' ? value instanceof HTMLElement : //DOM2
+      value && typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName==="string"
+  );
+}
+```
+
+
+
+nodeType 属性返回以数字值返回指定节点的节点类型。
+
+
+* 如果节点是元素节点，则 nodeType 属性将返回 1。
+* 如果节点是属性节点，则 nodeType 属性将返回 2。
+
+
+
 
 
 

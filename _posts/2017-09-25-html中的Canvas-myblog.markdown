@@ -372,6 +372,37 @@ canvas.toBlob(function (blob) {
 blob数据对象是无法直接作为`<img>`的src属性值呈现的，需要URL.createObjectURL()方法处理下。
 
 
+### canvas 图片、文字模糊问题
+
+canvas 绘图时，会从两个物理像素的中间位置开始绘制并向两边扩散 0.5 个物理像素。当设备像素比为 1 时，一个 1px 的线条实际上占据了两个物理像素（每个像素实际上只占一半），由于不存在 0.5 个像素，所以这两个像素本来不应该被绘制的部分也被绘制了，于是 1 物理像素的线条变成了 2 物理像素，视觉上就造成了模糊
+
+
+上面说了那么多弯弯绕，可能理解起来比较晕，但是解决的方法通过上面的内容却已经诞生了：
+
+
+
+首先分别声明 canvas 的 css 宽高和上下文宽高，同时上下文宽高应该是 css 宽高的 devicePixelRatio 倍。在上面的例子中就是：
+
+
+```javascript
+// devicePixelRatio = 2
+<style>
+canvas {
+    width: 200px;
+    height: 200px;
+}
+</style>
+<canvas id="canvas" width="400" height="400"></canvas>
+```
+
+>width="400" height="400" 也可以在js中声明
+
+
+
+
+
+
+
 
 
 
