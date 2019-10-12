@@ -1,0 +1,100 @@
+---
+layout:     post
+title:      "性能监控"
+date:       2019-10-11 11:39:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - 性能
+---
+
+> “Yeah It's on. ”
+
+
+## 正文
+
+
+### 首屏性能监控
+
+
+先明确概念：
+
+* 白屏时间（first Paint Time）——用户从打开页面开始到页面开始有东西呈现为止
+* 首屏时间——用户浏览器首屏内所有内容都呈现出来所花费的时间
+
+>先触发first paint，后触发dom ready
+
+>用户可操作时间(dom Interactive)——用户可以进行正常的点击、输入等操作，默认可以统计domready时间，因为通常会在这时候绑定事件操作
+
+
+
+First paint time 的概念W3C并没有定义，因为是存在争议的。
+
+[https://github.com/w3c/navigation-timing/issues/21](https://github.com/w3c/navigation-timing/issues/21)
+
+
+---------------------
+
+建立指标
+
+* DNS查询时间  (domainLookupEnd - domainLookupStart)
+* tcp连接时间 (connectEnd - connectStart)
+* 首次request请求文档时间 (responseStart - requestStart)
+* 首次response时间  (responseEnd - responseStart)
+* 白屏时间 = (domLoading - navigationStart)
+* DOM树解析时间  = (domComplete - domLoading)
+
+[https://github.com/Tencent/vConsole](https://github.com/Tencent/vConsole)
+
+
+>参考vconsole
+
+
+```javascript
+    // performance related
+    // use `setTimeout` to make sure all timing points are available
+    setTimeout(function() {
+      let performance = window.performance || window.msPerformance || window.webkitPerformance;
+
+      // timing
+      if (performance && performance.timing) {
+        let t = performance.timing;
+        if (t.navigationStart) {
+          console.info('[system]', 'navigationStart:', t.navigationStart);
+        }
+        if (t.navigationStart && t.domainLookupStart) {
+          console.info('[system]', 'navigation:', (t.domainLookupStart - t.navigationStart)+'ms');
+        }
+        if (t.domainLookupEnd && t.domainLookupStart) {
+          console.info('[system]', 'dns:', (t.domainLookupEnd - t.domainLookupStart)+'ms');
+        }
+        if (t.connectEnd && t.connectStart) {
+          if (t.connectEnd && t.secureConnectionStart) {
+            console.info('[system]', 'tcp (ssl):', (t.connectEnd - t.connectStart)+'ms ('+(t.connectEnd - t.secureConnectionStart)+'ms)');
+          } else {
+            console.info('[system]', 'tcp:', (t.connectEnd - t.connectStart)+'ms');
+          }
+        }
+        if (t.responseStart && t.requestStart) {
+          console.info('[system]', 'request:', (t.responseStart - t.requestStart)+'ms');
+        }
+        if (t.responseEnd && t.responseStart) {
+          console.info('[system]', 'response:', (t.responseEnd - t.responseStart)+'ms');
+        }
+        if (t.domComplete && t.domLoading) {
+          if (t.domContentLoadedEventStart && t.domLoading) {
+            console.info('[system]', 'domComplete (domLoaded):', (t.domComplete - t.domLoading)+'ms ('+(t.domContentLoadedEventStart - t.domLoading)+'ms)');
+          } else {
+            console.info('[system]', 'domComplete:', (t.domComplete - t.domLoading)+'ms');
+          }
+        }
+        if (t.loadEventEnd && t.loadEventStart) {
+          console.info('[system]', 'loadEvent:', (t.loadEventEnd - t.loadEventStart)+'ms');
+        }
+        if (t.navigationStart && t.loadEventEnd) {
+          console.info('[system]', 'total (DOM):', (t.loadEventEnd - t.navigationStart)+'ms ('+(t.domComplete - t.navigationStart)+'ms)');
+        }
+      }
+    }, 0);
+```  

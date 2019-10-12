@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "input type="file"使用"
+title:      "input标签上传文件"
 date:       2019-09-11 11:59:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -17,7 +17,7 @@ tags:
 [https://juejin.im/post/5aacc64e6fb9a028c6757bab](https://juejin.im/post/5aacc64e6fb9a028c6757bab)
 
 
-```css
+```html
 <input class="addPicInput" type="file" ref="uploadFile"
        @change="fileChange" accept="image/*" multiple>
 ```

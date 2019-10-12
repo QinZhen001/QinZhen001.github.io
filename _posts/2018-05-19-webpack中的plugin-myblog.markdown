@@ -539,6 +539,33 @@ new webpack.NamedModulesPlugin()
 
 
 
+### @vue/preload-webpack-plugin
+
+
+[https://www.npmjs.com/package/@vue/preload-webpack-plugin](https://www.npmjs.com/package/@vue/preload-webpack-plugin)
+
+
+
+* Uses a combination of htmlWebpackPluginBeforeHtmlProcessing and htmlWebpackPluginAlterAssetTags hooks to inject links as objects rather than strings. This allows for more flexibility when the tags need to be altered by other plugins.
+* include option can be an object in the shape of { type?, chunks?, entries? }. For example, to prefetch async chunks for a specific entry point:
+
+```javascript
+{
+  rel: 'prefetch',
+  include: {
+    type: 'asyncChunks',
+    entries: ['app']
+  }
+}
+```
+
+**A Webpack plugin for automatically wiring up asynchronous (and other types) of JavaScript chunks using `<link rel='preload'>`. This helps with lazy-loading.**
+
+
+>Note: This is an extension plugin for html-webpack-plugin - a plugin that simplifies the creation of HTML files to serve your webpack bundles.
+
+
+
 
 ## 编写plugin
 

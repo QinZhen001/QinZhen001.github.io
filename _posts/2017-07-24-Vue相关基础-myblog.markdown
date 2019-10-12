@@ -764,7 +764,7 @@ const AsyncComponent = () => ({
 
 
 
-### `<router-link>`
+### router-link
 
 [网页链接](https://router.vuejs.org/zh-cn/api/router-link.html)
 
@@ -865,6 +865,344 @@ events
 
 
 
+
+### vue-router query和params区别
+
+
+
+[网页链接](https://segmentfault.com/a/1190000012735168)
+
+#### query方式传参和接收参数
+
+```
+传参: 
+this.$router.push({
+        path:'/xxx'
+        query:{
+          id:id
+        }
+      })
+  
+接收参数:
+this.$route.query.id
+```
+
+
+**注意:传参是this.$router,接收参数是this.$route,这里千万要看清了！！！**
+
+
+
+#### this.$router 和this.$route有何区别？
+
+
+在控制台打印两者可以很明显的看出两者的一些区别
+
+
+1. $router为VueRouter实例，想要导航到不同URL，则使用$router.push方法
+2. $route为当前router跳转对象，里面可以获取name、path、query、params等
+
+
+#### params方式传参和接收参数
+
+```
+传参: 
+this.$router.push({
+        name:'xxx'
+        params:{
+          id:id
+        }
+      })
+  
+接收参数:
+this.$route.params.id
+```
+
+
+
+**注意:params传参，push里面只能是 name:'xxxx',不能是path:'/xxx',因为params只能用name来引入路由，如果这里写成了path，接收参数页面会是undefined！！！**
+
+
+----------
+
+
+
+另外，二者还有点区别，直白的来说query相当于get请求，页面跳转的时候，可以在地址栏看到请求参数，而params相当于post请求，参数不会再地址栏中显示
+
+
+
+**还有一点，params数据刷新会消失，query则不会**
+
+
+
+### 自定义全局组件
+
+
+
+[网页链接](https://www.cnblogs.com/yesyes/p/6658611.html)
+
+首先，在main.js里
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+
+// 引入自定义组件。index.js是组件的默认入口
+import Loading from '../components/loading/index'
+Vue.use(Loading);
+
+Vue.use(ElementUi);
+new Vue({
+  el: '#app',
+  render: h => h(App)
+})
+```
+
+
+然后在Loading.vue里面定义自己的组件模板
+```
+<!-- 这里和普通组件的书写一样 -->
+<template>
+    <div class="loading">
+        loading...
+    </div>
+</template>
+```
+
+
+在index.js文件里面添加install方法
+```
+import MyLoading from './Loading.vue'
+// 这里是重点
+const Loading = {
+    install: function(Vue){
+        Vue.component('Loading',MyLoading)
+    }
+}
+
+// 导出组件
+export default Loading
+```
+
+
+这样就可以在仍何地方使用Loading组件了
+
+
+
+
+### Vue.extend( options )
+
+参数： {Object} options
+
+
+使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象。
+
+data 选项是特例，需要注意 - 在 Vue.extend() 中它必须是函数
+
+
+
+```
+<div id="mount-point"></div>
+```
+
+```javascript
+// 创建构造器
+var Profile = Vue.extend({
+  template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
+  data: function () {
+    return {
+      firstName: 'Walter',
+      lastName: 'White',
+      alias: 'Heisenberg'
+    }
+  }
+})
+// 创建 Profile 实例，并挂载到一个元素上。
+new Profile().$mount('#mount-point')
+```
+
+结果如下：
+```
+<p>Walter White aka Heisenberg</p>
+```
+
+
+----------
+
+
+
+例子：
+
+
+```javascript
+import Vue from 'vue'
+import imagePreviewer from './imagePreviewer.vue'
+const ImagePreviewer = Vue.extend(imagePreviewer)
+
+...
+
+let instance = new ImagePreviewer()
+
+    instance.vm = instance.$mount()
+    instance.vm.src = [src]
+    instance.vm.background = background
+    instance.dom = instance.vm.$el
+    instance.sourceDom = evt.target
+```
+
+
+
+### 编程式的导航
+
+
+[网页链接](https://router.vuejs.org/zh-cn/essentials/navigation.html)
+
+除了使用 `<router-link>` 创建 a 标签来定义导航链接，我们还可以借助 router 的实例方法，通过编写代码来实现。
+router.push(location, onComplete?, onAbort?)
+
+**注意：在 Vue 实例内部，你可以通过 $router 访问路由实例。因此你可以调用 this.$router.push。**
+
+想要导航到不同的 URL，则使用 router.push 方法。这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL。
+
+当你点击 `<router-link>` 时，这个方法会在内部调用，所以说，点击 `<router-link :to="...">` 等同于调用 router.push(...)。
+
+
+----------
+
+
+该方法的参数可以是一个字符串路径，或者一个描述地址的对象。例如：
+
+// 字符串
+router.push('home')
+
+// 对象
+router.push({ path: 'home' })
+
+// 命名的路由
+router.push({ name: 'user', params: { userId: 123 }})
+
+// 带查询参数，变成 /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+
+
+----------
+
+
+**注意：如果提供了 path，params 会被忽略，上述例子中的 query 并不属于这种情况。取而代之的是下面例子的做法，你需要提供路由的 name 或手写完整的带有参数的 path：**
+
+```
+const userId = 123
+router.push({ name: 'user', params: { userId }}) // -> /user/123
+router.push({ path: `/user/${userId}` }) // -> /user/123
+// 这里的 params 不生效
+router.push({ path: '/user', params: { userId }}) // -> /user
+```
+
+同样的规则也适用于 router-link 组件的 to 属性。
+
+#### router.replace
+router.replace(location, onComplete?, onAbort?)
+
+跟 router.push 很像，唯一的不同就是，它不会向 history 添加新记录，而是跟它的方法名一样 —— 替换掉当前的 history 记录。
+
+* 声明式 	`<router-link :to="..." replace>`
+* 编程式	router.replace(...)
+
+
+#### router.go(n)
+这个方法的参数是一个整数，意思是在 history 记录中向前或者后退多少步，类似 window.history.go(n)。
+
+// 在浏览器记录中前进一步，等同于 history.forward()
+router.go(1)
+
+// 后退一步记录，等同于 history.back()
+router.go(-1)
+
+// 前进 3 步记录
+router.go(3)
+
+// 如果 history 记录不够用，那就默默地失败呗
+router.go(-100)
+router.go(100)
+
+
+### **data必须是函数**
+ 
+[网页链接](https://cn.vuejs.org/v2/guide/components.html)
+ 
+构造 Vue 实例时传入的各种选项大多数都可以在组件里使用。只有一个例外：data 必须是函数。实际上，如果你这么做：
+```javascript
+Vue.component('my-component', {
+  template: '<span>{{ message }}</span>',
+  data: {
+    message: 'hello'
+  }
+})
+```
+那么 Vue 会停止运行，并在控制台发出警告，告诉你在组件实例中 data 必须是一个函数。但理解这种规则为何存在也是很有益处的，所以让我们先作个弊：
+```html
+<div id="example-2">
+  <simple-counter></simple-counter>
+  <simple-counter></simple-counter>
+  <simple-counter></simple-counter>
+</div>
+```
+
+```javascript
+var data = { counter: 0 }
+Vue.component('simple-counter', {
+  template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+  // 技术上 data 的确是一个函数了，因此 Vue 不会警告，
+  // 但是我们却给每个组件实例返回了同一个对象的引用
+  data: function () {
+    return data
+  }
+})
+new Vue({
+  el: '#example-2'
+})
+```
+
+由于这三个组件实例共享了同一个 data 对象，因此递增一个 counter 会影响所有组件！这就错了。我们可以通过为每个组件返回全新的数据对象来修复这个问题：
+```javascript
+data: function () {
+  return {
+    counter: 0
+  }
+}
+```
+现在每个 counter 都有它自己内部的状态了
+
+
+
+### proxyTable解决开发环境的跨域
+
+
+[网页链接](http://blog.csdn.net/qq_33559304/article/details/72966028)
+
+在实际项目开发过程中vue cli自带的服务器，但是我们实际要去请求我们的数据接口，服务器与服务器之间产生了一个代理跨域问题，我们需要修改自带服务的配置。在config 中的index文件中，有一个proxyTable参数
+
+参数修改如下：
+```javascript
+proxyTable: {
+  '/list': {
+    target: 'http://xxx.xxx.com/xxx/6',
+    pathRewrite: {
+      '^/list': '/'
+    }
+  }
+},
+```
+如果需要跨域那么需要加上参数changeOrigin:true
+```javascript
+proxyTable: {
+  '/list': {
+    target: 'http://xxx.xxx.com/xxx/6',
+changeOrigin:true,
+    pathRewrite: {
+      '^/list': '/'
+    }
+  }
+},
+```
 
 
 
