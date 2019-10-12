@@ -23,7 +23,6 @@ twitter_username:   QinZhen001
 
 # Build settings
 # from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
-#permalink: pretty
 highlighter: rouge
 paginate: 10
 exclude: ["less","node_modules","Gruntfile.js","package.json","README.md","README.zh.md"]
@@ -91,28 +90,13 @@ friends: [
   title: "前端外刊评论",
   href: "http://qianduan.guru/"
 },{
-  title: "天镶的博客",
-  href: "http://lingyu.wang/"
-},{
-  title: "Luke 的自留地",
-  href: "http://hmqk1995.github.io"
-},{
   title: "Ebn's Blog",
   href: "http://ebnbin.com/"
 },{
   title: "SmdCn's Blog",
   href: "http://blog.smdcn.net"
 },{
-  title: "解旻的博客",
-  href: "http://xieminis.me/"
-},{
   title: "DHong Say",
   href: "http://dhong.co"
-},{
-  title: "尹峰以为",
-  href: "http://ingf.github.io/"
-},{
-  title: "前端神盾局",
-  href: "http://wepiaofei.github.io/blog/"
 }
 ]
