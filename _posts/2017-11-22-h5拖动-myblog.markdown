@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "HTML5拖动"
+title:      "h5拖动"
 date:       2017-11-22 23:12:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -17,7 +17,7 @@ tags:
 
 [网页链接](http://www.w3school.com.cn/html5/html_5_draganddrop.asp)
 
-```
+```html
 <!DOCTYPE HTML>
 <html>
 <head>
