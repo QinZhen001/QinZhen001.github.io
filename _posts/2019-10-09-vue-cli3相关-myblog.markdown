@@ -307,21 +307,7 @@ module.exports = {
 
 
 
-### Babel
-
-
-Babel 可以通过 babel.config.js 进行配置。
-
-
-
->Vue CLI 使用了 Babel 7 中的新配置格式 babel.config.js。和 .babelrc 或 package.json 中的 babel 字段不同，这个配置文件不会使用基于文件位置的方案，而是会一致地运用到项目根目录以下的所有文件，包括 node_modules 内部的依赖。我们推荐在 Vue CLI 项目中始终使用 babel.config.js 取代其它格式。
-
-
-所有的 Vue CLI 应用都使用 @vue/babel-preset-app，它包含了 babel-preset-env、JSX 支持以及为最小化包体积优化过的配置。通过它的文档可以查阅到更多细节和 preset 选项。
-
-
-
-### 审查项目的 webpack 配置
+#### 审查项目的 webpack 配置
 
 因为 @vue/cli-service 对 webpack 配置进行了抽象，所以理解配置中包含的东西会比较困难，尤其是当你打算自行对其调整的时候。
 
@@ -355,6 +341,73 @@ vue inspect > output.js
 
 
 
+
+
+
+
+### Babel
+
+
+Babel 可以通过 babel.config.js 进行配置。
+
+
+
+>Vue CLI 使用了 Babel 7 中的新配置格式 babel.config.js。和 .babelrc 或 package.json 中的 babel 字段不同，这个配置文件不会使用基于文件位置的方案，而是会一致地运用到项目根目录以下的所有文件，包括 node_modules 内部的依赖。我们推荐在 Vue CLI 项目中始终使用 babel.config.js 取代其它格式。
+
+
+所有的 Vue CLI 应用都使用 @vue/babel-preset-app，它包含了 babel-preset-env、JSX 支持以及为最小化包体积优化过的配置。通过它的文档可以查阅到更多细节和 preset 选项。
+
+
+
+#### @vue/babel-preset-app
+
+[https://www.npmjs.com/package/@vue/babel-preset-app](https://www.npmjs.com/package/@vue/babel-preset-app)
+
+
+
+This is the default Babel preset used in all Vue CLI projects. **Note: this preset is meant to be used exclusively in projects created via Vue CLI and does not consider external use cases.**
+
+
+
+```javascript
+module.exports = {
+  presets: [
+    '@vue/app'
+  ]
+}
+```
+
+
+观察package.json并未发现@vue/babel-preset-app
+
+
+
+深入观察
+
+在@vue/cli-plugin-babel中找到了@vue/babel-preset-app
+
+```javascript
+    "@vue/cli-plugin-babel": {
+      "version": "3.11.0",
+      "resolved": "https://registry.npmjs.org/@vue/cli-plugin-babel/-/cli-plugin-babel-3.11.0.tgz",
+      "integrity": "sha512-RSq9goefilvUMYxbeQS8cZxt6zZnvBIb1xK4NWX0NBtqKzJmIjtJzDAQvKgjnZ/USRu6p6X2IRj4Wum8UCUqow==",
+      "dev": true,
+      "requires": {
+        "@babel/core": "^7.0.0",
+        "@vue/babel-preset-app": "^3.11.0",
+        "@vue/cli-shared-utils": "^3.11.0",
+        "babel-loader": "^8.0.5",
+        "webpack": "^4.0.0"
+      }
+    },
+```
+
+
+polyfills
+
+
+
+Default: ['es6.array.iterator', 'es6.promise', 'es6.object.assign', 'es7.promise.finally']
 
 
 

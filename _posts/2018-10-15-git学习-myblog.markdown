@@ -551,4 +551,85 @@ git commit -m 'update .gitignore'
 
 
 
+
+
+### 解决github page build failed问题
+
+上周在github部署blog突然失败
+
+可以在commit记录中查看
+
+[https://github.com/QinZhen001/QinZhen001.github.io/commits/master](https://github.com/QinZhen001/QinZhen001.github.io/commits/master)
+
+因为我只改了几个md文件，所以找了很久还是未发现问题
+
+最后通过邮件咨询了github找到了解决方案
+
+```
+// 问题
+
+The page build failed for the `master` branch with the following error:
+
+Page build failed. For more information, see https://help.github.com/en/articles/troubleshooting-jekyll-build-errors-for-github-pages-sites#troubleshooting-build-errors.
+
+For information on troubleshooting Jekyll see:
+
+  https://help.github.com/articles/troubleshooting-jekyll-builds
+
+If you have any questions you can contact us by replying to this email.
+```
+
+
+
+
+```
+// 反馈问题
+
+Hi:     I don’t know why page build failure,I just modified some MD files as usual.     
+Can you tell me the reason,Thank you for your reply.
+```
+
+
+
+```
+// 定位问题
+
+Thanks for writing in! I'd be happy to help clarify the issue you're experiencing. Here's the full error we're seeing:
+
+  Conversion error: Jekyll::Converters::Markdown encountered an error while converting '_posts/2017-11-22-HTML5拖动-myblog.markdown':
+                    Rouge::Guesser::Ambiguous
+             Fatal: Rouge::Guesser::Ambiguous
+                    Ambiguous guess: can't decide between ["html", "mason", "xml"]
+We're currently having problems with 'Rouge'. A workaround for now is to use the backtick syntax with an explicit language when there is a code block:
+
+https://help.github.com/en/articles/creating-and-highlighting-code-blocks#syntax-highlighting
+
+Hope this helps!
+
+```
+
+
+问题所在
+
+
+**can't decide between ["html", "mason", "xml"]**
+
+```
+ 使用```高亮代码块
+ 但是没有标识是什么语言
+ 而且这个代码块包含很多东西 如 css html script
+ 所以导致解析
+ 进而部署失败
+```
+
+[https://help.github.com/en/articles/creating-and-highlighting-code-blocks#syntax-highlighting](https://help.github.com/en/articles/creating-and-highlighting-code-blocks#syntax-highlighting)
+
+
+
+
+
+
+
+
+
   [1]: https://s2.ax1x.com/2019/09/02/niK9fA.png
