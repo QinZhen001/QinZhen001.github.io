@@ -1380,6 +1380,101 @@ nodeType 属性返回以数字值返回指定节点的节点类型。
 
 
 
+### extend
+
+
+[https://github.com/binnng/wx-component/blob/master/src/extend.js](https://github.com/binnng/wx-component/blob/master/src/extend.js)
+
+
+
+最近在研究小程序时发现了一个extend方法，函数用于将一个或多个对象的内容合并到目标对象，它其实是jQuery.extend()，这里简单分析一下。
+
+
+
+语法
+
+```
+$.extend( target [, object1 ] [, objectN ] )
+指示是否深度合并
+$.extend( [deep ], target, object1 [, objectN ] )
+```
+
+
+
+
+
+
+| 参数    | 描述                                                                                                                                         |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| deep    | 可选。 Boolean类型 指示是否深度合并对象，默认为false。如果该值为true，且多个对象的某个同名属性也都是对象，则该"属性对象"的属性也将进行合并。 |
+| target  | Object类型 目标对象，其他对象的成员属性将被附加到该对象上。                                                                                  |
+| object1 | 可选。 Object类型 第一个被合并的对象。                                                                                                       |
+| objectN |                                                                                                                                              |
+
+
+```javascript
+var extend = function extend() {
+  var target = arguments[0] || {};
+  var i = 1;
+  var length = arguments.length;
+  var deep = false;
+  var options, name, src, copy, copyIsArray, clone;
+
+  // Handle a deep copy situation
+  if (typeof target === 'boolean') {
+    deep = target;
+    target = arguments[1] || {};
+    // skip the boolean and the target
+    i = 2;
+  }
+
+  // Handle case when target is a string or something (possible in deep copy)
+  if (typeof target !== 'object' && !is.fn(target)) {
+    target = {};
+  }
+
+  for (; i < length; i++) {
+    // Only deal with non-null/undefined values
+    options = arguments[i];
+    if (options != null) {
+      if (typeof options === 'string') {
+        options = options.split('');
+      }
+      // Extend the base object
+      for (name in options) {
+        src = target[name];
+        copy = options[name];
+
+        // Prevent never-ending loop
+        if (target === copy) {
+          continue;
+        }
+
+        // Recurse if we're merging plain objects or arrays
+        if (deep && copy && (is.hash(copy) || (copyIsArray = is.array(copy)))) {
+          if (copyIsArray) {
+            copyIsArray = false;
+            clone = src && is.array(src) ? src : [];
+          } else {
+            clone = src && is.hash(src) ? src : {};
+          }
+
+          // Never move original objects, clone them
+          target[name] = extend(deep, clone, copy);
+
+        // Don't bring in undefined values
+        } else if (typeof copy !== 'undefined') {
+          target[name] = copy;
+        }
+      }
+    }
+  }
+
+  // Return the modified object
+  return target;
+};
+```
+
 
 
 
