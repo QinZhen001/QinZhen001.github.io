@@ -396,7 +396,7 @@ npm install -g browserify
  
 查看bb.js，browserify将a.js和b.js这两个文件打包为bb.js，使其在浏览器端可以运行
  
- #### 原理
+#### 原理
  
 Browserify到底做了什么？安装一下browser-unpack，就能清楚原理了
   
@@ -412,4 +412,53 @@ browser-unpack < bb.js
 
 
 可以看到，browerify将所有模块放入一个数组，id属性是模块的编号，source属性是模块的源码，deps属性是模块的依赖
+
+
+
+
+### cross-env
+
+[https://www.npmjs.com/package/cross-env](https://www.npmjs.com/package/cross-env)
+
+
+Run scripts that set and use environment variables across platforms
+
+运行跨平台设置和使用环境变量的脚本
+
+
+
+>cross-env makes it so you can have a single command without worrying about setting or using the environment variable properly for the platform. Just set it like you would if it's running on a POSIX system, and cross-env will take care of setting it properly.
+
+
+
+### conventional-changelog-cli
+
+[https://www.npmjs.com/package/conventional-changelog-cli](https://www.npmjs.com/package/conventional-changelog-cli)
+
+
+
+Generate a changelog from git metadata
+
+生成的git元数据的更新日志
+
+
+
+Note You don't have to use the angular commit convention. For the best result of the tool to tokenize you commit and produce flexible output, it's recommended to use a commit convention.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

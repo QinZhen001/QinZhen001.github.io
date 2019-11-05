@@ -14,7 +14,220 @@ tags:
 
 ## 正文
 
+
+### 学习记录
+
 [自己的总结](https://github.com/QinZhen001/design-pattern)
+
+
+
+### 简单工厂模式
+
+
+定义：又叫静态工厂方法，就是创建对象，并赋予属性和方法
+
+应用：抽取类相同的属性和方法封装到对象上
+
+代码：
+
+```javascript
+  let UserFactory = function (role) {
+  function User(opt) {
+    this.name = opt.name;
+    this.viewPage = opt.viewPage;
+  }
+  switch (role) {
+    case 'superAdmin':
+      return new User(superAdmin);
+      break;
+    case 'admin':
+      return new User(admin);
+      break;
+    case 'user':
+      return new User(user);
+      break;
+    default:
+      throw new Error('参数错误, 可选参数:superAdmin、admin、user')
+  }
+}
+
+//调用
+let superAdmin = UserFactory('superAdmin');
+let admin = UserFactory('admin') 
+let normalUser = UserFactory('user')
+//最后得到角色,可以调用
+```
+
+
+
+### 工厂方法模式
+
+
+定义：对产品类的抽象使其创建业务主要负责用于创建多类产品的实例
+
+
+应用:创建实例
+
+
+
+代码:
+
+
+
+```javascript
+var Factory=function(type,content){
+  if(this instanceof Factory){
+    var s=new this[type](content);
+    return s;
+  }else{
+    return new Factory(type,content);
+  }
+}
+
+//工厂原型中设置创建类型数据对象的属性
+Factory.prototype={
+  Java:function(content){
+    console.log('Java值为',content);
+  },
+  PHP:function(content){
+    console.log('PHP值为',content);
+  },
+  Python:function(content){
+    console.log('Python值为',content);
+  },
+}
+
+//测试用例
+Factory('Python','我是Python');
+```
+
+
+
+
+
+
+### 原型模式
+
+
+定义:设置函数的原型属性
+
+
+应用:实现继承 
+
+代码:
+
+```javascript
+function Animal (name) {
+  // 属性
+  this.name = name || 'Animal';
+  // 实例方法
+  this.sleep = function(){
+    console.log(this.name + '正在睡觉！');
+  }
+}
+// 原型方法
+Animal.prototype.eat = function(food) {
+  console.log(this.name + '正在吃：' + food);
+};
+
+function Cat(){ 
+}
+Cat.prototype = new Animal();
+Cat.prototype.name = 'cat';
+
+//&emsp;Test Code
+var cat = new Cat();
+console.log(cat.name);//cat
+console.log(cat.eat('fish'));//cat正在吃：fish  undefined
+console.log(cat.sleep());//cat正在睡觉！ undefined
+console.log(cat instanceof Animal); //true 
+console.log(cat instanceof Cat); //true  
+
+```
+
+
+### 桥接模式
+[https://www.cnblogs.com/TomXu/archive/2012/04/19/2437321.html](https://www.cnblogs.com/TomXu/archive/2012/04/19/2437321.html)
+
+桥接模式（Bridge）将抽象部分与它的实现部分分离，使它们都可以独立地变化。
+
+
+桥接模式最常用在事件监控上，先看一段代码：
+
+
+```javascript
+addEvent(element, 'click', getBeerById);
+
+function getBeerById(e) {
+    var id = this.id;
+        asyncRequest('GET', 'beer.uri?id=' + id, function(resp) {
+        // Callback response.
+        console.log('Requested Beer: ' + resp.responseText);
+    });
+}
+```
+
+上述代码，有个问题就是getBeerById必须要有浏览器的上下文才能使用，因为其内部使用了this.id这个属性，如果没用上下文，那就歇菜了。所以说一般稍微有经验的程序员都会将程序改造成如下形式：
+
+
+```javascript
+function getBeerById(id, callback) {
+// 通过ID发送请求，然后返回数据
+    asyncRequest('GET', 'beer.uri?id=' + id, function(resp) {
+    // callback response
+     callback(resp.responseText);
+    });
+}
+```
+
+
+实用多了，对吧？首先ID可以随意传入，而且还提供了一个callback函数用于自定义处理函数。但是这个和桥接有什么关系呢？这就是下段代码所要体现的了：
+
+```javascript
+addEvent(element, 'click', getBeerByIdBridge);
+　　function getBeerByIdBridge (e) {
+　　　　getBeerById(this.id, function(beer) {
+　　　　　　console.log('Requested Beer: '+beer);
+　　});
+}
+```
+
+
+这里的getBeerByIdBridge就是我们定义的桥，用于将抽象的click事件和getBeerById连接起来，同时将事件源的ID，以及自定义的call函数（console.log输出）作为参数传入到getBeerById函数里。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

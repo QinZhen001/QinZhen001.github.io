@@ -63,240 +63,6 @@ with (location){
 
 
 
-### slice() 
-[网页链接](http://www.w3school.com.cn/jsref/jsref_slice_array.asp)
-
-slice() 方法可从已有的数组中返回选定的元素。
-
-#### 语法
-arrayObject.slice(start,end)
-* start	必需。规定从何处开始选取。如果是负数，那么它规定从数组尾部开始算起的位置。也就是说，-1 指最后一个元素，-2 指倒数第二个元素，以此类推。
-* end	可选。规定从何处结束选取。该参数是数组片断结束处的数组下标。如果没有指定该参数，那么切分的数组包含从 start 到数组结束的所有元素。如果这个参数是负数，那么它规定的是从数组尾部开始算起的元素。
-#### 返回值
-返回一个新的数组，包含从 start 到 end （不包括该元素）的 arrayObject 中的元素。
-#### 说明
-请注意，该方法并不会修改数组，而是返回一个子数组。如果想删除数组中的一段元素，应该使用方法 Array.splice()。
-
----
-
-
-在本例中，我们将创建一个新数组，然后显示从其中选取的元素：
-```javascript
-<script type="text/javascript">
-var arr = new Array(3)
-arr[0] = "George"
-arr[1] = "John"
-arr[2] = "Thomas"
-
-document.write(arr + "<br />")
-document.write(arr.slice(1) + "<br />")
-document.write(arr)
-
-</script>
-输出：
-George,John,Thomas
-John,Thomas
-George,John,Thomas
-```
-
-在本例中，我们将创建一个新数组，然后显示从其中选取的元素：
-```javascript
-<script type="text/javascript">
-
-var arr = new Array(6)
-arr[0] = "George"
-arr[1] = "John"
-arr[2] = "Thomas"
-arr[3] = "James"
-arr[4] = "Adrew"
-arr[5] = "Martin"
-
-document.write(arr + "<br />")
-document.write(arr.slice(2,4) + "<br />")
-document.write(arr)
-
-</script>
-输出：
-George,John,Thomas,James,Adrew,Martin
-Thomas,James
-George,John,Thomas,James,Adrew,Martin
-```
-
----
-
-
-* **splice() 该方法会改变原始数组。**
-* **slice() 该方法不会改变原始数组。**
-
-
----
-
-
-[网页链接](https://www.zhihu.com/question/56690271?sort=created)
-
-
-slice()只是一层复制
-遇到非基本类型只是简单赋值引用
-并没有递归
-是浅复制
-
-#### 源码
-
-```javascript
-function ArraySlice(start, end) {
-  CHECK_OBJECT_COERCIBLE(this, "Array.prototype.slice");
-
-  var array = TO_OBJECT(this);
-  var len = TO_LENGTH(array.length);
-  var start_i = TO_INTEGER(start);
-  var end_i = len;
-
-  if (!IS_UNDEFINED(end)) end_i = TO_INTEGER(end);
-
-  if (start_i < 0) {
-    start_i += len;
-    if (start_i < 0) start_i = 0;
-  } else {
-    if (start_i > len) start_i = len;
-  }
-
-  if (end_i < 0) {
-    end_i += len;
-    if (end_i < 0) end_i = 0;
-  } else {
-    if (end_i > len) end_i = len;
-  }
-
-  var result = ArraySpeciesCreate(array, MaxSimple(end_i - start_i, 0));
-
-  if (end_i < start_i) return result;
-
-  if (UseSparseVariant(array, len, IS_ARRAY(array), end_i - start_i)) {
-    %NormalizeElements(array);
-    if (IS_ARRAY(result)) %NormalizeElements(result);
-    SparseSlice(array, start_i, end_i - start_i, len, result);
-  } else {
-    SimpleSlice(array, start_i, end_i - start_i, len, result);
-  }
-
-  result.length = end_i - start_i;
-
-  return result;
-}
-
-function SimpleSlice(array, start_i, del_count, len, deleted_elements) {
-  for (var i = 0; i < del_count; i++) {
-    var index = start_i + i;
-    if (index in array) {
-      var current = array[index];
-      %CreateDataProperty(deleted_elements, i, current);
-    }
-  }
-}
-```
-
-#### 代码证明
-```javascript
-const a = [1, 2, 3]
-const b = a
-a === b // true
-```
-
-```javascript
-const a = [1, 2, 3]
-const b = a.slice(0)
-a === b // false
-```
-
-```javascript
-const a = [{ prop: 1 }, { prop: 2 }]
-const b = a.slice(0)
-a === b // false
-a[0] === b[0] // true
-```
-
-
-
-**可以很清晰地看出：只有第一层是深拷贝**
-
-
-
-
-
-
-
-
-
-
-### splice
-[网页链接](http://www.w3school.com.cn/jsref/jsref_splice.asp)
-
-#### 定义和用法
-splice() 方法向/从数组中添加/删除项目，然后返回被删除的项目。
-注释：该方法会改变原始数组。
-#### 语法
-arrayObject.splice(index,howmany,item1,.....,itemX)
-
-* index	
-  必需。整数，规定添加/删除项目的位置，使用负数可从数组结尾处规定位置。
-* howmany	
-   必需。要删除的项目数量。如果设置为 0，则不会删除项目。
-* item1, ..., itemX	
-   可选。向数组添加的新项目。
-#### 返回值
-Array	包含被删除项目的新数组，如果有的话。
-#### 说明
-splice() 方法可删除从 index 处开始的零个或多个元素，并且用参数列表中声明的一个或多个值来替换那些被删除的元素。
-如果从 arrayObject 中删除了元素，则返回的是含有被删除的元素的数组。
-
-
----
-
-
-在本例中，我们将创建一个新数组，并向其添加一个元素：
-```javascript
-<script type="text/javascript">
-
-var arr = new Array(6)
-arr[0] = "George"
-arr[1] = "John"
-arr[2] = "Thomas"
-arr[3] = "James"
-arr[4] = "Adrew"
-arr[5] = "Martin"
-
-document.write(arr + "<br />")
-arr.splice(2,0,"William")
-document.write(arr + "<br />")
-
-</script>
-输出：
-George,John,Thomas,James,Adrew,Martin
-George,John,William,Thomas,James,Adrew,Martin
-```
-在本例中我们将删除位于 index 2 的元素，并添加一个新元素来替代被删除的元素：
-```javascript
-<script type="text/javascript">
-
-var arr = new Array(6)
-arr[0] = "George"
-arr[1] = "John"
-arr[2] = "Thomas"
-arr[3] = "James"
-arr[4] = "Adrew"
-arr[5] = "Martin"
-
-document.write(arr + "<br />")
-arr.splice(2,1,"William")
-document.write(arr)
-
-</script>
-输出：
-George,John,Thomas,James,Adrew,Martin
-George,John,William,James,Adrew,Martin
-```
-
-
 
 #### 在for循环中使用可能会遇到的坑
 
@@ -751,7 +517,7 @@ a >= 5 && alert("你好");
 
 [网页链接](http://www.w3school.com.cn/jsref/jsref_eval.asp)
 
-##### 定义和用法
+#### 定义和用法
 
 eval() 函数可计算某个字符串，并执行其中的的 JavaScript 代码。
 
@@ -1382,9 +1148,82 @@ alert(x);
 ```
 
 
+### JSON.parse深拷贝的弊端
+
+
+JSON.parse(JSON.stringify(obj))我们一般用来深拷贝，其过程说白了 就是利用JSON.stringify 将js对象序列化（JSON字符串），再使用JSON.parse来反序列化(还原)js对象
+
+
+**javaScript存储对象都是存地址的，所以浅拷贝会导致 obj1 和obj2 指向同一块内存地址。改变了其中一方的内容，都是在原来的内存上做修改会导致拷贝对象和源对象都发生改变，而深拷贝是开辟一块新的内存地址，将原对象的各个属性逐个复制进去。对拷贝对象和源对象各自的操作互不影响。**
+
+
+------------
 
 
 
+我们在使用 JSON.parse(JSON.stringify(xxx))时应该注意一下几点：
+
+
+
+**如果obj里面有时间对象，则JSON.stringify后再JSON.parse的结果，时间将只是字符串的形式。而不是时间对象；**
+
+
+```javascript
+var test = {
+     name: 'a',
+     date: [new Date(1536627600000), new Date(1540047600000)],
+   };
+
+   let b;
+   b = JSON.parse(JSON.stringify(test))
+
+   // date: ["2018-09-11T01:00:00.000Z", "2018-10-20T15:00:00.000Z"]
+```
+
+
+**如果obj里有RegExp、Error对象，则序列化的结果将只得到空对象；**
+
+
+
+```javascript
+  const test = {
+    name: 'a',
+    date: new RegExp('\\w+'),
+  };
+  const copyed = JSON.parse(JSON.stringify(test));
+
+  console.log(copyed)
+  // {name: "a", date: {}}
+```
+
+
+
+
+
+
+
+**如果obj里有函数，undefined，则序列化的结果会把函数或 undefined丢失；**
+
+
+
+
+```javascript
+  const test = {
+    name: 'a',
+    date: function hehe() {
+      console.log('fff')
+    },
+  };
+  const copyed = JSON.parse(JSON.stringify(test));
+
+  console.log(copyed)  
+  //{name: "a"}
+```
+
+**如果obj里有NaN、Infinity和-Infinity，则序列化的结果会变成null**
+
+
+**JSON.stringify()只能序列化对象的可枚举的自有属性，例如 如果obj中的对象是有构造函数生成的， 则使用JSON.parse(JSON.stringify(obj))深拷贝后，会丢弃对象的constructor；**
 
 
 

@@ -213,6 +213,61 @@ white-space: nowrap;
 **这里this.data和this.properties指向的是同一个对象，这个对象包括data和properties中的数据。**
 
 
+
+
+
+### Component constructors报错
+
+
+出现了一条很奇怪的报错
+
+```javascript
+VM1304:1 Component constructors should be called while initialization. A constructor call has been ignored.
+
+
+console.error @ VM1304:1
+_e @ VM1320 WAService.js:1
+yt @ VM1320 WAService.js:1
+Wt @ VM1320 WAService.js:1
+(anonymous) @ index.js? [sm]:29
+require @ VM1320 WAService.js:1
+(anonymous) @ VM1422:6
+scriptLoaded @ appservice?t=1572581149300:8790
+script.onload @ appservice?t=1572581149300:8833
+load (async)
+loadBabelModule @ appservice?t=1572581149300:8827
+window.loadBabelMod @ appservice?t=1572581149300:8841
+(anonymous) @ possibleConstructorReturn.js:15
+
+```
+
+
+**Component constructors should be called while initialization. A constructor call has been ignored.**
+
+
+
+最后发现是Component组件下json文件的问题
+
+```json
+// 错误写法
+{
+  "enablePullDownRefresh": true
+}
+```
+
+改成
+
+
+```
+// 正确写法
+{
+  "usingComponents": {},
+  "enablePullDownRefresh": true
+}
+```
+
+
+
 ## mpvue相关
 
 [http://mpvue.com/mpvue/](http://mpvue.com/mpvue/)
