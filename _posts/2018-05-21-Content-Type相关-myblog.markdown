@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Content-Type相关"
+title:      "content-type相关相关"
 date:       2018-05-21 13:32:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
