@@ -7,7 +7,7 @@ description: "Qz,qinzhen,qinzhen blog,秦臻,秦臻 blog,秦臻 博客,秦臻的
 keyword: "Qz,qinzhen,qinzhen blog,秦臻,秦臻 blog,秦臻 博客，秦臻的博客,渣臻"
 url: "https://qinzhen001.github.io/"              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
-permalink: /:categories/:title.html
+permalink: pretty
 
 
 # SNS settings
@@ -81,22 +81,22 @@ service-worker: true
 # Friends
 friends: [
 {
-  title: "Su",
-  href: "http://su.gallery/"
+  title: "张鑫旭-鑫空间",
+  href: "https://www.zhangxinxu.com/wordpress/"
 },{
-  title: "乱序",
-  href: "http://mida.re/"
+  title: "木易杨blog",
+  href: "https://github.com/yygmind/blog"
 },{
-  title: "前端外刊评论",
-  href: "http://qianduan.guru/"
+  title: "大转转FE",
+  href: "https://github.com/zhuanzhuanfe/articles"
 },{
-  title: "Ebn's Blog",
-  href: "http://ebnbin.com/"
+  title: "DDFE-blog",
+  href: "https://github.com/DDFE/DDFE-blog"
 },{
-  title: "SmdCn's Blog",
-  href: "http://blog.smdcn.net"
+  title: "周刊参考",
+  href: "https://github.com/dt-fe/weekly/issues/2"
 },{
-  title: "DHong Say",
-  href: "http://dhong.co"
+  title: "前端精读周刊",
+  href: "https://github.com/dt-fe/weekly"
 }
 ]
