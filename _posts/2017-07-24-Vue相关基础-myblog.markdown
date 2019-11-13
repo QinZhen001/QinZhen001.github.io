@@ -426,54 +426,6 @@ Vue.filter('capitalize', function (value) {
 这里，filterA 被定义为接收三个参数的过滤器函数。其中 message 的值作为第一个参数，普通字符串 'arg1' 作为第二个参数，表达式 arg2 的值作为第三个参数。
 
 
-### key
-
-
-[网页链接](https://cn.vuejs.org/v2/api/#key)
-
-
-预期：number | string
-key 的特殊属性主要用在 Vue的虚拟DOM算法，在新旧nodes对比时辨识VNodes。如果不使用key，Vue会使用一种最大限度减少动态元素并且尽可能的尝试修复/再利用相同类型元素的算法。使用key，它会基于key的变化重新排列元素顺序，并且会移除key不存在的元素。
-
-有相同父元素的子元素必须有独特的key。重复的key会造成渲染错误。
-
-最常见的用例是结合 v-for:
-```html
-<ul>
-  <li v-for="item in items" :key="item.id">...</li>
-</ul>
-```
-
-
-它也可以用于强制替换元素/组件而不是重复使用它。当你遇到如下场景时它可能会很有用:
-
-* 完整地触发组件的生命周期钩子
-* 触发过渡
-
-例如:
-```html
-<transition>
-  <span :key="text">{{ text }}</span>
-</transition>
-```
-
-
-当 text 发生改变时，`<span>` 会随时被更新，因此会触发过渡。
-
-
-
- **v-for必须加上key，并避免同时使用v-if**
-
-一般我们在两种常见的情况下会倾向于这样做:
-
-
-为了过滤一个列表中的项目 比如 v-for="user in users" v-if="user.isActive"。在这种情形下，请将 users替换为一个计算属性 (比如activeUsers)，让其返回过滤后的列表
-
-
-为了避免渲染本应该被隐藏的列表 比如 v-for="user in users" v-if="shouldShowUsers"。这种情形下，请将 v-if 移动至容器元素上 (比如 ul, ol)
-
-
-
 
 
 ### render:h => h(App)
@@ -764,106 +716,6 @@ const AsyncComponent = () => ({
 
 
 
-### router-link
-
-[网页链接](https://router.vuejs.org/zh-cn/api/router-link.html)
-
-`<router-link>` 组件支持用户在具有路由功能的应用中（点击）导航。 通过 to 属性指定目标地址，默认渲染成带有正确链接的 `<a>` 标签，可以通过配置 tag 属性生成别的标签.。另外，当目标路由成功激活时，链接元素自动设置一个表示激活的 CSS 类名。
-
-`<router-link>` 比起写死的 `<a href="...">` 会好一些，理由如下：
-
-无论是 HTML5 history 模式还是 hash 模式，它的表现行为一致，所以，当你要切换路由模式，或者在 IE9 降级使用 hash 模式，无须作任何变动。
-
-在 HTML5 history 模式下，router-link 会拦截点击事件，让浏览器不再重新加载页面。
-
-当你在 HTML5 history 模式下使用 base 选项之后，所有的 to 属性都不需要写（基路径）了。
-
-Props
-to
-类型: string | Location
-required
-表示目标路由的链接。当被点击后，内部会立刻把 to 的值传到 router.push()，所以这个值可以是一个字符串或者是描述目标位置的对象。
-```
-<!-- 字符串 -->
-<router-link to="home">Home</router-link>
-<!-- 渲染结果 -->
-<a href="home">Home</a>
-
-<!-- 使用 v-bind 的 JS 表达式 -->
-<router-link v-bind:to="'home'">Home</router-link>
-
-<!-- 不写 v-bind 也可以，就像绑定别的属性一样 -->
-<router-link :to="'home'">Home</router-link>
-
-<!-- 同上 -->
-<router-link :to="{ path: 'home' }">Home</router-link>
-
-<!-- 命名的路由 -->
-<router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
-
-<!-- 带查询参数，下面的结果为 /register?plan=private -->
-<router-link :to="{ path: 'register', query: { plan: 'private' }}">Register</router-link>
-```
-
-replace
-类型: boolean
-默认值: false
-设置 replace 属性的话，当点击时，会调用 router.replace() 而不是 router.push()，于是导航后不会留下 history 记录。
-```
-<router-link :to="{ path: '/abc'}" replace></router-link>
-```
-
-append
-类型: boolean
-默认值: false
-设置 append 属性后，则在当前（相对）路径前添加基路径。例如，我们从 /a 导航到一个相对路径 b，如果没有配置 append，则路径为 /b，如果配了，则为 /a/b
-```
-  <router-link :to="{ path: 'relative/path'}" append></router-link>
-```  
-tag
-类型: string
-默认值: "a"
-有时候想要 `<router-link>` 渲染成某种标签，例如 `<li>`。 于是我们使用 tag prop 类指定何种标签，同样它还是会监听点击，触发导航。
-```
-<router-link to="/foo" tag="li">foo</router-link>
-<!-- 渲染结果 -->
-<li>foo</li>
-```
-
-active-class
-类型: string
-默认值: "router-link-active"
-设置 链接激活时使用的 CSS 类名。默认值可以通过路由的构造选项 linkActiveClass 来全局配置。
-
-exact
-类型: boolean
-默认值: false
-"是否激活" 默认类名的依据是 inclusive match （全包含匹配）。 举个例子，如果当前的路径是 /a 开头的，那么 `<router-link to="/a">` 也会被设置 CSS 类名。
-按照这个规则，`<router-link to="/">` 将会点亮各个路由！想要链接使用 "exact 匹配模式"，则使用 exact 属性：
-```
-  <!-- 这个链接只会在地址为 / 的时候被激活 -->
-  <router-link to="/" exact>
-```
-
-
-events
-类型: string | Array<string>
-默认值: 'click'
-声明可以用来触发导航的事件。可以是一个字符串或是一个包含字符串的数组。
-将"激活时的CSS类名"应用在外层元素
-有时候我们要让 "激活时的CSS类名" 应用在外层元素，而不是 `<a>` 标签本身，那么可以用 `<router-link>` 渲染外层元素，包裹着内层的原生 `<a>` 标签：
-
-```
-<router-link tag="li" to="/foo">
-  <a>/foo</a>
-</router-link>
-```
-
-在这种情况下，`<a>`将作为真实的链接（它会获得正确的 href 的），而 "激活时的CSS类名" 则设置到外层的 `<li>`。
-
-
-
-
 
 
 ### vue-router query和params区别
@@ -990,62 +842,116 @@ export default Loading
 
 ### Vue.extend( options )
 
-参数： {Object} options
+[https://cn.vuejs.org/v2/api/#Vue-extend](https://cn.vuejs.org/v2/api/#Vue-extend)
 
+
+最近再看vue源码，在globalApi中发现Vue.extend
 
 使用基础 Vue 构造器，创建一个“子类”。参数是一个包含组件选项的对象。
 
-data 选项是特例，需要注意 - 在 Vue.extend() 中它必须是函数
 
+在 vue 项目中，我们有了初始化的根实例后，所有页面基本上都是通过 router 来管理，组件也是通过 import 来进行局部注册，所以组件的创建我们不需要去关注，相比 extend 要更省心一点点。但是这样做会有几个缺点：
 
+* 组件模板都是事先定义好的，如果我要从接口动态渲染组件怎么办？
+* 所有内容都是在 #app 下渲染，注册组件都是在当前位置渲染。如果我要实现一个类似于 window.alert() 提示组件要求像调用 JS 函数一样调用它，该怎么办？
 
-```
-<div id="mount-point"></div>
-```
-
-```javascript
-// 创建构造器
-var Profile = Vue.extend({
-  template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>',
-  data: function () {
-    return {
-      firstName: 'Walter',
-      lastName: 'White',
-      alias: 'Heisenberg'
-    }
-  }
-})
-// 创建 Profile 实例，并挂载到一个元素上。
-new Profile().$mount('#mount-point')
-```
-
-结果如下：
-```
-<p>Walter White aka Heisenberg</p>
-```
-
-
-----------
-
-
-
-例子：
-
+这时候，Vue.extend + vm.$mount 组合就派上用场了。
 
 ```javascript
 import Vue from 'vue'
-import imagePreviewer from './imagePreviewer.vue'
-const ImagePreviewer = Vue.extend(imagePreviewer)
 
-...
+const testComponent = Vue.extend({
+  template: '<div>{{ text }}</div>',
+  data: function () {
+    return {
+      text: 'extend test'
+    }
+  }
+})
+```
+然后我们将它手动渲染：
 
-let instance = new ImagePreviewer()
+```javascript
+const extendComponent = new testComponent().$mount()
+```
 
-    instance.vm = instance.$mount()
-    instance.vm.src = [src]
-    instance.vm.background = background
-    instance.dom = instance.vm.$el
-    instance.sourceDom = evt.target
+
+这时候，我们就将组件渲染挂载到 body 节点上了。
+
+我们可以通过 $el 属性来访问 extendComponent 组件实例：
+
+```javascript
+document.body.appendChild(extendComponent.$el)
+```
+
+
+
+
+
+```javascript
+  Vue.extend = function (extendOptions: Object): Function {
+    extendOptions = extendOptions || {}
+    const Super = this
+    const SuperId = Super.cid
+    const cachedCtors = extendOptions._Ctor || (extendOptions._Ctor = {})
+    if (cachedCtors[SuperId]) {
+      return cachedCtors[SuperId]
+    }
+
+    const name = extendOptions.name || Super.options.name
+    if (process.env.NODE_ENV !== 'production' && name) {
+      validateComponentName(name)
+    }
+
+    const Sub = function VueComponent (options) {
+      this._init(options)
+    }
+    Sub.prototype = Object.create(Super.prototype)
+    Sub.prototype.constructor = Sub
+    Sub.cid = cid++
+    Sub.options = mergeOptions(
+      Super.options,
+      extendOptions
+    )
+    Sub['super'] = Super
+
+    // For props and computed properties, we define the proxy getters on
+    // the Vue instances at extension time, on the extended prototype. This
+    // avoids Object.defineProperty calls for each instance created.
+    if (Sub.options.props) {
+      initProps(Sub)
+    }
+    if (Sub.options.computed) {
+      initComputed(Sub)
+    }
+
+    // allow further extension/mixin/plugin usage
+    Sub.extend = Super.extend
+    Sub.mixin = Super.mixin
+    Sub.use = Super.use
+
+    // create asset registers, so extended classes
+    // can have their private assets too.
+    ASSET_TYPES.forEach(function (type) {
+      Sub[type] = Super[type]
+    })
+    // enable recursive self-lookup
+    if (name) {
+      Sub.options.components[name] = Sub
+    }
+
+    // keep a reference to the super options at extension time.
+    // later at instantiation we can check if Super's options have
+    // been updated.
+    Sub.superOptions = Super.options
+    Sub.extendOptions = extendOptions
+    Sub.sealedOptions = extend({}, Sub.options)
+
+    // cache constructor
+    cachedCtors[SuperId] = Sub
+    return Sub
+  }
+
 ```
 
 

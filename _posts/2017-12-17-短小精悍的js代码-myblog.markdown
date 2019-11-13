@@ -623,6 +623,9 @@ var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/
 
 
 ### 深克隆deepclone
+
+[https://stackoverflow.com/questions/4459928/how-to-deep-clone-in-javascript](https://stackoverflow.com/questions/4459928/how-to-deep-clone-in-javascript)
+
 ```javascript
 /**
  * This is just a simple version of deep copy
@@ -1478,10 +1481,34 @@ var extend = function extend() {
 
 
 
+### 获取函数名称
+
+```javascript
+Function.prototype.getName = function(){
+    return this.name || this.toString().match(/function\s*([^(]*)\(/)[1]
+}
+```
 
 
 
 
+### 类数组对象转成数组
+
+
+```javascript
+/**
+ * Convert an Array-like object to a real Array.
+ */
+function toArray (list, start) {
+  start = start || 0;
+  var i = list.length - start;
+  var ret = new Array(i);
+  while (i--) {
+    ret[i] = list[i + start];
+  }
+  return ret
+}
+```
 
 
 
