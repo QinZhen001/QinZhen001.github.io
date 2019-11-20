@@ -368,7 +368,7 @@ const isFirefox = typeof navigator !== 'undefined' && navigator.userAgent.toLowe
 
 ### isPromise 
 
-判断对象是否为Promise 
+判断对象是否为Promise   
 
 ```javascript
 function isPromise (val) {
@@ -376,20 +376,49 @@ function isPromise (val) {
 }
 ```
 
-这个方法也适用于async函数
+**这个方法不适用于async函数**
+**这个方法不适用于async函数**
+**这个方法不适用于async函数**
+
+重要的事情说三遍，由于错用了这个方法，导致框架的执行流程出现偏差，查找了两个小时才发现。
+
+**这个方法也不适用返回Promise对象的函数**
 
 
 例子：
 
 ```javascript
-  let aaa = async function () {
-    return "asdasd"
+  function test() {
+    return new Promise((resolve, reject) => {
+      resolve("asdasd")
+    })
   }
-
-  console.log("aaa()", aaa())   //aaa() true
+  
+  
+  console.log(test.then) //undefined  (很明显就存在then)
 ```
 
 
+
+### isAsyncFunction
+
+判断函数是否是async函数
+
+```javascript
+function isAsyncFunction(fn) {
+  return Object.prototype.toString.call(fn) === "[object AsyncFunction]"
+}
+```
+
+
+另外一种方法：
+
+```javascript
+根据
+fn.constructor.name === "AsyncFunction"
+ 
+来判断
+```
 
 
 ### 如何判定一个脚本已经执行完毕
@@ -1509,6 +1538,28 @@ function toArray (list, start) {
   return ret
 }
 ```
+
+
+
+
+
+### +new Date()
+
+[https://www.cnblogs.com/zhengziheng/p/9734196.html](https://www.cnblogs.com/zhengziheng/p/9734196.html)
+
+
++相当于把这个时间对象做了隐式的类型转换啊
+
+```javascript
+  console.log(new Date())
+  // Fri Nov 15 2019 14:19:36 GMT+0800 (中国标准时间)
+  console.log(+new Date())
+  // 1573798776557
+```
+
+
+
+
 
 
 

@@ -733,6 +733,111 @@ nodejs插件，美化打印或缩小文本在XML, JSON, CSS和SQL格式。
 
 
 
+## 补充
+
+
+### 对store的优化
+
+但我们同一时间多次调用store.get的时候，有时候会多次触发getter函数，getter里面存在耗时操作
+
+
+**按道理，同时多次调用get我们只需要走一次get流程，后面的采用第一次的结果即可**
+
+
+
+
+下面进行优化
+
+```
+const STORE = 'store';
+
+
+global.singleton = global.singleton || {};
+const singleton = global.singleton;
+
+/**
+ * (流程锁，减少不必要的耗时操作)
+ * get之前的操作 存储多余的任务
+ * @param name
+ * @param resolve
+ * @param reject
+ * @returns {boolean} 是否继续执行流程
+ * @private
+ */
+function _beforeGet({name, resolve, reject}) {
+  name = `store_${name}`
+  let lockName = `${name}_lock`
+  singleton[lockName] = singleton[lockName] || false;
+  if (singleton[lockName]) {
+    // 锁上了 把信息存储在任务队列
+    singleton[name].push({resolve, reject});
+    return false
+  } else {
+    // 锁起来
+    singleton[lockName] = true
+    singleton[name] = []
+    return true
+  }
+}
+
+/**
+ * 执行多余的任务 同时把锁关闭
+ * @private
+ */
+function _afterGet({name, result}) {
+  name = `store_${name}`
+  let lockName = `${name}_lock`
+  let task
+  // eslint-disable-next-line
+  while (task = singleton[name].shift()) {
+    debugger
+    task.resolve && task.resolve(result)
+  }
+  singleton[lockName] = false
+}
+```
+
+
+```javascript
+  /**
+   * 获取当前store中的state中的具体数据
+   * @param{String} name 在state中的名字 (必填)
+   * @param{Object} data 额外的参数  (非必填)  (会穿透到对应getters函数)
+   * @returns {Promise<any>}
+   * 问题：同时多次调用get我们只需要走一次get流程，后面的采用第一次的结果即可
+   */
+  get(name, data) {
+    if (typeof name !== 'string') {
+      throw new Error(logger(`get方法必须传进一个string, "${name}" 非法`));
+    }
+    return new Promise(async (resolve, reject) => {
+      console.log(`res 我执行 ${name}`)
+      if (_beforeGet({name, resolve, reject})) {
+        let value = this.state[name];
+        let result
+        if (value !== null && value !== undefined && value !== "") {
+          // value有值 值有可能为false 或 0
+          // value !== "" 是因为 wx.getStorage一个不存在的东西 返回 ""
+          result = isObject(value) ? deepCopy(value) : value;
+        } else {
+          // state没有值 触发getters
+          let getter = this.getters[name];
+          if (getter) {
+            result = await getter(data, this.commit.bind(this))
+          }
+        }
+        resolve(result)
+        _afterGet({result, name})
+      }
+    });
+  }
+```
+
+
+
+通过beforeGet和afterGet控制流程实现
+
+
 
 
 

@@ -286,6 +286,129 @@ aaa (109) [76, 1, 50, 255, 253, 255, 253, 255, 253, 74, 255, 253, 15, 255, 253,
 
 
 
+### 增强编译后无法判断函数是否是async函数
+
+
+在一般开发中  我们可以这样判断一个函数是否是async函数
+```javascript
+asyncfunction test() {
+   return "test"
+ }
+ 
+ console.log(test.constructor.name) //AsyncFunction
+```
+
+但是，在小程序中，打开了增强编译
+```javascript
+asyncfunction test() {
+  return "test"
+}
+ 
+console.log(test.constructor.name) //t
+```
+
+test.constructor.name 变成了 "t"  无法判断这个函数是否是async函数
+
+编译后函数长这个样子：
+```javascript
+ƒ test() {
+  return _test.apply(this, arguments);
+}
+```
+
+也就是增强编译后就无法判断原来的函数是否是async函数......
+
+**按理说es6转es5，也会去掉async语法，所以无法判断也属于正常情况。**
+
+
+### 以二进制流的形式发送request
+
+[request文档](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html)
+
+非常重要的两个点
+
+
+
+
+options.header = {'content-type': 'application/octet-stream'}
+
+options.responseType = "arraybuffer"    
+
+这样设置header 以二进制流发送
+
+这样设置responseType 以二进制流接受响应
+
+
+### 在小程序请求中使用qqtea加密解密
+
+核心代码
+
+```javascript
+ if (needEncrypt) {
+    // 当前环境是需要的环境 且 此请求需要加密
+    console.log(`${name} 请求的参数: \n`, data)
+    data = qqtea.encrypt(JSON.stringify(data), TEA_KEY)
+    data = str2ab(data)
+    options.header = {'content-type': 'application/octet-stream'}
+    options.responseType = "arraybuffer"
+  }
+  wx.request({
+    responseType: options.responseType || "text",
+    url: options.url,
+    data: data,
+    method: options.method || 'POST',
+    header: options.header || {'content-type': 'application/x-www-form-urlencoded'},
+    success: (res) => {
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        if (needEncrypt) {
+          let byteArr = new Uint8Array(res.data)
+          res.data = qqtea.decrypt(uint8ArrayToString(byteArr), TEA_KEY);
+          res.data = JSON.parse(res.data)
+          debugger
+        }
+        resolve({...res, code: 0});
+      } else {
+        reject({...res, code: 0});
+      }
+    },
+    fail: (res) => {
+      reject({...res, code: 1});
+    },
+  });
+```
+
+```javascript
+/**
+ * string => arrayBuffer
+ * @param str
+ * @returns {ArrayBuffer}
+ */
+function str2ab(str) {
+  let strLen = str.length
+  let buf = new ArrayBuffer(strLen);
+  let bufView = new Uint8Array(buf);
+  for (let i = 0; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+```
+
+
+
+```javascript
+/**
+ * @return {string}
+ */
+function uint8ArrayToString(arr) {
+  let dataString = "";
+  for (let i = 0; i < arr.length; i++) {
+    dataString += String.fromCharCode(arr[i]);
+  }
+  return dataString
+}
+```
+
 
 
 ## mpvue相关
