@@ -21,3 +21,24 @@ tags:
  -  crtl + r 变量名替换
 
 
+## 补充
+
+### 格式化时无法满足eslint规范
+
+要在format -> ECMAScript,JavaScript这些里面 -> 选择use custom formatting options
+
+
+不要选择 use default settings 这个没办法去查找eslint的配置
+
+
+
+
+
+
+
+
+
+
+
+
+
