@@ -628,6 +628,25 @@ Hope this helps!
 
 
 
+### 解决unable to update local ref
+
+
+使用git pull拉取代码的时候，无法拉取最新代码，报"unable to update local ref"错误。
+
+
+
+解决办法：
+
+```
+git gc --prune=now
+git remote prune origin
+git pull
+```
+
+
+或者
+
+删除项目，重新git clone
 
 
 

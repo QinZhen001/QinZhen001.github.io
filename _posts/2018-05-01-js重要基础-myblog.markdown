@@ -263,6 +263,62 @@ rect.move(1, 1); // Outputs, 'Shape moved.'
 
 
 
+### Object.create(null)
+
+```javascript
+var o = Object.create(null,{
+    a:{
+           writable:true,
+        configurable:true,
+        value:'1'
+    }
+})
+console.log(o)  // {a: "1"}
+```
+
+**可以看到，新创建的对象除了自身属性a之外，原型链上没有任何属性，也就是没有继承Object的任何东西，此时如果我们调用o.toString()会报Uncaught TypeError的错误。**
+
+
+这个一定要注意
+
+
+这个和{}创建的对象不一样
+
+```javascript
+var o = {a：1};
+console.log(o)
+```
+
+
+这里的o对象继承了Object自身的方法，如hasOwnProperty、toString等
+
+
+-----
+
+
+### Object.create({})
+
+这样创建的对象和使用{}创建对象已经很相近了
+
+**但是还是有一点区别：多了一层proto嵌套。**
+
+
+
+### Object.create如何做到和{...}创建对象一样
+
+```javascript
+var o = Object.create(Object.prototype,{
+    a:{
+           writable:true,
+        configurable:true,
+        value:'1'
+    }
+})
+console.log(o)
+```
+
+
+这次就和使用{}创建的对象一模一样了
 
 ### padStart()，padEnd()
 ES6 引入了字符串补全长度的功能，如果某个字符串不够指定长度，会在头部活尾部补全。
@@ -1224,6 +1280,73 @@ var test = {
 
 
 **JSON.stringify()只能序列化对象的可枚举的自有属性，例如 如果obj中的对象是有构造函数生成的， 则使用JSON.parse(JSON.stringify(obj))深拷贝后，会丢弃对象的constructor；**
+
+
+
+
+
+
+
+
+
+
+### 在函数上添加函数属性
+
+我们在看axios的源码的时候，发现
+
+```javascript
+axios({
+  method: 'post',
+  url: '/user/12345',
+  data: {
+    firstName: 'Fred',
+    lastName: 'Flintstone'
+  }
+});
+```
+
+```javascript
+axios.create({
+  baseURL: 'https://some-domain.com/api/',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+```
+
+
+asxios本身是一个函数，在他上面又添加了函数属性
+
+
+
+相当于
+
+```javascript
+  let aaa = function () {
+    console.log("aaa")
+  }
+
+  aaa.bbb = function () {
+    console.log("bbb")
+  }
+
+  aaa.ccc = function () {
+    console.log("ccc")
+  }
+```
+
+
+那如果我们要沿着原型链查找，怎么样才能找到bbb
+
+答案是
+
+```javascript
+aaa.prototype.constructor.bbb
+```
+
+```javascript
+ console.log(aaa.prototype.constructor.bbb === aaa.bbb)   // true
+```
+
 
 
 

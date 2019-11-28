@@ -328,3 +328,68 @@ axios默认在Request Config里已经设置了
 
 
 
+
+## 补充
+
+
+
+
+### 手写一个axios
+
+
+我们知道手写的一个axios，一个比较难的点就是
+
+axios()
+
+axios.get()
+
+
+
+axios同时支持这两种模式，**也就是说axios本身是一个函数**
+
+
+
+实现：
+
+
+```javascript
+  class Axios {
+    constructor() {
+      // 这里是因为类方法不可以枚举 extend中的for...in查找不到
+      // 这一点与 ES5 的行为不一致
+      this.request = this.request.bind(this)
+      this.get = this.get.bind(this)
+    }
+
+    get(aaa) {
+      console.log(aaa)
+    }
+
+    request() {
+      console.log("axios request")
+    }
+  }
+
+
+  function extend(to, form) {
+    for (let key in form) {
+      to[key] = form[key]
+    }
+  }
+
+  function createInstance() {
+    const context = new Axios()
+    const instance = Axios.prototype.request.bind(context)
+    extend(instance, context)
+    return instance
+  }
+
+  // 最终的axios
+  let axios = createInstance()
+```
+
+
+
+
+
+
