@@ -1351,6 +1351,79 @@ aaa.prototype.constructor.bbb
 
 
 
+### 分号的重要性
+
+
+```javascript
+  let a = 1 + 2
+    [1, 2].forEach(item => {
+    console.log("item", item)
+  })
+```
+
+上面的代码会报错
+
+```
+Uncaught TypeError: Cannot read property 'forEach' of undefined
+```
+
+在 js 的语法中，如果语句独占一行，通常可以省略句末的分号
+
+
+**但实际上 js 解析代码的时候，只有在句末缺少分号就无法正常运行的时候，才会自动填补分号**
+
+
+如果前后的语句能够组成一个语法正确的语句，则不会自动填补分号
+
+
+上面的函数中，js 实际处理的代码为：
+
+
+```javascript
+let a = 1 + 2[1, 2].forEach(item => {
+    console.log("item", item)
+  })
+```
+
+
+
+解决方案：
+
+```javascript
+let a = 1 + 2
+;[1, 2].forEach(item => {
+    console.log("item", item)
+  })
+```
+
+
+
+
+### ++或--优先作为前缀操作
+
+
+
+但如果语句以 "++" 或者 "--" 开始的时候，会优先作为前缀操作符进行解析
+
+
+```javascript
+ function test(x, y) {
+    x
+    ++
+      y
+  }
+```
+
+
+如图的语句会被解析为 x; ++y 而不是 x++; y
+
+
+
+
+
+
+
+
 
 
 

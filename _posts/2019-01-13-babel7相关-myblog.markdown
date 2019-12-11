@@ -151,9 +151,9 @@ babel 编译过程处理第一种情况 - 统一语法的形态，通常是高�
 >我对polyfill的理解：polyfill我们又称垫片，见名知意，所谓垫片也就是垫平不同浏览器或者不同环境下的差异，因为有的环境支持这个函数，有的环境不支持这种函数，解决的是有与没有的问题，这个是靠单纯的@babel/preset-env不能解决的，因为@babel/preset-env解决的是将高版本写法转化成低版本写法的问题，因为不同环境下低版本的写法有可能不同而已。
 
 
-### @babel/runtime
+### @babel/plugin-transform-runtime
 
-@babel/runtime的作用是提供统一的模块化的helper，那什么是helper，我们举个例子：
+@babel/plugin-transform-runtime的作用是提供统一的模块化的helper，那什么是helper，我们举个例子：
 
 
 我们编译之后的index.js代码里面有不少新增加的函数，如_classCallCheck，_defineProperties，_createClass，这种函数就是helper。
@@ -185,6 +185,8 @@ npm install --save @babel/runtime @babel/plugin-transform-runtime
 ```
 
 
+
+
 这样就会自动地添加 
 
 ```javascript
@@ -197,6 +199,82 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 
 这一类helper已经是被从@babel/runtime包require进来了，这都是@babel/runtime的功劳，但是事情还没完，我们还有个包@babel/plugin-transform-runtime没提到就用了，这个包的作用其实就是辅助@babel/runtime的，因为有了@babel/plugin-transform-runtime它会帮我自动动态require  @babel/runtime中的内容，如果没有这个@babel/plugin-transform-runtime，那么我们要使用@babel/runtime中的内容，就只有像require('@babel/polyfill')那样人工去手动添加了，所以@babel/plugin-transform-runtime非常方便，由于@babel/plugin-transform-runtime是一个插件，所以它是需要配置到.babelrc中的，这一点要记住。
+
+
+-----
+
+```javascript
+let isHas = [1,2,3].includes(2);
+
+new Promise((resolve, reject) => {
+    resolve(100);
+});
+```
+
+编译出来的代码如下
+
+
+```javascript
+"use strict";
+require("core-js/modules/es.array.includes");
+require("core-js/modules/es.object.to-string");
+require("core-js/modules/es.promise");
+
+var isHas = [1, 2, 3].includes(2);
+new Promise(function (resolve, reject) {  
+    resolve(100);
+});
+```
+
+
+Array.prototype 上新增了 includes 方法，并且新增了全局的 Promise 方法，污染了全局环境，这跟不使用 @babel/plugin-transform-runtime 没有区别嘛。
+
+
+
+
+如果我们希望 @babel/plugin-transform-runtime 不仅仅处理帮助函数，同时也能加载 polyfill 的话，我们需要给 @babel/plugin-transform-runtime 增加配置信息。
+
+
+
+首先新增依赖 @babel/runtime-corejs3:
+
+
+修改配置文件如下(移除了 @babel/preset-env 的 useBuiltIns 的配置，不然不就重复了
+
+
+
+```javascript
+{    
+"presets": [
+[
+    "@babel/preset-env"     
+]   ],    
+"plugins": [   
+[        
+    "@babel/plugin-transform-runtime",{     
+    "corejs": 3       
+        }     
+    ]   
+]}
+```
+
+然后重新编译，看一下，编译出来的结果
+
+
+```javascript
+"use strict";
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
+var _includes = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/includes"));
+
+
+var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).call(_context, 2);new _promise.default(function (resolve, reject) {  resolve(100);});
+```
+
+
+可以看出，没有直接去修改 Array.prototype，或者是新增 Promise 方法，避免了全局污染。如果上面 @babel/plugin-transform-runtime 配置的 core-js 是 "2"，其中不包含实例的 polyfill 需要单独引入。
+
+**如果我们配置的 corejs 是 3 版本，那么不管是实例方法还是全局方法，都不会再污染全局环境。**
 
 
 ### use strict
@@ -287,6 +365,13 @@ This option enables a new plugin that replaces the statement import "@babel/poly
 **useBuiltIns: 'usage' (experimental)**
 
 Adds specific imports for polyfills when they are used in each file. We take advantage of the fact that a bundler will load the same polyfill only once.
+
+
+**@babel/preset-env 提供了一个 useBuiltIns 参数，设置值为 usage 时，就只会包含代码需要的 polyfill 。有一点需要注意：配置此参数的值为 usage ，必须要同时设置 corejs**
+
+
+Babel 会检查所有代码，以便查找在目标环境中缺失的功能，然后仅仅把需要的 polyfill 包含进来。
+
 
 
 ------------

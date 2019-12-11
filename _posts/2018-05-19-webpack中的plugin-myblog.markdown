@@ -12,7 +12,7 @@ tags:
 > “Yeah It's on. ”
 
 
-## 前文
+# 前文
 
 [https://www.webpackjs.com/concepts/plugins/#%E5%89%96%E6%9E%90](https://www.webpackjs.com/concepts/plugins/#%E5%89%96%E6%9E%90)
 
@@ -48,10 +48,11 @@ class ConsoleLogOnBuildWebpackPlugin {
 
 
 
-下面提一下，一些用过的比较重要的插件
 
 
-## 正文
+# 正文
+
+## 常用的plugin
 
 ### CommonsChunkPlugin
 [https://zhuanlan.zhihu.com/p/26710831?refer=ElemeFE](https://zhuanlan.zhihu.com/p/26710831?refer=ElemeFE)
@@ -914,6 +915,12 @@ module.exports = EndWebpackPlugin;
 
 
 虽然可以通过 console.log 的方式完成调试，但这种方法非常不方便也不优雅，本节将教你如何断点调试 工作原理概括 中的插件代码。 由于 Webpack 运行在 Node.js 之上，调试 Webpack 就相对于调试 Node.js 程序。
+
+
+## 关于Tapable
+
+
+
 
 
 

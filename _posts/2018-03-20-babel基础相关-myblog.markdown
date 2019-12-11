@@ -15,7 +15,7 @@ tags:
 [写一个babel插件](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md#toc-plugin-options)
 
 
-## 正文
+# 正文
 
 
 [网页链接](https://segmentfault.com/p/1210000008466178)
@@ -31,10 +31,103 @@ babel可以将当前运行平台(浏览器、node服务器)尚不支持的下一
 
 
 
-```json
+
+
+
+
+## 插件
+
+Babel 构建在插件之上，使用现有的或者自己编写的插件可以组成一个转换通道，Babel 的插件分为两种: 语法插件和转换插件。
+
+
+
+### 语法插件
+
+
+这些插件只允许 Babel 解析（parse） 特定类型的语法（不是转换），可以在 AST 转换时使用，以支持解析新语法，例如：
+
+```javascript
+import * as babel from "@babel/core";const code = babel.transformFromAstSync(ast, {   
+//支持可选链 
+plugins: ["@babel/plugin-proposal-optional-chaining"],  
+babelrc: false}).code;
+```
+
+
+### 转换插件
+
+转换插件会启用相应的语法插件(因此不需要同时指定这两种插件)，这点很容易理解，如果不启用相应的语法插件，意味着无法解析，连解析都不能解析，又何谈转换呢？
+
+
+
+
+
+### 插件顺序
+
+
+[https://www.babeljs.cn/docs/plugins#%E6%8F%92%E4%BB%B6%E9%A1%BA%E5%BA%8F](https://www.babeljs.cn/docs/plugins#%E6%8F%92%E4%BB%B6%E9%A1%BA%E5%BA%8F)
+
+
+这意味着如果两个转换插件都将处理“程序（Program）”的某个代码片段，则将根据转换插件或 preset 的排列顺序依次执行。
+
+
+* **插件在 Presets 前运行。**
+* **插件顺序从前往后排列。**
+* **Preset 顺序是颠倒的（从后往前）。**
+
+
+例如：
+
+```
 {
-  "plugins": ["transform-es2015-arrow-functions"]，
-  "presets": ["es2015"]
+  "plugins": ["transform-decorators-legacy", "transform-class-properties"]
+}
+```
+
+
+先执行 transform-decorators-legacy ，在执行 transform-class-properties。
+
+
+**重要的时，preset 的顺序是 颠倒的。如下设置：**
+
+
+
+```
+{
+  "presets": ["es2015", "react", "stage-2"]
+}
+```
+
+
+将按如下顺序执行：stage-2、react 然后是 es2015。
+
+
+
+>这主要的是为了确保向后兼容，因为大多数用户将 "es2015" 排在 "stage-0" 之前。
+
+
+
+### 插件的使用
+
+
+如果插件发布在 npm 上，可以直接填写插件的名称， Babel 会自动检查它是否已经被安装在 node_modules 目录下，在项目目录下新建 .babelrc 文件
+
+
+```javascript
+//.babelrc
+{
+    "plugins": ["@babel/plugin-transform-arrow-functions"]
+}
+```
+
+
+也可以指定插件的相对/绝对路径
+
+
+
+```javascript
+{
+    "plugins": ["./node_modules/@babel/plugin-transform-arrow-functions"]
 }
 ```
 
@@ -43,6 +136,9 @@ babel可以将当前运行平台(浏览器、node服务器)尚不支持的下一
 
 
 
+## preset
+
+通过使用或创建一个 preset 即可轻松使用一组插件。
 
 
 
@@ -79,6 +175,12 @@ babel-preset-env 的工作方式类似 babel-preset-latest，唯一不同的就�
 },
 ```
 
+
+
+## polyfill
+
+
+语法转换只是将高版本的语法转换成低版本的，**但是新的内置函数、实例方法无法转换**。这时，就需要使用 polyfill，顾名思义，polyfill的中文意思是垫片，所谓垫片就是垫平不同浏览器或者不同环境下的差异，让新的内置函数、实例方法等在低版本浏览器中也可以使用。
 
 
 
@@ -140,7 +242,7 @@ var obj = (0, _defineProperty3.default)({}, 'name', 'JavaScript');
 
 
 
-### stage
+## stage
 
 #### stage-0
 
@@ -178,52 +280,6 @@ stage-2它除了覆盖stage-3的所有功能，还支持如下两个插件：
 
 * transform-async-to-generator
 * transform-exponentiation-operator
-
-
-
-### 插件顺序
-
-
-[https://www.babeljs.cn/docs/plugins#%E6%8F%92%E4%BB%B6%E9%A1%BA%E5%BA%8F](https://www.babeljs.cn/docs/plugins#%E6%8F%92%E4%BB%B6%E9%A1%BA%E5%BA%8F)
-
-
-这意味着如果两个转换插件都将处理“程序（Program）”的某个代码片段，则将根据转换插件或 preset 的排列顺序依次执行。
-
-
-* **插件在 Presets 前运行。**
-* **插件顺序从前往后排列。**
-* **Preset 顺序是颠倒的（从后往前）。**
-
-
-例如：
-
-```
-{
-  "plugins": ["transform-decorators-legacy", "transform-class-properties"]
-}
-```
-
-
-先执行 transform-decorators-legacy ，在执行 transform-class-properties。
-
-
-**重要的时，preset 的顺序是 颠倒的。如下设置：**
-
-
-
-```
-{
-  "presets": ["es2015", "react", "stage-2"]
-}
-```
-
-
-将按如下顺序执行：stage-2、react 然后是 es2015。
-
-
-
->这主要的是为了确保向后兼容，因为大多数用户将 "es2015" 排在 "stage-0" 之前。
-
 
 
 

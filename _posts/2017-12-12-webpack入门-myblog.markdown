@@ -890,4 +890,118 @@ bundle.js 内容如下：
 
 
 
+### webpack-dev-middleware和webpack-dev-server的区别
+
+
+其实就是因为webpack-dev-server只负责启动服务和前置准备工作，所有文件相关的操作都抽离到webpack-dev-middleware库了，**主要是本地文件的编译和输出以及监听**，无非就是职责的划分更清晰了。
+
+
+我们来看下webpack-dev-middleware源码里做了什么事
+
+```javascript
+// node_modules/webpack-dev-middleware/index.js
+compiler.watch(options.watchOptions, (err) => {
+    if (err) { /*错误处理*/ }
+});
+
+// 通过“memory-fs”库将打包后的文件写入内存
+setFs(context, compiler); 
+```
+
+
+
+
+
+为什么代码的改动保存会自动编译，重新打包？这一系列的重新检测编译就归功于compiler.watch这个方法了。**监听本地文件的变化主要是通过文件的生成时间是否有变化**，这里就不细讲了。
+
+
+
+执行setFs方法，这个方法主要目的就是将编译后的文件打包到内存。这就是为什么在开发的过程中，你会发现dist目录没有打包后的代码，因为都在内存中。原因就在于访问内存中的代码比访问文件系统中的文件更快，而且也减少了代码写入文件的开销，这一切都归功于memory-fs。
+
+
+
+
+
+### loader-utils
+
+[https://www.npmjs.com/package/loader-utils](https://www.npmjs.com/package/loader-utils)
+
+Utils for webpack loaders
+
+
+当我们在写自己的webpack-loader时经常会用到这个库
+
+
+例如：
+
+```javascript
+import loaderUtils from 'loader-utils';
+
+
+module.exports = function(source){
+    // 获取传入进来的options
+  const options = loaderUtils.getOptions(this) || {};
+}
+
+```
+
+
+
+### schema-utils
+
+
+[https://www.npmjs.com/package/schema-utils](https://www.npmjs.com/package/schema-utils)
+
+
+Package for validate options in loaders and plugins.
+
+用于验证options
+
+
+// options.json
+```json
+{
+  "type": "object",
+  "properties": {
+    "option": {
+      "type": ["boolean"]
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+
+
+
+```javascript
+import validateOptions from 'schema-utils';
+import schema from './options.json';
+
+module.exports = function(source){
+  const options = loaderUtils.getOptions(this) || {};
+
+  validateOptions(schema, options, {
+    name: 'Style Loader',
+    baseDataPath: 'options',
+  });
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

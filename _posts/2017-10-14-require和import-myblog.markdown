@@ -176,6 +176,63 @@ export all;
 *符号尽可能少用，它实际上是使用所有export的接口，但是很有可能你的当前模块并不会用到所有接口，可能仅仅是一个，所以最好的建议是使用花括号，用一个加一个。
 
 
+#### 提升效果
+
+import命令具有提升效果，会提升到整个模块的头部，首先执行。
+
+
+```javascript
+foo();
+
+import { foo } from 'my_module';
+```
+
+
+上面的代码不会报错，因为import的执行早于foo的调用。这种行为的本质是，import命令是编译阶段执行的，在代码运行之前。
+
+
+#### 不能使用表达式和变量
+
+**由于import是静态执行**，所以不能使用表达式和变量，这些只有在运行时才能得到结果的语法结构。
+
+
+```javascript
+// 报错
+import { 'f' + 'oo' } from 'my_module';
+
+// 报错
+let module = 'my_module';
+import { foo } from module;
+
+// 报错
+if (x === 1) {
+  import { foo } from 'module1';
+} else {
+  import { foo } from 'module2';
+}
+```
+
+
+#### 不允许运行时改变
+
+注意，模块整体加载所在的那个对象，应该是可以静态分析的，所以不允许运行时改变。
+
+
+下面的写法都是不允许的。
+
+```javascript
+import * as circle from './circle';
+
+// 下面两行都是不允许的
+circle.foo = 'hello';
+circle.area = function () {};
+```
+
+
+
+
+
+
 ### 该用require还是import？
 require的使用非常简单，它相当于module.exports的传送门，module.exports后面的内容是什么，require的结果就是什么，对象、数字、字符串、函数……再把require的结果赋值给某个变量，相当于把require和module.exports进行平行空间的位置重叠。
 
