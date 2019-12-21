@@ -277,6 +277,24 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 **如果我们配置的 corejs 是 3 版本，那么不管是实例方法还是全局方法，都不会再污染全局环境。**
 
 
+
+
+### @babel/plugin-proposal-decorators
+
+
+
+[https://babeljs.io/docs/en/babel-plugin-proposal-decorators](https://babeljs.io/docs/en/babel-plugin-proposal-decorators)
+
+
+
+
+
+
+
+
+
+
+
 ### use strict
 [https://blog.csdn.net/qq_40259641/article/details/84106252](https://blog.csdn.net/qq_40259641/article/details/84106252)
 

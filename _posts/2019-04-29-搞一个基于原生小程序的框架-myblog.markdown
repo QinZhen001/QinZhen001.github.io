@@ -176,36 +176,120 @@ exports.getVersion = getVersion
 ```
 
 
-### sdk的打包的坑
+### 框架的打包的坑
 
-sdk使用webpack打包，采用umd规范。
-```javascript
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['b'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like environments that support module.exports,
-        // like Node.
-        module.exports = factory(require('b'));
-    } else {
-        // Browser globals (root is window)
-        root.returnExports = factory(root.b);
-    }
-}(this, function (b) {
-    //use b in some fashion.
+由于我们使用es6转es5和增强编译，所以要把框架的npm包打成es5的形式
 
-    // Just return a value to define the module export.
-    // This example returns an object, but the module
-    // can return a function as the exported value.
-    return {};
-}));
+
+```
+{
+  "presets": [
+    [
+      "es2015",
+      {
+        "loose": true
+      }
+    ],
+    "stage-1"
+  ],
+  "plugins": [
+    [
+      "transform-runtime",
+      {
+        "helpers": false,
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
+  ]
+}
 ```
 
-这样this指向变成了传入的window，所以global指向也是window。
 
-**所以挂载在global下的xhw对象变成了window下的xhw。**
+这样纸这个npm包会带上@babel/runtime的东西
+
+而小程序增强编译后自带@babel/runtime里面有helpers和generator.js
+
+由于小程序npm的特殊性，和小程序自带的处理，这样的做法其实并不好
+
+
+**更好的做法应该是将npm与工作流结合起来，更好的使用npm，更好的开发体验。**
+
+
+
+
+解决方法一：
+
+
+像beautywejs一样
+
+
+利用 webpack-stream 和 npm/index
+
+
+```javascript
+// 在src的npm/index.js中
+
+import storage from '@beautywe/plugin-storage';
+import event from '@beautywe/plugin-event';
+import listpage from '@beautywe/plugin-listpage';
+import logger from '@beautywe/plugin-logger';
+
+export const plugin = {
+    storage,
+    event,
+    listpage,
+    logger,
+};
+
+export { default as beautywe } from '@beautywe/core';
+```
+
+把这些东西通过gulp和webpack-stream，经过babel-loader处理，转移到dist下的npm
+
+这样就可以了
+
+必要的情况下可以通过一些ast手段，改变引入npm的路径。
+
+
+
+
+总结起来：
+
+**Npm直接在项目引入node_modules的内容，无需借助小程序的那套npm流程，无需手工复制依赖库。**
+
+
+--------
+
+
+
+
+解决方法二：
+
+
+
+重新设计一些module机制
+
+
+像wepy，我们去查看它的dist
+
+```javascript
+"use strict";
+
+var _regeneratorRuntime2 = _interopRequireDefault(require('./vendor.js')(2));
+
+var _core = _interopRequireDefault(require('./vendor.js')(0));
+
+var _eventHub = _interopRequireDefault(require('./common/eventHub.js'));
+
+var _x = _interopRequireDefault(require('./vendor.js')(4));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+```
+
+它将npm的包移动到了vendor中
+
+
 
 
 ### babel相关
@@ -836,6 +920,79 @@ function _afterGet({name, result}) {
 
 
 通过beforeGet和afterGet控制流程实现
+
+
+
+
+### 无法对Component实例封装
+
+先看一个例子
+
+
+```javascript
+class P {
+  constructor(options) {
+    for (let name in options) {
+      if (options.hasOwnProperty(name)) {
+        this[name] = options[name]
+      }
+    }
+  }
+}
+
+
+P.prototype.aaa = "aaa"
+P.prototype.ccc = "ccc"
+
+
+let p = new P({
+  methods: {
+    async onLoad(options) {
+      console.log("onLoad", options, this.aaa, this.ccc)
+    },
+  },
+})
+
+
+Page(p)
+```
+
+>p里面的内容会根据不同的构造函数更改
+
+当我们使用Page(p) 和 App(p) 时我们可以访问到 this.aaa 和 this.ccc
+
+
+**但是但我们使用Component(p)时  this.aaa 和 this.ccc 都是 undefined**
+
+
+
+这是一个非常严重的问题，意味着框架无法统一处理Component，Page和App
+
+
+**但是，框架封装Page和App进行扩展其实已经够用，我们可以不去封装Component**
+
+
+
+### gulp无法与cli脚手架结合起来
+
+```
+[14:07:29] Local gulp not found in /path/to/project
+[14:07:29] Try running: npm install gulp
+```
+
+gulpfile.js必须存在在项目的根目录，不能放到cli脚手架中，这就意味着build过程要放在小程序项目中无法抽取出来，若要抽取出来就不能使用gulp，只能二选一。
+
+
+
+从这个issue中可以看出
+
+
+[https://github.com/gulpjs/gulp/issues/2126](https://github.com/gulpjs/gulp/issues/2126)
+
+
+
+
+
 
 
 

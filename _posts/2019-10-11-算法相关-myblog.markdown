@@ -17,7 +17,7 @@ tags:
 ## 正文
 
 
-[我的leetcode](https://github.com/QinZhen001/leetcode)
+[我在leetcode的学习](https://github.com/QinZhen001/leetcode)
 
 
 

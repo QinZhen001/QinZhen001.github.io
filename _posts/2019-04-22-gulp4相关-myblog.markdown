@@ -189,6 +189,40 @@ gulp.task('watch', function() {
 });
 ```
 
+
+#### Options
+
+
+**cwd**	
+
+
+
+The directory that will be combined with any relative path to form an absolute path. Is ignored for absolute paths. Use to avoid combining globs with path.join().
+
+将与任何相对路径组合以形成绝对路径的目录。对于绝对路径忽略。用于避免将globs与path.join()相结合。
+
+
+也就是如果存在了cwd，我们就不使用glob语法，而是用绝对路径
+
+```javascript
+  jsFiles: [`${srcPath}/**/*.js`, `!${srcPath}/node_modules/**/*.js`],
+
+      gulp.watch(jsFiles, {cwd: srcPath}, gulp.series('js'))
+        .on('unlink', (curPath) => {
+          console.log("curPath", curPath)
+          let targetPath = path.resolve(distPath, curPath);
+          console.log("targetPath", targetPath)
+          _.delPath(targetPath);
+        });
+```
+
+-------
+
+
+
+
+
+
 ### gulp-sourcemaps
 ```javascript
 gulp.task('sourcemap',function() {

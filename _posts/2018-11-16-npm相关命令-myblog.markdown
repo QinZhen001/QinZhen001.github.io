@@ -42,6 +42,42 @@ npm config set init.author.email $email
 
 
 
+
+### npm-access
+
+
+[https://www.npmjs.cn/cli/access/](https://www.npmjs.cn/cli/access/s)
+
+Set access level on published packages
+
+设置已发布包的访问级别
+
+
+For all of the subcommands, npm access will perform actions on the packages in the current working directory if no package name is passed to the subcommand.
+
+
+对于所有子命令，如果没有将包名传递给子命令，npm访问将对当前工作目录中的包执行操作。
+
+
+
+public / restricted: Set a package to be either publicly accessible or restricted.
+
+
+默认为:restricted
+
+还可以在package.json里面配置
+
+
+```
+
+...
+"publishConfig": {
+		"access": "public"
+	}
+```
+
+
+
 ## 补充
 
 ### NPM发包文件
@@ -82,6 +118,21 @@ package-lock.json (use shrinkwrap instead)
 
 
 
+
+### npm发布以@开头包
+
+
+[https://www.npmjs.cn/misc/scope/](https://www.npmjs.cn/misc/scope/)
+
+
+
+Publishing public scoped packages to the primary npm registry
+
+
+To publish a public scoped package, you must specify --access public with the initial publication. This will publish the package and set access to public as if you had run npm access public after publishing.
+
+
+要发布公共作用域的包，必须指定——使用初始发布访问public。这将发布包并设置对public的访问，就像您在发布后运行npm访问public一样。
 
 
 

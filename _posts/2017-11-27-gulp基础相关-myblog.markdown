@@ -222,3 +222,31 @@ gulp.task("babel", function(){
 
 
 
+
+
+
+### webpack-stream
+
+[https://www.npmjs.com/package/webpack-stream](https://www.npmjs.com/package/webpack-stream)
+
+Run webpack as a stream to conveniently integrate with gulp.
+
+以流的形式运行webpack，方便地与gulp集成。
+
+
+```javascript
+const gulp = require('gulp');
+const webpack = require('webpack-stream');
+
+gulp.task('default', function() {
+  return gulp.src('src/entry.js')
+    .pipe(webpack())
+    .pipe(gulp.dest('dist/'));
+});
+```
+
+
+
+
+
+

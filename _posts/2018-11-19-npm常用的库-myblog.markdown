@@ -433,6 +433,45 @@ Run scripts that set and use environment variables across platforms
 >cross-env makes it so you can have a single command without worrying about setting or using the environment variable properly for the platform. Just set it like you would if it's running on a POSIX system, and cross-env will take care of setting it properly.
 
 
+在这里，我遇到了一个坑
+
+```json
+  "scripts": {
+    "build:dev": "cross-env NODE_ENV=devlopment && webapck",
+    "build:prod": "cross-env NODE_ENV=production && webpack"
+  },
+```
+
+上面的写法是错误的，正确的写法是：
+
+
+
+```json
+  "scripts": {
+    "build:dev": "cross-env NODE_ENV=devlopment webapck",
+    "build:prod": "cross-env NODE_ENV=production webpack"
+  },
+```
+
+**记得去掉&&**
+**记得去掉&&**
+**记得去掉&&**
+
+
+
+
+### commitizen
+
+[https://www.npmjs.com/package/commitizen](https://www.npmjs.com/package/commitizen)
+
+When you commit with Commitizen, you'll be prompted to fill out any required commit fields at commit time. No more waiting until later for a git commit hook to run and reject your commit (though that can still be helpful). No more digging through CONTRIBUTING.md to find what the preferred format is. Get instant feedback on your commit message formatting and be prompted for required fields.
+
+当您使用Commitizen提交时，系统将提示您在提交时填写任何必需的提交字段。不再等待git提交钩子运行并拒绝您的提交(尽管这仍然是有帮助的)。不再通过贡献来挖掘。找到md的首选格式是什么。获得关于提交消息格式的即时反馈，并提示输入所需字段。
+
+
+
+
+
 
 ### conventional-changelog-cli
 
@@ -450,11 +489,71 @@ Note You don't have to use the angular commit convention. For the best result of
 
 
 
+#### cz-conventional-changelog
+
+
+Part of the commitizen family. Prompts for conventional changelog standard.
+
+
+package.json
+
+
+Like commitizen, you specify the configuration of cz-conventional-changelog through the package.json's config.commitizen key.
+
+```
+{
+// ...  default values
+    "config": {
+        "commitizen": {      
+            "path": "./node_modules/cz-conventional-changelog",
+            "maxHeaderWidth": 100,
+            "maxLineWidth": 100,
+            "defaultType": "",
+            "defaultScope": "",        
+            "defaultSubject": "",
+            "defaultBody": "",
+            "defaultIssues": ""
+        }
+    }
+// ...    
+}
+```
 
 
 
 
+### lint-staged
 
+
+[https://www.npmjs.com/package/lint-staged](https://www.npmjs.com/package/lint-staged)
+
+
+Run linters against staged git files and don't let 💩 slip into your code base!
+
+对暂存的git文件运行，不要让它滑入您的代码库
+
+
+### husky
+
+
+Husky can prevent bad git commit, git push and more 🐶 woof!
+
+
+Husky可以防止糟糕的git提交，git推送和更多的woof
+
+
+```
+// package.json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test",
+      "...": "..."
+    }
+  }
+}
+```
 
 
 

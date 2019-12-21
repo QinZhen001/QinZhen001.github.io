@@ -444,3 +444,48 @@ The code above is ok. You can mix require and export. You can‘t mix import and
 
 也就是说，在webpack打包的时候，可以在js文件中混用require和export。**但是不能混用import 以及module.exports。**
 
+
+
+
+
+### sideEffects 
+
+[https://segmentfault.com/a/1190000015689240](https://segmentfault.com/a/1190000015689240)
+
+
+
+webpack v4 开始新增了一个 sideEffects 特性，通过给 package.json 加入 sideEffects: false 声明该包模块是否包含 sideEffects(副作用)，从而可以为 tree-shaking 提供更大的优化空间。
+
+
+什么是sideEffects？
+
+中心思想是：
+
+
+whenever a module reexports all exports (regardless if used or unused) need to be evaluated and executed in the case that one of those exports created a side-effect with another.
+每当一个模块重导出了所有导出(无论是否会被用) 需要被计算和执行时，其中一个导出就对其他的导出产生了副作用。
+
+
+
+#### sideEffects 的使用场景
+
+上面也说到，通常我们发布到 npm 上的包很难保证其是否包含副作用（可能是代码的锅可能是 transformer 的锅），但是我们基本能确保这个包是否会对包以外的对象产生影响，比如是否修改了 window 上的属性，是否复写了原生对象方法等。如果我们能保证这一点，其实我们就能知道整个包是否能设置 sideEffects: false了，至于是不是真的有副作用则并不重要，这对于 webpack 而言都是可以接受的。这也就能解释为什么能给 vue 这个本身充满副作用的包加上 sideEffects: false 了。
+
+
+
+所以其实 webpack 里的 sideEffects: false 的意思并不是我这个模块真的没有副作用，而只是为了在摇树时告诉 webpack：**我这个包在设计的时候就是期望没有副作用的，即使他打完包后是有副作用的，webpack 同学你摇树时放心的当成无副作用包摇就好啦！**
+
+
+
+
+
+也就是说，只要你的包不是用来做 polyfill 或 shim 之类的事情，就尽管放心的给他加上 sideEffects: false 吧！
+
+
+最后，翻译成大白话
+
+
+**webpack里面的sideEffects是指应不应该保留副作用代码， true就保留，false就不保留，只要没有被import 就干掉。**
+
+
+
