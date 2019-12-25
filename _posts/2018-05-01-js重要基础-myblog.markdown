@@ -1422,9 +1422,160 @@ let a = 1 + 2
 
 
 
+### Object.create(null)屏蔽__proto__
+
+当我们创建一个对象的时候，沿着原型链向上查找，总是会找到一个__proto__为Object
+
+那么要如何做才能屏蔽掉呢？
+
+我们使用Object.create(null)
 
 
 
+
+```javascript
+  let a = {};
+  let b = Object.create(null);
+  let c = Object();
+
+  a.xxx = 'xxx';
+  b.xxx = 'xxx';
+  c.xxx = 'xxx';
+
+  console.log(a);
+  console.log(b);
+  console.log(c);
+```
+
+```javascript
+{xxx: "xxx"} __proto__: Object
+{xxx: "xxx"}
+{xxx: "xxx"} __proto__: Object
+```
+
+
+
+使用Object.create(null)创建对象，屏蔽__proto__，可以节省一些性能
+
+
+
+
+
+### 类方法不可枚举
+
+[http://es6.ruanyifeng.com/#docs/class](http://es6.ruanyifeng.com/#docs/class)
+
+类的内部所有定义的方法，都是不可枚举的（non-enumerable）
+
+
+
+
+
+```javascript
+  class T {
+    constructor(config) {
+      this.config = config;
+    }
+
+    aaa() {
+      console.log('aaa');
+    }
+
+    bbb() {
+      console.log('bbb');
+    }
+  }
+
+  let t = new T();
+  for (let key in t) {
+    console.log(key);
+  }
+  
+  // 打印输出 config
+```
+
+
+
+
+
+------------
+
+```javascript
+class Point {
+  constructor(x, y) {
+    // ...
+  }
+
+  toString() {
+    // ...
+  }
+}
+
+Object.keys(Point.prototype)
+// []
+Object.getOwnPropertyNames(Point.prototype)
+// ["constructor","toString"]
+```
+
+
+**上面代码中，toString方法是Point类内部定义的方法，它是不可枚举的。这一点与 ES5 的行为不一致。**
+
+
+
+
+**也就是说for-in循环无法遍历类方法**
+
+```javascript
+var Point = function (x, y) {
+  // ...
+};
+
+Point.prototype.toString = function() {
+  // ...
+};
+
+Object.keys(Point.prototype)
+// ["toString"]
+Object.getOwnPropertyNames(Point.prototype)
+// ["constructor","toString"]
+上面代码采用 ES5 的写法，toString方法就是可枚举的。
+```
+
+
+----
+
+
+那如果我们真的想要遍历类方法，该怎么办呢
+
+
+```javascript
+  class T {
+    constructor(config) {
+      this.config = config;
+      this.aaa = this.aaa.bind(this);
+      this.bbb = this.bbb.bind(this);
+    }
+
+    aaa() {
+      console.log('aaa');
+    }
+
+    bbb() {
+      console.log('bbb');
+    }
+  }
+
+  let t = new T();
+  for (let key in t) {
+    console.log(key);
+  }
+  
+ 
+ // 输出 
+ // config
+ // aaa
+ // bbb
+```
 
 
 

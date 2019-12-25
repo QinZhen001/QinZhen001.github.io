@@ -142,15 +142,67 @@ ttps://www.npmjs.com/package/gulp-cache)
 
 
 
+### Vinyl
 
-### webpack-stream
+[https://github.com/gulpjs/vinyl-fs](https://github.com/gulpjs/vinyl-fs)
 
-[https://www.npmjs.com/package/webpack-stream](https://www.npmjs.com/package/webpack-stream)
-
-Run webpack as a stream to conveniently integrate with gulp.
+Vinyl is a very simple metadata object that describes a file. When you think of a file, two attributes come to mind: path and contents. These are the main attributes on a Vinyl object. A file does not necessarily represent something on your computer’s file system. You have files on S3, FTP, Dropbox, Box, CloudThingly.io and other services. Vinyl can be used to describe files from all of these sources.
 
 
-运行webpack作为一个流，方便地与gulp集成。
+乙烯基是一个描述文件的非常简单的元数据对象。当您想到一个文件时，会想到两个属性:path和contents。这些是乙烯基物体的主要属性。文件不一定表示计算机文件系统中的内容。你在S3, FTP, Dropbox, Box上都有文件。io和其他服务。乙烯基可以用来描述所有这些来源的文件。
+
+
+### vinyl-paths
+
+[https://www.npmjs.com/package/vinyl-paths](https://www.npmjs.com/package/vinyl-paths)
+
+
+
+Get the file paths in a vinyl stream
+
+
+
+
+Useful when you need to use the file paths from a Gulp pipeline in an async Node.js package.
+
+
+当您需要在async Node.js包中使用来自Gulp管道的文件路径时，它非常有用。
+
+
+
+Simply pass an async function such as del and this package will provide each path in the stream as the first argument.
+
+
+
+
+简单地传递一个异步函数，如del，这个包将提供流中的每个路径作为第一个参数。
+
+
+```javascript
+// gulpfile.js
+const gulp = require('gulp');
+const stripDebug = require('gulp-strip-debug');
+const del = require('del');
+const vinylPaths = require('vinyl-paths');
+ 
+// Log file paths in the stream
+gulp.task('log', =>
+    gulp.src('app/*')
+        .pipe(stripDebug())
+        .pipe(vinylPaths(async paths => {
+            console.log('Paths:', paths);
+        })
+);
+ 
+// Delete files in the stream
+gulp.task('delete', =>
+    gulp.src('app/*')
+        .pipe(stripDebug())
+        .pipe(vinylPaths(del))
+);
+``` 
+ 
+
 
 
 ## 补充

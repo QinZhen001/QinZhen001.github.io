@@ -261,6 +261,59 @@ hello.world();
 ```
 
 
+
+
+#### **模块的缓存**
+
+**这是一个非常重要的知识点**
+
+* 第一次加载某个缓存时，Node会缓存该模块，以后再加载该模块，就直接从缓存取出该模块的module.exports属性(不会再执行该模块)
+* 如果需要多次执行模块中的代码，一般可以让模块暴露行为(函数)
+* 模块的缓存可以通过require.cache拿到，同样也可以删除
+
+什么时候需要清除缓存？
+
+由于可以加载json数据，所以每次数据更新时，需要同步更新json数据，此时就需要清除缓存，一般都是对数据做清除缓存操作
+
+ 如果不需要缓存，可以将暴漏的属性改为暴露方法(行为)，因为暴露的方法在每一次加载的时候都会执行，从而不会进行缓存。
+
+```javascript
+function requireNoCache(filePath) {
+  try {
+    const content = require(filePath);
+    delete require.cache[require.resolve(filePath)];
+    return content;
+  } catch (e) {
+    return null;
+  }
+}
+```
+
+>require.resolve 相当于把相对路径转化成绝对路径，避免了自己手写的绝对路径跟cache里的key不一致的问题
+
+
+[为什么我反对清除node.js中require的cache？
+](http://www.yuezhihan.com/post/e10a1b34.html)
+
+#### require.resolve
+
+
+在Node.js中，可以使用require.resolve函数来查询某个模块文件的带有完整绝对路径的文件名
+
+```javascript
+require.resolve('./testModule.js');
+```
+
+在这行代码中，我们使用require.resolve函数来查询当前目录下testModule.js模块文件的带有完整绝对路径的模块文件名。
+
+
+**注意：使用require.resolve函数查询模块文件名时并不会加载该模块。**
+
+
+
+
+
+
 #### 服务端的模块
 也许你已经注意到，我们已经在代码中使用了模块了
 ```
@@ -292,6 +345,8 @@ http://localhost:8888/start?foo=bar&hello=world
                                             |
                          querystring.parse(queryString)["hello"]
 ```
+
+
 
 
 

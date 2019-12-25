@@ -410,8 +410,24 @@ bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过 
 
 
 
+### webpack-dev-server
+
+[https://www.npmjs.com/package/webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server)
+
+Webpack dev server 是一个轻量的node.js express服务器，实现了 webpack 编译代码实时输出更新。在前后端分离的前端项目开发中经常用到
 
 
+Use webpack with a development server that provides live reloading. This should be used for development only.
+
+将webpack与提供实时重新加载的开发服务器一起使用。这应该只用于开发。
+
+
+
+
+It uses webpack-dev-middleware under the hood, which provides fast in-memory access to the webpack assets.
+
+
+它使用底层的webpack-dev-middleware，它提供对webpack资产的快速内存访问。
 
 
 
@@ -421,6 +437,19 @@ bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过 
 
 webpack-dev-middleware 是一个封装器(wrapper)，它可以把 webpack 处理过的文件发送到一个 server。 webpack-dev-server 在内部使用了它，然而它也可以作为一个单独的 package 来使用，以便根据需求进行更多自定义设置。下面是一个 webpack-dev-middleware 配合 express server 的示例。
 
+
+特性：
+
+* 不会在硬盘中写入文件，完全基于内存实现。
+* 如果使用 watch 模式监听代码修改，Webpack 会自动编译，如果在 Webpack 编译过程中请求文件，Webpack dev middleware 会延迟请求，直到编译完成之后再开始发送编译完成的文件。
+
+
+### webpack-hot-middleware
+
+[https://www.npmjs.com/package/webpack-hot-middleware](https://www.npmjs.com/package/webpack-hot-middleware)
+
+
+Webpack hot reloading using only webpack-dev-middleware. This allows you to add hot reloading into an existing server without webpack-dev-server.
 
 
 

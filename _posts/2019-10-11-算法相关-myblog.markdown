@@ -89,6 +89,169 @@ int FibonacciTailRecursive(int n,int ret1,int ret2)
 
 
 
+### 二叉搜索树
+
+
+
+
+
+二叉查找树（英语：Binary Search Tree），也称为二叉搜索树、有序二叉树（Ordered Binary Tree）或排序二叉树（Sorted Binary Tree），是指一棵空树或者具有下列性质的二叉树：
+
+
+
+* 若任意节点的左子树不为空，则左子树上所有节点的值均小于它的根节点的值
+* 若任意节点的右子树不为空，则右子树上所有节点的值均大于它的根节点的值
+* 任意节点的左、右子树也分别为二叉查找树
+* 没有键值相等的节点
+
+
+
+
+
+### 红黑树
+
+[https://juejin.im/post/5dff59cb6fb9a0163c53ce1d](https://juejin.im/post/5dff59cb6fb9a0163c53ce1d)
+
+
+
+二叉查找树并非平衡树，它只限制了左右子树与根点之间的大小关系，只有在平衡二叉查找树时，其时间复杂度才能达到O(logn) ，并且在极端情况下它甚至会退化成链表；
+
+
+
+**AVL 树是严格的平衡二叉树，必须满足所有节点的左右子树高度差不超过 1；而红黑树是相对黑色节点平衡的二叉树，**
+
+
+
+#### 红黑树的性质
+
+
+* 每个节点或者是黑色或者是红色
+* 根节点是黑色
+* 每个叶子节点（null）是黑色
+* 如果一个节点是红色，则它的子节点必须是黑色，即两个红色节点不能直接相连
+* 从一个节点到该节点的子孙节点的所有路径上包含相同数目的黑色节点
+
+
+
+
+红黑树的五个性质避免了二叉查找树退化成单链表的情况，并且性质 4 和性质 5 确保了任意节点到其每个叶子节点路径中最长路径不会超过最短路径的 2 倍，即一颗树是黑红节点相间的树，另一颗全是黑节点的树；也就是红黑树是相对黑色节点的平衡二叉树；
+
+
+
+#### 红黑树自平衡的实现
+
+
+红黑树节点的插入和删除可能会破坏上述红黑树的性质并打破它的平衡，因此需要进行调整从而让红黑树重新恢复平衡；调整分两种方式：旋转以及变色。
+
+
+
+-------
+
+左旋:以 P 为旋转支点，旋转支点 P 的右子节点 R 变为父节点，其右子节点 R 的左子节点 RL 变为旋转支点 P 的右子节点；左旋之后左子树的节点相对旋转之前要多出一个节点，也就是左子树从右子树借用一个节点；
+
+
+
+
+```javascript
+/**
+ * 左旋示例代码：
+ *       P                   R
+ *      / \                 / \
+ *     L   R     ====>     P  RR
+ *        / \             / \
+ *       RL RR           L  RL
+ * @param node 旋转支点
+ */
+ rotateLeft(node) {
+  // R
+  const rchild = node.right;
+  // P.right = RL
+  node.right = rchild.left;
+  // RL.parent = P;
+  if (rchild.left) {
+    rchild.left.parent = node;
+  }
+  // R.parent = P.paretn
+  rchild.parent = node.parent;
+  // 根节点情况，
+  if (!node.parent) {
+    this.root = rchild;
+  } else {
+    if (node === node.parent.right) {
+      // node 是父节点的右节点，
+      node.parent.right = rchild;
+    } else {
+      // node 是父节点的左节点，
+      node.parent.left = rchild;
+    }
+  }
+  // R.left = P
+  rchild.left = node;
+  // P.parent = R;
+  node.parent = rchild;
+}
+```
+
+
+
+-----
+
+
+
+右旋：如下图所示以 R 为旋转支点，旋转支点 R 的左子节点 P 变为父节点，而左子节点 P 的右子节点 RL 变为旋转支点 R 的左子节点；右旋之后右子树的节点相对旋转之前要多出一个节点，也就是右子树从左子树借用一个节点；
+
+
+
+
+```javascript
+/**
+ * 右旋示例代码：
+ *       R                 P
+ *      / \               / \
+ *     P  RR   ====>     L   R
+ *   /  \                   / \
+ *  L   RL                 RL RR
+ * @param node 旋转支点
+ */
+ rotateRight(node) {
+  // P
+  const lchild = node.left;
+  // R.left = RL ;
+  node.left = lchild.right;
+  // RL.parent = R
+  if (lchild.right) {
+    lchild.right.parent = node;
+  }
+  // P.parent = R.parent;
+  lchild.parent = node.parent;
+  // 根节点情况，
+  if (!lchild.parent) {
+    this.root = lchild;
+  } else {
+    if (node === node.parent.right) {
+      // node 是父节点的右节点，
+      node.parent.right = lchild;
+    } else if (node === node.parent.left) {
+      // node 是父节点的左节点，
+      node.parent.left = lchild;
+    }
+  }
+  // P.right = R;
+  lchild.right = node;
+  // R.parent = P;
+  node.parent = lchild;
+}
+
+```
+
+
+
+----
+
+
+
+变色就是由黑色节点变成红色节点或者红色节点变成黑色节点；
+
 
 
 

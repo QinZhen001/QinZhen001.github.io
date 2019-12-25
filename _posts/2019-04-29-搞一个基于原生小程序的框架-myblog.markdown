@@ -289,7 +289,106 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 它将npm的包移动到了vendor中
 
+---------
 
+
+**最好的解决办法**
+
+其实，我们完全可以直接使用小程序的npm流程
+
+**我之所以不使用是因为我遇到一个坑，这个坑拖累了我一个星期。**
+
+
+**真的真的非常的坑**
+
+
+下面来详细说一说
+
+
+首先，我们使用webpack打包框架，不指定filename，默认会是main.js
+
+
+接着，我们吧打包好的文件上传npm
+
+接入小程序的npm使用流程
+
+
+我们发现
+
+无法引入我们已经上传好了的npm包，很奇怪
+```javascript
+const xhw = require("@xhw/core")
+```
+但是之前sdk是可以的，经过长时间的对比和探究，发现：
+
+
+![enter description here][2]
+
+
+![enter description here][3]
+
+
+
+这里居然是main.js....
+
+
+
+难怪require不进来，使用require("@xhw/core/main.js")应该就行了
+
+
+-------
+
+
+更好的办法
+
+之后，使用webpack打包框架，指定filename为index.js
+
+![enter description here][4]
+
+
+```javascript
+const xhw = require("@xhw/core")
+```
+
+一切正常，可以找到xhw
+
+**这个教训告诉我，如果要打包一个第三方库最好命名index.js**
+**这个教训告诉我，如果要打包一个第三方库最好命名index.js**
+**这个教训告诉我，如果要打包一个第三方库最好命名index.js**
+
+
+over
+
+慢着，还有一个问题，增强编译自带@babel/runtime，那我们打包的库就没必要带上runtime
+
+
+![enter description here][5]
+
+
+所以我们打包框架所用的babel配置为
+
+
+```
+{
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "decoratorsBeforeExport": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-class-properties"
+    ]
+  ]
+}
+
+```
+
+进一步减少包体积
 
 
 ### babel相关
@@ -301,6 +400,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 重点注意是这个
 **@babel/env**
+
+
+
+但是,其实不用@babel/env这个名字也行
 
 
 ------
@@ -700,7 +803,7 @@ gulp-htmlmin压缩小程序wxml会有奇奇怪怪的问题
 
 
 
-![enter description here][2]
+![enter description here][6]
 
 
 
@@ -990,17 +1093,9 @@ gulpfile.js必须存在在项目的根目录，不能放到cli脚手架中，这
 [https://github.com/gulpjs/gulp/issues/2126](https://github.com/gulpjs/gulp/issues/2126)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   [1]: https://s2.ax1x.com/2019/05/07/EsnB5j.png
-  [2]: https://s2.ax1x.com/2019/06/10/V6rXin.png
+  [2]: https://s2.ax1x.com/2019/12/25/liXiE6.png
+  [3]: https://s2.ax1x.com/2019/12/25/liXFUK.png
+  [4]: https://s2.ax1x.com/2019/12/25/liXCHx.png
+  [5]: https://s2.ax1x.com/2019/12/25/liXk4O.png
+  [6]: https://s2.ax1x.com/2019/06/10/V6rXin.png

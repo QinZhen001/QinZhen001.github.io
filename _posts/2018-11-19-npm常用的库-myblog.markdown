@@ -557,6 +557,44 @@ Husky可以防止糟糕的git提交，git推送和更多的woof
 
 
 
+### supervisor
+
+[https://www.npmjs.com/package/supervisor](https://www.npmjs.com/package/supervisor)
+
+
+
+A little supervisor script for nodejs. It runs your program, and watches for code changes, so you can have hot-code reloading-ish behavior, without worrying about memory leaks and making sure you clean up all the inter-module references, and without a whole new require system.
+
+一个用于nodejs的小管理脚本。它运行您的程序，并监视代码更改，因此您可以有热代码重载行为，而不必担心内存泄漏并确保清除所有模块间的引用，而且不需要全新的require系统。
+
+
+
+
+
+### es-checker
+
+[https://www.npmjs.com/package/es-checker](https://www.npmjs.com/package/es-checker)
+
+
+
+
+ES-Checker is a feature detection library for ECMAScript in node.js and browser. Please visit demo.
+
+ES-Checker是一个针对node.js和浏览器中的ECMAScript的特性检测库。请访问演示。
+
+```
+$ npm install -g es-checker
+$ es-checker
+```
+
+
+
+
+
+
+
+
+
 
 
 
