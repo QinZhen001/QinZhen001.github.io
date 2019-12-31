@@ -239,6 +239,45 @@ Promise.resolve(theanable);
 
 
 
+### 一个promise依赖另外一个
+
+
+[http://es6.ruanyifeng.com/#docs/promise](http://es6.ruanyifeng.com/#docs/promise)
+
+
+
+resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例，比如像下面这样。
+
+
+
+
+注意，这时p1的状态就会传递给p2，也就是说，p1的状态决定了p2的状态。如果p1的状态是pending，那么p2的回调函数就会等待p1的状态改变；如果p1的状态已经是resolved或者rejected，那么p2的回调函数将会立刻执行。
+
+
+
+```javascript
+const p1 = new Promise(function (resolve, reject) {
+  setTimeout(() => reject(new Error('fail')), 3000)
+})
+
+const p2 = new Promise(function (resolve, reject) {
+  setTimeout(() => resolve(p1), 1000)
+})
+
+p2
+  .then(result => console.log(result))
+  .catch(error => console.log(error))
+  
+// 输出  
+// Error: fail
+```
+
+
+
+上面代码中，p1是一个 Promise，3 秒之后变为rejected。p2的状态在 1 秒之后改变，resolve方法返回的是p1。由于p2返回的是另一个 Promise，导致p2自己的状态无效了，由p1的状态决定p2的状态。所以，后面的then语句都变成针对后者（p1）。又过了 2 秒，p1变为rejected，导致触发catch方法指定的回调函数。
+
+
+
 
 
 ## 补充
@@ -305,6 +344,40 @@ function f2() {
 
 
 
+### catch返回的还是Promise
+
+
+一般总是建议，Promise 对象后面要跟catch方法，这样可以处理 Promise 内部发生的错误。catch方法返回的还是一个 Promise 对象，因此后面还可以接着调用then方法。
+
+```javascript
+const someAsyncThing = function() {
+  return new Promise(function(resolve, reject) {
+    // 下面一行会报错，因为x没有声明
+    resolve(x + 2);
+  });
+};
+
+
+someAsyncThing()
+.catch(function(error) {
+  console.log('oh no', error);
+})
+.then(function() {
+  console.log('carry on');
+});
+
+
+// 输出
+// oh no [ReferenceError: x is not defined]
+// carry on
+```
+
+
+
+
+
+
+
 ### promise中如何取到[[PromiseValue]]
 
 [https://segmentfault.com/q/1010000010670739](https://segmentfault.com/q/1010000010670739)
@@ -339,6 +412,37 @@ console.log('Hi!');
 ```
 
 上面代码中，Promise 新建后立即执行，所以首先输出的是Promise。然后，then方法指定的回调函数，将在当前脚本所有同步任务执行完才会执行，所以resolved最后输出。
+
+
+
+
+### resolve或reject不会终止Promise的执行
+
+
+注意，调用resolve或reject并不会终结 Promise 的参数函数的执行。
+
+```javascript
+new Promise((resolve, reject) => {
+  resolve(1);
+  console.log(2);
+}).then(r => {
+  console.log(r);
+});
+
+// 输出
+// 2
+// 1
+```
+
+
+上面代码中，调用resolve(1)以后，后面的console.log(2)还是会执行，**并且会首先打印出来**。
+
+
+**这是因为立即 resolved 的 Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务。**
+
+
+
+这一点非常的重要
 
 
 

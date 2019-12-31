@@ -1581,6 +1581,19 @@ Object.getOwnPropertyNames(Point.prototype)
 
 
 
+### forEach循环会遍历null
+
+```javascript
+  let arr = [1, 1, 1, null];
+  arr.forEach(item => {
+    console.log('111', item);
+  });
+```
+
+
+**这里的null会打印出来，也就是说forEach循环会遍历null**
+
+
 
 
   [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg

@@ -42,10 +42,10 @@ Object.defineProperty(obj, prop, descriptor)
 
 
 数据描述符和存取描述符均具有以下可选键值：
-* configurable: 仅当该属性的 configurable 为 true 时，该属性才能够被改变，也能够被删除。默认为 false
-* enumerable: 仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。默认为 false
+* configurable: 仅当该属性的 configurable 为 true 时，该属性才能够被改变，也能够被删除。**默认为 false**
+* enumerable: 仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。**默认为 false**
 * value: 该属性对应的值。可以是任何有效的 JavaScript 值（数值，对象，函数等）。默认为 undefined
-* writable: 仅当仅当该属性的writable为 true 时，该属性才能被赋值运算符改变。默认为 false
+* writable: 仅当仅当该属性的writable为 true 时，该属性才能被赋值运算符改变。**默认为 false**
 * get: 一个给属性提供 getter 的方法，如果没有 getter 则为 undefined。该方法返回值被用作属性值。undefined
 * set: 一个给属性提供 setter 的方法，如果没有 setter 则为 undefined。该方法将接受唯一参数，并将该参数的新值分配给该属性。默认为undefined。
 
@@ -71,6 +71,7 @@ Object.defineProperty(obj,"newKey",{
 
 
 
+
 ### 存取器描述
 当使用存取器描述属性的特性的时候，允许设置以下特性属性：
 ```
@@ -82,7 +83,7 @@ Object.defineProperty(obj,"newKey",{
     enumerable: true | false
 });
 ```
-**注意：当使用了getter或setter方法，不允许使用writable和value这两个属性**
+
 
 
 当设置或获取对象的某个属性的值的时候，可以提供getter/setter方法。
@@ -112,6 +113,67 @@ console.log( obj.newKey ); //change value
 ```
 **注意：get或set不是必须成对出现，任写其一就可以。如果不设置方法，则get和set的默认值为undefined
 configurable和enumerable同上面的用法。**
+
+
+
+### value和get不能同时出现
+
+value和get,set是不可以共存的,就是说你定义了value后就不能够再定义get,set特性了.
+
+
+ var bValue = 38;
+
+```javascript
+  var dream = {};
+  Object.defineProperty(dream, 'name', {
+    // value: 'dreamapple',  不能出现get
+    get() {
+      console.log("this", this)
+      return bValue
+    }
+  });
+
+  console.log(dream.name); 
+  dream.name = 'apple'; // 修改name属性
+  console.log(dream.name); 
+```
+
+
+### get中的this指向
+
+```javascript
+ var bValue = 38;
+
+
+  var dream = {
+    aaa: "aaa"
+  };
+
+
+  Object.defineProperty(dream, 'name', {
+    configurable: true,
+    get() {
+      console.log("this", this)  //指向dream
+      return bValue
+    }
+  });
+
+  console.log(dream.name);
+```
+
+
+
+get中的this会指向Object.defineProperty的第一个参数。
+
+
+
+### configurable
+
+总开关，一旦为false，就不能再设置他的（value，writable，configurable）
+
+
+
+
 
 
 ### 兼容性
