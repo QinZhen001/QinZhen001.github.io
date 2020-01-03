@@ -1,0 +1,671 @@
+---
+layout:     post
+title:      "ES6基础"
+date:       2019-08-02 11:22:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - ES6
+---
+
+> “Yeah It's on. ”
+
+
+## 正文
+
+
+
+
+### rest参数
+
+
+
+[网页链接](http://blog.csdn.net/kittyjie/article/details/50400904)
+
+
+Rest操作符和Spread操作都是用三个点（...）表示，但作用整好相反。
+
+**Rest操作符一般用在函数参数的声明中，而Spread用在函数的调用中。**
+
+```
+'use strict';  
+  
+function func(...args){  
+    console.log(args);//[1,2,3,4]  
+}  
+  
+func(1,2,3,4);  
+```
+
+我们知道在strict mode下，对arguments做了很多限制，而且arguments是个arrayLike对象，不能像操作数组那样直接操作它。但用Rest操作符以后，args参数就是一个数组了，任何操作数组的方法都可以直接对args使用。
+
+
+
+### `Object.is`
+
+
+[网页链接](http://www.cnblogs.com/snandy/p/4485229.html)
+
+在这之前我们比较值使用两等号 == 或 三等号===， 三等号更加严格，只要比较两方类型不同立即返回false。
+
+<strong>另外，有且只有一个值不和自己相等，它是NaN </strong> 
+
+NaN == NaN   //false
+
+现在ES6又加了一个Object.is，让比较运算的江湖更加混乱。多数情况下Object.is等价于“===”，如下
+
+
+
+```
+1 === 1 // true
+Object.is(1, 1) // true
+ 
+'a' === 'a' // true
+Object.is('a', 'a') // true
+ 
+true === true // true
+Object.is(true, true) // true
+ 
+null === null // true
+Object.is(null, null) // true
+ 
+undefined === undefined // true
+Object.is(undefined, undefined) // true
+```
+
+但对于NaN、0、+0、 -0，则和 “===” 不同
+```
+NaN === NaN // false
+Object.is(NaN, NaN) // true
+ 
+0 === -0 // true
+Object.is(0, -0) // false
+ 
+-0 === +0 // true
+Object.is(-0, +0) // false
+```
+
+
+#### 其他
+在js中我们一般认为正负0是不相等的，但是 -0 == +0 会返回true，那么怎么判断正负0
+代码如下
+```
+（判断-0）
+function(num){
+return num == 0 && 1 / num < 0 
+}
+（判断+0）
+function(num){
+return num == 0 && 1 / num > 0 
+}
+```
+
+
+### find()和findIndex()
+
+
+
+[网页链接](http://blog.csdn.net/qq_30100043/article/details/53303768)
+
+数组实例的find方法，用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为true的成员，然后返回该成员。如果没有符合条件的成员，则返回undefined。
+
+```
+[1, 4, -5, 10].find((n) => n < 0)  
+// -5  
+[1, 5, 10, 15].find(function(value, index, arr) {  
+return value > 9;  
+}) // 10  
+```
+
+上面代码中，find方法的回调函数可以接受三个参数，依次为当前的值、当前的位置和原数组。
+
+数组实例的findIndex方法的用法与find方法非常类似，返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1。
+```
+[1, 5, 10, 15].findIndex(function(value, index, arr) {  
+return value > 9;  
+}) // 2  
+```
+
+这两个方法都可以接受第二个参数，用来绑定回调函数的this对象。
+另外，这两个方法都可以发现NaN，弥补了数组的IndexOf方法的不足。
+```
+[NaN].indexOf(NaN)  
+// -1  
+[NaN].findIndex(y => Object.is(NaN, y))  
+// 0  
+```
+
+上面代码中，indexOf方法无法识别数组的NaN成员，但是findIndex方法可以借助Object.is方法做到。
+
+
+
+### Decorator
+
+[http://es6.ruanyifeng.com/#docs/decorator](http://es6.ruanyifeng.com/#docs/decorator)
+
+
+[https://juejin.im/entry/5b74e0525188256143054663](https://juejin.im/entry/5b74e0525188256143054663)
+
+
+装饰器是一种函数，写成@ + 函数名。它可以放在类和类方法的定义前面。
+
+
+例子：
+
+```javascript
+@frozen class Foo {
+  @configurable(false)
+  @enumerable(true)
+  method() {}
+
+  @throttle(500)
+  expensiveMethod() {}
+}
+```
+
+
+#### 类的装饰 
+
+```javascript
+@eat
+class Person {
+  constructor() {}
+}
+
+function eat(target, key, descriptor) {
+  console.log('吃饭');
+  console.log(target);
+  console.log(key);
+  console.log(descriptor);
+  target.prototype.act = '我要吃饭';
+}
+
+const jack = new Person();
+console.log(jack.act);
+```
+
+
+-----
+
+或者return一个函数，函数里面return一个classDescriptor
+
+
+```
+let classFactory = (name, fn) => {
+  return function (classDescriptor) {
+    debugger
+    console.log("classDescriptor", classDescriptor)
+    let {elements} = classDescriptor;
+
+    return {
+      ...classDescriptor,
+       elements: elements.concat([methodDescriptorGenerator(name, fn)]),
+    };
+  };
+};
+
+const Wxapi = classFactory('$wxapi', ()=>{
+  console.log("aaaa")
+});
+
+
+
+@Wxapi
+class Person {
+  constructor() {
+  }
+  aaa(){}
+  bbb(){}
+}
+```
+
+
+我们可以看到打印出来classDescriptor是
+
+
+```javascript
+{
+      kind: 'class',
+      elements:
+       [ Object [Descriptor] {
+           kind: 'method',
+           key: 'aaa',
+           placement: 'prototype',
+           descriptor: [Object] },
+         Object [Descriptor] {
+           kind: 'method',
+           key: 'bbb',
+           placement: 'prototype',
+           descriptor: [Object] }
+       ] 
+}
+```
+
+
+这样子我们可以对elements进行补充，也就是增加类方法
+```javascript
+ return {
+      ...classDescriptor,
+       elements: elements.concat([methodDescriptorGenerator(name, fn)]),
+    };
+```
+
+我们去看methodDescriptorGenerator方法
+
+```javascript
+let methodDescriptorGenerator = (name, fn, placement = 'prototype') => {
+    return {
+        key: name,
+        kind: 'method',
+        placement,
+        descriptor: descriptorGenerator({value: fn}),
+    };
+};
+```
+
+return的对象刚好和elements中的一项数据结构对齐
+
+其中descriptor是一个描述对象
+
+我们继续看descriptorGenerator方法
+
+```
+const descriptorGenerator = (des) => {
+    return {
+        enumerable: true,
+        writable: true,
+        configurable: true,
+        ...des,
+    };
+};
+```
+
+
+**这里最重要的就是des传入的对象要有value,这里value是一个函数**
+
+
+---------- 
+
+
+上面写的比较复杂，我们来看一个简单的例子
+
+```javascript
+function addFly(canFly){
+  return function(target){
+    target.canFly = canFly;
+    let extra = canFly ? '(技能加成:飞行能力)' : '';
+    let method = target.prototype.toString;
+    target.prototype.toString = (...args)=>{
+      return method.apply(target.prototype,args) + extra;
+    }
+    return target;
+  }
+}
+
+@addFly(true)
+class Man{
+  constructor(def = 2,atk = 3,hp = 3){
+    this.init(def,atk,hp);
+  }
+```
+
+通过target.prototype.xxxx就可以在类上面增加方法，非常简单。
+
+
+
+#### 方法的装饰
+
+
+
+
+```javascript
+class Math {
+  @log
+  add(a, b) {
+    return a + b;
+  }
+}
+
+function log(target, name, descriptor) {
+  var oldValue = descriptor.value;
+
+  descriptor.value = function() {
+    console.log(`Calling ${name} with`, arguments);
+    return oldValue.apply(this, arguments);
+  };
+
+  return descriptor;
+}
+
+const math = new Math();
+
+// passed parameters should get logged now
+math.add(2, 4);
+```
+
+
+-------
+
+或者return一个函数，函数里面return一个descriptor
+
+
+
+```javascript
+/**
+ * 延时执行
+ * @param wait
+ */
+function Delay(wait = 500) {
+  return function (target, name, descriptor) {
+    let fn = descriptor.value;
+    descriptor.value = delay(fn, wait);
+    return descriptor;
+  };
+}
+```
+
+
+**一个非常重要的点就是：this的绑定**
+
+ **func.apply(this, args)**
+
+```javascript
+/**
+ * 延迟执行
+ * @param func
+ * @param delay
+ * @returns {Function}
+ */
+function delay(func, delay = 500) {
+  return function (...args) {
+    setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
+```
+
+
+#### 深入Decorator
+
+
+Decorators 的本质是利用了 ES5 的 Object.defineProperty 属性，这三个参数其实是和 Object.defineProperty 参数一致的，因此不能更改
+
+
+
+
+可以看看 bable 转换后 的代码，其中有一句是 descriptor = decorator(target, key, descriptor) || descriptor;
+
+
+
+
+### for in
+
+
+遍历对象 通常用for in来遍历对象的键名
+
+
+
+for in 可以遍历到myObject的原型方法method,如果不想遍历原型方法和属性的话，可以在循环内部判断一下,**hasOwnPropery方法可以判断某属性是否是该对象的实例属性**
+
+```javascript
+for (var key in myObject) {
+　　if（myObject.hasOwnProperty(key)){
+　　　　console.log(key);
+　　}
+}
+```
+
+
+
+>**可以通过ES5的Object.keys(myObject)获取对象的实例属性组成的数组，不包括原型方法和属性**
+
+
+
+
+
+for..of和for..in可以正确响应break、continue和return语句
+
+
+
+
+### class
+
+
+#### this 的指向
+
+
+观察最近写的框架插件，思考了一下js元解析器解析插件中链式调用的函数会存在重复调用的问题。
+
+
+最终，发现可能是this指向的问题
+
+
+更改前
+
+```javascript
+class BucketControl {
+  static getInstance(bucketConfig) {
+    if (!BucketControl.instance) {
+      BucketControl.instance = new BucketControl(bucketConfig);
+    }
+    return BucketControl.instance;
+  }
+
+  constructor(bucketConfig = {}) {
+    let buckets = {};
+    Object.keys(bucketConfig).forEach(key => {
+      buckets[key] = new Bucket({name: key, ...bucketConfig[key]});
+    });
+    this.buckets = buckets;
+    this.init();
+  }
+  
+  .... 
+}
+
+
+
+module.exports = function (config) {
+  // 这里之所以要设置成类 是因为bucketControl初始化要依赖一个config
+  let bucketControl = BucketControl.getInstance(config);
+  return {
+    name: 'bucketControl',
+    customMethod: {
+      add: bucketControl.add.bind(bucketControl),
+      addRead: bucketControl.addRead.bind(bucketControl),
+      remove: bucketControl.remove.bind(bucketControl),
+      choose: bucketControl.choose.bind(bucketControl),
+      print: bucketControl.print.bind(bucketControl),
+      delAll: bucketControl.delAll.bind(bucketControl),
+      delRead: bucketControl.delRead.bind(bucketControl),
+    },
+  };
+};
+```
+
+
+
+更改后：
+
+
+```javascript
+
+class BucketControl {
+  static getInstance(bucketConfig) {
+    if (!BucketControl.instance) {
+      BucketControl.instance = new BucketControl(bucketConfig);
+    }
+    return BucketControl.instance;
+  }
+
+  constructor(bucketConfig = {}) {
+    let buckets = {};
+    Object.keys(bucketConfig).forEach(key => {
+      buckets[key] = new Bucket({name: key, ...bucketConfig[key]});
+    });
+    this.buckets = buckets;
+    // this 的指向 (防止函数被单独拿出来使用)
+    // http://es6.ruanyifeng.com/#docs/class
+    this.add = this.add.bind(this);
+    this.addRead = this.addRead.bind(this);
+    this.remove = this.remove.bind(this);
+    this.choose = this.choose.bind(this);
+    this.print = this.print.bind(this);
+    this.delAll = this.delAll.bind(this);
+    this.delRead = this.delRead.bind(this);
+    this.init();
+  }
+  
+  ...
+}  
+  
+module.exports = function (config) {
+  // 这里之所以要设置成类 是因为bucketControl初始化要依赖一个config
+  let bucketControl = BucketControl.getInstance(config);
+  return {
+    name: 'bucketControl',
+    customMethod: {
+      add: bucketControl.add,
+      addRead: bucketControl.addRead,
+      remove: bucketControl.remove,
+      choose: bucketControl.choose,
+      print: bucketControl.print,
+      delAll: bucketControl.delAll,
+      delRead: bucketControl.delRead,
+    },
+  };
+};
+
+```  
+
+
+
+类的方法内部如果含有this，它默认指向类的实例。但是，必须非常小心，一旦单独使用该方法，很可能报错。
+```javascript
+class Logger {
+  printName(name = 'there') {
+    this.print(`Hello ${name}`);
+  }
+
+  print(text) {
+    console.log(text);
+  }
+}
+
+const logger = new Logger();
+const { printName } = logger;
+printName(); // TypeError: Cannot read property 'print' of undefined
+```
+
+上面代码中，printName方法中的this，默认指向Logger类的实例。但是，如果将这个方法提取出来单独使用，this会指向该方法运行时所在的环境（由于 class 内部是严格模式，所以 this 实际指向的是undefined），从而导致找不到print方法而报错。
+
+一个比较简单的解决方法是，在构造方法中绑定this，这样就不会找不到print方法了。
+
+```javascript
+class Logger {
+  constructor() {
+    this.printName = this.printName.bind(this);
+  }
+
+  // ...
+}
+```
+
+
+
+
+
+#### 类方法不可枚举
+
+
+最近在仿写axios，在写Axios类的时候发现类方法不可枚举
+
+
+例子
+
+```javascript
+  class Axios {
+    constructor() {
+      this.ccc = "ccc"
+    }
+
+    aaa(aaa) {
+      console.log(aaa)
+    }
+
+    bbb(bbb) {
+      console.log(bbb)
+    }
+
+    request() {
+      console.log("request")
+    }
+  }
+
+  let aaa = new Axios()
+
+  for (let item in aaa) {
+    console.log("item", item)
+  }
+  
+  // 输出 "ccc"
+```
+
+
+按理说class只是一个语法糖，aaa，bbb这些存在于Axios.prototype之中，使用for...in是可以打印出来的，但是由于**类方法不可枚举**，所以这里只能打印出"ccc"
+
+
+**这一点与 ES5 的行为不一致。**
+**这一点与 ES5 的行为不一致。**
+**这一点与 ES5 的行为不一致。**
+
+
+----
+
+如果我真的很想打印出"aaa"这些，该怎么办？
+
+
+方法一：
+
+
+改成function的形式
+```javascript
+  function Axios() {
+
+  }
+
+  Axios.prototype.aaa = () => {
+    console.log("aaa")
+  }
+```
+
+
+
+方法二：
+
+
+将类方法bind到类实例的this上
+
+
+```javascript
+  class Axios {
+    constructor() {
+      this.ccc = "ccc"
+      this.aaa = this.aaa.bind(this)
+    }
+
+    aaa(aaa) {
+      console.log(aaa)
+    }
+  }
+```
+
+
+
+
+
+
+
+
