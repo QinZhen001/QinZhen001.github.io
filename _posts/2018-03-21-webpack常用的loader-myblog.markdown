@@ -41,6 +41,18 @@ css单独打包，并用url引入(link标签)  要配合publicPath
 use()    unuse()
 
 
+#### **style-loader和mini-css-extract-plugin**
+
+
+* style-loader:把 js 中 import 导入的样式文件代码，打包到 js 文件中，运行 js 文件时，将样式自动插入到`<style>`标签中
+* mini-css-extract-plugin: 把 js 中 import 导入的样式文件代码，打包成一个实际的 css 文件，结合 html-webpack-plugin，在 dist/index.html 中以 link 插入 css 文件；默认将 js 中 import 的多个 css 文件，打包时合成一个
+
+
+
+
+
+
+
 ### css-loader
 用处：加载.css文件
 

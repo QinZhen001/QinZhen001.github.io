@@ -3,10 +3,9 @@ layout:     post
 title:      "foreach和map的区别"
 date:       2018-07-18 14:56:00
 author:     "Qz"
-header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - JavaScript
+    - ES6
 ---
 
 > “Yeah It's on. ”

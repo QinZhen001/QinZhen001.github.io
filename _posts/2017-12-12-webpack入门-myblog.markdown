@@ -511,6 +511,48 @@ import(/* webpackPreload: true */ 'ChartingLibrary');
 
 
 
+### externals配置
+
+[https://www.jianshu.com/p/283b17d17b3c](https://www.jianshu.com/p/283b17d17b3c)
+
+
+
+**webpack 中的 externals 配置提供了不从 bundle 中引用依赖的方式**。解决的是，所创建的 bundle 依赖于那些存在于用户环境(consumer environment)中的依赖。
+
+
+怎么理解呢，意思是如果需要引用一个库，但是又不想让webpack打包（减少打包的时间），并且又不影响我们在程序中以CMD、AMD或者window/global全局等方式进行使用（一般都以import方式引用使用），那就可以通过配置externals。
+
+这样做的目的就是将不怎么需要更新的第三方库脱离webpack打包，不被打入bundle中，从而减少打包时间，但又不影响运用第三方库的方式，例如import方式等。
+
+
+
+
+```javascript
+  module.exports = {
+     ...
+     output: {
+       ...
+     },
+     externals : {
+       react: 'react',
+       redux: 'redux'
+     }
+     ...
+   }
+```
+
+
+#### externals和libraryTarget的关系
+
+
+
+libraryTarget配置如何暴露 library。如果不设置library,那这个library就不暴露。就相当于一个自执行函数
+
+externals是决定的是以哪种模式去加载所引入的额外的包
+
+
+
+
 
 
 ## 遇到的问题
