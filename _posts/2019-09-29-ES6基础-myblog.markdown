@@ -662,6 +662,53 @@ class Logger {
   }
 ```
 
+### 计算属性
+
+
+[网页链接](http://blog.csdn.net/kittyjie/article/details/50447535)
+
+```
+let propKey = 'foo';  
+let obj = {//ES6  
+    [propKey]: true,  
+    ['b'+'ar']: 123  
+};  
+  
+//ES6之前只能这样写：  
+obj[propKey + "1"] = false;  
+obj['f'+'oo2'] = 456;  
+  
+console.log(obj);//Object { foo: true, bar: 123 }  
+```
+
+ES6之前要想用变量当作对象的属性名称，必须先声明一个字面量，然后在用中括号语法赋值，ES6中直接可以在声明的时候就使用中括号语法来使用变量。
+
+对象的方法一样可以使用这样写法：
+```
+et obj = {  
+    ['h'+'ello']() {  
+        return 'hi';  
+     }  
+};  
+console.log(obj.hello()); // hi  
+```
+
+在Vuex中的mutations里
+```
+const mutations = {
+  [types.SET_SINGER](state, singer) {
+    state.singer = singer
+  },
+  [types.SET_PLAYING_STATE](state, flag) {
+    state.playing = flag
+  },
+  [types.SET_FULL_SCREEN](state, flag) {
+    state.fullScreen = flag
+  }
+}
+
+```
+
 
 
 

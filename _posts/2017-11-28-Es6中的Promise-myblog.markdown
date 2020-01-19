@@ -551,6 +551,51 @@ aaa
 
 
 
+### promise中存在try-catch
+
+
+
+```javascript
+  function _templateListReport() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject("111111")
+      }, 3000)
+    })
+  }
+
+
+  function test() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        return resolve(await _templateListReport());
+      } catch (e) {
+        // 捕获reject
+        console.error(e)
+        reject(e)
+      }
+    })
+  }
+
+
+  test().then(res => {
+    console.log("我成功了", res)
+  }, rej => {
+    console.log("我失败了", rej)
+  })
+```
+
+
+这个会输出什么？
+
+
+答案：
+
+```javascript
+await _templateListReport()
+
+返回的是reject状态，catch会捕获reject
+```
 
 ## 其他
 

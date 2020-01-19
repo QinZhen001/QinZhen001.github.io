@@ -588,11 +588,47 @@ $ es-checker
 ```
 
 
+### debug
+
+[https://www.npmjs.com/package/debug](https://www.npmjs.com/package/debug)
+
+A tiny JavaScript debugging utility modelled after Node.js core's debugging technique. Works in Node.js and web browsers.
 
 
 
 
+一个小型的JavaScript调试工具，模仿Node.js核心的调试技术。工作在Node.js和web浏览器。
 
+
+
+```javascript
+var debug = require('debug')('http')
+  , http = require('http')
+  , name = 'My App';
+ 
+// fake app
+ 
+debug('booting %o', name);
+ 
+http.createServer(function(req, res){
+  debug(req.method + ' ' + req.url);
+  res.end('hello\n');
+}).listen(3000, function(){
+  debug('listening');
+});
+ 
+// fake worker of some kind
+ 
+require('./worker');
+```
+
+**一个非常重要的点 要想这个debug生效**
+
+首先执行
+
+```javascript
+set DEBUG=http
+```
 
 
 
