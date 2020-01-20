@@ -1957,6 +1957,124 @@ AOP（面向面编程）的主要作用是把一些核心业务逻辑模块无�
 
 
 
+### 柯里化(Currying)
+
+
+
+在计算机科学中，柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数(最初函数的第一个参数)的函数，并且返回接受余下的参数且返回结果的新函数的技术。
+
+>柯里化可是函数式编程中的一个技巧
+
+>**使函数理解并处理部分应用**
+
+[http://www.zhangxinxu.com/wordpress/2013/02/js-currying/](http://www.zhangxinxu.com/wordpress/2013/02/js-currying/)
+
+柯里化有3个常见作用
+1. 参数复用
+2.  提前返回
+3.  延迟计算/运行
+
+
+
+### window和document之addEventListener区别
+
+
+
+[网页链接](http://blog.csdn.net/anythings/article/details/51240133)
+
+
+任何事件都会经上三个阶段
+* 捕获
+* 目标元素
+* 冒泡
+
+事件不管是捕获还是冒泡，都会经过window和document。
+
+因此，你使用window.addEventListener和document.addEventListener来处理页面上的事件，区别仅仅在于，不同事件模型上，处理的顺序不一样：
+
+
+
+* 捕获，window先于document
+* 冒泡，document先于window
+
+
+我们可以addEventListener的第三个参数来使用不同的事件模型，true代表我们想在捕获阶段处理事件，false代表我们想在冒泡阶段处理事件，默认是false。
+
+* 捕获，从外面往里面触发事件
+* 冒泡，从里面往外面触发事件
+
+
+
+
+
+
+
+### 函数名是指针
+
+
+
+[网页链接](https://www.cnblogs.com/summerXll/p/6505647.html)
+
+函数名其实就是指向函数体的指针 
+不加括号， 可以认为是查看该函数的完整信息， 
+不加括号传参，相当于传入函数整体 
+加括号 表示立即调用（执行）这个函数里面的代码（花括号部分的代码）
+
+
+
+```
+<button id="btn">单击这里</button>
+
+复制代码
+
+function demo1(){
+    var m=5;
+    return m;
+}
+function demo2(){
+var m=55;
+alert(m);
+}
+var a=demo1;//a是整个函数体，是一个函数对象
+var b=demo1();//b是函数执行后返回的值5
+alert(demo1);
+alert(demo1());
+
+```
+
+结果：
+
+
+1.alert弹出框的的内容
+```
+function demo1(){ 
+var m=5; 
+return m; 
+}
+```
+2.alert弹出框的的内容
+`5`
+
+
+**函数名就是指针**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
 

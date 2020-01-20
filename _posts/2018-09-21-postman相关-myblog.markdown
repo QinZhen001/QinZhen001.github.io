@@ -6,7 +6,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - 网络请求
+    - Network
 ---
 
 > “Yeah It's on. ”
