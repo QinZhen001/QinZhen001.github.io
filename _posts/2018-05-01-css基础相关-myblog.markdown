@@ -361,6 +361,256 @@ ID选择器有很高的权重，如果要覆盖使用了ID选择器的样式，�
 
 
 
+### white-space
+
+[网页链接](http://www.w3school.com.cn/cssref/pr_text_white-space.asp)
+
+white-space 属性设置如何处理元素内的空白。
+这个属性声明建立布局过程中如何处理元素中的空白符
+
+* normal	默认。空白会被浏览器忽略。
+* pre	空白会被浏览器保留。其行为方式类似 HTML 中的 `<pre>` 标签。
+* nowrap	文本不会换行，文本会在在同一行上继续，直到遇到 `<br>` 标签为止。
+* pre-wrap	保留空白符序列，但是正常地进行换行。
+* pre-line	合并空白符序列，但是保留换行符。
+* inherit	规定应该从父元素继承 white-space 属性的值。
+
+
+
+
+### scoped属性
+
+
+<strong>从当前STYLE元素所在的容器开始选择后代。</strong>
+
+style标记上新出现的这个scoped属性可以让CSS样式只对局部元素生效，具体说，就是存放这段style样式的元素的子元素生效，下面来看看它的效果。
+
+
+```
+<style scoped>
+    /* styles go here */
+</style>
+```
+
+
+### font-size:0作用
+
+
+[网页链接](http://www.cnblogs.com/guagnxu/p/6382163.html)
+
+```
+html：
+<div class="box">
+  <div>1</div>
+  <div>2</div>
+  <div>3</div>
+</div>
+```
+
+
+```
+css：
+.box{
+  width: 90px;
+  height: 60px;
+  border: 1px solid #ccc;
+}
+.box div{
+  display: inline-block;
+  box-sizing: border-box;
+  font-size: 14px;
+  width: 30px;
+  border: 1px solid ;
+}
+```
+
+
+理论上box下面的三个div都是30px，刚好在一行显示，但是实际效果是这样：
+
+![enter description here][3]
+
+这就是上文说到的原因，我们在box下添加font-size:0;再看看效果
+
+![enter description here][4]
+
+可以看到这才是我们想要的结果，因此在实际开发中，为了更好的还原设计稿，在父元素很有必要设置font-size:0，避免莫名其妙的间距。
+
+
+
+
+
+
+
+
+
+### transform-origin
+
+
+
+[网页链接](http://blog.csdn.net/xu_ya_fei/article/details/51711968)
+
+transform-origin 属性允许您改变被转换元素的位置。
+默认值： 50% 50% 0
+2D 转换元素能够改变元素 x 和 y 轴。3D 转换元素还能改变其 Z 轴。
+
+#### 语法
+transform-origin: x-axis y-axis z-axis;
+
+x-axis
+定义视图被置于 X 轴的何处。可能的值：
+left center right length %
+
+
+y-axis	
+定义视图被置于 Y 轴的何处。可能的值：
+top center bottom length %
+
+z-axis
+定义视图被置于 Z 轴的何处。可能的值：
+length
+
+```
+/*只设置一个值的语法*/
+transform-origin: x-offset
+transform-origin: offset-keyword
+```
+
+----------
+
+
+```
+/*设置两个值的语法*/
+transform-origin：x-offset  y-offset
+transform-origin：y-offset  x-offset-keyword
+transform-origin：x-offset-keyword  y-offset
+transform-origin：x-offset-keyword  y-offset-keyword
+transform-origin：y-offset-keyword  x-offset-keyword
+```
+
+
+----------
+
+
+```
+/*设置三个值的语法*/
+transform-origin：x-offset  y-offset  z-offset
+transform-origin：y-offset  x-offset-keyword  z-offset
+transform-origin：x-offset-keyword  y-offset  z-offset
+transform-origin：x-offset-keyword  y-offset-keyword  z-offset
+transform-origin：y-offset-keyword  x-offset-keyword  z-offset
+```
+
+* x-offset：用来设置transform-origin水平方向Ｘ轴的偏移量，可以使用和值，同时也可以是正值（从中心点沿水平方向Ｘ轴向右偏移量），也可以是负值（从中心点沿水平方向Ｘ轴向左偏移量）。
+* y-offset：用来设置transform-origin属性在垂直方向Ｙ轴的偏移量，可以使用和值，同时可以是正值（从中心点沿垂直方向Ｙ轴向下的偏移量），也可以是负值（从中心点沿垂直方向Ｙ轴向上的偏移量）。
+* z-offset：用来设置3D变形中transform-origin远离用户眼睛视点的距离，默认值z=0，其取值可以，不过在这里将无效。
+
+
+----------
+
+
+* offset-keyword：是top、right、bottom、left或center中的一个关键词，可以用来设置transform-origin的偏移量。
+* x-offset-keyword：是left、right或center中的一个关键词，可以用来设置transform-origin属性值在水平Ｘ轴的偏移量。
+* y-offset-keyword：是top、bottom或center中的一个关键词，可以用来设置transform-origin属性值在垂直方向Ｙ轴的偏移量。
+
+
+----------
+
+
+* top = top center = center top = 50% 0
+* right = right center = center right = 100%或(100% 50%)
+* bottom = bottom center = center bottom = 50% 100%
+* left = left center = center left = 0或(0 50%)
+* center = center center = 50%或（50% 50%）
+* top left = left top = 0 0
+* right top = top right = 100% 0
+* bottom right = right bottom = 100% 100%
+* bottom left = left bottom = 0 100%
+
+  
+
+
+
+
+
+### background-attachment
+
+**网页背景图固定不动**
+
+
+背景附着(background-attachment)属性有两个值。一个是scroll，表示随内容滚动而动；一个是fixed，表示固定不动，不受内容滚动影响。缺省值是scroll。
+
+* **background-repeat:no-repeat**
+* **background-attachment:fixed**
+
+ 
+```html
+<html>
+<head>
+<title>背景附着属性 background-attachment</title>
+<style type="text/css">
+body {background-image:url(../images/css_tutorials/background.jpg); background-repeat:no-repeat; background-attachment:fixed} </style> 
+</head>
+<body> 
+<p>这个HTML使用了CSS的background-attachment属性，将背景图片固定，不随内容滚动而滚动。<p>
+<p>背景附着(background-attachment)属性有两个值。一个是scroll，表示随内容滚动而动；一个是fixed，表示固定不动，不受内容滚动影响。缺省值是scroll。</p>
+<p>background-attachment要和background-image一起用。</p>
+</body>
+</html>
+```
+
+
+
+
+
+
+### clearfix清除浮动
+
+
+
+
+
+[网页链接](http://www.jianshu.com/p/9d6a6fc3e398)
+
+通常我们在写html+css的时候，如果一个父级元素内部的子元素是浮动的（float），那么常会发生父元素不能被子元素正常撑开的情况
+
+要解决此问题，我们可以给包裹层(包裹了float元素)添加一个类，叫做clearfix，下面是clearfix的实现形式（之一）：
+
+
+**正是由于“块级元素”具有换行特性，因此理论上它都可以配合 clear 属性来清除浮动 带来的影响**
+
+
+**最好的方式**
+```
+.clearfix:after {
+   content:""; 
+   display: table;  // 也可以是 block，或者是 list-item 
+   clear:both; 
+}
+```
+上述代码通过伪类 :after 在container后添加内容（content），来实现清除浮动。
+
+
+```
+.clearfix::before,
+.clearfix::after {
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+.clearfix:after {clear: both;}
+.clearfix {zoom: 1;}
+```
+
+
+
+作者：Wenliang
+[链接](http://www.jianshu.com/p/9d6a6fc3e398)
+來源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
 
 
 
@@ -393,7 +643,9 @@ ID选择器有很高的权重，如果要覆盖使用了ID选择器的样式，�
 
   [1]: http://www.w3chtml.com/css3/properties/user-interface/images/content-box.png
   [2]: http://www.w3chtml.com/css3/properties/user-interface/images/border-box.png
-
+  [3]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145030213-330247522.png
+  [4]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145334791-2090940407.png
+  
 
 
 
