@@ -1,0 +1,293 @@
+---
+layout:     post
+title:      "鉴权相关"
+date:       2017-05-23 21:58:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Network
+---
+
+> “Yeah It's on. ”
+
+
+
+## cookie
+
+
+
+**cookie存在跨域问题**
+
+
+
+```javascript
+// cookie.js
+const http = require("http")
+http
+    .createServer((req, res) => {
+            if(req.url === '/favicon.ico'){
+          res.end('')
+          return
+}
+	// 观察cookie存在
+  console.log('cookie:', req.headers.cookie) // 设置cookie
+  res.setHeader('Set-Cookie', 'cookie1=abc;')
+  res.end('hello cookie!!')
+})
+    .listen(3000)
+```
+
+
+
+
+
+* Header Set-Cookie负责设置cookie 
+
+* 请求传递Cookie
+
+
+
+## session
+
+```javascript
+// cookie.js
+const http = require("http")
+const session = {}
+http
+.createServer((req, res) => { // 观察cookie存在
+        console.log('cookie:', req.headers.cookie)
+        const sessionKey = 'sid'
+        const cookie = req.headers.cookie
+        if(cookie && cookie.indexOf(sessionKey) > -1 ){
+  res.end('Come Back ')
+  // 简略写法未必具有通用性
+  const pattern = new RegExp(`${sessionKey}=([^;]+);?\s*`) 
+  const sid = pattern.exec(cookie)[1] 
+  console.log('session:',sid ,session ,session[sid])
+} else {
+  const sid = (Math.random() * 99999999).toFixed()
+  // 设置cookie
+  res.setHeader('Set-Cookie', `${sessionKey}=${sid};`)
+        session[sid] = {name : 'laowang'}
+        res.end('Hello')
+    }
+    res.end('hello cookie!!')
+})
+.listen(3000)
+```
+
+
+
+
+
+实现原理:
+
+1. 服务器在接受客户端首次访问时在服务器端创建seesion，然后保存seesion(我们可以将seesion保存在 内存中，也可以保存在redis中，推荐使用后者)，然后给这个session生成一个唯一的标识字符串,然后在 响应头中种下这个唯一标识字符串。
+
+2.  签名。这一步通过秘钥对sid进行签名处理，避免客户端修改sid。(非必需步骤)
+
+3.  浏览器中收到请求响应的时候会解析响应头，然后将sid保存在本地cookie中，浏览器在下次http请求的
+
+   请求头中会带上该域名下的cookie信息，
+
+4. 服务器在接受客户端请求时会去解析请求头cookie中的sid，然后根据这个sid去找服务器端保存的该客
+
+   户端的session，然后判断该请求是否合法。
+
+
+
+注意：
+
+
+
+- **cookie只是实现session的其中一种方案。虽然是最常用的，但并不是唯一的方法。禁用cookie后还有其他方法存储，比如放在url中**
+- 现在大多都是Session + Cookie，但是只用session不用cookie，或是只用cookie，不用session在理论上都可以保持会话状态。可是实际中因为多种原因，一般不会单独使用
+- **用session只需要在客户端保存一个id，实际上大量数据都是保存在服务端。如果全部用cookie，数据量大的时候客户端是没有那么多空间的。**
+- 如果只用cookie不用session，那么账户信息全部保存在客户端，一旦被劫持，全部信息都会泄露。并且客户端数据量变大，网络传输的数据量也会变大
+
+
+
+
+
+### koa中的session
+
+npm i koa-session -S
+
+
+
+```javascript
+const koa = require('koa')
+const app = new koa()
+const session = require('koa-session')
+// 签名key keys作用 用来对cookie进行签名 app.keys = ['some secret'];
+// 配置项
+const SESS_CONFIG = {
+  key: 'kkb:sess', // cookie键名
+  maxAge: 86400000, // 有效期，默认一天 
+  httpOnly: true, // 仅服务器修改
+  signed: true, // 签名cookie
+};
+// 注册
+app.use(session(SESS_CONFIG, app));
+// 测试 app.use(ctx => {
+if (ctx.path === '/favicon.ico') return; // 获取
+let n = ctx.session.count || 0;
+// 设置
+ctx.session.count = ++n;
+ctx.body = '第' + n + '次访问'; });
+app.listen(3000)                   
+```
+
+
+
+
+
+### 使用redis存储session
+
+
+
+```javascript
+// koa-redis
+const redisStore = require('koa-redis');
+const redis = require('redis')
+const redisClient = redis.createClient(6379, "localhost");
+var wrapper = require('co-redis');
+var client = wrapper(redisClient);
+
+app.use(session({
+	key:'kkb:sess',
+	store: redisStore({client}) // 此处可以不必指定client
+}, app));
+
+app.use(ctx => {
+  //...
+	//查看redis中存储的数据 
+  redisClient.keys('*',(err,keys)=>{
+    console.log(keys);
+    keys.forEach(key=>{
+      redisClient.get(key,(err,val)=>{
+        console.log(val);
+			})
+    })
+	}) 
+});
+```
+
+
+
+
+
+
+
+
+
+## token
+
+[网页链接](https://blog.csdn.net/xunfeng13/article/details/52371562/)
+
+
+ 在Web领域基于Token的身份验证随处可见。在大多数使用Web API的互联网公司中，tokens 是多用户下处理认证的最佳方式。
+
+以下几点特性会让你在程序中使用基于Token的身份验证
+1. 无状态、可扩展
+2. 支持移动设备
+3. 跨程序调用
+4. 安全
+
+
+### 基于Token的验证原理
+ 基于Token的身份验证是无状态的，我们不将用户信息存在服务器或Session中。
+
+这种概念解决了在服务端存储信息时的许多问题
+
+　　NoSession意味着你的程序可以根据需要去增减机器，而不用去担心用户是否登录。
+　　
+　　
+基于Token的身份验证的过程如下:　　
+1. 用户通过用户名和密码发送请求。
+2. 程序验证。
+3. 程序返回一个签名的token 给客户端。
+4. 客户端储存token,并且每次用于每次发送请求。
+5. 服务端验证token并返回数据。　　
+
+
+
+
+
+每一次请求都需要token。token应该在HTTP的头部发送从而保证了Http请求无状态。　　
+　　
+
+###  JWT(JSON WEB TOKEN)原理解析
+
+
+
+Bearer Token包含三个组成部分:令牌头、payload、哈希
+
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoiYWJjIiwicGFzc3dvcmQiOiIxMTExMTEifSwi ZXhwIjoxNTU3MTU1NzMwLCJpYXQiOjE1NTcxNTIxMzB9.pjGaxzX2srG_MEZizzmFEy7JM3t8tjkiu3yULgzFwU             k
+
+
+
+> 以 . 分割
+
+
+
+1. 签名:默认使用base64对payload编码，使用hs256算法对令牌头、payload和密钥进行签名生成哈希 
+2. 验证:默认使用hs256算法对hs256算法对令牌中数据签名并将结果和令牌中哈希比对
+
+
+
+
+
+```javascript
+ // jsonwebtoken.js
+const jsonwebtoken = require('jsonwebtoken')
+const secret = '12345678'
+const opt = {
+  secret: 'jwt_secret',
+	key: 'user' 
+}
+const user = {
+  username: 'abc',
+  password: '111111'
+}
+const token = jsonwebtoken.sign({
+data: user,
+// 设置 token 过期时间
+exp: Math.floor(Date.now() / 1000) + (60 * 60),
+}, secret)
+console.log('生成token:' + token)
+// 生成 token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoiYWJjIiwicGFzc3dv cmQiOiIxMTExMTEifSwiZXhwIjoxNTQ2OTQyMzk1LCJpYXQiOjE1NDY5Mzg3OTV9.VPBCQgLB7XPBq3RdHK9WQM kPp3dw65JzEKm_LZZjP9Y
+console.log('解码:', jsonwebtoken.verify(token, secret, opt))
+// 解码: { data: { username: 'abc', password: '111111' },
+// exp: 1546942395,
+// iat: 1546938795 }
+```
+
+
+
+## OAuth(开放授权)　　
+
+[https://www.jianshu.com/p/4f5fcddb4106](https://www.jianshu.com/p/4f5fcddb4106)
+
+　　
+
+概述:三方登入主要基于OAuth 2.0。OAuth协议为用户资源的授权提供了一个安全的、开放而又简易的标 准。与以往的授权方式不同之处是OAUTH的授权不会使第三方触及到用户的帐号信息(如用户名与密码)， 即第三方无需使用用户的用户名与密码就可以申请获得该用户资源的授权，因此OAUTH是安全的。
+
+
+
+## SSO单点登陆　　
+
+[https://yq.aliyun.com/articles/636281](https://yq.aliyun.com/articles/636281)
+
+
+
+　　在企业发展初期，企业使用的系统很少，通常一个或者两个，每个系统都有自己的登录模块，运营人员每天用自己的账号登录，很方便。
+
+​		但随着企业的发展，用到的系统随之增多，运营人员在操作不同的系统时，需要多次登录，而且每个系统的账号都不一样，这对于运营人员来说，很不方便。于是，就想到是不是可以在一个系统登录，其他系统就不用登录了呢？这就是单点登录要解决的问题。
+
+
+
+​		单点登录英文全称Single Sign On，简称就是SSO。它的解释是：**在多个应用系统中，只需要登录一次，就可以访问其他相互信任的应用系统。**
