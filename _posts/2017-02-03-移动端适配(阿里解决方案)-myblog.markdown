@@ -11,8 +11,8 @@ tags:
 
 > “Yeah It's on. ”
 
-
 ## 正文
+
 [网页链接](https://www.w3cplus.com/css/vw-for-layout.html)
 
 在移动端布局，我们需要面对两个最为重要的问题：
@@ -265,6 +265,6 @@ body {
 
 
 
-  [1]: https://www.w3cplus.com/sites/default/files/blogs/2017/1707/vw-layout-4.png
-  [2]: https://www.w3cplus.com/sites/default/files/blogs/2017/1707/vw-layout-5.png
-  [3]: https://www.w3cplus.com/sites/default/files/blogs/2017/1707/vw-layout-6.png
+[1]: https://www.w3cplus.com/sites/default/files/blogs/2017/1707/vw-layout-4.png
+[2]: https://www.w3cplus.com/sites/default/files/blogs/2017/1707/vw-layout-5.png
+[3]: https://www.w3cplus.com/sites/default/files/blogs/2017/1707/vw-layout-6.png
