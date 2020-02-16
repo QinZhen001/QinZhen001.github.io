@@ -168,7 +168,6 @@ Converts an asynchronous function to return a promise.
   delay(2000).then(() => console.log('Hi!')); // // Promise resolves after 2s
 ```
 
-
 ## Array
 
 
@@ -367,6 +366,94 @@ Returns the last element for which the provided function returns a truthy value.
 
   console.log(num) //3
 ```
+
+
+
+
+
+
+
+## reduce
+
+
+
+[https://juejin.im/post/5e44002c6fb9a07c9f3fd135?utm_source=gold_browser_extension](https://juejin.im/post/5e44002c6fb9a07c9f3fd135?utm_source=gold_browser_extension)
+
+
+
+### 数组分割
+
+```javascript
+function Chunk(arr = [], size = 1) {
+    return arr.length ? arr.reduce((t, v) => (t[t.length - 1].length === size ? t.push([v]) : t[t.length - 1].push(v), t), [[]]) : [];
+}
+
+
+
+const arr = [1, 2, 3, 4, 5];
+Chunk(arr, 2); // [[1, 2], [3, 4], [5]]
+
+```
+
+
+
+
+
+### 数组过滤
+
+```javascript
+function Difference(arr = [], oarr = []) {
+    return arr.reduce((t, v) => (!oarr.includes(v) && t.push(v), t), []);
+}
+
+
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [2, 3, 6]
+Difference(arr1, arr2); // [1, 4, 5]
+
+```
+
+
+
+
+
+### 数组扁平
+
+```javascript
+function Flat(arr = []) {
+    return arr.reduce((t, v) => t.concat(Array.isArray(v) ? Flat(v) : v), [])
+}
+
+
+const arr = [0, 1, [2, 3], [4, 5, [6, 7]], [8, [9, 10, [11, 12]]]];
+Flat(arr); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+
+```
+
+
+
+
+
+
+
+### 数组去重
+
+```javascript
+function Uniq(arr = []) {
+    return arr.reduce((t, v) => t.includes(v) ? t : [...t, v], []);
+}
+
+
+const arr = [2, 1, 0, 3, 2, 1, 2];
+Uniq(arr); // [2, 1, 0, 3]
+
+
+```
+
+
+
+
 
 
 

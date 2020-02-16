@@ -6,7 +6,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - NetWork
+    - Network
 ---
 
 > “Yeah It's on. ”
@@ -66,7 +66,7 @@ axios.post('/user', {
   .catch(function (error) {
     console.log(error);
   });
-```  
+```
 执行多个并发请求
 ```
 function getUserAccount() {
@@ -123,7 +123,7 @@ var instance = axios.create({
 ### 请求配置
 这些是用于发出请求的可用配置选项。 只有url是必需的。 如果未指定方法，请求将默认为GET。
 
-```
+```js
 {
   // `url`是将用于请求的服务器URL
   url: '/user',
@@ -233,7 +233,7 @@ var instance = axios.create({
 
 使用 then 时，您将收到如下响应：
 
-```
+```js
 axios.get('/user/12345')
   .then(function(response) {
     console.log(response.data);
@@ -305,7 +305,7 @@ axios.get（'/ user / 12345'）
      }}
      console.log（error.config）;
    }）;
-```   
+```
 您可以使用validateStatus配置选项定义自定义HTTP状态码错误范围。
 ```
 axios.get（'/ user / 12345'，{

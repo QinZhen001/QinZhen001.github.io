@@ -22,7 +22,6 @@ tags:
 
 插件目的在于解决 loader 无法实现的其他事。
 
-
 --------------------
 
 
@@ -68,7 +67,7 @@ CommonsChunkPlugin 插件，是一个可选的用于建立一个独立文件(又
 
 
  vendor chunk 里面包含了 webpack 的 runtime 代码（用来解析和加载模块之类的运行时代码）,这样会导致vendor打包的hash值一直在改变，所以要把runtime 代码提取出来
- 
+
 ```javascript
     // extract webpack runtime and module manifest to its own file in order to
     // prevent vendor hash from being updated whenever app bundle is updated
@@ -114,7 +113,6 @@ CommonsChunkPlugin 插件，是一个可选的用于建立一个独立文件(又
 ```
 
 用到 minChunks想把所有 node_modules 目录下的所有 .js 都自动分离到 vendor.js
-
 
 ----------
 
@@ -240,7 +238,6 @@ module.exports = {
 Extract from all additional chunks too (by default it extracts only from the initial chunk(s))
 When using CommonsChunkPlugin and there are extracted chunks (from ExtractTextPlugin.extract) **in the commons chunk, allChunks must be set to true**
 
-
 ----------
 
 
@@ -264,14 +261,12 @@ ExtractTextPlugin.extract(options: loader | object)
 
 Creates an extracting loader from an existing loader
 
-
 ----------
 
 
 options.use	  **{String}/ {Array}/{Object}**
 
 应该用于将资源转换为CSS导出模块的加载程序（必需）
-
 
 ----------
 
@@ -280,14 +275,12 @@ options.fallback	**{String}/ {Array}/{Object}**
 
 加载器（例如'style-loader'），当CSS没有被提取时应该被使用（例如在一个额外的块中allChunks: false）
 
-
 ----------
 
 
 options.publicPath	{String}
 
 覆盖publicPath此加载器的设置
-
 
 ----------
 
@@ -365,19 +358,18 @@ let icoPath = path.resolve(srcPath, 'common/images/favicon.ico')
   ]
 ```
 
-
 ----------------
 
 
  **title属性不起作用**
+
  
- 
- 
+
 [https://segmentfault.com/q/1010000004555431](https://segmentfault.com/q/1010000004555431)
 
 
 
- 
+
 应该是webpack.config.js的配置文件里面加了 html-loader，加了之后会正常解析html文件作为模版，就会直接把 `<%= htmlWebpackPlugin.options.title %>`解析成字符串。如果有html-loader ,去掉就可以了
 
 
@@ -564,6 +556,98 @@ new webpack.NamedModulesPlugin()
 
 
 >Note: This is an extension plugin for html-webpack-plugin - a plugin that simplifies the creation of HTML files to serve your webpack bundles.
+
+
+
+
+
+### DllPlugin 和 DLLReferencePlugin
+
+[https://juejin.im/post/5c7e76bfe51d4541e207e35a](https://juejin.im/post/5c7e76bfe51d4541e207e35a)
+
+
+
+常用于提取公用库
+
+
+
+`DLLPlugin` 和 `DLLReferencePlugin` 用某种方法实现了拆分 bundles，同时还大大提升了构建的速度。
+
+
+
+`DLLPlugin`这个插件是在一个额外的独立的 webpack 设置中创建一个只有 dll 的 bundle(dll-only-bundle)。 这个插件会生成一个名为 `manifest.json` 的文件，这个文件是用来让 [`DLLReferencePlugin`](https://webpack.docschina.org/plugins/dll-plugin#dllreferenceplugin) 映射到相关的依赖上去的。
+
+ 
+
+vue 开发过程中，保存一次就会编译一次，如果能够减少编译的时间，哪怕是一丁点，也能节省不少时间。开发过程中个人编写的源文件才会频繁变动，而一些库文件一般我们不会去改动。如果能把库文件提取出来，就能达到减少打包体积，加快编译速度。
+
+
+
+
+
+###  add-asset-html-webpack-plugin
+
+[https://www.npmjs.com/package/add-asset-html-webpack-plugin](https://www.npmjs.com/package/add-asset-html-webpack-plugin)
+
+
+
+
+
+
+
+```javascript
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+
+
+
+new AddAssetHtmlPlugin({
+        // dll文件位置
+        filepath: path.resolve(__dirname, './public/vendor/*.js'),
+        // dll 引用路径
+        publicPath: './vendor',
+        // dll最终输出的目录
+        outputPath: './vendor'
+      })
+```
+
+
+
+
+
+
+
+### ProvidePlugin
+
+
+
+[https://webpack.docschina.org/plugins/provide-plugin/](https://webpack.docschina.org/plugins/provide-plugin/)
+
+
+
+自动加载模块，而不必到处 `import` 或 `require` 。
+
+
+
+
+
+```js
+new webpack.ProvidePlugin({
+  identifier: 'module1',
+  // ...
+});
+```
+
+or
+
+```js
+new webpack.ProvidePlugin({
+  identifier: ['module1', 'property1'],
+  // ...
+});
+```
+
+任何时候，当 `identifier` 被当作未赋值的变量时，`module` 就会自动被加载，并且 `identifier` 会被这个 `module` 导出的内容所赋值。（或者被模块的 `property` 导出的内容所赋值，以支持命名导出(named export)）。
+
 
 
 
@@ -932,4 +1016,4 @@ module.exports = EndWebpackPlugin;
 
 
 
-  [1]: https://pic2.zhimg.com/80/v2-5a4b6bef5809e00512873d481a3670e7_hd.jpg
+[1]: https://pic2.zhimg.com/80/v2-5a4b6bef5809e00512873d481a3670e7_hd.jpg

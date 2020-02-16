@@ -177,7 +177,7 @@ console.log(buf1.toString());
 
 ### Node.js Stream(流)
  Stream 是一个抽象接口，Node 中有很多对象实现了这个接口。例如，对http 服务器发起请求的request 对象就是一个 Stream，还有stdout（标准输出）。
- 
+
 Node.js，Stream 有四种流类型：
 * Readable - 可读操作。
 * Writable - 可写操作。
@@ -249,7 +249,7 @@ console.log("文件压缩完成。");
 
 ### 模块系统
 为了让Node.js的文件可以相互调用，Node.js提供了一个简单的模块系统。
- 
+
 模块是Node.js 应用程序的基本组成部分，文件和模块是一一对应的。换言之，一个 Node.js 文件就是一个模块，这个文件可能是JavaScript 代码、JSON 或者编译过的C/C++ 扩展。
 
 #### 创建模块
@@ -406,7 +406,6 @@ global 最根本的作用是作为全局变量的宿主。按照 ECMAScript 的�
 
 __filename 表示当前正在执行的脚本的文件名。它将输出文件所在位置的绝对路径，且和命令行参数所指定的文件名不一定相同。 如果在模块中，返回的值是模块文件的路径。 
 
-
 ----------
 
 
@@ -459,7 +458,6 @@ $ node process.js one two=three four
 
 
 这个用处挺多的。例如你在bat的文件这样写。node app 127.0.0.1 7001 这时候通过.argv [2] 得到IP，argv[3]得到端口，更方便我们修改配置。
-
 
 ----------
 
@@ -575,6 +573,16 @@ nodejs 中总共有 5 种依赖：
 * optionalDependencies (我之前没用过)
 
 devDependencies 就是开发中使用的依赖，它区别于实际的依赖。也就是说，在线上状态不需要使用的依赖，就是开发依赖。
+
+
+
+
+
+### node调试
+
+
+
+[http://www.ruanyifeng.com/blog/2018/03/node-debugger.html](http://www.ruanyifeng.com/blog/2018/03/node-debugger.html)
 
 
 

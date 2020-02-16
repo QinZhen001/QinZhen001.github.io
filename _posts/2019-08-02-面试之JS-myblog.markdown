@@ -2233,6 +2233,416 @@ ts是js的超集。ts一方面是对js加上了很多条条框框的限制，另
 
 
 
+### ts的泛型
+
+
+
+泛型决定了一个类型在不同的场景下能够在每个场景下从始至终的保持类型一致
+
+
+
+
+
+对于泛型，我是这样理解的，编写一个方法，让方法可以传入任意的参数，但是参数与参数，参数与结果之间存在一定的约束，以保证传入某个类型的参数就能得到确定类型的返回值，或者保证了我们传入值的正确性
+
+
+
+
+
+
+
+```typescript
+function find<T>(items: T[], callback: (item: T, index: number) => boolean): T | undefined {
+  for (let i = 0, length = items.length; i < length; i++) {
+    if (callback(items[i], i)) {
+      return items[i]
+    }
+  }
+}
+
+const items = [{ a: 1 }, { a: 2 }, { a: 4 }, null ]
+const result = find(items, (item, index) => item.a === 2)
+```
+
+
+
+```
+首先<T>是给函数声明了一个类型变量T，后面要求items是一个T类型的数组，然后后面的callback函数的参数item是一个T类型的变量，index为数字，然后callback返回boolean类型结果，整个find函数返回T类型结果或者undefined
+
+```
+
+
+
+**如上，我们就能准确定义函数的每一个参数了，参数与参数，参数与返回结果之间就形成了约束关系**
+
+
+
+## 箭头函数和普通函数的区别
+
+
+
+* 箭头函数体内的`this`对象，就是定义时所在的对象，而不是使用时所在的对象。
+
+* 不可以当作构造函数，也就是说，不可以使用`new`命令，否则会抛出一个错误。
+
+* 不可以使用`arguments`对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。
+
+* 不可以使用`yield`命令，因此箭头函数不能用作 Generator 函数。
+
+
+
+**注意： `this`对象的指向是可变的，但是在箭头函数中，它是固定的。**
+
+
+
+
+
+
+
+举一个例子：
+
+
+
+```javascript
+var id = 21;
+
+function foo() {
+    setTimeout(function(){
+        console.log('id:', this.id);
+      	// 输出 21
+    }, 100);
+}
+
+
+foo.call({ id: 42 });
+```
+
+  
+
+ 
+
+```javascript
+var id = 21;
+
+function foo() {
+    setTimeout(()=>{
+        console.log('id:', this.id);
+        // 输出 42 
+    }, 100);
+}
+
+
+foo.call({ id: 42 });
+```
+
+
+
+
+
+**箭头函数可以让`setTimeout`里面的`this`，绑定定义时所在的作用域，而不是指向运行时所在的作用域。**
+
+
+
+
+
+-----
+
+
+
+科普：
+
+```
+setTimeout(fn,delay) { fn(); }
+
+fn的调用者是window对象，所以this指向了window
+```
+
+
+
+---
+
+
+
+所以，箭头函数转成 ES5 的代码如下
+
+
+
+```javascript
+// ES6
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
+}
+
+// ES5
+function foo() {
+  var _this = this;
+
+  setTimeout(function () {
+    console.log('id:', _this.id);
+  }, 100);
+}
+
+```
+
+
+
+
+
+上面代码中，转换后的 ES5 版本清楚地说明了，箭头函数里面根本没有自己的`this`，而是引用外层的`this`。
+
+
+
+
+
+
+
+## 一道关于轮询的面试题
+
+
+
+```javascript
+  function poll(checkStatus,callback){
+        // 轮询调用checkStatus，当checkStatus为true时，执行callback
+        // 如果checkStatus为false，则等待上次时间的1.5倍；第一次等待为1s
+}
+
+如： 等待1s，调用checkStatus返回false
+等待1.5s 调用checkStatus返回false
+等待2.25s 调用checkStatus返回true，调用callback
+```
+
+
+
+
+
+
+
+解决：
+
+
+
+```javascript
+ function timeOut(timer) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    console.log(timer, " 延时执行")
+                    resolve(true)
+                }, timer)
+            })
+        }
+
+
+
+        async function poll(checkStatus, callback) {
+            let timer = 1000
+            let flag = true
+            while (flag) {
+                await timeOut(timer)
+                if (checkStatus()) {
+                    callback()
+                    flag = false
+                } else {
+                    timer = timer * 1.5
+                }
+            }
+        }
+
+        function checkStatus() {
+            return Math.random() > 0.7
+        }
+
+        function callback() {
+            console.log("callbackcallback")
+        }
+
+
+
+        poll(checkStatus, callback)
+```
+
+
+
+
+
+
+
+
+
+
+
+## 实现一个LazyMan
+
+
+
+实现一个LazyMan，可以按照以下方式调用：
+
+`LazyMan('Hank')`，输出：
+
+> Hi, This is Hank!
+
+`LazyMan('Hank').sleep(5).eat('dinner')`，输出：
+
+> Hi, This is Hank!
+> // 等待5秒
+> Weak up after 10
+> Eat dinner ~
+
+`LazyMan('Hank').eat('dinner').eat('supper')`，输出
+
+> Hi, this is Hank!
+> Eat dinner ~
+> Eat supper ~
+
+`LazyMan('Hank').sleepFirst(5).eat('supper')`，输出
+
+> // 等待5秒
+> Wake up after 5
+> Hi, this is Hank!
+> Eat supper
+
+
+
+
+
+解决：
+
+
+
+```javascript
+        class LLazyMan {
+            constructor(name) {
+                this.name = name
+                this.runTimer = null
+                this.queueList = []
+                this.sayHi()
+            }
+            sayHi() {
+                this.queueList.push(() => {
+                    console.log(`Hi, This is ${this.name}!`)
+                })
+                return this.run()
+            }
+
+            sleep(timer) {
+                this.queueList.push(() => {
+                    return new Promise((resolve, reject) => {
+                        console.log("延时 ", timer)
+                        setTimeout(() => {
+                            resolve()
+                        }, timer * 1000)
+                    })
+                })
+                return this.run()
+            }
+
+            sleepFirst(timer) {
+                this.queueList.unshift(() => {
+                    return new Promise((resolve, reject) => {
+                        console.log("延时 ", timer)
+                        setTimeout(() => {
+                            resolve()
+                        }, timer * 1000)
+                    })
+                })
+                return this.run()
+            }
+
+            run() {
+                if (this.runTimer) {
+                    clearTimeout(this.runTimer)
+                }
+                this.runTimer = setTimeout(async () => {
+                    console.log(this.queueList)
+                    for (let fn of this.queueList) {
+                        await fn()
+                    }
+                    this.queueList = []
+                    this.runTimer = null
+                }, 0)
+                return this
+            }
+
+            eat(name) {
+                this.queueList.push(() => {
+                    console.log(`Eat ${name} ~`)
+                })
+                return this.run()
+            }
+        }
+
+        let LazyMan = name => (new LLazyMan(name))
+
+        LazyMan('Hank').eat("aaa").sleepFirst(5)
+
+
+
+```
+
+
+
+
+
+## 找到数组中的重复元素
+
+
+
+给定两个排好序的数组A,B,大小分别为n,m。给出一个高效算法查找A中的哪些元素存在B数组中
+
+A = [1,2,2,3,4,6,7,7,7,18,22]
+
+B = [2,3,4,6,8,18,21,42]
+
+答案 [2, 2, 3, 4, 6, 18]
+
+
+
+
+
+解决：双指针
+
+
+
+
+
+```javascript
+
+let a = [1, 2, 2, 3, 4, 6, 7, 7, 7, 18, 22]
+let b = [2, 3, 4, 6, 8, 18, 21, 42]
+
+let aIndex = 0
+let bIndex = 0
+let curA = a[0]
+let curB = b[0]
+let res = []
+while (aIndex < a.length) {
+    if (curA < curB) {
+        aIndex++
+        curA = a[aIndex]
+    } else if (curA === curB) {
+        res.push(curA)
+        aIndex++
+        curA = a[aIndex]
+    } else {
+        bIndex++
+        curB = b[bIndex]
+    }
+}
+
+console.log(res)
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
