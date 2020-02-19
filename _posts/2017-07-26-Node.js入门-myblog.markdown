@@ -588,6 +588,71 @@ devDependencies 就是开发中使用的依赖，它区别于实际的依赖。�
 
 
 
+### utility
+
+https://github.com/node-modules/utility
+
+
+
+A collection of useful utilities.
+
+(包括一些常用的加密方式)
+
+
+
+### path.join和path.resolve
+
+[网页链接](https://segmentfault.com/q/1010000007260681/a-1020000007260806)
+
+path是node.js内置的package，用来处理路径的。
+
+[http://www.runoob.com/nodejs/nodejs-path-module.html](http://www.runoob.com/nodejs/nodejs-path-module.html)
+
+
+* path.join([path1][, path2][, ...])
+  用于连接路径。该方法的主要用途在于，会正确使用当前系统的路径分隔符，Unix系统是/，Windows系统是\。
+* path.resolve([from ...], to)将 to 参数解析为绝对路径。
+
+
+
+---
+
+
+
+
+
+path.join()方法可以连接任意多个路径字符串。要连接的多个路径可做为参数传入。
+
+path.join()方法在接边路径的同时也会对路径进行规范化。例如：
+
+```
+var path = require('path'); 
+//合法的字符串连接 
+path.join('/foo', 'bar', 'baz/asdf', 'quux', '..') 
+// 连接后 
+'/foo/bar/baz/asdf' 
+
+//不合法的字符串将抛出异常 
+path.join('foo', {}, 'bar') 
+// 抛出的异常 TypeError: Arguments to path.join must be strings'
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 爬坑
 
 
