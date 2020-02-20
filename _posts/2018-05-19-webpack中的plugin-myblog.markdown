@@ -652,6 +652,41 @@ new webpack.ProvidePlugin({
 
 
 
+### terser-webpack-plugin
+
+https://www.npmjs.com/package/terser-webpack-plugin
+
+
+
+This plugin uses [terser](https://github.com/terser-js/terser) to minify your JavaScript.
+
+
+
+
+
+```js
+const TerserPlugin = require('terser-webpack-plugin');
+ 
+module.exports = {
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+};
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 编写plugin
 
 

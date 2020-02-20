@@ -54,7 +54,6 @@ console.log(array1.reduce(reducer, 5));
 // expected output: 15
 ```
 
-
 ----------
 
 
@@ -873,7 +872,6 @@ const createNodeFromString = (htmlString) => {
 
 >上述方法对 于包含复杂字符（Unicode，如星号、多字节字符等）的字符串并不适用
 
-
 ----------
 
 
@@ -1095,7 +1093,6 @@ function sequenceTasks({ tasks, thisIns, arg }) {
   console.log(res)  //["111", "222", "333", "444"]
 ```
 
-
 --------------
 
 
@@ -1287,7 +1284,7 @@ async function getAdListByRequest(data = {}) {
   let str = "<p>qwe<span>asd</span>qwe</p>"
   
   console.log(htmlToString(str))   //qweasdqwe
-``` 
+```
 
 
 >利用innerText这个属性，非常秀
@@ -1565,5 +1562,43 @@ function toArray (list, start) {
 
 
 
+### 一个同步流只调用一次函数
 
-  [1]: https://pic1.zhimg.com/50/fa4f6a40ff9696dc2453d6b30ddc1838_hd.jpg
+
+
+```js
+/**
+ * 节流，一个同步流中只调用一次该函数
+ */
+const waitFuncSet = new Set()
+function throttle(func) {
+    return () => {
+        if (waitFuncSet.has(func)) return
+
+        waitFuncSet.add(func)
+
+        Promise.resolve().then(() => {
+            if (waitFuncSet.has(func)) {
+                waitFuncSet.delete(func)
+                func()
+            }
+        }).catch(() => {
+            // ignore
+        })
+    }
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+[1]: https://pic1.zhimg.com/50/fa4f6a40ff9696dc2453d6b30ddc1838_hd.jpg

@@ -399,6 +399,40 @@ expose加载程序将模块添加到全局对象。这对于调试或支持全�
 
 
 
+
+
+### thread-loader
+
+https://www.webpackjs.com/loaders/thread-loader/
+
+Runs the following loaders in a worker pool.
+
+
+
+把这个 loader 放置在其他 loader 之前， 放置在这个 loader 之后的 loader 就会在一个单独的 worker 池(worker pool)中运行
+
+在 worker 池(worker pool)中运行的 loader 是受到限制的。例如：
+
+ 
+
+- 这些 loader 不能产生新的文件。
+- 这些 loader 不能使用定制的 loader API（也就是说，通过插件）。
+- 这些 loader 无法获取 webpack 的选项设置。
+
+
+
+每个 worker 都是一个单独的有 600ms 限制的 node.js 进程。同时跨进程的数据交换也会被限制。
+
+请仅在耗时的 loader 上使用
+
+
+
+
+
+
+
+
+
 ## 补充
 
 
@@ -560,4 +594,4 @@ Npm link 专门用于开发和调试本地 Npm 模块，能做到在不发布模
 
 
 
-  [1]: http://blog.evanyou.me/images/vue-component.png
+[1]: http://blog.evanyou.me/images/vue-component.png
