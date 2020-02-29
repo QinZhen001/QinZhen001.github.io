@@ -12,7 +12,53 @@ tags:
 > “Yeah It's on. ”
 
 
+
+## 科普
+
+
+### 进程
+
+进程Process是计算机中的程序关于某数据集合上的一次运行活动，是系统进行资源分配和调度的基本单位，是操作系统结构的基础，进程是线程的容器
+
+
+进程是资源分配的最小单位。我们启动一个服务、运行一个实例，就是开一个服务进程，例如 Java 里的 JVM 本身就是一个进程，Node.js 里通过 node app.js 开启一个服务进程，多进程就是进程的复制（fork），fork 出来的每个进程都拥有自己的独立空间地址、数据栈，一个进程无法访问另外一个进程里定义的变量、数据结构，只有建立了 IPC 通信，进程之间才可数据共享。
+
+
+### 线程
+
+
+线程是操作系统能够进行运算调度的最小单位，首先我们要清楚线程是隶属于进程的，被包含于进程之中。**一个线程只能隶属于一个进程，但是一个进程是可以拥有多个线程的。**
+
+
+### 单线程
+
+
+**单线程就是一个进程只开一个线程**
+
+
+Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步)，可以想象一下队列，前面一个执行完之后，后面才可以执行，当你在使用单线程语言编码时切勿有过多耗时的同步操作，否则线程会造成阻塞，导致后续响应无法处理。你如果采用 Javascript 进行编码时候，请尽可能的利用Javascript异步操作的特性。
+
+
+
+----
+
+单线程的一些说明
+
+* Node.js 虽然是单线程模型，但是其基于事件驱动、异步非阻塞模式，可以应用于高并发场景，避免了线程创建、线程之间上下文切换所产生的资源开销。
+* 当你的项目中需要有大量计算，CPU 耗时的操作时候，要注意考虑开启多进程来完成了。
+* Node.js 开发过程中，错误会引起整个应用退出，应用的健壮性值得考验，尤其是错误的异常抛出，以及进程守护是必须要做的。
+* 单线程无法利用多核CPU，但是后来Node.js 提供的API以及一些第三方工具相应都得到了解决
+
+
+
 ## 正文
+
+[https://juejin.im/post/5d43017be51d4561f40adcf9#heading-5](https://juejin.im/post/5d43017be51d4561f40adcf9#heading-5)
+
+
+
+
+
 [网页链接](http://www.runoob.com/nodejs/nodejs-tutorial.html)
 
 简单的说 Node.js 就是运行在服务端的 JavaScript。
@@ -32,18 +78,6 @@ Node 自带了交互式解释器，可以执行以下任务：
 * 循环 - 循环操作以上步骤直到用户两次按下 ctrl-c 按钮退出。
 
 Node 的交互式解释器可以很好的调试 Javascript 代码。
-
-#### REPL 命令
-* ctrl + c - 退出当前终端。
-* ctrl + c 按下两次 - 退出 Node REPL。
-* ctrl + d - 退出 Node REPL.
-* 向上/向下 键 - 查看输入的历史命令
-* tab 键 - 列出当前命令
-* .help - 列出使用命令
-* .break - 退出多行表达式
-* .clear - 退出多行表达式
-* .save filename - 保存当前的 Node REPL 会话到指定文件
-* .load filename - 载入当前 Node REPL 会话的文件内容。
 
 
 ### 事件驱动程序
@@ -175,7 +209,7 @@ console.log(buf1.toString());
 执行以上代码，输出结果为：
 >abRUNOOBijkl
 
-### Node.js Stream(流)
+### Stream(流)
  Stream 是一个抽象接口，Node 中有很多对象实现了这个接口。例如，对http 服务器发起请求的request 对象就是一个 Stream，还有stdout（标准输出）。
 
 Node.js，Stream 有四种流类型：
@@ -189,44 +223,6 @@ Node.js，Stream 有四种流类型：
 * end - 没有更多的数据可读时触发。
 * error - 在接收和写入过程中发生错误时触发。
 * finish - 所有数据已被写入到底层系统时触发。
-
-#### 从流中读取数据
-
-创建 input.txt 文件，内容如下：
-
->菜鸟教程官网地址：www.runoob.com
-
-创建 main.js 文件, 代码如下：
-```
-var fs = require("fs");
-var data = '';
-
-// 创建可读流
-var readerStream = fs.createReadStream('input.txt');
-
-// 设置编码为 utf8。
-readerStream.setEncoding('UTF8');
-
-// 处理流事件 --> data, end, and error
-readerStream.on('data', function(chunk) {
-   data += chunk;
-});
-
-readerStream.on('end',function(){
-   console.log(data);
-});
-
-readerStream.on('error', function(err){
-   console.log(err.stack);
-});
-
-console.log("程序执行完毕");
-```
-以上代码执行结果如下：
-```
-程序执行完毕
-菜鸟教程官网地址：www.runoob.com
-```
 
 #### 管道流
 管道提供了一个输出流到输入流的机制。通常我们用于从一个流中获取数据并将数据传递到另外一个流中。我们用一根管子(pipe)连接两个桶使得水从一个桶流入另一个桶，这样就慢慢的实现了大文件的复制过程。 
@@ -247,23 +243,8 @@ fs.createReadStream('input.txt')
 console.log("文件压缩完成。");
 ```
 
-### 模块系统
-为了让Node.js的文件可以相互调用，Node.js提供了一个简单的模块系统。
 
-模块是Node.js 应用程序的基本组成部分，文件和模块是一一对应的。换言之，一个 Node.js 文件就是一个模块，这个文件可能是JavaScript 代码、JSON 或者编译过的C/C++ 扩展。
-
-#### 创建模块
-
-在 Node.js 中，创建一个模块非常简单，如下我们创建一个 main.js 文件，代码如下:
-```
-var hello = require('./hello');
-hello.world();
-```
-
-
-
-
-#### **模块的缓存**
+### 模块的缓存
 
 **这是一个非常重要的知识点**
 
@@ -314,7 +295,7 @@ require.resolve('./testModule.js');
 
 
 
-#### 服务端的模块
+### 服务端的模块
 也许你已经注意到，我们已经在代码中使用了模块了
 ```
 var http = require("http");
@@ -352,6 +333,16 @@ http://localhost:8888/start?foo=bar&hello=world
 
 ### Node.js 中的进程
 
+>在 Web 服务器方面，著名的 Nginx 也是采用此模式（事件驱动），避免了多线程的线程创建、线程上下文切换的开销，Nginx 采用 C 语言进行编写，主要用来做高性能的 Web 服务器，不适合做业务。
+
+
+在单核 CPU 系统之上我们采用 单进程 + 单线程 的模式来开发。在多核 CPU 系统之上，可以通过 child_process.fork 开启多个进程（Node.js 在 v0.8 版本之后新增了Cluster 来实现多进程架构） ，即 多进程 + 单线程 模式。注意：开启多进程不是为了解决高并发，主要是解决了单进程模式下 Node.js CPU 利用率不足的情况，充分利用多核 CPU 的性能。
+
+
+
+
+-----
+
 
 process 模块
 
@@ -369,11 +360,6 @@ Node.js 中的进程 Process 是一个全局对象，无需 require 直接使用
 * process.uptime()：当前进程已运行时间，例如：pm2 守护进程的 uptime 值
 
 
-作者：大西轰已在服务区
-链接：https://juejin.im/post/5d43017be51d4561f40adcf9
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
 
 **child_process模块**
 
@@ -387,10 +373,51 @@ Node.js 中的进程 Process 是一个全局对象，无需 require 直接使用
 >CPU 核心数这里特别说明下，fork 确实可以开启多个进程，但是并不建议衍生出来太多的进程，cpu核心数的获取方式const cpus = require('os').cpus();,这里 cpus 返回一个对象数组，包含所安装的每个 CPU/内核的信息，二者总和的数组哦。假设主机装有两个cpu，每个cpu有4个核，那么总核数就是8。
 
 
+#### cluster原理分析
+
+cluster模块调用fork方法来创建子进程，该方法与child_process中的fork是同一个方法。
+cluster模块采用的是经典的主从模型，Cluster会创建一个master，然后根据你指定的数量复制出多个子进程，可以使用cluster.isMaster属性判断当前进程是master还是worker(工作进程)。由master进程来管理所有的子进程，主进程不负责具体的任务处理，主要工作是负责调度和管理。
+
+
+
+cluster模块使用内置的负载均衡来更好地处理线程之间的压力，该负载均衡使用了Round-robin算法（也被称之为循环算法）。当使用Round-robin调度策略时，master accepts()所有传入的连接请求，然后将相应的TCP请求处理发送给选中的工作进程（该方式仍然通过IPC来进行通信）。
+
+----
+
+**开启多进程时候端口疑问讲解：如果多个Node进程监听同一个端口时会出现 Error:listen EADDRIUNS的错误，而cluster模块为什么可以让多个子进程监听同一个端口呢?**
+
+
+
+原因是master进程内部启动了一个TCP服务器，而真正监听端口的只有这个服务器，当来自前端的请求触发服务器的connection事件后，master会将对应的socket具柄发送给子进程。
+
+
+
+
+
+#### child_process 模块与cluster 模块总结
+
+无论是 child_process 模块还是 cluster 模块，为了解决 Node.js 实例单线程运行，无法利用多核 CPU 的问题而出现的。核心就是**父进程（即 master 进程）负责监听端口，接收到新的请求后将其分发给下面的 worker 进程。**
+
+cluster内部隐时的构建TCP服务器的方式来说对使用者确实简单和透明了很多，但是这种方式无法像使用child_process那样灵活，因为一直主进程只能管理一组相同的工作进程，而自行通过child_process来创建工作进程，一个主进程可以控制多组进程。原因是child_process操作子进程时，可以隐式的创建多个TCP服务器
+
+
+
+
+#### Node.js进程通信原理
+
+
+前面讲解的无论是child_process模块，还是cluster模块，都需要主进程和工作进程之间的通信。通过fork()或者其他API，创建了子进程之后，为了实现父子进程之间的通信，父子进程之间才能通过message和send()传递信息。
+
+IPC这个词我想大家并不陌生，不管那一张开发语言只要提到进程通信，都会提到它。IPC的全称是Inter-Process Communication,即进程间通信。它的目的是为了让不同的进程能够互相访问资源并进行协调工作。实现进程间通信的技术有很多，如命名管道，匿名管道，socket，信号量，共享内存，消息队列等。Node中实现IPC通道是依赖于libuv。windows下由命名管道(name pipe)实现，*nix系统则采用Unix Domain Socket实现。表现在应用层上的进程间通信只有简单的message事件和send()方法，接口十分简洁和消息化。
+
+
+
+
+
 
 
 ### 全局对象
- JavaScript 中有一个特殊的对象，称为全局对象（Global Object），它及其所有属性都可以在程序的任何地方访问，即全局变量。
+JavaScript 中有一个特殊的对象，称为全局对象（Global Object），它及其所有属性都可以在程序的任何地方访问，即全局变量。
 
 在浏览器 JavaScript 中，通常 window 是全局对象， 而 Node.js 中的全局对象是 global，所有全局变量（除了 global 本身以外）都是 global 对象的属性。
 
@@ -508,7 +535,7 @@ node process-argv.js 1 2 H 3 4
 
 
 
-### 常用工具
+## 常用工具
 util 是一个Node.js 核心模块，提供常用函数的集合，用于弥补核心JavaScript 的功能 过于精简的不足。 
 
 #### util.inherits
@@ -562,20 +589,6 @@ depth 表示最大递归的层数，如果对象很复杂，你可以指定层�
 特别要指出的是，util.inspect 并不会简单地直接把对象转换为字符串，即使该对 象定义了toString 方法也不会调用。
 
 
-### 依赖管理
-
-nodejs 中总共有 5 种依赖：
-
-* dependencies (常用)
-* devDependencies （常用）
-* peerDependencies （不太常用）
-* bundledDependencies (我之前没用过)
-* optionalDependencies (我之前没用过)
-
-devDependencies 就是开发中使用的依赖，它区别于实际的依赖。也就是说，在线上状态不需要使用的依赖，就是开发依赖。
-
-
-
 
 
 ### node调试
@@ -597,54 +610,6 @@ https://github.com/node-modules/utility
 A collection of useful utilities.
 
 (包括一些常用的加密方式)
-
-
-
-### path.join和path.resolve
-
-[网页链接](https://segmentfault.com/q/1010000007260681/a-1020000007260806)
-
-path是node.js内置的package，用来处理路径的。
-
-[http://www.runoob.com/nodejs/nodejs-path-module.html](http://www.runoob.com/nodejs/nodejs-path-module.html)
-
-
-* path.join([path1][, path2][, ...])
-  用于连接路径。该方法的主要用途在于，会正确使用当前系统的路径分隔符，Unix系统是/，Windows系统是\。
-* path.resolve([from ...], to)将 to 参数解析为绝对路径。
-
-
-
----
-
-
-
-
-
-path.join()方法可以连接任意多个路径字符串。要连接的多个路径可做为参数传入。
-
-path.join()方法在接边路径的同时也会对路径进行规范化。例如：
-
-```
-var path = require('path'); 
-//合法的字符串连接 
-path.join('/foo', 'bar', 'baz/asdf', 'quux', '..') 
-// 连接后 
-'/foo/bar/baz/asdf' 
-
-//不合法的字符串将抛出异常 
-path.join('foo', {}, 'bar') 
-// 抛出的异常 TypeError: Arguments to path.join must be strings'
-```
-
-
-
-
-
-
-
-
-
 
 
 

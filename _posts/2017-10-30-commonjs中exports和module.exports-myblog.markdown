@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Node中exports和module.exports"
+title:      "commonjs中exports和module.exports"
 date:       2017-10-30 20:31:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -527,6 +527,21 @@ __dirname
 
 
 特别注意第一个参数和第三参数的联系：第一参数是对于第三个参数的exports属性的引用。一旦将某个模块exports赋值给另外一个新的对象，那么就断开了exports属性和module.exports之间的引用关系，同时在其他模块当中也无法引用在当前模块中通过exports暴露出去的API，对于模块的引用始终是获取module.exports属性
+
+
+
+
+
+
+
+### ESmodule和CommonJS互转
+
+
+[https://www.zhihu.com/question/288322186](https://www.zhihu.com/question/288322186)
+
+
+道理上,ES module转成CommonJS,其default导出只能映射到module.exports.default上不能映射到CommonJS传统的module.exports上,因为ES module可以同时有命名导出,你让module.exports既是一个导出值,又是一个namespace object。(什么?你说在默认导数上加个其他属性又不会死?嗯,那你考虑下默认导出为primitive值甚至为null的情况)
+
 
 
 

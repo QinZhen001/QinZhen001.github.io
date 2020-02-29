@@ -2635,6 +2635,107 @@ console.log(res)
 
 
 
+## 请实现一个有难度的串行prommise 
+
+
+要求：不管resolve还是reject都不可以终止串行的执行，要从头执行到尾。
+
+
+
+```javascript
+const p1 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('111');
+    }, 1000)
+  });
+}
+const p2 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('222');
+      }
+      , 2000)
+  });
+}
+const p3 = () => {
+  return new Promise((resolve, reject) => {
+    reject("333");
+  });
+}
+const p4 = () => {
+  return new Promise((resolve, reject) => {
+    resolve("444");
+  });
+}
+const p5 = () => {
+  return new Promise((resolve, reject) => {
+    resolve("555");
+  });
+}
+
+
+async function f(...args) {
+  const arr = args.slice()
+  if (arr.length) {
+    try {
+      const fn = arr.shift()
+      const res = await fn()
+      console.log("res", res)
+    } catch (e) {
+      console.log("err", e)
+      // ....
+    } finally {
+      f(...arr)
+    }
+  }
+}
+
+
+f(p1, p2, p3, p4, p5)
+
+```
+
+
+
+
+## ES6 与 ES5 继承的区别
+
+
+
+* ES5的继承是通过prototype或构造函数机制来实现。ES5的继承实质上是**先创建子类的实例对象**，然后再将父类的方法添加到this上(Parent.apply(this))。
+* ES6的继承机制实质上是**先创建父类的实例对象**this(所以必须先调用父类的super()方法)，然后再用子类的构造函数修改this。
+
+
+
+
+
+## V8的GC 
+
+v8最新的垃圾回收机制是什么？
+
+
+### 新生代与老生代
+
+
+
+
+绝对大多数的应用程序对象的存活周期都会很短，而少数对象的存活周期将会很长为了利用这种情况，V8 将堆分为两类新生代和老生代，新空间中的对象都非常小大约为 1-8MB，这里的垃圾回收也很快。新生代空间中垃圾回收过程中幸存下来的对象会被提升到老生代空间。
+
+
+
+### 新生代空间
+
+
+
+由于新空间中的垃圾回收很频繁，因此它的处理方式必须非常的快，采用的 Scavenge 算法
+
+
+
+Scavenge 是一种复制算法，新生代空间会被一分为二划分成两个相等大小的 from-space 和 to-space。它的工作方式是将 from space 中存活的对象复制出来，然后移动它们到 to space 中或者被提升到老生代空间中，对于 from space 中没有存活的对象将会被释放。完成这些复制后在将 from space 和 to space 进行互换。
+
+
+Scavenge 算法非常快适合少量内存的垃圾回收，但是它有很大的空间开销，对于新生代少量内存是可以接受的。
 
 
 
@@ -2642,7 +2743,15 @@ console.log(res)
 
 
 
+### 老生代空间
 
+
+
+
+
+https://qinzhen001.github.io/xhw/
+
+勗哥 这个也算是我一年来的一些沉淀吧 如果以后想深入技术的话 可以参考一下 包括你之前和我说的一些点 请求重试机制 请求拦截器 setData的diff 更好的管理全局数据和全局状态，一些解耦 omix的设计思想 
 
 
 
