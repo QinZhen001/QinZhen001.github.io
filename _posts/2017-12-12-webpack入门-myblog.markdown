@@ -274,20 +274,58 @@ runtime，以及伴随的 manifest 数据，主要是指：在浏览器运行时
 
 ### libraryTarget
 
+[https://webpack.js.org/configuration/output/#expose-via-object-assignment](https://webpack.js.org/configuration/output/#expose-via-object-assignment)
+
+
+
+* libraryTarget: 'amd' - 这会将您的库作为AMD模块公开。
+* libraryTarget: 'umd' - 这会在所有模块定义下公开您的库，允许它与CommonJS，AMD和全局变量一起使用
+
+
+
+可以使用library属性来命名模块：
+
+```javascript
+module.exports = {
+  //...
+  output: {
+    library: 'MyLibrary',
+    libraryTarget: 'umd'
+  }
+};
 ```
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'index.js',
-        library: 'xhwSdk',
-        libraryTarget: "umd"
-    },
+
+最后输出是：
+
+
+
+```javascript
+(function webpackUniversalModuleDefinition(root, factory) {
+  if(typeof exports === 'object' && typeof module === 'object')
+    module.exports = factory();
+  else if(typeof define === 'function' && define.amd)
+    define([], factory);
+  else if(typeof exports === 'object')
+    exports['MyLibrary'] = factory();
+  else
+    root['MyLibrary'] = factory();
+})(typeof self !== 'undefined' ? self : this, function() {
+  return _entry_return_;
+});
 ```
 
-https://webpack.js.org/configuration/output/#expose-via-object-assignment
-
-libraryTarget: 'amd' - 这会将您的库作为AMD模块公开。
+用户应该能够通过以下方式访问 library：
 
 
+
+* ES2015 模块。例如 import webpackNumbers from 'webpack-numbers'。
+* CommonJS 模块。例如 require('webpack-numbers').
+* 全局变量，当通过 script 脚本引入时
+
+
+
+
+---
 
 
 AMD模块要求`<script>`使用特定属性定义条目块（例如，由标签加载的第一个脚本），例如define并且require通常由RequireJS或任何兼容的加载器（例如杏仁）提供。否则，直接加载生成的AMD包将导致错误，如define is not defined。
@@ -312,38 +350,6 @@ define('MyLibrary', [], function() {
 ---
 
 
-libraryTarget: 'umd' - 这会在所有模块定义下公开您的库，允许它与CommonJS，AMD和全局变量一起使用
-
-
-在这种情况下，您需要使用library属性来命名模块：
-```javascript
-module.exports = {
-  //...
-  output: {
-    library: 'MyLibrary',
-    libraryTarget: 'umd'
-  }
-};
-```
-最后输出是：
-
-```javascript
-(function webpackUniversalModuleDefinition(root, factory) {
-  if(typeof exports === 'object' && typeof module === 'object')
-    module.exports = factory();
-  else if(typeof define === 'function' && define.amd)
-    define([], factory);
-  else if(typeof exports === 'object')
-    exports['MyLibrary'] = factory();
-  else
-    root['MyLibrary'] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
-  return _entry_return_;
-});
-```
-
-
-
 
 ### context
 
@@ -363,6 +369,10 @@ Webpack 在寻找相对路径的文件时会以 context 为根目录，context �
 
 
 ### external
+
+
+[详细的讲解](https://www.tangshuang.net/3343.html)
+
 
 
 

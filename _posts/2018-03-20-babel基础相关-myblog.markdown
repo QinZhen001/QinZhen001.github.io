@@ -133,6 +133,16 @@ babelrc: false}).code;
 
 
 
+## 常用插件
+
+
+
+### babel-plugin-import
+
+[https://www.npmjs.com/package/babel-plugin-import](https://www.npmjs.com/package/babel-plugin-import)
+
+
+[https://ant.design/docs/react/getting-started-cn#%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD](https://ant.design/docs/react/getting-started-cn#%E6%8C%89%E9%9C%80%E5%8A%A0%E8%BD%BD)
 
 
 
@@ -285,11 +295,6 @@ stage-2它除了覆盖stage-3的所有功能，还支持如下两个插件：
 
 
 
-## 总结
-* 具体项目还是需要使用 babel-polyfill，只使用 babel-runtime 的话，实例方法不能正常工作（例如 "foobar".includes("foo")）；
-* JavaScript 库和工具可以使用 babel-runtime，在实际项目中使用这些库和工具，需要该项目本身提供 polyfill；
-
-
 
 
 
@@ -318,6 +323,47 @@ Generator 的中文名称是生成器，它是ECMAScript6中提供的新特性�
 简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
 
 
+
+
+
+### "modules": false
+
+
+
+.babelrc 文件 ["env", {"modules": false}]配置是什么作用的配置？
+
+```javascript
+{
+  "presets": [
+    ["env", {
+      "modules": false
+    }],
+    "stage-2"
+  ],
+  "plugins": ["transform-runtime"],
+  "env": {
+    "test": {
+      "presets": ["env", "stage-2"],
+      "plugins": ["transform-es2015-modules-commonjs", "dynamic-import-node"]
+    }
+  }
+}
+```
+
+
+modules 字段配置 Babel 对 ES6 模块的相应处理。
+Babel 默认是将ES6模块语法转化为CommonJS规范写法，配置为modules:false则不转化。
+
+
+**如果使用了 Webpack 且配置为modules:false，Webpack 会进行 tree shaking，去除一些无用代码。**
+
+
+
+
+
+## 总结
+* 具体项目还是需要使用 babel-polyfill，只使用 babel-runtime 的话，实例方法不能正常工作（例如 "foobar".includes("foo")）；
+* JavaScript 库和工具可以使用 babel-runtime，在实际项目中使用这些库和工具，需要该项目本身提供 polyfill；
 
 
 

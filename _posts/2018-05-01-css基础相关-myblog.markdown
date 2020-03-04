@@ -614,6 +614,79 @@ body {background-image:url(../images/css_tutorials/background.jpg); background-r
 
 
 
+
+### @supports
+
+
+
+@supports是CSS3新引入的规则之一，主要用于检测当前浏览器是否支持某个CSS属性并加载具体样式.
+
+
+```css
+@supports (display: grid) {
+    .container {
+        color: red;
+    }
+}
+
+```
+
+
+
+
+当浏览器支持display:grid这个CSS属性时才应用其中的样式
+
+
+
+
+**当然，这个支持性IE下全跪**
+
+
+个人觉得这其中有个很矛盾的地方，就是这个属性基本只有在“高级”浏览器下才会是生效，但“高级”浏览器的支持范围又支持大部分的CSS属性，所以觉得把他当做一个“低级”浏览器检测器倒是个不错的选择
+
+
+
+
+-----
+
+
+
+
+举个例子：
+
+
+适配iphone刘海屏
+
+
+```css
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 44px;
+
+    /* Status bar height on iOS 10 */
+    padding-top: 20px;   
+}
+
+@supports (constant(safe-area-inset-top)) {
+    header {
+        /* Status bar height on iOS 11+ */
+        padding-top: constant(safe-area-inset-top);
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
   [1]: https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh=600,800/sign=4a0826fc9d22720e7b9beafc4bfb267e/b219ebc4b74543a9c1d979521b178a82b8011469.jpg
 
 
