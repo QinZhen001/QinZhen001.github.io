@@ -416,7 +416,6 @@ Vue.filter('capitalize', function (value) {
 
 在这个例子中，filterA 被定义为接收单个参数的过滤器函数，表达式 message 的值将作为参数传入到函数中。然后继续调用同样被定义为接收单个参数的过滤器函数 filterB，将 filterA 的结果传递到 filterB 中。
 
-
 ----------
 
 
@@ -773,7 +772,6 @@ this.$route.params.id
 
 **注意:params传参，push里面只能是 name:'xxxx',不能是path:'/xxx',因为params只能用name来引入路由，如果这里写成了path，接收参数页面会是undefined！！！**
 
-
 ----------
 
 
@@ -970,7 +968,6 @@ router.push(location, onComplete?, onAbort?)
 
 当你点击 `<router-link>` 时，这个方法会在内部调用，所以说，点击 `<router-link :to="...">` 等同于调用 router.push(...)。
 
-
 ----------
 
 
@@ -987,7 +984,6 @@ router.push({ name: 'user', params: { userId: 123 }})
 
 // 带查询参数，变成 /register?plan=private
 router.push({ path: 'register', query: { plan: 'private' }})
-
 
 ----------
 
@@ -1031,9 +1027,9 @@ router.go(100)
 
 
 ### **data必须是函数**
- 
+
 [网页链接](https://cn.vuejs.org/v2/guide/components.html)
- 
+
 构造 Vue 实例时传入的各种选项大多数都可以在组件里使用。只有一个例外：data 必须是函数。实际上，如果你这么做：
 ```javascript
 Vue.component('my-component', {
@@ -1147,5 +1143,98 @@ changeOrigin:true,
 
 
 
+### Vue 的父组件和子组件生命周期钩子执行顺序是什么
 
-  [1]: http://img.zhimengzhe.com/d/file/p/2017-03-05/6e69817f1e18ae5389320cc5c00641b4.jpg
+
+
+[https://juejin.im/post/5e4d24cce51d4526f76eb2ba](https://juejin.im/post/5e4d24cce51d4526f76eb2ba)
+
+
+
+**渲染过程：**
+ 父组件挂载完成一定是等子组件都挂载完成后，才算是父组件挂载完，所以父组件的mounted在子组件mouted之后
+ 父beforeCreate -> 父created -> 父beforeMount -> 子beforeCreate -> 子created -> 子beforeMount -> 子mounted -> 父mounted
+
+**子组件更新过程：**
+
+1. 影响到父组件： 父beforeUpdate -> 子beforeUpdate->子updated -> 父updted
+2. 不影响父组件： 子beforeUpdate -> 子updated
+
+**父组件更新过程：**
+
+1. 影响到子组件： 父beforeUpdate -> 子beforeUpdate->子updated -> 父updted
+2. 不影响子组件： 父beforeUpdate -> 父updated
+
+**销毁过程：**
+ 父beforeDestroy -> 子beforeDestroy -> 子destroyed -> 父destroyed
+
+
+
+
+
+**看起来很多好像很难记忆，其实只要理解了，不管是哪种情况，都一定是父组件等待子组件完成后，才会执行自己对应完成的钩子，就可以很容易记住。**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1]: http://img.zhimengzhe.com/d/file/p/2017-03-05/6e69817f1e18ae5389320cc5c00641b4.jpg
+
