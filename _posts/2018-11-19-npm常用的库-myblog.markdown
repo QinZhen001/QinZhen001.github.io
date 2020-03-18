@@ -91,7 +91,6 @@ if(program.remove) {
 1. 版本号<必须>
 2. 自定义标志<可省略>：默认为 -V 和 --version
 
-
 ----------
 
 
@@ -122,7 +121,6 @@ if(program.remove) {
 2. 命令描述<可省略>：如果存在，且没有显示调用action(fn)，就会启动子命令程序，否则会报错
 3. 配置选项<可省略>：可配置noHelp、isDefault等
 
-
 ----------
 
 
@@ -132,7 +130,6 @@ if(program.remove) {
 
 
 用法示例：.description('rmdir desc')
-
 
 ----------
 
@@ -146,7 +143,6 @@ if(program.remove) {
 
 用法示例：.action(fn)
 
-
 ----------
 
 **parse**
@@ -155,7 +151,6 @@ if(program.remove) {
 作用：用于解析process.argv，设置options以及触发commands
 
 用法示例：.parse(process.argv)
-
 
 ----------
 
@@ -183,11 +178,11 @@ stat('.')
  .catch((error) => {
   // Handle the error.
  });
- ```
- 
- 
+```
+
+
  只要符合 Node.js 的回调风格，所有函数都可以这样转换。也就是说，满足下面两个条件即可。
- 
+
  1. 后一个参数是函数
  2. 回调函数的参数为 (err, result)，前面是可能的错误，后面是正常的结果
 
@@ -345,7 +340,6 @@ Read a file line by line.
 
 Browserify是目前最常用的CommonJS格式转换的工具
 
-
 ----------
 
 ```javascript
@@ -356,9 +350,9 @@ math.add(2, 3);
 第二行math.add(2, 3)，在第一行require('math')之后运行，因此必须等math.js加载完成。也就是说，如果加载时间很长，整个应用就会停在那里等。这对服务器端不是一个问题，因为所有的模块都存放在本地硬盘，可以同步加载完成，等待时间就是硬盘的读取时间。但是，对于浏览器，这却是一个大问题，因为模块都放在服务器端，等待时间取决于网速的快慢，可能要等很长时间，浏览器处于"假死"状态
 
 　　而browserify这样的一个工具，可以把nodejs的模块编译成浏览器可用的模块，解决上面提到的问题。
+
   
-  
-  
+
 ```javascript
 // a.js
 var a = 100;
@@ -392,17 +386,17 @@ npm install -g browserify
 ```
 
 使用下面的命令，就能将b.js转为浏览器可用的格式bb.js
- 
+
  ```
  browserify b.js > bb.js
  ```
- 
+
 查看bb.js，browserify将a.js和b.js这两个文件打包为bb.js，使其在浏览器端可以运行
- 
+
 #### 原理
- 
+
 Browserify到底做了什么？安装一下browser-unpack，就能清楚原理了
-  
+
 ```
 npm install browser-unpack -g
 ```
@@ -629,6 +623,61 @@ require('./worker');
 ```javascript
 set DEBUG=http
 ```
+
+
+
+
+
+### mime
+
+
+
+[网页链接](https://github.com/broofa/node-mime)
+
+Mime types for JavaScript 
+
+A comprehensive, compact MIME type module.
+
+`npm install mime`
+
+
+#### Quick Start
+
+```
+const mime = require('mime');
+
+mime.getType('txt');                    // ⇨ 'text/plain'
+mime.getExtension('text/plain');        // ⇨ 'txt'
+```
+
+
+
+#### MIME类型
+
+MIME(Multipurpose Internet Mail Extensions)多用途互联网邮件扩展类型。是设定某种扩展名的文件用一种应用程序来打开的方式类型，当该扩展名文件被访问的时候，浏览器会自动使用指定应用程序来打开。多用于指定一些客户端自定义的文件名，以及一些媒体文件打开方式。
+
+
+每个MIME类型由两部分组成，前面是数据的大类别，例如声音audio、图象image等，后面定义具体的种类。
+常见的MIME类型(通用型)：
+
+* 超文本标记语言文本 .html text/html
+* xml文档 .xml text/xml
+* XHTML文档 .xhtml application/xhtml+xml
+* 普通文本 .txt text/plain
+* RTF文本 .rtf application/rtf
+* PDF文档 .pdf application/pdf
+* Microsoft Word文件 .word application/msword
+
+
+`<link type="text/css">` type="text/css"就是MIME类型。
+
+
+
+
+
+
+
+
 
 
 

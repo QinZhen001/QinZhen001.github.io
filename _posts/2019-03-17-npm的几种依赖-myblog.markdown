@@ -236,5 +236,29 @@ if (foo) {
 
 
 
+## 补充
+
+
+
+
+
+### 解决Error: Cannot find module 'node-sass'问题
+
+
+
+
+
+ https://blog.csdn.net/sliver1836/article/details/95950284 
+
+
+
+
+
+1.在项目目录cmd下运行 npm install -g cnpm --registry=https://registry.npm.taobao.org
+
+2.下载成功后再运行 cnpm install node-sass
+
+
+
 
 
