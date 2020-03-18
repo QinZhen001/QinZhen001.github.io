@@ -14,7 +14,6 @@ tags:
 
 ## 正文
 
-
 [网页链接](http://www.jqhtml.com/9032.html)
 
 
@@ -710,11 +709,59 @@ export const deleteSong = function ({commit, state}, song) {
 
 
 
-## 源码分析:
+## 源码分析
 http://www.jqhtml.com/9032.html
 
 
 
 
 
-  [1]: http://www.jqhtml.com/wp-content/uploads/2017/09/vuex914-1.png
+## 其他 
+
+
+
+
+
+
+
+### vuex中引入vue-router
+
+
+
+
+
+```js
+const router = new Router({
+  mode: 'hash',
+  routes: routes
+})
+
+
+export default router
+```
+
+
+
+下面的router就是上面router模块中导出的router
+
+```js
+import router from '../../router'
+
+   if (router.currentRoute.query.redirect) {
+        // query中存在redirect 重定向url
+        router.push({ path: router.currentRoute.query.redirect })
+   } else {
+        router.push({ path: '/' })
+  }
+
+```
+
+
+
+
+
+
+
+
+
+[1]: http://www.jqhtml.com/wp-content/uploads/2017/09/vuex914-1.png

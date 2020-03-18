@@ -282,6 +282,44 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 
 >当用户代理为浏览器时，用户仅需输入用户 ID 和密码即可，之后， 浏览器会自动完成到 Base64 编码的转换工作。
 
+
+
+#### 428 Precondition Required (要求先决条件)
+
+
+
+先决条件是客户端发送 HTTP 请求时，必须要满足的一些预设条件。一个好的例子就是 If-None-Match 头，经常用在 GET 请求中。如果指定了 If-None-Match ，那么客户端只在响应中的 ETag 改变后才会重新接收回应。
+
+
+
+先决条件的另外一个例子是 If-Match 头，一般用在 PUT 请求上，用于指示只更新但没有被改变的资源。这在多个客户端使用 HTTP 服务时用来防止彼此间覆盖相同内容的情况。
+
+
+
+当服务器端使用 [428 Precondition Required 状态码](http://tools.ietf.org/html/rfc6585#section-3)时，表示客户端必须发送上述的请求头才能执行该请求操作。这个方法为服务器提供一种有效的方法来阻止 “lost update”问题的出现。
+
+
+
+#### 429 Too Many Requests (太多请求)
+
+
+
+当你需要限制客户端请求某个服务的数量，也就是限制请求速度时，该状态码就会非常有用。在此之前，有一些类似的状态码。例如“509 Bandwidth Limit Exceeded”。
+
+
+
+如果你希望限制客户端对服务的请求数，可使用 429 状态码，同时包含一个 Retry-After 响应头用于告诉客户端多长时间后可以再次请求服务
+
+
+
+#### 431 Request Header Fields Too Large (请求头字段太大)
+
+
+
+某些情况下，客户端发送 HTTP 请求头会变得很大，那么服务器可发送 [431 Request Header Fields Too Large](http://tools.ietf.org/html/rfc6585#section-5) 来指明该问题。
+
+
+
 ### Cache-Control
 Cache-Control是通用首部字段，请求报文和响应报文双方都会使用的首部
 

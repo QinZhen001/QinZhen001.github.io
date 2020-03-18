@@ -521,10 +521,39 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
 
 [https://www.npmjs.com/package/lint-staged](https://www.npmjs.com/package/lint-staged)
 
-
 Run linters against staged git files and don't let 💩 slip into your code base!
 
-对暂存的git文件运行，不要让它滑入您的代码库
+
+
+**对暂存的git文件运行**，不要让它滑入您的代码库
+
+
+
+```
+// package.json
+
+{
+  "husky": { "hooks": { "pre-commit": "lint-staged" } },
+  "lint-staged": { "src/**/*.js?(x)": ["eslint --fix", "git add"] }
+}
+```
+
+
+
+----
+
+在 CI 流程做 Lint 的缺点显而易见：
+
+- Lint 在整个开发工作流中的反馈链条太长，浪费时间、注意力和资源，最致命的；
+- CI 流程搭建成本比较高，即使有各种 CI 服务，步骤也还是比较繁琐；
+
+所以最快速的方式是在提交之前就检查，使用 pre-commit 钩子在commit前进行检查，大量的旧代码问题被检查出来，和我这次提交无关，怎么办？**只 lint 提交的，这也是为什么要用 lint-staged 的原因**
+
+
+
+
+
+
 
 
 ### husky
