@@ -38,7 +38,6 @@ element+element(通用兄弟选择器) 	div+p 	选择<div>元素之后的所有<
 浮动的框可以向左或向右移动，直到它的外边缘碰到包含框或另一个浮动框的边框为止。
 由于浮动框不在文档的普通流中，所以文档的普通流中的块框表现得就像浮动框不存在一样。
 
-
 ---
 
 
@@ -51,7 +50,6 @@ float他还是有占位的。一般来说是只有position是脱离文档流的�
 浮动元素不占任何正常文档流空间，而浮动元素的定位还是基于正常的文档流，然后从文档流中抽出并尽可能远的移动至左侧或者右侧。文字内容会围绕在浮动元素周围。当一个元素从正常文档流中抽出后，仍然在文档流中的其他元素将忽略该元素并填补他原先的空间。
 
 浮动概念让人迷惑根源在于浏览器对理论的解读造成的。只能说很多人以IE做标准，其实它不是。
-
 
 ----------
 
@@ -487,7 +485,6 @@ transform-origin：x-offset-keyword  y-offset-keyword
 transform-origin：y-offset-keyword  x-offset-keyword
 ```
 
-
 ----------
 
 
@@ -504,14 +501,12 @@ transform-origin：y-offset-keyword  x-offset-keyword  z-offset
 * y-offset：用来设置transform-origin属性在垂直方向Ｙ轴的偏移量，可以使用和值，同时可以是正值（从中心点沿垂直方向Ｙ轴向下的偏移量），也可以是负值（从中心点沿垂直方向Ｙ轴向上的偏移量）。
 * z-offset：用来设置3D变形中transform-origin远离用户眼睛视点的距离，默认值z=0，其取值可以，不过在这里将无效。
 
-
 ----------
 
 
 * offset-keyword：是top、right、bottom、left或center中的一个关键词，可以用来设置transform-origin的偏移量。
 * x-offset-keyword：是left、right或center中的一个关键词，可以用来设置transform-origin属性值在水平Ｘ轴的偏移量。
 * y-offset-keyword：是top、bottom或center中的一个关键词，可以用来设置transform-origin属性值在垂直方向Ｙ轴的偏移量。
-
 
 ----------
 
@@ -542,7 +537,7 @@ transform-origin：y-offset-keyword  x-offset-keyword  z-offset
 * **background-repeat:no-repeat**
 * **background-attachment:fixed**
 
- 
+
 ```html
 <html>
 <head>
@@ -646,7 +641,6 @@ body {background-image:url(../images/css_tutorials/background.jpg); background-r
 
 
 
-
 -----
 
 
@@ -684,10 +678,53 @@ header {
 
 
 
+### MutationObserver监听dom树
 
 
 
-  [1]: https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh=600,800/sign=4a0826fc9d22720e7b9beafc4bfb267e/b219ebc4b74543a9c1d979521b178a82b8011469.jpg
+[ https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver ]( https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver )
+
+
+
+```js
+// Select the node that will be observed for mutations
+var targetNode = document.getElementById('some-id');
+
+// Options for the observer (which mutations to observe)
+var config = { attributes: true, childList: true, subtree: true };
+
+// Callback function to execute when mutations are observed
+var callback = function(mutationsList) {
+    for(var mutation of mutationsList) {
+        if (mutation.type == 'childList') {
+            console.log('A child node has been added or removed.');
+        }
+        else if (mutation.type == 'attributes') {
+            console.log('The ' + mutation.attributeName + ' attribute was modified.');
+        }
+    }
+};
+
+// Create an observer instance linked to the callback function
+var observer = new MutationObserver(callback);
+
+// Start observing the target node for configured mutations
+observer.observe(targetNode, config);
+
+// Later, you can stop observing
+observer.disconnect();
+```
+
+
+
+
+
+
+
+
+
+
+[1]: https://gss0.baidu.com/-Po3dSag_xI4khGko9WTAnF6hhy/zhidao/wh=600,800/sign=4a0826fc9d22720e7b9beafc4bfb267e/b219ebc4b74543a9c1d979521b178a82b8011469.jpg
 
 
 
@@ -714,11 +751,11 @@ header {
 
 
 
-  [1]: http://www.w3chtml.com/css3/properties/user-interface/images/content-box.png
-  [2]: http://www.w3chtml.com/css3/properties/user-interface/images/border-box.png
-  [3]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145030213-330247522.png
-  [4]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145334791-2090940407.png
-  
+[1]: http://www.w3chtml.com/css3/properties/user-interface/images/content-box.png
+[2]: http://www.w3chtml.com/css3/properties/user-interface/images/border-box.png
+[3]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145030213-330247522.png
+[4]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145334791-2090940407.png
+
 
 
 

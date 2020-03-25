@@ -47,3 +47,62 @@ beforeDestroy() {
   removeEventListener('touchmove', this.touchmove, false)
 }
 ```
+
+
+
+
+
+
+
+### 在vue的style标签里面使用变量
+
+
+
+[ https://segmentfault.com/q/1010000015375955 ]( https://segmentfault.com/q/1010000015375955 )
+
+
+
+
+
+
+
+在data里面设置一个值，用来存储这个变换的样式
+
+```
+var color = newvalue;
+data() {
+    return {
+        changeStyle:'background:'+color
+    }
+}
+html中直接这样就可以了
+<span  style="margin-top:5px;" :style="changeStyle"></span>
+```
+
+这两个style会自己合并到一起的，后面你去修改changeStyle这个变量就可以改变样式了
+
+
+
+
+
+## 每个页面的包裹布局
+
+
+
+```css
+
+.container {
+  display: flex;
+  box-sizing: border-box;
+  min-width: 820px;
+  margin: 20px;
+  background: #FFF;
+  border: 1px solid #EDEDED;
+  border-radius: 6px;
+  overflow: auto;
+  * {
+    box-sizing: inherit;
+  }
+}
+```
+

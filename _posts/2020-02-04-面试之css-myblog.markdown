@@ -237,7 +237,7 @@ p {
 >这个方法可以用来实现两列自适应布局，效果不错，这时候左边的宽度固定，右边的内容自适应宽度(去掉上面右边内容的宽度)。
 
 
-### 用纯CSS创建一个三角形
+## 用纯CSS创建一个三角形
 
 ```
 width: 0;
@@ -248,13 +248,13 @@ border-right: 40px solid transparent;
 border-bottom: 40px solid #ff0000;
 ```
 
-### 为什么margin:auto可以让块级元素水平居中
+## 为什么margin:auto可以让块级元素水平居中
 
 这是因为水平方向的 auto，其计算值取决于可用空间（剩余空间）。
 **但是，注意display:inline-block和margin:auto同时出现时元素无法居中**
 
 
-### 品字布局
+## 品字布局
 
 ```
 		<style type="text/css">
@@ -295,7 +295,7 @@ border-bottom: 40px solid #ff0000;
 	</body>
 ```
 
-### containing block
+## containing block
 
 想想浏览器怎么把一个元素“画”出来，至少要知道定位和尺寸。定位有三种normal flow, floats和absolute，无论属于哪种首先要找所在的containing block(我翻译为容器块)，相当于一个大箱子里摆很多小盒子，小盒子怎么摆取决于大箱子。
 
@@ -308,19 +308,19 @@ border-bottom: 40px solid #ff0000;
 * 
 
 
-###  元素竖向的百分比设定是相对于容器的高度吗？
+##  元素竖向的百分比设定是相对于容器的高度吗？
 
 当按百分比设定一个元素的宽度时，它是相对于父容器的宽度计算的，但是，对于一些表示竖向距离的属性，例如 padding-top , padding-bottom , margin-top , margin-bottom 等，当按百分比设定它们时，**依据的也是父容器的宽度，而不是高度**。
 
 
 
-### 利用line-height使单行文本垂直居中
+## 利用line-height使单行文本垂直居中
 
 行高是指一行文字的高度，具体说是两行文字间基线的距离。CSS中起高度作用的是height和line-height，没有定义height属性，最终其表现作用一定是line-height。
 
 单行文本垂直居中：把line-height值设置为height一样大小的值可以实现单行文字的垂直居中，
 
-### 有一个高度自适应的div，里面有两个div，一个高度100px，希望另一个填满剩下的高度
+## 有一个高度自适应的div，里面有两个div，一个高度100px，希望另一个填满剩下的高度
 
 外层div使用position：relative；高度要求自适应的div使用position: absolute; top: 100px; bottom: 0; left: 0
 
@@ -429,6 +429,23 @@ display属性规定元素应该生成的框的类型；position属性规定元�
 
 
 
+
+## transition和animation的区别
+
+
+
+## css会阻塞页面渲染吗
+
+
+
+## 怎么做到只加载首页的css
+
+
+
+
+## 设为 flex 属性之后，子元素的哪些属性会失效
+
+float、clear 和 vertical-align
 
 
 

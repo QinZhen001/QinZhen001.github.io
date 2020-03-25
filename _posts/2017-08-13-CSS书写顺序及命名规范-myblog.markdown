@@ -198,10 +198,28 @@ id在JS是唯一的，不能多次使用，而使用class类选择器却可以�
 
 
 
-  [1]: http://images.shejidaren.com/wp-content/uploads/2013/09/css-written-order.png
-  [2]: http://images.shejidaren.com/wp-content/uploads/2013/09/abbreviation.png
-  [3]: http://images.shejidaren.com/wp-content/uploads/2013/09/del-zero.png
-  [4]: http://images.shejidaren.com/wp-content/uploads/2013/09/name.png
-  [5]: http://images.shejidaren.com/wp-content/uploads/2013/09/css-id.png
-  [6]: http://images.shejidaren.com/wp-content/uploads/2013/09/status-select.png
-  [7]: http://images.shejidaren.com/wp-content/uploads/2013/09/underline.png
+### bem
+
+BEM解决这一问题的思路在于，由于项目开发中，每个组件都是唯一无二的，其名字也是独一无二的，组件内部元素的名字都加上组件名，并用元素的名字作为选择器，自然组件内的样式就不会与组件外的样式冲突了。
+
+
+
+这是通过组件名的唯一性来保证选择器的唯一性，从而保证样式不会污染到组件外。
+
+
+
+**BEM的命名规矩很容易记：blockName__elementName--modifier-name，也就是模块名 + 元素名 + 修饰器名。**
+
+
+
+
+
+
+
+[1]: http://images.shejidaren.com/wp-content/uploads/2013/09/css-written-order.png
+[2]: http://images.shejidaren.com/wp-content/uploads/2013/09/abbreviation.png
+[3]: http://images.shejidaren.com/wp-content/uploads/2013/09/del-zero.png
+[4]: http://images.shejidaren.com/wp-content/uploads/2013/09/name.png
+[5]: http://images.shejidaren.com/wp-content/uploads/2013/09/css-id.png
+[6]: http://images.shejidaren.com/wp-content/uploads/2013/09/status-select.png
+[7]: http://images.shejidaren.com/wp-content/uploads/2013/09/underline.png

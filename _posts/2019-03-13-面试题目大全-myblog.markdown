@@ -27,23 +27,6 @@ tags:
 ## css
 
 
-### transition和animation的区别
-
-
-
-### css会阻塞页面渲染吗
-
-
-
-### 怎么做到只加载首页的css
-
-
-
-
-### 设为 flex 属性之后，子元素的哪些属性会失效
-float、clear 和 vertical-align
-
-
 
 
 

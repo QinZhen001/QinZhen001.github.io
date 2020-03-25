@@ -324,7 +324,6 @@ module.exports = {
 
 
 
-
 ---
 
 
@@ -532,6 +531,10 @@ It uses webpack-dev-middleware under the hood, which provides fast in-memory acc
 
 ### webpack-dev-middleware
 
+
+
+[ https://juejin.im/post/5e7782dbf265da57584dc95e?utm_source=gold_browser_extension ]( https://juejin.im/post/5e7782dbf265da57584dc95e?utm_source=gold_browser_extension )
+
 [https://webpack.docschina.org/guides/development/#%E4%BD%BF%E7%94%A8-watch-mode-%E8%A7%82%E5%AF%9F%E6%A8%A1%E5%BC%8F-](https://webpack.docschina.org/guides/development/#%E4%BD%BF%E7%94%A8-watch-mode-%E8%A7%82%E5%AF%9F%E6%A8%A1%E5%BC%8F-)
 
 webpack-dev-middleware 是一个封装器(wrapper)，它可以把 webpack 处理过的文件发送到一个 server。 webpack-dev-server 在内部使用了它，然而它也可以作为一个单独的 package 来使用，以便根据需求进行更多自定义设置。下面是一个 webpack-dev-middleware 配合 express server 的示例。
@@ -541,6 +544,26 @@ webpack-dev-middleware 是一个封装器(wrapper)，它可以把 webpack 处理
 
 * 不会在硬盘中写入文件，完全基于内存实现。
 * 如果使用 watch 模式监听代码修改，Webpack 会自动编译，如果在 Webpack 编译过程中请求文件，Webpack dev middleware 会延迟请求，直到编译完成之后再开始发送编译完成的文件。
+
+
+
+```js
+const wdm = require('webpack-dev-middleware');
+const express = require('express');
+const webpack = require('webpack');
+const webpackConf = require('./webapck.conf.js');
+const compiler = webpack(webpackConf);
+const app = express();
+app.use(wdm(compiler));
+app.listen(8080);
+
+```
+
+
+
+
+
+
 
 
 ### webpack-hot-middleware

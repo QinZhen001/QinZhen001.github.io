@@ -838,9 +838,28 @@ const obj = {
 
 
 
+### Array.from
 
 
 
+
+
+在 `JavaScript` 中有很多克隆数组的方法。正如你所想，`Array.from()` 可以很容易的实现数组的**浅拷贝。**
+
+
+ 
+
+```js
+const numbersCopy = Array.from(numbers);
+
+numbers === numbersCopy; // => false
+```
+
+
+
+
+
+`Array.from(numbers)` 创建了对 `numbers` 数组的浅拷贝，`numbers === numbersCopy` 的结果是 `false`，意味着虽然 `numbers` 和 `numbersCopy` 有着相同的项，但是它们是不同的数组对象。
 
 
 

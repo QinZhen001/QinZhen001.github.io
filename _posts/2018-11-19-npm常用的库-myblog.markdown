@@ -706,6 +706,24 @@ MIME(Multipurpose Internet Mail Extensions)多用途互联网邮件扩展类型�
 
 
 
+### configstore 
+
+常用于node脚本保存用户配置信息。
+
+
+
+> Easily load and persist config without having to think about where and how
+
+轻松加载和保持配置，而不必考虑在哪里和如何
+
+
+
+he config is stored in a JSON file located in `$XDG_CONFIG_HOME` or `~/.config`.
+Example: `~/.config/configstore/some-id.json`
+
+*If you need this for Electron, check out [`electron-store`](https://github.com/sindresorhus/electron-store) instead.*
+*And check out [`conf`](https://github.com/sindresorhus/conf) for an updated approach to this concept.*
+
 
 
 
