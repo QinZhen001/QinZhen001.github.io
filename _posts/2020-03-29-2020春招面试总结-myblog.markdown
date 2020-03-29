@@ -1,0 +1,441 @@
+---
+layout:     post
+title:      "春招面试总结"
+date:       2020-03-29 14:23:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Other
+---
+
+> “Yeah It's on. ”
+
+## 前序
+
+2020是非常艰难的一年，受疫情影响，很多中小型公司倒闭，很多人二月份只有几天的公司。
+
+对于我来说，疫情期间可以远程面试，是一个跳槽的绝好机会。
+
+就我感觉疫情对整个大环境是有冲击的，但是对互联网it行业来说影响并没有想象中的大。
+
+我持续面试了一个半月，总共面了7 8家公司，拿到了4个offer左右，最终选择的是晓教育的offer做线上教育。
+
+
+
+
+
+## 面试
+
+
+
+### 斗游一面
+
+
+
+> 斗游是斗鱼投资的，专门做海外直播的
+
+
+
+* vue相关的基础知识
+* vue的双向绑定
+* 移动端和pc分别如何做屏幕适配
+*  ......
+
+
+
+一道笔试题目 (写完微信发过去，视频面试现场写)
+
+
+
+function lottery(whiteList, participant){}
+
+
+
+* whiteList:类型字符串数组,意义是表示从其他系统中计算出来的活跃用户，如果这批用户参与抽奖，则必定让他中奖。长度不超过1万
+
+* participant:类型字符串数组,意义是表示此次活动中真正参与抽奖的用户，长度约是10万。
+
+
+
+  		函数希望从participant返回两个2万个用户，表示中奖用户，优先选取whiteList上的用户，若不在whiteList上，对participant 剩余的随机 选取即可。
+
+
+
+------
+
+
+
+一开始版本
+
+```js
+function  lottery(whiteList,  participant){
+  let set1 = new Set(whiteList)
+  let set2 = new Set(participant)
+  let num = 0
+  let res = [] 
+  for(let item of set2.values()){
+    if(set1.has(item.value)){
+        res.push(item.value)
+        set2.delete(item.value)
+        num++
+    }
+  }
+  let lest = 20000 - num
+
+  // 随机取剩下
+  getLes(lest)  
+
+
+  return res 
+ }
+```
+
+
+
+
+
+-------
+
+
+
+优化后
+
+
+
+```js
+//如果这批用户参与抽奖，则必定让他中奖。 (也就whiteList不一定在participant)
+  function lottery(whiteList, participant) {
+    let set2 = new Set(participant)
+    let num = 0
+    let res = []
+    for (let item of whiteList) {
+      if (set2.has(item)) {
+        res.push(item)
+        num++
+        // 为了不影响后面的抽奖运算 还是要delete 
+        set2.delete(item)
+      }
+    }
+    let lest = 20000 - num
+    // 随机取剩下
+    let otherArr = getLes(lest, set2)
+    return res.concat(otherArr)
+  }
+```
+
+
+
+
+
+
+
+### 斗游二面
+
+
+
+* 并行和并发的区别 ？node进程接受多个请求是并行还是并发？node开启多个进程（fork）？
+* 图片相关？png  jpg webp 特点？ 哪个压缩率更好一点？为什么？
+* 前端请求的一些异常？你的500错误是谁返回给你的（*Nginx*）（xml）？如果没有Nginx直接在服务器部署你获取的错误是谁返回给你的（浏览器底层）？
+* node I/o 相关？ 其源码（c++那部分）？
+* 一个新闻页有 图片 列表 文字 评论 如何更快的渲染？
+* 浏览器原理（渲染引擎 和 js引擎）？哪些东西会阻塞页面的正常渲染？
+* 进程和线程的区别？
+
+
+
+一道算法题目
+
+
+
+数字1-n的n张牌，打乱，写一个算法让他回归有序状态  （洗牌算法）
+
+* 快速排序 （nlogn）（比较排序）
+
+* 桶排序 （n）（非比较排序）   （数字n的那张牌肯定在n位置）
+
+
+
+> 考察：非比较排序
+
+
+
+
+
+
+
+
+
+### 深信服一面
+
+
+
+> 著名的996厂，已拿到offer，不去
+
+
+
+基础
+
+* cookie和localStorage的区别
+* **一个post请求如何跨域？不涉及后端，纯前端实现可以吗？**   （form表单）
+* 一个串行的promise如何实现
+* Js如何区分数组和对象
+
+微信小程序
+
+* 小程序如何调试
+* 你的小程序工作流
+* 你的小程序怎么兼容
+* 你做的小程序框架的一些细节
+
+vue
+
+* vue通信机制 （`$emit`,`$on`,eventbus,vuex）
+* 何时用vuex？ 何时父子组件通信？
+
+调试技巧
+
+* 问很多日常开发中的调试技巧
+* 有一个弹窗，时而出现，时而消失，如何定位bug？   （调式的一些技巧，动态改写标签，指定标签状态actived，focus，source面板）
+* 如何设置断点条件，查看调用栈
+
+
+
+一些css基础问题
+
+接触过3d吗
+
+接触过地图相关开发吗
+
+最近的一些学习
+
+
+
+
+
+### 字节跳动一面
+
+
+
+> 宇宙条，面试要求极高，考察算法，会一直追问知道你答不出来为止
+
+
+
+基础
+
+* css的position？ css3新增加的position？absolute根据什么来进行布局？absolute根据父节点fixed布局可以吗？
+* z-index是谁大就排在前面吗？z-index怎么比较？层叠上下文？
+* 判断区分object和array的方法？用instanceof可以吗
+* script标签异步加载？ async和defer？ async和defer的区别？哪一个快？defer具体执行的时间点 （一直深挖我擦）
+* 缓存？强缓存和协商缓存？哪些请求头和缓存有关？如果已经缓存了一个文件再次访问这个文件流程？追问etag
+* 状态码？200 301 302 304(重点说这个) 400 404 500 501 504 
+* http相关？他的特点
+* udp/tcp 相同点 不同点？ udp的应用场景 (直播 游戏)
+* 箭头函数和普通函数的区别？箭头函数的this？bind,call这些可以改变箭头函数的this吗（不可以）
+
+小程序
+
+* 对diff的理解，你的diff是怎么样的？
+* 你的长列表数据优化是怎样的？（缓存桶机制）  上w条数据的长列表该怎么办（recycleviewlist card 固定高度 三个屏幕的数据）？让你设计一个recycleview？
+
+-----
+
+算法
+
+
+
+第一题 字符串处理 （5-10 分钟）
+
+
+
+123456 -> 123,456  
+
+12345678.123 -> 12,345,678.123
+
+
+
+第二题 区间合并
+
+给定一堆左右闭合的区间，要求对重叠的区间进行合并，返回合并后的区间段。
+
+例如：[[9, 10](https://marvel.bytedance.net/)], [[1,4](https://marvel.bytedance.net/)], [[3,6](https://marvel.bytedance.net/)], [[8, 12](https://marvel.bytedance.net/)]
+
+那么合并后的区间段为：[[1, 6](https://marvel.bytedance.net/)], [[8, 12](https://marvel.bytedance.net/)]
+
+
+
+------
+
+
+
+instanceof到底能不能区分Object和Array?
+
+**答案是可以的。**
+
+
+
+```js
+  let obj = {
+        aaa: "aaa"
+    }
+
+    console.log("111", obj instanceof Object)
+    console.log("222", obj instanceof Array)
+```
+
+
+[浅谈script标签的defer和async](https://segmentfault.com/a/1190000006778717)
+
+
+
+async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但async是js谁下载完谁就立即执行，会阻塞html解析，defer是html解析完成后才按顺序执行下载的js 
+
+
+
+
+
+### 追一科技一面
+
+
+
+> 一家c轮做人工智能的公司，前端对node要求高，问框架原理问的很细很深
+
+
+
+* 链表和数组区别？真实应用场景 （偏后端）（卧槽）
+* diff细节？dom树更新怎么比较的？比较顺序？（是否component是否普通标签是否相同标签）同层对比？如果只是属性变了怎么更新？patchChildren？key的作用？
+* vue diff具体的实现？双端比较？
+* vue数据的响应式？
+* vue-router 两种模式？hash模式后端可以拿到#吗？
+* 垃圾回收机制？引用计数和标记清除的区别？在最顶级作用域 a引用b b引用a 怎么进行垃圾回收？**v8最新的垃圾回收机制？**
+* vue的nextTrick是怎么实现的（降级，根据当前环境选择）？为什么要要优先使用微任务来实现nextTrick？
+* session和cookie的关系？
+
+* Https 的加密模式 （混合加密）？怎么获取密匙？
+
+
+
+
+
+链表的应用：
+
+
+
+链表插入删除效率极高，达到O(1)。对于不需要搜索但变动频繁且无法预知数量上限的数据，比如内存池、操作系统的进程管理、网络通信协议栈的trunk管理等等等等，都需要用到链表
+
+
+
+
+
+
+
+
+
+
+
+### 晓教育一面
+
+
+
+基础：
+
+* 垂直居中一个元素
+* position元素怎么确定定位
+* 盒模型
+* 缓存（请求返回200 的时候的缓存）
+* copy一个对象？深拷贝？**怎么深拷贝一个函数？**
+* 常用状态码
+
+vue
+
+（问很多vue的问题，偏应用，问原理比较少）
+
+* vue实现一个类似react的hoc高阶组件
+* element的表单验证怎么做的？(form)（源码）
+* inject和provide
+* `$attr和$listen`   （子组件怎么拿到一个父组件的xxx 不通过props传递）
+* 组件间通信
+* watch的原理？怎么更新的？（user watcher）
+
+node
+
+* node微任务 宏任务执行顺序
+* koa的中间件机制？洋葱模型？
+* 怎么写一个转发请求的中间件？
+* 链接数据库
+* 用过哪些中间件
+* 定时任务
+* 爬虫怎么爬数据 （流程）
+* node里面怎么发起网络请求
+
+gulp
+
+* gulp.watch和node原生watch对比
+
+
+
+
+
+### 晓教育二面
+
+
+
+前端知识
+
+* 如何进行图表的错误监控？
+* 长列表优化 （recycle view 适用于card固定高度）？如果card高度不固定，聊天场景，1w条聊天信息怎么搞？（首屏渲染 分页 减少dom操作 fragment）
+* 问了一些具体业务场景的设计方案
+
+后端知识
+
+* 10亿条url 8g内存 无限大磁盘 如何去重url （url对应的资源不同就是不同url 可能不同url对应同一个资源，不能借助数据库）（找到url对应资源进行算法签名。。。来区分不同url）
+* 说一下可以提取文件特征的加密算法 （MD5 。。。。sha。。。）
+
+算法
+
+* 说一下快速排序的实现？怎么优化快速排序？  
+
+
+
+----
+
+
+
+优化快速排序：
+
+* 选择数组中间的元素作为基准
+* 当数组长度较小的时候才用插入排序之类
+
+-----
+
+
+
+如何进行图表的错误监控？ （尝试回答）
+
+
+
+通常图表使用echarts库，错误大概率是两种情况，渲染的dom错误，图表对应的数据源不对
+
+
+
+* 针对渲染的dom错误，我们可以监听dom，使用MutationObserver，观察图表是否正常渲染
+* 针对图表对应的数据源错误，我们直接监听数据，看是否为空，是否满足图表所需的数据格式
+
+
+
+## 总结
+
+
+
+* 一面面试官一般为前端leader，考察前端知识
+* 二面面试官一般为技术负责人，很大概率他是cto，技术总监，并不是前端的leader，所以他的考察点主要在于你对一个问题的思考过程，你的解决方案，你的计算机基础等
+* 大厂面试会对算法进行考察，前端对标LeetCode的medium难度，想要进大厂算法一定要花时间去学习
+* 基础知识一定要稳，基础知识问题在面试中答不出来会扣分很多
+
+
+
+
+
+经过几家面试下来，也大概清楚自己在市场的位置 
+
+hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情，毕竟工作经验不够（按理来说工作时间越长工资越高）
