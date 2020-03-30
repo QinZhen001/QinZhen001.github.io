@@ -56,9 +56,9 @@ function lottery(whiteList, participant){}
 
 * participant:类型字符串数组,意义是表示此次活动中真正参与抽奖的用户，长度约是10万。
 
+  
 
-
-  		函数希望从participant返回两个2万个用户，表示中奖用户，优先选取whiteList上的用户，若不在whiteList上，对participant 剩余的随机 选取即可。
+  函数希望从participant返回两个2万个用户，表示中奖用户，优先选取whiteList上的用户，若不在whiteList上，对participant 剩余的随机 选取即可。
 
 
 
