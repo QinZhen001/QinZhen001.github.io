@@ -728,6 +728,54 @@ Example: `~/.config/configstore/some-id.json`
 
 
 
+###   puppeteer 
+
+[ https://www.npmjs.com/package/puppeteer ]( https://www.npmjs.com/package/puppeteer )
+
+
+
+Puppeteer 是一个Node库， 它提供高级API，通过DevTools Protocol 来控制Chrome 或 Chromium。 Puppeteer 默认运行为headless ，但是可以配置为运行为non-headless 。
+
+### 
+
+- 生成页面截图或PDF
+- 抓取SPA 并生成预渲染内容（SSR）
+- 自动化表单提交、UI测试，键盘输入 等
+- 创建最新的自动化测试环境。 使用最新的JavaScript和浏览器功能直接在最新版本的Chrome中运行测试。
+- 捕获站点的时间线跟踪，以帮助诊断性能问题。
+- 测试Chrome扩展程序。
+
+## 
+
+
+
+
+
+```js
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('https://example.com');
+  await page.screenshot({path: 'example.png'});
+
+  await browser.close();
+})();
+```
+
+
+
+Puppeteer初始化页面大小为 800*600px，这也是截图的大小 页面大小可以通过 [`Page.setViewport()`](https://pptr.dev/#?product=Puppeteer&version=v1.8.0&show=api-pagesetviewportviewport).定制。
+
+
+
+
+
+
+
+
+
 
 
 
