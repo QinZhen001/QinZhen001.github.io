@@ -112,12 +112,23 @@ Slot是用于组件中的占位符，组件标签是成对存在的，被组件�
 
 
 
+[slot高级用法 作用域插槽](https://cn.vuejs.org/v2/guide/components-slots.html#作用域插槽)
 
-### nextTick   
 
+
+Vue2.6新增 具名插槽的缩写 v-slot:替换为# 
+
+[https://cn.vuejs.org/v2/guide/components-slots.html#%E5%85%B7%E5%90%8D%E6%8F%92%E6%A7%BD%E7%9A%84%E7%BC%A9%E5%86%99](https://cn.vuejs.org/v2/guide/components-slots.html#具名插槽的缩写)
+
+
+
+
+
+**插槽 prop 允许我们将插槽转换为可复用的模板，这些模板可以基于输入的 prop 渲染出不同的内容。**这在设计封装数据逻辑同时允许父级组件自定义部分布局的可复用组件时是最有用的。
+
+### nextTick
 
 [网页链接](https://github.com/answershuto/learnVue/blob/master/docs/Vue.js%E5%BC%82%E6%AD%A5%E6%9B%B4%E6%96%B0DOM%E7%AD%96%E7%95%A5%E5%8F%8AnextTick.MarkDown)
-
 
 [https://cn.vuejs.org/v2/api/#vm-nextTick](https://cn.vuejs.org/v2/api/#vm-nextTick)
 
