@@ -427,6 +427,52 @@ Vue.filter('capitalize', function (value) {
 
 
 
+
+[vue filter 传入两个参数，结果参数位置互换，为什么会这样？](https://segmentfault.com/q/1010000010062982)
+
+
+
+错误的写法：
+
+
+
+```js
+<p class="time-counter">{{(5,12) | formatTime(5,12)}}</p>
+
+相当于是执行了 formatTime((5,12),5,12) 而 (5,12) 是一个逗号表达式，结果为12，因此最终执行的是 formatTime(12, 5, 12)，看起来就像反过来了
+```
+
+
+
+
+
+----
+
+
+
+应该这样：
+
+```js
+formatTime ([minute,second]){
+    if(minute<10){
+        minute = '0' + minute;
+    }
+    if(second<10){
+        second = '0' + second;
+    }
+    return minute + '分' + second + '秒';
+}
+```
+
+调用时
+
+```js
+{{[5, 12] | formatTime}}
+```
+
+
+
+
 ### render:h => h(App)
 [网页链接](http://www.cnblogs.com/whkl-m/p/6970859.html)
 ```javascript
