@@ -1241,6 +1241,34 @@ changeOrigin:true,
 
 
 
+如果想在父组件中拿到层级很深的子组件实例，该如何操作？
+
+
+
+
+
+```js
+// 父组件
+
+export default {
+  provide() {
+    return {
+      // 向后代提供父组件自己的this  
+      rootTab: this
+    }
+  },
+  data() {
+  },
+  methods: {
+    onAddSuccess() {
+      if (this._myInstance) {
+        // 拿到子组件实例 调用方法  
+        this._myInstance.fetchData()
+      }
+    }
+  },
+}
+```
 
 
 
@@ -1250,6 +1278,18 @@ changeOrigin:true,
 
 
 
+```js
+// 子组件
+
+
+export default {
+  inject: ['rootTab'],
+  created() {
+    // 向父组件实例注入子组件this  
+    this.rootTab._myInstance = this
+  },
+}   
+```
 
 
 
