@@ -2192,6 +2192,67 @@ downloadImage(url,"")
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+### 获取屏幕滚动高度
+
+
+
+换句话说也就是获取 scollTop
+
+```js
+var heightTop = document.documentElement.scrollTop || document.body.scrollTop;
+console.log(heightTop);
+```
+
+
+
+
+
+
+
+-----
+
+
+
+`Window pageXOffset` 和 `pageYOffset` 属性
+
+其定义：pageXOffset 设置或返回当前页面相对于窗口显示区左上角的 X 位置。pageYOffset 设置或返回当前页面相对于窗口显示区左上角的 Y 位置。
+
+**所有主流浏览器都支持 pageXOffset 和 pageYOffset 属性。**
+
+
+
+
+
+```js
+window.pageYOffset == window.scrollY; // 总是返回 true
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
 
 
