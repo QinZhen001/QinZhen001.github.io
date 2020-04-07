@@ -1600,5 +1600,73 @@ function throttle(func) {
 
 
 
+### 获取不到值时初始化
+
+
+
+```js
+let E = function(){}
+
+
+E.prototype = {
+
+  on:function(){
+    // this.e不存在时 初始化this.e 
+    let e = this.e || (this.e = {})
+  }
+}
+
+```
+
+
+
+
+
+
+
+### 简单开始造一个库
+
+
+
+```js
+class ClipboardAction {
+    constructor(options) {
+     		// 解析	options
+        this.resolveOptions(options);
+      	// 初始化的相关操作
+        this.initSelection();
+    }
+  
+      /**
+     * Defines base properties passed from constructor.
+     * @param {Object} options
+     */
+    resolveOptions(options = {}) {
+        this.action    = options.action;
+        this.container = options.container;
+        this.emitter   = options.emitter;
+        this.target    = options.target;
+        this.text      = options.text;
+        this.trigger   = options.trigger;
+
+        this.selectedText = '';
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 [1]: https://pic1.zhimg.com/50/fa4f6a40ff9696dc2453d6b30ddc1838_hd.jpg
