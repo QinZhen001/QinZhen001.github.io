@@ -736,7 +736,69 @@ observer.disconnect();
 
 
 
+### 垂直居中线
 
+
+
+![](https://s1.ax1x.com/2020/04/08/Gf1FGd.png)
+
+
+
+```html
+      <div class="dialog__header">
+        <div class="header__divider--horizon"></div>
+        <span class="tag">
+          <span class="text">活动课</span>
+        </span>
+        <div class="header__divider--horizon"></div>
+      </div>
+```
+
+
+
+
+
+
+
+
+
+```css
+  .dialog__header {
+    position: relative;
+    margin: 64px auto 0 auto;
+    width: 516px;
+    height: 42px;
+    line-height: 42px;
+    // 垂直居中 关键是下面这一行 与text中的文字fontSize一致
+    font-size: 28px;
+    .header__divider--horizon {
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      background: rgba(216, 216, 216, 1);
+      width: 200px;
+      height: 1PX;
+    }
+    .tag {
+      position: relative;
+      margin: 0 8px;
+      display: inline-block;
+      width: 100px;
+      height: 42px;
+      line-height: 42px;
+      border-radius: 8px;
+      box-sizing: border-box;;
+      .text {
+        display: inline-block;
+        width: 100%;
+        height: 42px;
+        text-align: center;
+        font-size: 28px;
+        line-height: 42px;
+      }
+    }
+  }
+```
 
 
 
