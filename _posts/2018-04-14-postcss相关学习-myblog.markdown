@@ -238,10 +238,84 @@ h1 {
 
 
 
+### postcss-sprite
+
+[https://www.npmjs.com/package/postcss-sprites](https://www.npmjs.com/package/postcss-sprites)
+
+[https://github.com/2createStudio/postcss-sprites](https://github.com/2createStudio/postcss-sprites)
+
+
+PostCSS plugin that generates spritesheets from your stylesheets.
+
+```
+/* Input */
+.comment { background: url(images/sprite/ico-comment.png) no-repeat 0 0; }
+.bubble { background: url(images/sprite/ico-bubble.png) no-repeat 0 0; }
+ 
+/* ---------------- */
+ 
+/* Output */
+.comment { background-image: url(images/sprite.png); background-position: 0 0; }
+.bubble { background-image: url(images/sprite.png); background-position: 0 -50px; }
+```
+
+Share your code. npm Orgs help your team discover, share, and reuse code. Create a free org »
+postcss-spritespublic
+
+PostCSS plugin that generates spritesheets from your stylesheets.
+
+```
+/* Input */
+.comment { background: url(images/sprite/ico-comment.png) no-repeat 0 0; }
+.bubble { background: url(images/sprite/ico-bubble.png) no-repeat 0 0; }
+ 
+/* ---------------- */
+ 
+/* Output */
+.comment { background-image: url(images/sprite.png); background-position: 0 0; }
+.bubble { background-image: url(images/sprite.png); background-position: 0 -50px; }
+```
+
+```
+         {
+                                loader: 'postcss-loader',
+                                options: {
+                                    ident: 'postcss',
+                                    plugins: [
+                                        // CSS 雪碧图
+                                        require('postcss-sprites')({
+                                            spritePath: 'dist/assets/imgs/sprites',
+                                            retina: true
+                                        }),
+                                        require('postcss-cssnext')()
+                                    ]
+                                }
+                            }
+```
+
+
+适配retina屏幕(2倍大小图片等)
+retina: true
+
+
+
+
+### 
+
+### postcss-assets
 
 
 
 
 
 
-  [1]: https://www.w3cplus.com/sites/default/files/blogs/2018/1801/vw-layout-4.png
+
+
+
+
+
+
+
+
+
+[1]: https://www.w3cplus.com/sites/default/files/blogs/2018/1801/vw-layout-4.png
