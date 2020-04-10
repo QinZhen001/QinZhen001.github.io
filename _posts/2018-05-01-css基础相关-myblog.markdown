@@ -756,12 +756,6 @@ observer.disconnect();
 
 
 
-
-
-
-
-
-
 ```css
   .dialog__header {
     position: relative;
@@ -799,6 +793,79 @@ observer.disconnect();
     }
   }
 ```
+
+
+
+
+
+
+
+
+
+### overscroll-behavior
+
+
+
+CSS `overscroll-behavior`属性可以设置DOM元素滚动到边缘时候的行为。
+
+
+
+#### 语法
+
+```css
+overscroll-behavior: [ contain | none | auto ]{1,2}
+```
+
+
+
+
+
+#### 参数
+
+**auto**
+
+默认值。就是我们默认看到的滚动行为表现，滚动到边缘后继续滚动外部的可滚动容器。
+
+**contain**
+
+默认的滚动溢出行为只会表现在当前元素的内部（例如“反弹”效果或刷新），不会对相邻的滚动区域进行滚动。例如创建了一个浮层，浮层滚动（带弹性效果），但是底层元素不会滚动。
+
+**none**
+
+相邻的滚动区域不会发生滚动，并且会阻止默认的滚动溢出行为。
+
+
+
+
+
+#### 子元素滚动外面不滚动
+
+
+
+![](https://image.zhangxinxu.com/image/blog/202001/overscroll-demo.gif)
+
+
+
+ 就一行简简单单普普通通的CSS代码——`overscroll-behavior:contain` 
+
+
+
+```css
+zxx-scroll {
+    display: block;
+    width: 280px; height: 200px;
+    padding: .5em 1em;
+    margin: 5em auto;
+    border: solid deepskyblue;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -ms-scroll-chaining: contain;
+}
+```
+
+
+
+
 
 
 

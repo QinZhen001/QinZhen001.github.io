@@ -57,7 +57,6 @@ tags:
 
 刚才说过，正常情况下，图片自身就是个inline boxes，与两侧的文字inline boxes共同组成了line boxes，但是，一旦图片加入了浮动，情况就完全变了。浮动彻底破坏了img图片的inline boxes特性。一旦图片失去了inline boxes特性就无法与inline boxes的文字排在一行了，其会从line boxes上脱离出来，跟随自身的方位属性，靠边排列。
 
-
 ----------
 
 
@@ -77,10 +76,80 @@ tags:
 
 
 
+###  **inline-block和baseline**
 
 
-  [1]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_220341.png
-  [2]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_221641.png
-  [3]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_223108.png
-  [4]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_230801.png
-  [5]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_234149.png
+
+**一个inline-block元素，如果里面没有inline内联元素，或者overflow不是visible，则该元素的基线就是其margin底边缘，否则，其基线就是元素里面最后一行内联元素的基线。**
+
+纳尼，还是没反应过来？
+
+那我们看下面这个例子，应该就知道什么意思了。
+
+两个同尺寸的`inline-block`水平元素，唯一区别就是一个空的，一个里面有字符，代码如下：
+
+```html
+.dib-baseline {
+  display: inline-block; width: 150px; height: 150px;
+  border: 1px solid #cad5eb; background-color: #f0f3f9;
+}
+
+<span class="dib-baseline"></span>
+<span class="dib-baseline">x-baseline</span>
+```
+
+
+
+
+
+![](https://s1.ax1x.com/2020/04/10/Go4ujO.png)
+
+
+
+   会发现，明明尺寸、display水平都是一样的，结果呢，两个却不在一个水平线上对齐，为什么呢？哈哈，上面的规范已经说明了一切。第一个框框里面没有内联元素，因此，基线就是容器的margin下边缘，也就是下边框下面的位置；而第二个框框里面有字符，纯正的内联元素，因此，第二个框框就是这些字符的基线，也就是字母x的下边缘了 
+
+
+
+-----
+
+
+
+
+
+ 下面我们要做一件很有必要的事情，用来帮助我们理解上面复杂例子在`line-height`值为`0`后的表现，什么事情呢？哈，同境界模拟，我们也设置框框2的`line-height`值为`0`，于是，就会是下面这样的表现： 
+
+
+
+
+
+![](https://s1.ax1x.com/2020/04/10/Go4t8P.png)
+
+
+
+知道框框2为何又下沉了一点吗？
+
+
+
+
+
+ **因为字符实际占据的高度是由行高决定的，当行高变成0的时候，字符占据的高度也是`0`**，此时，高度的起始位置就变成了字符content area的垂直中心位置，于是，文字就一半落在看看2的外面了。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_220341.png
+[2]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_221641.png
+[3]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_223108.png
+[4]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_230801.png
+[5]: http://image.zhangxinxu.com/image/blog/201001/2010-01-20_234149.png
