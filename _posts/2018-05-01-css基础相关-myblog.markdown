@@ -871,6 +871,82 @@ zxx-scroll {
 
 
 
+### 伪类before/after图片不能设置宽高？
+
+[ https://segmentfault.com/q/1010000004569689 ]( https://segmentfault.com/q/1010000004569689 )
+
+
+
+```css
+    #center_box:before{
+        content:url(http://localhost/quding/photos/u14.png);
+        position: absolute;
+        width:1000px;
+        height:200px;
+        z-index: 100;
+        top: -110px;
+    }
+```
+
+
+
+
+
+随我怎么调`width`,`height`都没变化.
+
+
+
+加了`border`后包含图片的框出现了而且很大,但图片只在它的左上角,也就是说这里的`width`只改变了图像外面的div
+
+
+
+:before /:after伪元素默认是一个行内元素，所以这个元素设置width/height是无效的
+就像你对a元素设置width/height一样
+设置position: absolute;后这个元素的display属性计算为block值；
+但是设置的width/height针对的是:before/:after生成的匿名替换元素，而不是其中的content
+所以图片的大小是没有效果的
+
+
+
+
+
+---
+
+
+
+
+
+ 解决：
+
+
+
+
+
+你可以把图片设为背景图片，通过bakckground-size来设置大小
+
+
+
+```css
+#center_box:before{
+    content:'';
+    background-image:url(http://localhost/quding/photos/u14.png);
+    background-size:1000px 200px;
+    position: absolute;
+    width:1000px;
+    height:200px;
+    z-index: 100;
+    top: -110px;
+}
+```
+
+
+
+
+
+
+
+
+
 
 
 
