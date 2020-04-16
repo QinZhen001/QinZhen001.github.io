@@ -89,6 +89,115 @@ int FibonacciTailRecursive(int n,int ret1,int ret2)
 
 
 
+
+
+## 数组
+
+
+
+### 乱序一个数组
+
+[ https://juejin.im/post/5d004ad95188257c6b518056 ]( https://juejin.im/post/5d004ad95188257c6b518056 )
+
+
+
+#### sort 结合 Math.random
+
+
+
+这种方案其实是一种伪随机算法
+
+
+
+```js
+/**
+* 数组乱序
+*/
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+```
+
+
+
+ 这似乎是一个合理的解决方案。事实上在使用搜索引擎搜索“随机打乱数组”，这种方式会是出现最多的答案。 
+
+
+
+然而，这种方式并不是真正意思上的乱序，一些元素并没有机会相互比较， 最终数组元素停留位置的概率并不是完全随机的。
+
+
+
+ 如果排序真的是随机的，那么每个元素在每个位置出现的概率都应该一样， 实验结果各个位置的数字应该很接近，而不是像现在这样各个位置的数字相差很大。 
+
+
+
+为什么会有问题呢？这需要从array.sort方法排序底层说起。
+
+
+
+**v8在处理sort方法时，使用了插入排序和快排两种方案。 当目标数组长度小于10时，使用插入排序；反之，使用快速排序。**
+
+
+
+其实不管用什么排序方法，大多数排序算法的时间复杂度介于O(n)到O(n²)之间， 元素之间的比较次数通常情况下要远小于n(n-1)/2， 也就意味着有一些元素之间根本就没机会相比较（也就没有了随机交换的可能）， 这些 sort 随机排序的算法自然也不能真正随机。
+
+
+
+其实我们想使用array.sort进行乱序，理想的方案或者说纯乱序的方案是数组中每两个元素都要进行比较， 这个比较有50%的交换位置概率。这样一来，总共比较次数一定为n(n-1)。 而在sort排序算法中，大多数情况都不会满足这样的条件。因而当然不是完全随机的结果了。
+
+
+
+
+
+#### 高性能的乱序算法 Fisher–Yates 
+
+
+
+
+
+
+
+为什么叫 Fisher–Yates 呢？ 因为这个算法是由 Ronald Fisher 和 Frank Yates 首次提出的。
+
+
+
+**这个算法其实非常的简单，就是将数组从后向前遍历，然后将当前元素与它之前的随机位置的元素进行交换。**
+
+
+
+```js
+// 打乱数组
+function shuffle(arr) {
+  let m = arr.length;
+  while (m > 1) {
+    let index = Math.floor(Math.random() * m--);
+    swap(arr, m, index);
+  }
+  return arr;
+}
+
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+```
+
+
+
+ Fisher–Yates 算法只需要通过一次遍历即可将数组随机打乱顺序，性能极为优异~~
+
+
+
+至此，我们找到了将数组乱序操作的最优办法
+
+
+
+> 此外还有一个需要注意的细节，当前元素是可以和它本身互相交换的 - 否则生成最后的排列组合的概率就不对了   (对应上面就是m可能会和index相等 因为执行了 m-- 再swap 所以是正确的)
+
+
+
 ## 动态规划
 
 [https://mp.weixin.qq.com/s/3h9iqU4rdH3EIy5m6AzXsg](https://mp.weixin.qq.com/s/3h9iqU4rdH3EIy5m6AzXsg)
@@ -439,7 +548,15 @@ public void DFS(Vertex v){
 
 
 
+
+
+
+
 ## 感悟
+
+
+
+### 何时使用二分搜索
 
 
 
@@ -472,6 +589,10 @@ public void DFS(Vertex v){
 ----
 
 
+
+
+
+### 不要在if中判断0
 
 
 
@@ -542,3 +663,19 @@ findScope(index,nums,target)
 
 
 
+
+### 注意数组排序sort
+
+
+
+```js
+let arr = [2,6,4,8,10,9,15]
+arr.sort()   
+// arr 变为 [10, 15, 2, 4, 6, 8, 9]
+```
+
+
+
+
+
+sort按照位数顺序进行排列，所以会出现10>2

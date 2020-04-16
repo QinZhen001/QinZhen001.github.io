@@ -1200,6 +1200,59 @@ changeOrigin:true,
 
 
 
+
+
+### v-if中使用key
+
+
+
+ [https://cn.vuejs.org/v2/guide/conditional.html#%E7%94%A8-key-%E7%AE%A1%E7%90%86%E5%8F%AF%E5%A4%8D%E7%94%A8%E7%9A%84%E5%85%83%E7%B4%A0](https://cn.vuejs.org/v2/guide/conditional.html#用-key-管理可复用的元素) 
+
+
+
+Vue 会尽可能高效地渲染元素，通常会复用已有元素而不是从头开始渲染。这么做除了使 Vue 变得非常快之外，还有其它一些好处。例如，如果你允许用户在不同的登录方式之间切换：
+
+```html
+<template v-if="loginType === 'username'">
+  <label>Username</label>
+  <input placeholder="Enter your username">
+</template>
+<template v-else>
+  <label>Email</label>
+  <input placeholder="Enter your email address">
+</template>
+
+```
+
+
+
+那么在上面的代码中切换 `loginType` 将不会清除用户已经输入的内容。因为两个模板使用了相同的元素， `<input>`不会被替换掉——仅仅是替换了它的 placeholder。
+
+
+
+这样也不总是符合实际需求，所以 Vue 为你提供了一种方式来表达“这两个元素是完全独立的，不要复用它们”。只需添加一个具有唯一值的 `key` 属性即可：
+
+
+
+```html
+<template v-if="loginType === 'username'">
+  <label>Username</label>
+  <input placeholder="Enter your username" key="username-input">
+</template>
+<template v-else>
+  <label>Email</label>
+  <input placeholder="Enter your email address" key="email-input">
+</template>
+```
+
+
+
+现在，每次切换时，输入框都将被重新渲染。
+
+
+
+
+
 ### Vue 的父组件和子组件生命周期钩子执行顺序是什么
 
 
@@ -1362,15 +1415,43 @@ module.exports = {
 
 
 
+### template的使用
+
+
+
+ **div**用**v-for**做了列表循环，现在想要**span**也一起循环，应该怎么做 
+
+```html
+  <div class="app">
+      <div v-for="(item,index) in list" :key="item.id">{{item.text}}</div>
+      <span>11111</span>
+  </div>
+```
+
+
+
+ **在div和span外面包裹一个div，给这个div加循环（该方法会额外增加一个多余的div标签）** 
 
 
 
 
 
+ **若你不想额外增加一个div，此时应该使用template来实现（推荐）** 
 
 
 
+**template的作用是模板占位符，可帮助我们包裹元素，但在循环过程当中，template不会被渲染到页面上** 
 
+
+
+```html
+ <div id="app">
+      <template v-for="(item, index) in list" :key="item.id">
+            <div>{{item.text}}--{{index}}</div>
+             <span>{{item.text}}</span>
+       </template>
+ </div>
+```
 
 
 

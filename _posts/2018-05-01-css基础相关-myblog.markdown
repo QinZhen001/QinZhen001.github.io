@@ -951,6 +951,81 @@ zxx-scroll {
 
 
 
+### app内嵌h5顶部隔开状态栏
+
+
+
+![](https://s1.ax1x.com/2020/04/14/GzQhkT.gif)
+
+
+
+
+
+其实就是app自带tabbar 和 手机自带状态栏 
+
+
+
+我们做内嵌app的h5要隔离开这两个距离
+
+
+
+----
+
+
+
+
+
+实现：
+
+
+
+```html
+  <div class="schedule-wrapper" :style="{paddingTop: headerHeight + 'px'}">
+    <div class="schedule-scroll">
+        // 内容
+    </div>
+  </div>  
+```
+
+
+
+headerHeight 这里是计算出来的
+
+
+
+一般调用移动提供的方法 拿到tabbar和状态栏这两个的高度，headerHeight 就是这两个高度的和。
+
+
+
+
+
+```css
+.schedule-wrapper {		
+  position: relative;
+  width:100%
+  height: 100vh;
+  overflow: hidden;
+    .schedule-scroll {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+    }
+ }   
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

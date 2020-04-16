@@ -2249,6 +2249,46 @@ window.pageYOffset == window.scrollY; // 总是返回 true
 
 
 
+### 自增/自加运算符所在前后
+
+
+
+```js
+       let i = 5 
+        function test(i){
+            console.log(--i)
+        }
+
+        test(i)
+		//  输出4
+```
+
+
+
+
+
+```js
+       let i = 5 
+        function test(i){
+            console.log(i--)
+        }
+
+        test(i)
+		//  输出5
+```
+
+
+
+
+
+所以，可以得出结论自增/自加运算符在变量后面的话，会先执行变量所在语句再执行自增/自加运算符
+
+
+
+
+
+
+
 
 
 

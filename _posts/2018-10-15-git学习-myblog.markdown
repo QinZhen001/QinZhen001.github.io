@@ -512,7 +512,7 @@ cherry-pick是Git里对commit操作很好的一个指令，比如想把test分�
 如果cherry-pick过程没有出现冲突的话，那就是完成了合并，如下图所示
 
 
- 
+
 
 ```ruby
     |
@@ -751,6 +751,72 @@ merge还是rebase，有人提倡不要使用rebase，应该rebase改变了历史
 
 
 bug修复大体上和新功能的开发类似，但是bug修复一般时间短，立马上线。 bug修复从主分支新建新分支，所有的bug修复工作都在这个分支上完成。如果主分支有新的发布，使用rebase同步主分支功能（这个步骤其实和新功能开发一样）：
+
+
+
+
+
+
+
+
+
+
+
+###  WARNING: REMOTE HOST  CHANGED 
+
+出现了一个WARNING
+
+
+
+```
+[root@localhost backups]# scp root@172.xxx.xxx.xxx:/data/gitlabData/backups/1539717714_2018_10_17_9.4.3_gitlab_backup.tar .
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+85:82:b1:58:20:21:a5:da:be:24:e8:14:9a:12:b2:d2.
+Please contact your system administrator.
+Add correct host key in /root/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /root/.ssh/known_hosts:5
+ECDSA host key for 172.xxx.xxx.xxx has changed and you have requested strict checking.
+Host key verification failed.
+
+
+```
+
+
+
+用OpenSSH的人都知ssh会把你每个你访问过计算机的公钥(public key)都记录在~/.ssh/known_hosts。当下次访问相同计算机时，OpenSSH会核对公钥。如果公钥不同，OpenSSH会发出警告，避免你受到DNS Hijack之类的攻击。
+
+SSH对主机的public_key的检查等级是根据StrictHostKeyChecking变量来配置的。默认情况下，StrictHostKeyChecking=ask。
+
+
+
+----
+
+
+
+解决： 
+
+
+
+```
+ssh-keygen -R gitlab.xinghuolive.com
+ssh -T  gitlab.xinghuolive.com
+```
+
+
+
+
+
+
+
+ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
+
+> 目的是清除你当前机器里关于你的远程服务器的缓存和公钥信息，注意是大写的字母“R”。
 
 
 
