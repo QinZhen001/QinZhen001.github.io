@@ -679,3 +679,60 @@ arr.sort()
 
 
 sort按照位数顺序进行排列，所以会出现10>2
+
+
+
+
+
+### 当要判断首尾的时候
+
+
+
+有的时候我们需要判断数组首尾是否相等，或者首尾元素是否满足一定的条件，这种情况情况下，我们通常可以考虑**递归法或者栈实现**。
+
+
+
+
+
+
+
+### 快慢指针的判断
+
+
+
+错误例子：
+
+```js
+// head 是一个链表的头节点
+function getEndOfHalf(head) {
+  let fast = head
+  let slow = head
+  // 这里不用判断slow.next
+  // 应该判断fast.next
+  if (fast.next.next && slow.next) {
+    fast = fast.next.next
+    slow = slow.next
+  }
+  return slow
+}
+```
+
+
+
+正确的做法
+
+
+
+```js
+// head 是一个链表的头节点
+function getEndOfHalf(head) {
+  let fast = head
+  let slow = head
+  if (fast.next && fast.next.next) {
+    fast = fast.next.next
+    slow = slow.next
+  }
+  return slow
+}
+```
+
