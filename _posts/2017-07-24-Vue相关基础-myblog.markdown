@@ -766,6 +766,44 @@ const AsyncComponent = () => ({
 
 
 
+###  vue-router打开新窗口
+
+
+
+ `<router-link>`  实现
+
+
+
+```html
+<router-link target="_blank" :to="{path:'/home',query:{id:'1'}}">新页面打开home页</router-link>
+```
+
+
+
+
+
+---
+
+
+
+编程式导航
+
+
+
+有些时候需要在单击事件或者在函数中实现页面跳转，那么可以借助router的示例方法，通过编写代码实现。我们常用的是 $router.push 和 $router.go 但是vue2.0以后，这种方式就不支持新窗口打开的属性了，这个时候就需要使用this.$router.resolve
+
+
+
+```js
+seeShare(){
+     let routeUrl = this.$router.resolve({
+          path: "/share",
+          query: {id:96}
+     });
+     window.open(routeUrl .href, '_blank');
+}
+```
+
 
 
 
