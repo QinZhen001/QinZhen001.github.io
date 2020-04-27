@@ -1,5 +1,3 @@
----
-
 layout:     post
 title:      "js重要基础"
 date:       2018-05-01 23:12:00
@@ -7,8 +5,8 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
+
     - JavaScript
----
 
 > “Yeah It's on. ”
 
@@ -2364,6 +2362,94 @@ substring(start,stop)
 * 字符串不可以使用splice()
 
 
+
+
+
+
+
+
+
+### 在map和set中get一个对象
+
+
+
+有一个很容易忽略的点，如果在map和set中get一个对象，因为对象是引用型数据，所以当我们修改这个对象时，对应map里面存储的这个对象也会变
+
+
+
+```js
+   let map = new Map()
+        map.set("aaa", { aa: "aa", zab: "bb" })
+        let obj = map.get("aaa")
+        obj.ccc = "ccc"
+        console.log(obj)
+        let afterOBj = map.get("aaa")
+        console.log(afterOBj)
+        console.log(obj === afterOBj) // true
+```
+
+
+
+
+
+
+
+### map是有序的
+
+
+
+
+
+ **Map 中的键值是有序的，因此，当对它进行遍历时，Map 对象是按插入的顺序返回键值** 
+
+
+
+>`Map` 在涉及频繁增删键值对的场景下会有些性能优势。
+
+  
+
+
+
+
+
+### 获取map中第一个元素的值
+
+
+
+
+
+```js
+let map = new Map()
+map.set("a", "a")
+map.set("b", "a")
+map.set("c", "a")
+map.set("d", "a")
+console.log(map.keys())  //返回的是MapIterator对象
+
+
+for (let item of map.keys()) {
+          console.log(item);
+}
+```
+
+
+
+
+
+我们想获取map中第一个元素的值，又不想去循环map，该如何做？
+
+
+
+map.keys()[0] 这样是取不到值的
+
+
+
+正确的做法：
+
+```js
+console.log(map.keys().next().value) 
+//a
+```
 
 
 
