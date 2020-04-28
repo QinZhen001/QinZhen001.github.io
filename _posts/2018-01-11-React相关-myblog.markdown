@@ -586,7 +586,50 @@ class Popper extends React.Component{
 
 
 
+## PureComponent
 
+
+
+
+
+
+
+
+
+
+
+
+
+## 新知识
+
+
+
+### 新生命周期getDerivedStateFromProps
+
+
+
+
+
+- `UNSAFE_componentWillReceiveProps(nextProps)` 在组件接收到新的参数时被触发.
+
+当父组件导致子组件更新的时候, 即使接收的 props 并没有变化, 这个函数也会被调用.
+
+> UNSAFE_componentWillReceiveProps()is invoked before a mounted component receives new props.
+>  Note that if a parent component causes your component to re-render, this method will be called even if props have not changed.
+
+
+
+-  `getDerivedStateFromProps(props, state)` 会在每次组件渲染前被调用
+
+> getDerivedStateFromProps is invoked right before calling the render method, both on the initial mount and on subsequent updates.
+
+
+
+getDerivedStateFromProps 会在每次组件被重新渲染前被调用, 这意味着无论是**父组件的更新, props 的变化, 或是组件内部执行了 setState(), 它都会被调用**.
+
+### 
+
+-----
 
 
 
