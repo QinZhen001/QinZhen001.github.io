@@ -35,7 +35,6 @@ ESLint被设计为完全可配置的，主要有两种方式来配置ESLint：
 
 这些文件的优先级则是按照以上出现的顺序（.eslintrc.js > .eslintrc.yaml > .eslintrc.yml > .eslintrc.json > .eslintrc > package.json）。
 
-
 ----------
 
 可以被配置的信息主要分为3类：
@@ -63,7 +62,57 @@ module.exports = {
 };
 ```
 
+
+
+### parserOptions
+
+ ```js
+ parserOptions: {
+    parser: 'babel-eslint',
+    ecmaVersion: 8,
+    sourceType: 'module',
+    ecmaFeatures: {
+      "jsx": true
+}
+ ```
+
+
+
+#### parser：babel-eslint
+
+[ https://www.npmjs.com/package/babel-eslint ]( https://www.npmjs.com/package/babel-eslint )
+
+
+
+**babel-eslint** allows you to lint **ALL** valid Babel code with the fantastic [ESLint](https://github.com/eslint/eslint).
+
+Babel - ESLint允许你将所有有效的Babel代码与神奇的ESLint连接起来。
+
+
+You only need to use babel-eslint if you are using types (Flow) or experimental features not supported in ESLint itself yet. Otherwise try the default parser (you don't have to use it just because you are using Babel). 
+
+
+
+---
+
+
+
+发现这个的原因是：
+
+eslint报错  `Parsing error: Unexpected token =`
+
+
+
+原因：开发环境与ESLint当前的解析功能不兼容
+
+
+
+
+
+
+
 ### 规则 Configuration
+
 运行 eslint --init 之后，.eslintrc 文件会在你的文件夹中自动创建。你可以在 .eslintrc 文件中看到许多像这样的规则：
 
 ```json

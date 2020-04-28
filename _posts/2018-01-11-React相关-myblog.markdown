@@ -641,11 +641,48 @@ getDerivedStateFromProps 会在每次组件被重新渲染前被调用, 这意�
 
 
 
+## 遇到的问题
+
+
+
+### state初始化问题
+
+[ https://blog.csdn.net/LiuChengYu520/article/details/82867513 ]( https://blog.csdn.net/LiuChengYu520/article/details/82867513 )
+
+
+
+```
+Warning: Can't call setState on a component that is not yet mounted.
+
+This is a no-op, but it might indicate a bug in your application.
+
+Instead, assign to `this.state` directly or define a `state = {};` 
+```
 
 
 
 
 
+不能再一个组件尚未mounted时调用 setState() 方法，这是一个空操作，但是可能会导致bug，所以， 直接给`this.state` 赋值，或者定义成`state = {};`
+
+
+
+**问题出现在直接给this.state赋值了**
+
+
+
+```js
+  constructor(props){
+    super(props)
+    this.state = { date: new Date(),counter: 1  };
+  }
+```
+
+
+
+
+
+要注意这一点
 
 
 
