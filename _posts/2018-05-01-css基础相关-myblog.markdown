@@ -30,6 +30,42 @@ element+element(通用兄弟选择器) 	div+p 	选择<div>元素之后的所有<
 
 
 
+#### 交集选择器
+
+
+
+[ https://www.jianshu.com/p/cae9663a7c97 ]( https://www.jianshu.com/p/cae9663a7c97 )
+
+
+
+```html
+p.text{
+  background:red;
+}
+
+<body>
+   <p class="text">类名为text的p标签</p>    
+   <div class="text">类名为text的div标签</div>
+</body>
+```
+
+
+
+p.text  意思是选择p标签的类名为text的元素
+
+
+
+
+
+注意点:     
+
+*  选择器之间没有任何的连接符号      
+*   选择器可以是标签名称,也可以是id、class名称   
+
+
+
+
+
 
 ### 浮动 
 
@@ -1021,6 +1057,28 @@ headerHeight 这里是计算出来的
 
 
 
+
+
+
+### 在ios中触发伪类active
+
+
+
+ :active伪类常用于设定点击状态下或其他被激活状态下一个链接的样式。最常用于锚点`<a href="#">`这种情况，一般主流浏览器下也支持其他元素 
+
+
+
+ **值得注意的是：**伪类是一种比较方便的实现方式，但在ios中，需要在相关的元素或者`body`上绑定`touchstart`事件才能使元素的`:active`生效。 
+
+
+
+```js
+// 在main.js
+
+// iOS 必须绑定 touch 事件才能触发 :active 伪类的 CSS 效果
+document.body.addEventListener('touchstart', function noop() { })
+
+```
 
 
 

@@ -2467,6 +2467,43 @@ console.log(map.keys().next().value)
 
 
 
+### getComputedStyle
+
+[ https://blog.csdn.net/hnnd123/article/details/94555496 ]( https://blog.csdn.net/hnnd123/article/details/94555496 )
+
+
+
+> 由于诸如ele.style.display这样的操作只能获取DOM元素的行内样式，所以获取结果可能与实际显示效果不符
+
+
+
+ **通过getComputedStyle方法可以用来获取DOM元素实际显示时的样式** 
+
+
+
+* 第一个参数指定一个用来获取计算样式的DOM元素，
+
+* 第二个参数（可选）指定一个要匹配的伪元素的字符串，普通元素可省略或传null。
+
+
+
+```js
+let element = document.getElementById('ele');
+let style = window.getComputedStyle(element);//元素样式改变时会自动更新
+let display = style.display;//元素指定样式属性的值
+style.width; //元素的width值
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
