@@ -178,6 +178,42 @@ module.exports = {
 
 
 
+
+
+
+### Generator 类
+
+[ https://meixg.cn/2019/03/03/vue-cli-create/ ]( https://meixg.cn/2019/03/03/vue-cli-create/ )
+
+
+
+[ https://cli.vuejs.org/dev-guide/plugin-dev.html#generator ]( https://cli.vuejs.org/dev-guide/plugin-dev.html#generator )
+
+
+
+ Generator 类是 Vue-cli 提供的与插件之间交流机制，编写插件时可利用这个机制，进行文件、package.json 依赖的修改 
+
+
+
+它是怎么工作的呢？Generator 类初始化时，会给每个插件初始化一个 GeneratorAPI 类，作为插件与 cli 之间的接口。
+
+```js
+// apply generators from plugins
+plugins.forEach(({ id, apply, options }) => {
+  const api = new GeneratorAPI(id, this, options, rootOptions)
+  apply(api, options, rootOptions, invoking)
+})
+```
+
+
+
+
+
+
+
+
+
+
 ### webpack 相关
 
 [https://cli.vuejs.org/zh/guide/webpack.html#webpack-%E7%9B%B8%E5%85%B3](https://cli.vuejs.org/zh/guide/webpack.html#webpack-%E7%9B%B8%E5%85%B3)
@@ -301,7 +337,7 @@ module.exports = {
         .end()
   }
 }
-``` 
+```
 
 
 
