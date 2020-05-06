@@ -75,7 +75,7 @@ tags:
 
 不仿我们来验证一下：
 
-```css
+```scss
 .block {
     color: red;
 
