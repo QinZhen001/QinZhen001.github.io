@@ -80,7 +80,7 @@ public / restricted: Set a package to be either publicly accessible or restricte
 
 ## 补充
 
-### NPM发包文件
+### NPM发包
 
 
 **NPM默认不会把node_modules发上去**
@@ -119,8 +119,7 @@ package-lock.json (use shrinkwrap instead)
 
 
 
-### npm发布以@开头包
-
+#### 以@开头的包
 
 [https://www.npmjs.cn/misc/scope/](https://www.npmjs.cn/misc/scope/)
 
@@ -133,6 +132,33 @@ To publish a public scoped package, you must specify --access public with the in
 
 
 要发布公共作用域的包，必须指定——使用初始发布访问public。这将发布包并设置对public的访问，就像您在发布后运行npm访问public一样。
+
+
+
+#### require子路径
+
+ [ https://runkit.com/qinzhen001/5eb232f5cf366c00149f7b33 ]( https://runkit.com/qinzhen001/5eb232f5cf366c00149f7b33 )
+
+
+
+```js
+var test = require("qz-asdasd/ccc")
+test()
+```
+
+
+
+有的时候，我们想访问npm包子路径下的文件，那该如何设计这种包的结构尼？
+
+
+
+例子：
+
+![](https://s1.ax1x.com/2020/05/06/YAGGX8.png)
+
+
+
+> 子文件夹 ccc中的index.js默认导出一个文件
 
 
 

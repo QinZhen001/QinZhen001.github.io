@@ -1804,6 +1804,25 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 
 
+### 通用前端组件设计
+
+[https://juejin.im/post/5c02142fe51d4511be77aad7?utm_source=gold_browser_extension](https://juejin.im/post/5c02142fe51d4511be77aad7?utm_source=gold_browser_extension)
+
+
+
+我们原则上一个组件只专注一件事情,单一职责的组件的好处很明显,由于职责单一就可以最大可能性地复用组件,但是这也带来一个问题,过度单一职责的组件也可能会导致过度抽象,造成组件库的碎片化。
+
+
+
+
+**组件的形态(DOM结构)永远是千变万化的,但是其行为(逻辑)是固定的,因此通用组件的秘诀之一就是将 DOM 结构的控制权交给开发者,组件只负责行为和最基本的 DOM 结构**
+
+
+
+
+
+
+
 
 
 

@@ -745,10 +745,6 @@ Puppeteer 是一个Node库， 它提供高级API，通过DevTools Protocol 来�
 - 捕获站点的时间线跟踪，以帮助诊断性能问题。
 - 测试Chrome扩展程序。
 
-## 
-
-
-
 
 
 ```js
@@ -771,6 +767,67 @@ Puppeteer初始化页面大小为 800*600px，这也是截图的大小 页面大
 
 
 
+
+
+
+###  json-templater 
+
+[ https://www.npmjs.com/package/json-templater ]( https://www.npmjs.com/package/json-templater )
+
+
+
+JSON template(r) is an opinionated simple way to do mustache style template replacements on your js and json objects (and of course strings too)!.
+
+
+
+JSON模板(r)是在js和JSON对象(当然还有字符串)上执行mustache样式模板替换的一种自以为是的简单方法!
+
+
+
+----
+
+
+
+ mustache style  大括号表达式块
+
+ 举个栗子：
+
+```js
+{{foo}}
+```
+
+
+
+
+
+
+
+#### json-templater/string
+
+
+
+The string submodule is a very simple mustache like variable replacement with no special features:
+
+
+
+string子模块是一个非常简单的mustache，类似于变量替换，没有任何特殊功能
+
+
+
+
+
+```js
+var render = require('json-templater/string');
+render('{{xfoo}} {{say.what}}', { xfoo: 'yep', say: { what: 'yep' } });
+
+// yep yep
+```
+
+
+
+
+
+ 
 
 
 
