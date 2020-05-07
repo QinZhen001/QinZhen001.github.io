@@ -83,6 +83,45 @@ h('img', { attrs: { src: require('./image.png') }})
 
 
 
+
+
+
+
+### serve本地预览
+
+[ https://cli.vuejs.org/zh/guide/deployment.html ]( https://cli.vuejs.org/zh/guide/deployment.html )
+
+
+
+如果你用 Vue CLI 处理静态资源并和后端框架一起作为部署的一部分，那么你需要的仅仅是确保 Vue CLI 生成的构建文件在正确的位置，并遵循后端框架的发布方式即可。
+
+如果你独立于后端部署前端应用——也就是说后端暴露一个前端可访问的 API，然后前端实际上是纯静态应用。那么你可以将 `dist` 目录里构建的内容部署到任何静态文件服务器中，但要确保正确的 [publicPath](https://cli.vuejs.org/zh/config/#publicpath)。
+
+### 
+
+----
+
+
+
+ `dist` 目录需要启动一个 HTTP 服务器来访问 (除非你已经将 `publicPath` 配置为了一个相对的值)，所以以 `file://` 协议直接打开 `dist/index.html` 是不会工作的。在本地预览生产环境构建最简单的方式就是使用一个 Node.js 静态文件服务器，例如 [serve](https://github.com/zeit/serve)： 
+
+
+
+```js
+npm install -g serve
+# -s 参数的意思是将其架设在 Single-Page Application 模式下
+# 这个模式会处理即将提到的路由问题
+serve -s dist
+```
+
+
+
+
+
+
+
+
+
 ### devServer.proxy
 
 Type: string | Object

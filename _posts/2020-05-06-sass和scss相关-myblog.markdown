@@ -368,6 +368,61 @@ CSS
 
 
 
+### @debug
+
+
+
+
+
+The @debug directive prints the value of a SassScript expression to the standard error output stream. It’s useful for debugging Sass files that have complicated SassScript going on. 
+
+
+
+ @debug指令将SassScript表达式的值打印到标准的错误输出流。这对于调试具有复杂SassScript的Sass文件非常有用 
+
+
+
+
+
+```scss
+@debug 10em + 12em;
+```
+
+编译为
+
+```
+Line 1 DEBUG: 22em
+```
+
+
+
+### @function
+
+Sass 支持自定义函数，并能在任何属性值或 Sass script 中使用：
+
+
+
+```scss
+$grid-width: 40px;
+$gutter-width: 10px;
+
+@function grid-width($n) {
+  @return $n * $grid-width + ($n - 1) * $gutter-width;
+}
+
+#sidebar { width: grid-width(5); }
+```
+
+
+
+编译为
+
+```css
+#sidebar {
+  width: 240px; 
+}
+```
+
 
 
 ### @each
@@ -733,6 +788,58 @@ Vue为了让scoped有效会在编译的时候为每个元素添加[data-v-xxx]�
 
 
 
+### String(字符串) 函数
+
+[ https://www.runoob.com/sass/sass-string-func.html ]( https://www.runoob.com/sass/sass-string-func.html )
+
+
+
+* quote(*string*)
+* str-index(*string*, *substring*)
+* str-insert(*string*, *insert*, *index*)
+* str-length(*string*)
+* str-slice(*string*, *start*, *end*)
+* to-lower-case(*string*)
+* to-upper-case(*string*)
+* unique-id()
+* unquote(*string*)
+
+
+
+
+
+### Maps
+
+
+
+Maps代表一个键和值对集合，其中键用于查找值。他们可以很容易地将值收集到命名组中，并且可以动态地访问这些组。在CSS中你找不到和他们类似的值，虽然他们的语法类似于媒体查询表达式：
+
+
+
+```scss
+$map: (key1: value1, key2: value2, key3: value3);
+```
+
+
+
+ 和列表（Lists）不同，Maps必须始终使用括号括起来，并且必须用逗号分隔。Maps中的键和值可以是任意的SassScript对象。一个Maps可能只有一个值与给定的键关联（尽管该值可以是一个列表）。一个给定的值可能与许多键关联。 
+
+
+
+ 和列表（Lists）类似，Maps的主要操作使用的是 [SassScript 函数](http://sass-lang.com/documentation/Sass/Script/Functions.html#map-functions)。[`map-get`函数](http://sass-lang.com/documentation/Sass/Script/Functions.html#map_get-instance_method)用于查找map中的值，[`map-merge`函数](http://sass-lang.com/documentation/Sass/Script/Functions.html#map_merge-instance_method)用于添加值到map中的值， [`@each` 指令](https://www.html.cn/doc/sass/#each-multi-assign)可以用来为 map 中的每个键值对添加样式。map中键值对的顺序和map创建时始终相同。 
+
+
+
+ Maps不能转换为纯CSS。作为变量的值或参数传递给CSS函数将会导致错误。使用`inspect($value)` 函数以产生输出字符串，这对于调试 maps 非常有用。 
+
+
+
+### inspect()函数
+
+
+
+ Maps不能转换为纯CSS。作为变量的值或参数传递给CSS函数将会导致错误。使用`inspect($value)` 函数以产生输出字符串，这对于调试 maps 非常有用。 
+
 
 
 
@@ -741,11 +848,13 @@ Vue为了让scoped有效会在编译的时候为每个元素添加[data-v-xxx]�
 
 
 
-
 ### b 选择块
+
+添加前缀，包裹原来样式
 
 ```scss
 /* BEM
+$namespace: 'el';
  -------------------------- */
 @mixin b($block) {
   $B: $namespace+'-'+$block !global;
@@ -756,6 +865,120 @@ Vue为了让scoped有效会在编译的时候为每个元素添加[data-v-xxx]�
 }
 
 ```
+
+
+
+### e 选择快
+
+
+
+```scss
+// $element-separator: '__';
+
+@mixin e($element) {
+  $E: $element !global;
+  $selector: &;
+  $currentSelector: "";
+  @each $unit in $element {
+    $currentSelector: #{$currentSelector + "." + $B + $element-separator + $unit + ","};
+  }
+
+  @if hitAllSpecialNestRule($selector) {
+    @at-root {
+      #{$selector} {
+        #{$currentSelector} {
+          @content;
+        }
+      }
+    }
+  } @else {
+    @at-root {
+      #{$currentSelector} {
+        @content;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------
+
+
+
+
+@function hitAllSpecialNestRule($selector) {
+  @return containsModifier($selector) or containWhenFlag($selector) or containPseudoClass($selector);
+}
+
+
+
+
+@function containsModifier($selector) {
+  $selector: selectorToString($selector);
+
+  @if str-index($selector, $modifier-separator) {
+    @return true;
+  } @else {
+    @return false;
+  }
+}
+
+@function containWhenFlag($selector) {
+  $selector: selectorToString($selector);
+
+  @if str-index($selector, '.' + $state-prefix) {
+    @return true
+  } @else {
+    @return false
+  }
+}
+
+@function containPseudoClass($selector) {
+  $selector: selectorToString($selector);
+
+  @if str-index($selector, ':') {
+    @return true
+  } @else {
+    @return false
+  }
+}
+
+// BEM support Func
+// ------------------------------------------
+
+
+
+
+@function selectorToString($selector) {
+  $selector: inspect($selector);
+  $selector: str-slice($selector, 2, -2);
+  @return $selector;
+}
+```
+
+
+
+
+
+### m 选择块 
+
+```scss
+//  $modifier-separator : --
+@mixin m($modifier) {
+  $selector: &;
+  $currentSelector: "";
+  @each $unit in $modifier {
+    $currentSelector: #{$currentSelector + & + $modifier-separator + $unit + ","};
+  }
+
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
+```
+
+
 
 
 
@@ -776,14 +999,6 @@ Vue为了让scoped有效会在编译的时候为每个元素添加[data-v-xxx]�
   }
 }
 ```
-
-
-
-
-
-
-
-
 
 
 
