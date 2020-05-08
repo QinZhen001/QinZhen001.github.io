@@ -627,14 +627,6 @@ class Popper extends React.Component{
 
 getDerivedStateFromProps 会在每次组件被重新渲染前被调用, 这意味着无论是**父组件的更新, props 的变化, 或是组件内部执行了 setState(), 它都会被调用**.
 
-### 
-
------
-
-
-
-
-
 
 
 
@@ -690,11 +682,77 @@ Instead, assign to `this.state` directly or define a `state = {};`
 
 
 
+### Warning: Legacy context API
+
+[ https://github.com/JedWatson/react-select/issues/3703 ]( https://github.com/JedWatson/react-select/issues/3703 )
+
+
+
+发现一个warning
+
+
+
+```js
+Warning: Legacy context API has been detected within a strict-mode tree: 
+    in StrictMode
+    in ErrorBoundary
+    in Unknown (created by HotExportedComponent)
+    in AppContainer (created by HotExportedComponent)
+    in HotExportedComponent
+
+Please update the following components: LocaleReceiver
+
+Learn more about this warning here:
+https://fb.me/react-strict-mode-warnings
+```
+
+
+
+----
+
+
+
+原因：
+
+
+
+From React 16.3 the old Context API was deprecated and
+it's rising warnings when runng in strict-mode. 
+
+
+
+ 在React 16.3中，旧的上下文API被弃用了，当以严格模式运行时，它发出了不断上升的警告。 
+
+<details class="details-overlay details-reset dropdown hx_dropdown-fullscreen position-relative float-left d-inline-block reaction-popover-container reactions-menu js-reaction-popover-container" style="box-sizing: border-box; display: inline-block !important; position: relative; float: left !important;"><summary class="btn-link reaction-summary-item add-reaction-btn" aria-label="Add your reaction" aria-haspopup="menu" role="button" style="box-sizing: border-box; display: inline-block; cursor: pointer; padding: 9px 15px 7px; font-size: inherit; color: rgb(3, 102, 214); text-decoration: none; white-space: nowrap; user-select: none; background-color: initial; border: 0px; -webkit-appearance: none; opacity: 0; transition: opacity 0.1s ease-in-out 0s; float: left; line-height: 18px; list-style: none;"><svg class="octicon octicon-smiley" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.81 12.81a6.72 6.72 0 01-2.17 1.45c-.83.36-1.72.53-2.64.53-.92 0-1.81-.17-2.64-.53-.81-.34-1.55-.83-2.17-1.45a6.773 6.773 0 01-1.45-2.17A6.59 6.59 0 011.21 8c0-.92.17-1.81.53-2.64.34-.81.83-1.55 1.45-2.17.62-.62 1.36-1.11 2.17-1.45A6.59 6.59 0 018 1.21c.92 0 1.81.17 2.64.53.81.34 1.55.83 2.17 1.45.62.62 1.11 1.36 1.45 2.17.36.83.53 1.72.53 2.64 0 .92-.17 1.81-.53 2.64-.34.81-.83 1.55-1.45 2.17zM4 6.8v-.59c0-.66.53-1.19 1.2-1.19h.59c.66 0 1.19.53 1.19 1.19v.59c0 .67-.53 1.2-1.19 1.2H5.2C4.53 8 4 7.47 4 6.8zm5 0v-.59c0-.66.53-1.19 1.2-1.19h.59c.66 0 1.19.53 1.19 1.19v.59c0 .67-.53 1.2-1.19 1.2h-.59C9.53 8 9 7.47 9 6.8zm4 3.2c-.72 1.88-2.91 3-5 3s-4.28-1.13-5-3c-.14-.39.23-1 .66-1h8.59c.41 0 .89.61.75 1z"></path></svg></summary></details>
+
+Please update the following components: LocaleReceiver
+
+
+
+一开始以为要更新组件，结果这个组件在anti组件库里面，后面发现React 16.3默认添加
+
+```jsx
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
 
 
 
 
 
+ 
+
+解决：
+
+[ https://github.com/ant-design/ant-design/issues/22604 ]( https://github.com/ant-design/ant-design/issues/22604 )
+
+
+
+删除了React.StrictMode就好了，没有warning了
 
 
 

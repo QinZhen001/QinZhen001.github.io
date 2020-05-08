@@ -447,6 +447,50 @@ function uint8ArrayToString(arr) {
 
 
 
+
+
+### canvas绘制分享海报显示有问题
+
+
+
+ [https://developers.weixin.qq.com/community/develop/doc/00086c84fc0850f29ea94a6085c800?highLine=%25E5%2588%2586%25E4%25BA%25AB%25E6%25B5%25B7%25E6%258A%25A5](https://developers.weixin.qq.com/community/develop/doc/00086c84fc0850f29ea94a6085c800?highLine=%E5%88%86%E4%BA%AB%E6%B5%B7%E6%8A%A5) 
+
+
+
+小程序使用canvas绘制分享海报（png格式），由三张网络图片组成。目前发现在多款华为手机上png格式的那张海报背景图（posterBgImgUrl）不显示，其它两张jpg的正常显示。
+
+
+
+
+
+解决：
+
+
+
+后面改成了网络图片，并且把wx.getImageInfo换成了wx.downloadFile，还加了一个res.statusCode === 200的判断，暂时就没发现问题了。你可以试一下。
+
+
+
+```js
+wx.downloadFile({
+  url: _this.data.posterBgImgUrl,
+  success: function(res) {
+     if (res.statusCode === 200) {
+        const ctx = wx.createCanvasContext('invitatePosterCanvas')
+        ...          
+     }
+   }
+})
+```
+
+
+
+
+
+
+
+
+
 ## mpvue相关
 
 [http://mpvue.com/mpvue/](http://mpvue.com/mpvue/)

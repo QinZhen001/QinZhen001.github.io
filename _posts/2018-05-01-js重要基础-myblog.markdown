@@ -314,8 +314,52 @@ var o = Object.create(Object.prototype,{
 console.log(o)
 ```
 
-
 这次就和使用{}创建的对象一模一样了
+
+
+
+###  Object.is()
+
+[ https://juejin.im/post/5d560c0cf265da03c61e4d33 ]( https://juejin.im/post/5d560c0cf265da03c61e4d33 )
+
+
+
+ `Object.is()`，其行为与`===`基本一致
+
+
+
+ 不过有两处不同： 
+
+
+
+1. **+0**不等于**-0**。
+2. **NaN**等于自身。
+
+
+
+
+
+```js
++0 === -0 //true
+NaN === NaN // false
+
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
 
 ### padStart()，padEnd()
 ES6 引入了字符串补全长度的功能，如果某个字符串不够指定长度，会在头部活尾部补全。

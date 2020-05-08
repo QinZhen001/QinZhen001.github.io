@@ -1678,6 +1678,26 @@ while (i--) {
 
 
 
+### 判断 -0
+
+
+
+如何判断一个元素是不是-0，使用Object.is()
+
+
+
+```js
+let num = 0
+let res = Object.is(num, -0);
+console.log("res",res)    // false
+```
+
+
+
+
+
+
+
 
 
 

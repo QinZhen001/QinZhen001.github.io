@@ -826,4 +826,34 @@ ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
 
 
 
+### 利用github pages部署vue项目白屏
+
+> 这里我将近被坑了两个小时左右，最好的使用master分支docs文件夹部署github pages，这样将打包后的dist文件夹改名成docs就行了
+
+
+
+ [ https://juejin.im/post/5cb5d68e51882532525a097d ]( https://juejin.im/post/5cb5d68e51882532525a097d )
+
+
+
+最终定位到问题是  **vue-router 不要开启 history 模式**
+
+
+
+路径中的 **#** 比较丑，就开启了 vue-router 的 history 模式，去掉了 **#**。平时做项目也是默认开启 history 模式。折腾了半天发现，我这是部署到 github pages ，服务器没有配置，导致页面一直请求不到。
+
+
+
+我哭了吗，记录到这里了
+
+
+
+
+
+
+
+
+
+
+
 [1]: https://s2.ax1x.com/2019/09/02/niK9fA.png
