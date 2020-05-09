@@ -1487,6 +1487,54 @@ let a = 1 + 2
 
 
 
+### ++或--语句返回的结果
+
+
+
+* 前置运算符语句返回执行后的结果
+* 后置运算符语句返回本来的结果
+
+
+
+举个例子：
+
+
+
+```js
+let index = -1
+let r = index++ 
+console.log(r) // -1
+```
+
+
+
+```js
+let index = -1;
+let l = ++index;
+console.log("l", l); // 0
+```
+
+
+
+
+
+所以在while循环中，我们一般要采用前置运算符
+
+
+
+```js
+let arr = [1,2,3,4,5,6,7,8]
+let index = -1
+while(++index < arr.length){
+  // 采用++index 如果使用index++ 会多出无用的最后一项 undefined 
+  console.log("111",index,arr[index])
+}
+```
+
+
+
+
+
 
 ### Object.create(null)屏蔽__proto__
 
