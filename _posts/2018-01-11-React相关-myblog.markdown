@@ -586,13 +586,155 @@ class Popper extends React.Component{
 
 
 
-## PureComponent
+### PureComponent
+
+
+
+默认渲染行为的问题
+
+
+
+在React Component的生命周期中，有一个shouldComponentUpdate方法。这个方法默认返回值是true。
+
+
+
+这意味着就算没有改变组件的props或者state，也会导致组件的重绘。这就经常导致组件因为不相关数据的改变导致重绘，这极大的降低了React的渲染效率。比如下面的例子中，任何options的变化，甚至是其他数据的变化都可能导致所有cell的重绘
+
+
+
+```jsx
+//Table Component
+{this.props.items.map(i =>
+    <Cell data={i} option={this.props.options[i]} />
+)}
+```
+
+
+
+为了避免这个问题，我们可以在Cell中重写shouldComponentUpdate方法，只在option发生改变时进行重绘。
+
+```jsx
+class Cell extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.option === nextProps.option) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
+```
+
+这样每个Cell只有在关联option发生变化时进行重绘。
+
+
+
+----
+
+
+
+使用PureComponent与immutable.js
 
 
 
 
 
+因为上面的情况十分通用，React创建了PureComponent组件创建了默认的shouldComponentUpdate行为。这个默认的shouldComponentUpdate行为会一一比较props和state中所有的属性，只有当其中任意一项发生改变是，才会进行重绘。
 
+**需要注意的是，PureComponent使用浅比较判断组件是否需要重绘**
+
+因此，下面对数据的修改并不会导致重绘（假设Table也是PureComponent)
+
+```js
+options.push(new Option())
+options.splice(0, 1)
+options[i].name = "Hello"
+```
+
+
+
+这些例子都是在原对象上进行修改，由于浅比较是比较指针的异同，所以会认为不需要进行重绘。
+
+
+
+为了避免出现这些问题，推荐使用immutable.js。
+
+
+
+**immutable.js会在每次对原对象进行添加，删除，修改时返回新的对象实例。任何对数据的修改都会导致数据指针的变化。**
+
+
+
+
+
+#### 陷阱Literal Array与Literal Object
+
+
+
+```jsx
+{this.props.items.map(i =>
+    <Cell data={i} options={this.props.options || []} />
+)}
+```
+
+
+
+若options为空，则会使用[]。[]每次会生成新的Array，因此导致Cell每次的props都不一样，导致需要重绘。解决方法如下:
+
+```jsx
+const default = [];
+{this.props.items.map(i =>
+  <Cell data={i} options={this.props.options || default} />
+)}
+```
+
+
+
+
+
+#### 内联函数
+
+
+
+
+
+函数也经常作为props传递，由于每次需要为内联函数创建一个新的实例，所以每次function都会指向不同的内存地址。比如：
+
+```jsx
+render() {
+     <MyInput onChange={e => this.props.update(e.target.value)} />;
+}
+```
+
+以及：
+
+```jsx
+update(e) {
+     this.props.update(e.target.value);
+}
+render() {
+     return <MyInput onChange={this.update.bind(this)} />;
+}
+```
+
+注意第二个例子也会导致创建新的函数实例。
+
+**为了解决这个问题，需要提前绑定this指针：**
+
+```jsx
+constructor(props) {
+    super(props);
+    this.update = this.update.bind(this);
+  }
+  update(e) {
+    this.props.update(e.target.value);
+  }
+  render() {
+    return <MyInput onChange={this.update} />;
+  }
+```
+
+>这也是性能优化中要做到的，因为render()可能会调用多次，所以要把把绑定this操作移到render()外面
 
 
 
@@ -724,7 +866,6 @@ it's rising warnings when runng in strict-mode.
  在React 16.3中，旧的上下文API被弃用了，当以严格模式运行时，它发出了不断上升的警告。 
 
 <details class="details-overlay details-reset dropdown hx_dropdown-fullscreen position-relative float-left d-inline-block reaction-popover-container reactions-menu js-reaction-popover-container" style="box-sizing: border-box; display: inline-block !important; position: relative; float: left !important;"><summary class="btn-link reaction-summary-item add-reaction-btn" aria-label="Add your reaction" aria-haspopup="menu" role="button" style="box-sizing: border-box; display: inline-block; cursor: pointer; padding: 9px 15px 7px; font-size: inherit; color: rgb(3, 102, 214); text-decoration: none; white-space: nowrap; user-select: none; background-color: initial; border: 0px; -webkit-appearance: none; opacity: 0; transition: opacity 0.1s ease-in-out 0s; float: left; line-height: 18px; list-style: none;"><svg class="octicon octicon-smiley" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.81 12.81a6.72 6.72 0 01-2.17 1.45c-.83.36-1.72.53-2.64.53-.92 0-1.81-.17-2.64-.53-.81-.34-1.55-.83-2.17-1.45a6.773 6.773 0 01-1.45-2.17A6.59 6.59 0 011.21 8c0-.92.17-1.81.53-2.64.34-.81.83-1.55 1.45-2.17.62-.62 1.36-1.11 2.17-1.45A6.59 6.59 0 018 1.21c.92 0 1.81.17 2.64.53.81.34 1.55.83 2.17 1.45.62.62 1.11 1.36 1.45 2.17.36.83.53 1.72.53 2.64 0 .92-.17 1.81-.53 2.64-.34.81-.83 1.55-1.45 2.17zM4 6.8v-.59c0-.66.53-1.19 1.2-1.19h.59c.66 0 1.19.53 1.19 1.19v.59c0 .67-.53 1.2-1.19 1.2H5.2C4.53 8 4 7.47 4 6.8zm5 0v-.59c0-.66.53-1.19 1.2-1.19h.59c.66 0 1.19.53 1.19 1.19v.59c0 .67-.53 1.2-1.19 1.2h-.59C9.53 8 9 7.47 9 6.8zm4 3.2c-.72 1.88-2.91 3-5 3s-4.28-1.13-5-3c-.14-.39.23-1 .66-1h8.59c.41 0 .89.61.75 1z"></path></svg></summary></details>
-
 Please update the following components: LocaleReceiver
 
 
