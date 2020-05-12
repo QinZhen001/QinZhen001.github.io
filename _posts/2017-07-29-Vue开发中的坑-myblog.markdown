@@ -85,6 +85,40 @@ html中直接这样就可以了
 
 
 
+### wraning： multiple modules with names
+
+[ https://www.cnblogs.com/chaoyong/p/8340681.html ]( https://www.cnblogs.com/chaoyong/p/8340681.html )
+
+
+
+```
+WARNING in ./src/views/account/teacher/admin/AddGroupDialog.vue?vue&type=script&lang=js&
+
+There are multiple modules with names that only differ in casing.
+
+This can lead to unexpected behavior when compiling on a filesystem with other case-semantic.
+
+Use equal casing. Compare these module identifiers:
+```
+
+
+
+这是引用组件时，路径大小写不对导致的。比如：
+
+如果Paginate组件是大写的，那么这样用会错： 
+
+
+
+```js
+import Paginate from '~/components/paginate.vue';
+需要这样写：
+import Paginate from '~/components/Paginate.vue';
+```
+
+
+
+
+
 ## 每个页面的包裹布局
 
 
