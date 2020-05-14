@@ -396,6 +396,324 @@ Decorators 的本质是利用了 ES5 的 Object.defineProperty 属性，这三�
 
 
 
+### 箭头函数
+
+
+
+#### 隐式返回值
+
+要返回多行语句（例如对象文本），需要使用( )而不是{ }来包裹函数体。这样可以确保代码以单个语句的形式进行求值。
+
+
+
+```javascript
+function calcCircumference(diameter) {
+  return Math.PI * diameter
+}
+// 简写为：
+calcCircumference = diameter => (
+  Math.PI * diameter;
+)
+```
+
+
+
+#### 注意点
+
+1.  **函数体内的this对象就是定义时所在的对象，而不是使用时所在对象(这点很重要)**
+2.  不可以当作构造函数使用，也就是不能用new命令实例化一个对象，否则会抛出一个错误；
+3.  不可以使用arguments对象，该对象在函数体内不存在，如果要用的话，可以用rest参数代替；
+4.  不可以使用yield命令，箭头函数不能用作Generator函数；
+
+
+
+
+
+
+
+#### 例子
+
+
+
+箭头函数：
+
+```js
+var x=11;
+var obj={
+ x:22,
+ say:()=>{
+   console.log(this.x);
+ }
+}
+
+obj.say();
+//输出的值为11
+```
+
+所谓的定义时候绑定，就是this是继承自父执行上下文！！中的this，比如这里的箭头函数中的this.x，箭头函数本身与say平级以key:value的形式，也就是箭头函数本身所在的对象为obj，而obj的父执行上下文就是window，因此这里的this.x实际上表示的是window.x，因此输出的是11。**(this只有在函数被调用，或者通过构造函数new Object()的形式才会有this)**
+
+
+
+```js
+var a=11;
+function test2(){
+  this.a=22;
+  let b=()=>{console.log(this.a)}
+  b();
+}
+var x=new test2();
+//输出22
+```
+
+**很奇怪对不对，我是这样理解的，ES6中定义的时候绑定this的具体含义，应该继承的是父执行上下文里面的this**
+
+
+注意：简单对象（非函数）是没有执行上下文的！
+
+箭头函数中，this指向的固定化，并不是因为箭头函数内部有绑定this的
+机制，实际原因是箭头函数根本没有自己的this，导致内部的this就是外
+层代码块的this。正是因为它没有this，所以也就不能用作构造函数。
+
+
+
+我们可以来模拟ES5中的箭头函数转化：
+
+
+
+```js
+// ES6
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
+}
+
+// ES5
+function foo() {
+  var _this = this;
+
+  setTimeout(function () {
+    console.log('id:', _this.id);
+  }, 100);
+}
+```
+
+
+
+
+
+
+
+非箭头函数
+
+```js
+var a=11
+function test1(){
+  this.a=22;
+  let b=function(){
+    console.log(this.a);
+  };
+  b();
+}
+var x=new test1();
+// 输出11
+```
+
+
+
+
+
+```js
+var fullname = 'John Doe';
+var obj = {
+   fullname: 'Colin Ihrig',
+   prop: {
+      fullname: 'Aurelio De Rosa',
+      getFullname: function() {
+         return this.fullname;
+      }
+   }
+};
+ 
+console.log(obj.prop.getFullname());
+// Aurelio De Rosa
+ 
+var test = obj.prop.getFullname;
+ 
+console.log(test());
+// John Doe
+```
+
+
+
+JavaScript中关键字this所引用的是函数上下文，取决于函数是如何调用的，而不是怎么被定义的。
+
+
+
+在第一个console.log()，getFullname()是作为obj.prop对象的函数被调用。因此，当前的上下文指代后者，并且函数返回这个对象的fullname属性。相反，当getFullname()被赋值给test变量时，当前的上下文是全局对象window，这是因为test被隐式地作为全局对象的属性
+
+
+
+---
+
+
+
+[彻底弄懂箭头函数]( https://juejin.im/post/5eb7961a6fb9a0436d41a8a9 )
+
+
+
+```js
+class A {
+  	constructor() {
+		this.b = this.b.bind(this);    	
+    }
+  
+    a() {
+    	console.log('a');
+    }
+	  b() {
+    	console.log('b')
+    }
+    c = () => {
+    	console.log('c')
+    }
+}
+
+```
+
+
+
+ **babel**编译后
+
+
+
+```js
+"use strict";
+
+function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return !!right[Symbol.hasInstance](left); } else { return left instanceof right; } }
+
+function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+// 向Constructor.prototype中添加东西
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var A = /*#__PURE__*/function () {
+  function A() {
+    _classCallCheck(this, A);
+
+    // 箭头函数编译后  
+    _defineProperty(this, "c", function () {
+      console.log('c');
+    });
+
+    this.b = this.b.bind(this);
+  }
+
+  _createClass(A, [{
+    key: "a",
+    value: function a() {
+      console.log('a');
+    }
+  }, {
+    key: "b",
+    value: function b() {
+      console.log('b');
+    }
+  }]);
+
+  return A;
+}();
+
+
+```
+
+
+
+* 普通函数: 在 babel 编译后，会被放在函数的 prototype 上
+
+* constructor 里 bind 的函数: 在编译后，它不仅会被放在函数的 prototype 里，而且每一次实例化，都会产生一个绑定当前实例上下文的变量(this.b = this.b.bind(this))。
+
+* 箭头函数：在 babel 编译后，每一次实例化的时候，都会调用 defineProperty 将箭头函数内容绑定在当前实例上下文上。
+
+
+
+
+
+ **从编译后的结果来看的话，对于实际开发的时候，如果需要绑定上下文的话，最好还是用箭头函数。因为使用 bind 方式的话，不仅会产生一个 prototype 的函数，每一次实例化都会额外产生多一个函数。** 
+
+
+
+#### 引申出class知识点
+
+
+
+ **class 对于 = 号声明的方法、变量，都会将其作为实例的属性，而对于非 = 号声明的属性，则是放在原型链上** 
+
+
+
+```js
+class A {
+    a() {
+        
+    }
+    b = 2;
+    c = () => {
+    }
+}
+```
+
+
+
+对于这个类， 在实例化的时候，b, c 会作为实例的属性，而 a 则是放在原型链上。
+
+
+
+----
+
+
+
+举个例子：
+
+
+
+```js
+class Yideng {
+  static str = "京程一灯"
+  // 赋值 会将其作为实例的属性
+  sayStr = () => {
+    throw new Error("Need to implement")
+  }
+}
+
+
+class Student extends Yideng {
+  constructor(){
+    super()
+  }
+
+  // 声明的属性 放在原型链上
+  sayStr(){
+    console.log(Student.str)
+  }
+}
+
+
+const laoyuan = new Student()
+console.log(Student.str) // 京程一灯
+
+// 先找实例的属性再去原型链找 (存在实例属性) 
+laoyuan.sayStr()   // Error("Need to implement")
+
+```
+
+
+
+
+
 
 ### for in
 
