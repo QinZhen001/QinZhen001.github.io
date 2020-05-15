@@ -747,6 +747,12 @@ for..of和for..in可以正确响应break、continue和return语句
 ### class
 
 
+
+> es6 的类在初始化的时候，如果有基类会先执行基类的构造函数，之后再执行本身的构造函数。 
+
+
+
+
 #### this 的指向
 
 
@@ -974,6 +980,66 @@ class Logger {
     }
   }
 ```
+
+
+
+
+
+#### static
+
+在class中
+
+* static属性会定义在实例的 constructor上 (也就是类转义得到的函数上)
+* 普通属性会定义在实例上
+
+
+
+来看一个例子：
+
+
+
+```js
+class Yideng {
+   str = "京城一等"
+   static aaa="aaa"
+}
+
+const obj = new Yideng()
+console.log(obj.aaa) // undefined
+console.log(obj.constructor.aaa) //aaa
+console.log(Yideng.aaa) //aaa
+console.log(obj.constructor == Yideng) // true
+console.log(obj.__proto__ == Yideng.prototype) // true 
+```
+
+
+
+经过babel转义后
+
+
+
+```js
+"use strict";
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Yideng = function Yideng() {
+  _classCallCheck(this, Yideng);
+  // 定义在实例上	
+  _defineProperty(this, "str", "京城一等");
+};
+
+// 定义在this.constructor上
+_defineProperty(Yideng, "aaa", "aaa");
+```
+
+
+
+
+
+
+
+
 
 ### 计算属性
 

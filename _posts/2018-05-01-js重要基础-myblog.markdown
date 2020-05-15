@@ -182,23 +182,24 @@ ECMAScript 5 引入严格模式('strict mode')概念。通过严格模式，在�
 
 
 
+### Object.create相关
 
-### Object.create(proto [, propertiesObject ]) 
 
+
+Object.create(proto [, propertiesObject ]) 
 
 [https://juejin.im/post/5c08bb18e51d451de22a4723](https://juejin.im/post/5c08bb18e51d451de22a4723)
-
-
 
 **Object.create()方法创建一个新对象，使用现有的对象来提供新创建的对象的__proto__**
 
 propertiesObject 参数的详细解释：（默认都为false）
 数据属性： 
+
 * writable:是否可任意写 
 * configurable：是否能够删除，是否能够被修改 
 * enumerable：是否能用 for in 枚举 
 * value：值 
-访问属性：
+  访问属性：
 * get(): 访问
 * set(): 设置
 
@@ -224,7 +225,109 @@ propertiesObject 参数的详细解释：（默认都为false）
 
 通过 Object.create() 方法，使用一个指定的原型对象和一个额外的属性对象创建一个新对象。这是一个用于对象创建、继承和重用的强大的新接口。说直白点，就是一个新的对象可以继承一个对象的属性，并且可以自行添加属性。
 
+
+
+#### Object.create(null)
+
+```javascript
+var o = Object.create(null,{
+    a:{
+           writable:true,
+        configurable:true,
+        value:'1'
+    }
+})
+console.log(o)  // {a: "1"}
+```
+
+**可以看到，新创建的对象除了自身属性a之外，原型链上没有任何属性，也就是没有继承Object的任何东西，此时如果我们调用o.toString()会报Uncaught TypeError的错误。**
+
+
+这个一定要注意
+
+
+这个和{}创建的对象不一样
+
+```javascript
+var o = {a：1};
+console.log(o)
+```
+
+
+这里的o对象继承了Object自身的方法，如hasOwnProperty、toString等
+
+-----
+
+
+#### Object.create({})
+
+这样创建的对象和使用{}创建对象已经很相近了
+
+**但是还是有一点区别：多了一层proto嵌套。**
+
+
+
+#### Object.create如何做到和{...}创建对象一样
+
+```javascript
+var o = Object.create(Object.prototype,{
+    a:{
+           writable:true,
+        configurable:true,
+        value:'1'
+    }
+})
+console.log(o)
+```
+
+这次就和使用{}创建的对象一模一样了
+
+
+
+
+
+
+#### Object.create(null)屏蔽__proto__
+
+当我们创建一个对象的时候，沿着原型链向上查找，总是会找到一个__proto__为Object
+
+那么要如何做才能屏蔽掉呢？
+
+我们使用Object.create(null)
+
+
+
+
+```javascript
+  let a = {};
+  let b = Object.create(null);
+  let c = Object();
+
+  a.xxx = 'xxx';
+  b.xxx = 'xxx';
+  c.xxx = 'xxx';
+
+  console.log(a);
+  console.log(b);
+  console.log(c);
+```
+
+```javascript
+{xxx: "xxx"} __proto__: Object
+{xxx: "xxx"}
+{xxx: "xxx"} __proto__: Object
+```
+
+
+
+使用Object.create(null)创建对象，屏蔽__proto__，可以节省一些性能
+
+
+
+
+
 #### 用 Object.create实现类式继承
+
 ```javascript
 // Shape - 父类(superclass)
 function Shape() {
@@ -260,61 +363,6 @@ rect.move(1, 1); // Outputs, 'Shape moved.'
 ```
 
 
-
-### Object.create(null)
-
-```javascript
-var o = Object.create(null,{
-    a:{
-           writable:true,
-        configurable:true,
-        value:'1'
-    }
-})
-console.log(o)  // {a: "1"}
-```
-
-**可以看到，新创建的对象除了自身属性a之外，原型链上没有任何属性，也就是没有继承Object的任何东西，此时如果我们调用o.toString()会报Uncaught TypeError的错误。**
-
-
-这个一定要注意
-
-
-这个和{}创建的对象不一样
-
-```javascript
-var o = {a：1};
-console.log(o)
-```
-
-
-这里的o对象继承了Object自身的方法，如hasOwnProperty、toString等
-
------
-
-
-### Object.create({})
-
-这样创建的对象和使用{}创建对象已经很相近了
-
-**但是还是有一点区别：多了一层proto嵌套。**
-
-
-
-### Object.create如何做到和{...}创建对象一样
-
-```javascript
-var o = Object.create(Object.prototype,{
-    a:{
-           writable:true,
-        configurable:true,
-        value:'1'
-    }
-})
-console.log(o)
-```
-
-这次就和使用{}创建的对象一模一样了
 
 
 
@@ -1464,8 +1512,10 @@ let a = 1 + 2
 
 
 
+### ++和--
 
-### ++或--优先作为前缀操作
+
+#### ++或--优先作为前缀操作
 
 
 
@@ -1487,7 +1537,7 @@ let a = 1 + 2
 
 
 
-### ++或--语句返回的结果
+#### ++或--语句返回的结果
 
 
 
@@ -1535,41 +1585,43 @@ while(++index < arr.length){
 
 
 
-
-### Object.create(null)屏蔽__proto__
-
-当我们创建一个对象的时候，沿着原型链向上查找，总是会找到一个__proto__为Object
-
-那么要如何做才能屏蔽掉呢？
-
-我们使用Object.create(null)
+#### 自增/自加运算符所在前后
 
 
 
+```js
+       let i = 5 
+        function test(i){
+            console.log(--i)
+        }
 
-```javascript
-  let a = {};
-  let b = Object.create(null);
-  let c = Object();
-
-  a.xxx = 'xxx';
-  b.xxx = 'xxx';
-  c.xxx = 'xxx';
-
-  console.log(a);
-  console.log(b);
-  console.log(c);
-```
-
-```javascript
-{xxx: "xxx"} __proto__: Object
-{xxx: "xxx"}
-{xxx: "xxx"} __proto__: Object
+        test(i)
+		//  输出4
 ```
 
 
 
-使用Object.create(null)创建对象，屏蔽__proto__，可以节省一些性能
+
+
+```js
+       let i = 5 
+        function test(i){
+            console.log(i--)
+        }
+
+        test(i)
+		//  输出5
+```
+
+
+
+
+
+所以，可以得出结论自增/自加运算符在变量后面的话，会先执行变量所在语句再执行自增/自加运算符
+
+
+
+
 
 
 
@@ -2340,42 +2392,6 @@ window.pageYOffset == window.scrollY; // 总是返回 true
 
 
 
-### 自增/自加运算符所在前后
-
-
-
-```js
-       let i = 5 
-        function test(i){
-            console.log(--i)
-        }
-
-        test(i)
-		//  输出4
-```
-
-
-
-
-
-```js
-       let i = 5 
-        function test(i){
-            console.log(i--)
-        }
-
-        test(i)
-		//  输出5
-```
-
-
-
-
-
-所以，可以得出结论自增/自加运算符在变量后面的话，会先执行变量所在语句再执行自增/自加运算符
-
-
-
 
 
 
@@ -2676,6 +2692,26 @@ element.scrollIntoView(scrollIntoViewOptions); // Object型参数
 
 
 
+### 理解constructor、prototype、`__proto__`和原型链
+
+
+
+[ https://juejin.im/post/5cc99fdfe51d453b440236c3 ]( https://juejin.im/post/5cc99fdfe51d453b440236c3 )
+
+
+
+
+
+*  对象由函数创建，函数都是Function对象实例 
+*  constructor属性其实就是一个拿来保存自己构造函数引用的属性，没有其他特殊的地方 
+*  prototype对象用于放某同一类型实例的共享属性和方法，实质上是为了内存着想。 
+*  默认constructor实际上是被当做共享属性放在它们的原型对象中。 
+*  实例对象.`__proto__` = 创建自己的构造函数内部的prototype（原型对象）
+*  实例对象.`__proto__`.constructor = 创建自己的构造函数
+*   所有函数的`__proto__`指向他们的原型对象，即Function函数的prototype对象 
+*   所有函数其实都是Function函数的实例 
+*  最后一个prototype对象是Object函数内的prototype对象。
+*   Object函数的prototype中的`__proto__`指向null 
 
 
 
@@ -2683,10 +2719,86 @@ element.scrollIntoView(scrollIntoViewOptions); // Object型参数
 
 
 
+-----
 
 
 
 
+
+**真正的constructor属性藏在哪?**
+
+
+
+
+
+constructor属性为什么我就没在console出来的对象数据中看到呢？
+
+
+
+> **思考个问题：**`new Person( )`出来的千千万万个实例中如果都有constructor属性，并且都指向创建自己的构造函数，那岂不它们都拥有一个效果相同但却都各自占用一部分内存的属性？
+
+
+
+
+
+ **constructor是完全可以被当成一个共享属性存放在原型对象中，作用也依然是指向自己的构造函数，而实际上也是这么处理的。对象的constructor属性就是被当做共享属性放在它们的原型对象中** 
+
+
+
+
+
+```js
+function Person() {}
+var person1 = new Person()
+var person2 = new Person()
+console.log(person1.constructor) // [Function: Person]
+console.log(person2.constructor) // [Function: Person]
+person1.constructor = Function
+console.log(person1.constructor) // [Function: Function]
+console.log(person2.constructor) // [Function: Person] ！不是同步为[Function: Function]
+
+```
+
+
+
+这个是因为`person1.constructor = Function`改的并不是原型对象上的共享属性constructor，而是给实例person1加了一个constructor属性。如下：
+
+
+
+
+
+
+
+```js
+console.log(person1) 
+// 结果：Function { constructor: [Function: Function] }
+```
+
+
+
+
+
+ 你可以看到person1实例中多了constructor属性。它原型对象上的constructor是没有改的。 
+
+
+
+
+
+> 所以说，实例对象.constructor 即等于去找 实例对象.`__proto__`.constructor 
+
+
+
+---
+
+
+
+
+
+ 为什么Object函数不能像Function函数一样让__proto__属性指向自己的prototype？ 
+
+
+
+ 答案就是如果指向自己的prototype，那当找不到某一属性时沿着原型链寻找的时候就会进入死循环，所以必须指向null，这个null其实就是个跳出条件。 
 
 
 
