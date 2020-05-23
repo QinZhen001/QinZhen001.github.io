@@ -134,6 +134,48 @@ Factory('Python','我是Python');
 
 
 
+### jQuery的工厂模式
+
+[ https://juejin.im/post/5ec737b36fb9a04799583002 ]( https://juejin.im/post/5ec737b36fb9a04799583002 )
+
+
+
+ jQuery也是一个典型的工厂模式，你给他一个参数，他就给你返回符合参数DOM对象。 
+
+
+
+那jQuery这种不用`new`的工厂模式是怎么实现的呢？其实就是jQuery内部帮你调用了`new`而已，jQuery的调用流程简化了就是这样: 
+
+
+
+```js
+(function(){
+  var jQuery = function(selector) {
+    return new jQuery.fn.init(selector);   // new一下init, init才是真正的构造函数
+  }
+
+  jQuery.fn = jQuery.prototype;     // jQuery.fn就是jQuery.prototype的简写
+
+  jQuery.fn.init = function(selector) {
+    // 这里面实现真正的构造函数
+  }
+
+  // 让init和jQuery的原型指向同一个对象，便于挂载实例方法
+  jQuery.fn.init.prototype = jQuery.fn;  
+
+  // 最后将jQuery挂载到window上
+  window.$ = window.jQuery = jQuery;
+})();
+```
+
+
+
+
+
+
+
+
+
 
 
 
