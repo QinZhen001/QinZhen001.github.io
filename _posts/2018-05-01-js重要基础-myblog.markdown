@@ -2804,6 +2804,77 @@ console.log(person1)
 
 
 
+### null >= 0 为 true
+
+
+
+```js
+  console.log(null > 0);   // false
+  console.log(null < 0);   // false
+  console.log(null >= 0);   // true
+  console.log(null <= 0);   // true
+  console.log(null == 0);   // false
+  console.log(null === 0);    // false
+```
+
+
+
+ 不要把 拿 a > b , a == b 的结果 想当然的去和 a >= b 建立联系 
+
+
+
+```js
+null > 0  // null 尝试转型为number , 则为0 . 所以结果为 false, 
+null >= 0 // null 尝试转为number ,则为0 , 结果为 true. 
+null == 0 // null在设计上，在此处不尝试转型. 所以 结果为false. 
+```
+
+
+
+  **\>=的结果可以根据<的结果推出** 
+
+
+
+因为null<0为false，所以null>=0为true；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
