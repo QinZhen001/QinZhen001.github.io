@@ -135,6 +135,10 @@ progid:DXImageTransform.Microsoft.Blur(PixelRadius='10');//是针对元素小范
 
 
 
+## ios
+
+
+
 ### ios下input
 
 
@@ -151,6 +155,53 @@ ios下input为type=button属性disabled设置true,会出现样式文字和背景
 对非可点击元素如(label,span)监听click事件，部分ios版本下不会触发。
 
 解决方案:css增加cursor:pointer就搞定了
+
+
+
+
+
+### ios中background-attachment:fixed在background-size:cover中不起作用 
+
+
+
+[ https://stackoverflow.com/questions/21476380/background-size-on-ios ]( https://stackoverflow.com/questions/21476380/background-size-on-ios )
+
+
+
+解决：
+
+[ http://codepen.io/anon/pen/OVebNg]( http://codepen.io/anon/pen/OVebNg )
+
+Use another div with `position:fixed` to make the background fixed.
+
+
+
+
+
+
+
+```less
+.fixed
+  .bgcover
+```
+
+
+
+```les
+.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  .bgcover {
+      background-image: url('http://globe-views.com/dcim/dreams/winter/winter-04.jpg');
+      background-size: cover;
+      width: 100%;
+      height: 100%;
+  }
+}
+```
 
 
 

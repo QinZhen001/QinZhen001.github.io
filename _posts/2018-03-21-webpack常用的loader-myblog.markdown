@@ -41,7 +41,7 @@ css单独打包，并用url引入(link标签)  要配合publicPath
 use()    unuse()
 
 
-#### **style-loader和mini-css-extract-plugin**
+#### **style-loader和mini-css-extract-plugin的区别 (重要)**
 
 
 * style-loader:把 js 中 import 导入的样式文件代码，打包到 js 文件中，运行 js 文件时，将样式自动插入到`<style>`标签中

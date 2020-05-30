@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "webpack4.0爬坑"
+title:      "webpack爬坑"
 date:       2018-03-22 15:04:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -305,7 +305,13 @@ Webpack 4配备了全新整改的插件系统。这是一个全新的API，这�
 
 
 
+### webpack Entrypoint undefined
 
+[webpack Entrypoint undefined = index.html](https://www.cnblogs.com/guangzhou11/p/11427354.html)
+
+
+
+`module.exports`增加配置`stats: { children: false }`即可解决；
 
 
 

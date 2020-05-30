@@ -45,6 +45,82 @@ tags:
 
 
 
+### 变量
+
+
+
+举一个循环的例子：
+
+
+
+```scss
+  @for $i from 0 to 5 {
+    // 这里一定要用 #{} 表达式  (虽然我也不知道为什么)  
+    .wave#{$i}{
+      background:lighten(red, $i * 10%);
+      z-index:2 + $i;
+      background-size:auto 100%;
+      animation:w 1s $i * 0.2s forwards infinite;
+    }
+  }
+```
+
+#### ` #{}`
+
+
+
+ \#{}大括号中可以是任何有效的表达式，然后计算并返回这个表达式的值 
+
+
+
+```scss
+p {
+  $font-size: 12px;
+  $line-height: 30px;
+  font: $font-size/$line-height;
+}
+```
+
+
+
+上面是一段简单的SCSS代码，声明两个变量$font-size和$line-height，并对它们赋值。
+
+代码的本意是通过font设置当前元素的字体大小与行高，然而编译成CSS却是如下结果：
+
+```
+p {
+  font: 0.4; 
+}
+```
+
+
+
+很明显代码将斜杠当做了除法运算符，并计算出两个变量相除的结果。
+
+虽然没有语法错误，但是却没有达到我们的预期效果，通过#{} 可以轻松解决上述问题，代码修改如下：
+
+```scss
+p {
+  $font-size: 12px;
+  $line-height: 30px;
+  font: #{$font-size}/#{$line-height};
+}
+```
+
+
+
+将两个变量分别放入大括号中，编程CSS代码如下：
+
+```css
+p {
+  font: 12px/30px; 
+}
+```
+
+
+
+
+
 
 
 ### ＠at-root

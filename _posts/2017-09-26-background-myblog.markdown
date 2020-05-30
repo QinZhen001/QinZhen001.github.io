@@ -55,23 +55,42 @@ background-size 属性规定背景图像的尺寸。
 
 
 
-### background-attachment 属性
+### background-attachment 
+
 [http://www.w3school.com.cn/cssref/pr_background-attachment.asp](http://www.w3school.com.cn/cssref/pr_background-attachment.asp)
 
-```
+[ https://juejin.im/post/5b6d0756e51d4562b31ad23c ]( https://juejin.im/post/5b6d0756e51d4562b31ad23c )
+
+
+
+[background-attachment 效果查看]( https://codepen.io/Chokcoco/pen/xJJorg )
+
+
+
+```css
 body 
   { 
-  background-image: url(bgimage.gif); 
-  background-attachment: fixed;
+      background-image: url(bgimage.gif); 
+      background-attachment: fixed;
   }
 ```
 
-* scroll 	默认值。背景图像会随着页面其余部分的滚动而移动。
-* fixed 	当页面的其余部分滚动时，背景图像不会移动。
 
 
 
-### background-position 属性
+
+* scroll 	默认值。 此关键字表示背景相对于元素本身固定   **(看起来效果就是背景静止 )**
+* fixed 	 此关键字表示背景相对于视口固定。即使一个元素拥有滚动机制，背景也不会随着元素的内容滚动。 **(看起来效果就是背景运动)**
+
+
+
+> 注意一下 scroll 与 fixed，一个是相对元素本身固定，一个是相对视口固定，有点类似 `position` 定位的 `absolute` 和 `fixed`。 
+
+
+
+
+
+### background-position 
 [http://www.w3school.com.cn/cssref/pr_background-position.asp](http://www.w3school.com.cn/cssref/pr_background-position.asp)
 
 ```
@@ -100,7 +119,7 @@ background-position:center;
 **所以在雪碧图或者扣图时background-position都用负值**
 
 
-### background-clip 属性
+### background-clip 
 background-clip: border-box|padding-box|content-box;
 
 | border-box  | 背景被裁剪到边框盒。   |
