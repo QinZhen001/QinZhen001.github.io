@@ -158,6 +158,23 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
+### interface和type区别
+
+
+
+相同点：
+
+
+
+*  都可以描述一个对象或者函数 
+*  都允许拓展（extends） 
+  *  interface extends interface (接口继承接口)  
+  *  type extends type (类型继承类型) 
+  *  interface extends type (接口继承类型)  
+  *  type extends interface (类型继承接口) 
+
+
+
 
 
 
@@ -225,7 +242,7 @@ This error is encountered when a file in your project is not considered a module
 当您的项目中的一个文件不被认为是一个模块时(引用JavaScript中的模块，而不是ModuleScripts)，就会遇到这个错误。**根据ECMAScript规范，当文件包含至少一个导入或导出时，文件被认为是TypeScript中的模块**。如果文件不是模块，那么它将与项目中的所有其他文件共享其最顶层的作用域。
 
 
- 
+
 
 Therefore, the solution here is to ensure that every file in your project has at least one `import` or `export` statement. If you don’t need either, then you can provide an empty export statement:
 

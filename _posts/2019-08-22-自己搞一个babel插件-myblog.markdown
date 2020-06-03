@@ -25,6 +25,11 @@ tags:
 ### babel工作的原理
 
 
+
+![](https://s1.ax1x.com/2020/06/02/tNiKDf.png)
+
+
+
 **Babel对代码进行转换，会将JS代码转换为AST抽象语法树(解析)，对树进行静态分析(转换)，然后再将语法树转换为JS代码(生成)。每一层树被称为节点。每一层节点都会有type属性，用来描述节点的类型。其他属性用来进一步描述节点的类型。**
 
 
@@ -86,8 +91,29 @@ const result = 1 + 1
 }
 ```
 
-
 ### 基础知识
+
+[ https://juejin.im/post/5d94bfbf5188256db95589be ]( https://juejin.im/post/5d94bfbf5188256db95589be )
+
+
+
+####  @babel/core 
+
+
+
+ ‘微内核’架构中的‘内核’。对于Babel来说，这个内核主要干这些事情： 
+
+
+
+- 加载和处理配置(config)
+- 加载插件
+- 调用 `Parser` 进行语法解析，生成 `AST`
+- 调用 `Traverser` 遍历AST，并使用`访问者模式`应用'插件'对 AST 进行转换
+- 生成代码，包括SourceMap转换和源代码生成
+
+
+
+
 
 ####  预设（Presets）
 
