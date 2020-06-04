@@ -15,18 +15,23 @@ tags:
 ## 正文
 [网页链接](http://www.w3school.com.cn/cssref/pr_dim_line-height.asp)
 
-[CSS:line-height:150%与line-height:1.5的真正区别是什么？](CSS:line-height:150%与line-height:1.5的真正区别是什么？)
+[CSS:line-height:150%与line-height:1.5的真正区别是什么？]( https://www.zhihu.com/question/20394889 )
 
 
 
 [http://www.zhangxinxu.com/wordpress/](http://www.zhangxinxu.com/wordpress/2009/11/css%e8%a1%8c%e9%ab%98line-height%e7%9a%84%e4%b8%80%e4%ba%9b%e6%b7%b1%e5%85%a5%e7%90%86%e8%a7%a3%e5%8f%8a%e5%ba%94%e7%94%a8/)
 
-
 **“行高”顾名思意指一行文字的高度。具体来说是指两行文字间基线之间的距离**
+
+
 
 >该属性会影响行框的布局。在应用到一个块级元素时，它定义了该元素中基线之间的最小距离而不是最大距离。
 
+
+
 先说一个大家都熟知的现象，有一个空的div，`<div></div>`，如果没有设置至少大于1像素高度height值时，该div的高度就是个0。如果该div里面打入了一个空格或是文字，则此div就会有一个高度。那么您思考过没有，为什么div里面有文字后就会有高度呢？
+
+
 
 这是个看上去很简单的问题，是理解line-height非常重要的一个问题。可能有人会跟认为是：文字撑开的！文字占据空间，自然将div撑开。我一开始也是这样理解的，但是事实上，深入理解inline模型后，我发现，**根本不是文字撑开了div的高度，而是line-height**！
 
@@ -55,12 +60,16 @@ line-height 与 font-size 的计算值之差（在 CSS 中成为“行间距”�
 ### 可能的值
 
 
-| normal  | 默认。设置合理的行间距。                             |
-| ------- | ---------------------------------------------------- |
-| number  | 设置数字，此数字会与当前的字体尺寸相乘来设置行间距。 |
-| length  | 设置固定的行间距。                                   |
-| %       | 基于当前字体尺寸的百分比行间距。                     |
-| inherit |
+| normal  | 默认。设置合理的行间距。                                     |
+| ------- | ------------------------------------------------------------ |
+| number  | 设置数字，此数字会与当前的字体尺寸相乘来设置行间距。   **（子元素仅继承该系数）** |
+| length  | 设置固定的行间距。                                           |
+| %       | 基于当前字体尺寸的百分比行间距。  **(子元素继承了父元素计算得出的行距)** |
+| inherit |                                                              |
+
+
+
+
 
 ### 行高的垂直居中性
 
@@ -75,6 +84,8 @@ line-height的最终表现是通过line boxes实现的，而无论line boxes所�
 
 #### 单行文字的垂直居中对齐
 line-height值设置为height一样大小的值可以实现单行文字的垂直居中
+
+
 
 
 #### 多行文字的垂直居中
@@ -94,18 +105,6 @@ line-height 与 font-size 的计算值之差（在 CSS 中成为“行间距”�
 
 
 
-* normal	默认。设置合理的行间距。
-* number	设置数字，此数字会与当前的字体尺寸相乘来设置行间距。
-* length	设置固定的行间距。
-* %	基于当前字体尺寸的百分比行间距。
-* inherit	规定应该从父元素继承 line-height 属性的值。
-
-----------
-
-
-
-
-
 
 
 
@@ -113,10 +112,6 @@ line-height 与 font-size 的计算值之差（在 CSS 中成为“行间距”�
 ### 深入理解line-height
 
 [http://www.zhangxinxu.com/wordpress/2009/11/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%8F%8A%E5%BA%94%E7%94%A8/](http://www.zhangxinxu.com/wordpress/2009/11/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E5%8F%8A%E5%BA%94%E7%94%A8/)
-
-
-
-<strong>撑开div高度的是line-height不是文字内容</strong>
 
 
 
@@ -152,8 +147,9 @@ line-height 与 font-size 的计算值之差（在 CSS 中成为“行间距”�
 ### line-height设置为数值与百分比 
 [http://demo.cssworld.cn/5/2-5.php](http://demo.cssworld.cn/5/2-5.php)
 
-
 line-height:1.5、line-height:150%和line-height:1.5em这3种 用法是一模一样的，终的行高大小都是和font-size计算值，但是，实际上，line-height:1.5 和另外两个有一点儿不同，那就是继承细节有所差别。**如果使用数值作为line-height的属性值， 那么所有的子元素继承的都是这个值**；但是，如果使用百分比值或者长度值作为属性值，那么所有 的子元素继承的是终的计算值。
+
+
 
 
 ### 内联元素line-height的大值特性

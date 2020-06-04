@@ -102,7 +102,7 @@ Vue.nextTick(function () {
 >**在组件内使用 vm.$nextTick() 实例方法特别方便，因为它不需要全局 Vue ，并且回调函数中的 this 将自动绑定到当前的 Vue 实例上**
 
 
-```
+```js
 Vue.component('example', {
   template: '<span>{{ message }}</span>',
   data: function () {
@@ -123,4 +123,273 @@ Vue.component('example', {
 ```
 
 
-  [1]: https://cn.vuejs.org/images/data.png
+
+
+
+
+
+
+
+## 源码
+
+[ https://mp.weixin.qq.com/s/4ke__PpGpQNPGXbr1MEgAA ]( https://mp.weixin.qq.com/s/4ke__PpGpQNPGXbr1MEgAA )
+
+
+
+### 更新数据渲染页面
+
+
+
+
+
+我们是通过new Watcher()来初始化页面的，也就是说这个watcher具有重新渲染页面的功能，因此，我们一旦改数据的时候，就再一次让这个watcher执行刷新页面的功能。这里有必要解释下一个watcher对应一个组件，也就是说你new Vue 机会生成一个wacther，因此有多个组件的时候就会生成多个watcher。 
+
+
+
+
+
+
+
+现在，我们给每一个data里的属性生成一个对应的dep。例如：
+
+```js
+data:{
+  age:18,
+  friend:{
+    name:"赵丽颖",
+    age:12
+  }
+}
+```
+
+
+
+上面中，age,friend,friend.name,friend.age分别对应一个dep。一共四个dep。dep的功能是用来通知上面谈到的watcher执行刷新页面的功能的。
+
+```js
+export function defineReactive(data,key,value) {
+    // 观察value是不是对象，是的话需要监听它的属性。
+    observe(value)
+    let dep = new Dep() // 新增代码：一个key对应一个dep
+    Object.defineProperty(data,key,{
+        get(){
+            return value
+        },
+        set(newValue){
+            if (newValue === value) return
+            value = newValue
+            observe(value)
+        }
+    })
+}
+```
+
+现在有一个问题，就是dep要怎么跟watcher关联起来，我们可以把watcher存储到dep里
+
+```js
+let id = 0
+class Dep {
+    constructor(){
+        this.id = id++
+        this.subs = []
+    }
+    addSub(watcher){ //订阅
+        this.subs.push(watcher)
+    }
+}
+```
+
+如代码所示，我们希望执行addSub方法就可以将watcher放到subs里。那什么时候可以执行addSub呢？
+
+
+
+
+
+我们在执行compile的时候，也就是将dom里的{{}}表达式换成data里的值的时候，因为要获得data里的值，因此会触发get。这样，我们就可以在get里执行addSub。而watcher是放在全局作用域的，我们可以直接重全局作用域中拿这个watcher放到传入addSub。
+
+
+
+
+
+好了，现在的问题就是，怎么把watcher放到全局作用域
+
+```js
+let id = 0
+class Watcher {
+    constructor(vm,exprOrFn,cb = ()=>{},opts){
+        this.vm = vm
+        this.exprOrFn = exprOrFn
+        this.cb = cb
+        this.id = id++
+        this.deps = []
+        this.depsId = new Set()
+        if (typeof exprOrFn === 'function'){
+            this.getter = exprOrFn
+        }
+        this.get()  // 创建一个watcher，默认调用此方法
+    }
+    get(){
+        pushTarget(this)
+        this.getter()
+        popTarget()
+    }
+}
+export default Watcher
+```
+
+
+
+可见，是通过pushTarget(this)放到全局作用域，再通过popTarget()将它移除。
+
+
+
+要知道，wachter和dep是多对多的关系，dep里要保存对应的watcher，watcher也要保存对应的dep 因此，但我们触发get的时候，希望可以同时让当前的watcher保存当前的dep，也让当前的dep保存当前的wacther 
+
+
+
+```js
+export function defineReactive(data,key,value) {
+    // 观察value是不是对象，是的话需要监听它的属性。
+    observe(value)
+    let dep = new Dep()
+    Object.defineProperty(data,key,{
+        get(){
+            if (Dep.target){
+                dep.depend() //让dep保存watcher，也让watcher保存这个dep
+            }
+            return value
+        },
+        set(newValue){
+            if (newValue === value) return
+            value = newValue
+            observe(value)
+
+        }
+    })
+}
+```
+
+
+
+
+
+让我们看下depend方法怎么实现
+
+```js
+let id = 0
+class Dep {
+    constructor(){
+        this.id = id++
+        this.subs = []
+    }
+    addSub(watcher){ //订阅
+        this.subs.push(watcher)
+    }
+    depend(){
+        if (Dep.target){
+            Dep.target.addDep(this)
+        }
+    }
+}
+// 保存当前watcher
+let stack = []
+export function pushTarget(watcher) {
+    Dep.target = watcher
+    stack.push(watcher)
+}
+export function popTarget() {
+    stack.pop()
+    Dep.target = stack[stack.length - 1]
+}
+
+export default Dep
+```
+
+
+
+可见depend方法又执行了watcher里的addDep，看一下watcher里的addDep。
+
+```js
+import {pushTarget , popTarget} from "./dep"
+let id = 0
+class Watcher {
+    constructor(vm,exprOrFn,cb = ()=>{},opts){
+        this.vm = vm
+        this.exprOrFn = exprOrFn
+        this.cb = cb
+        this.id = id++
+        this.deps = []
+        this.depsId = new Set()
+        if (typeof exprOrFn === 'function'){
+            this.getter = exprOrFn
+        }
+        this.get()  // 创建一个watcher，默认调用此方法
+    }
+    get(){
+        pushTarget(this)
+        this.getter()
+        popTarget()
+    }
+    update(){
+        this.get()
+    }
+    addDep(dep){
+        let id = dep.id
+        if(this.depsId.has(id)){
+            this.depsId.add(id)
+            this.deps.push(dep)
+        }
+        dep.addSub(this)
+    }
+}
+export default Watcher
+```
+
+如此一来，就让dep和watcher实现了双向绑定。这里代码，你可能会有个疑问，就是为什么是用一个stack数组来保存watcher，这里必须解释下，因为每一个watcher是对应一个组件的，也就是说，当页面中有多个组件的时候，就会有多个watcher，而多个组件的执行是依次执行的，也就是说Dep.target中 只会有 当前被执行的组件所对应的watcher。
+
+
+
+
+
+### 批量更新防止重复渲染
+
+
+
+每更改一个数据，就会通知watcher重新渲染页面，显然，要是我们在一个组件里更改多个数据，那么就会多次通知wathcer渲染页面，因此这节我们来实现 批量更新，防止重复渲染。
+
+
+
+
+
+
+
+## 面试题
+
+
+
+###  父子组件的执行顺序是什么 
+
+
+
+在组件开始生成到结束生成的过程中，如果该组件还包含子组件，则自己开始生成后，要让所有的子组件也开始生成，然后自己就等着，直到所有的子组件生成完毕，自己再结束。“父亲”先开始自己的created，然后“儿子”开始自己的created和mounted，最后“父亲”再执行自己的mounted。
+
+
+
+ 为什么会这样，到这里我们就应该发现了，new Vue的时候是先执行initData，也就是初始化数据，然后执行$mounted,也就是new Watcher。而初始化数据的时候，也要处理components里的数据。处理component里的数据的时候，每处理一个子组件就会new Vue，生成一个子组件。因此是顺序是这样的。也就对应了上面的答案。 
+
+
+
+1.  初始化父组件数据
+2.  初始化 子组件数据 
+3.  new 子组件Wacther 
+4.  new 父组件Watcher
+
+
+
+
+
+
+
+
+
+[1]: https://cn.vuejs.org/images/data.png
