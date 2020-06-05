@@ -119,6 +119,35 @@ import Paginate from '~/components/Paginate.vue';
 
 
 
+### 改变数组下标不能响应式
+
+
+
+```js
+  data() {
+    return {
+      list2: [2, 3, 4, 5]
+    };
+  },
+
+......
+
+setTimeout(() => {
+      // 错误的做法 
+      this.list2[2] = 2222
+      // 正确的做法 
+      this.$set(this.list2, 2, 2222)
+}, 2000)
+```
+
+
+
+
+
+
+
+
+
 ## 每个页面的包裹布局
 
 
