@@ -144,6 +144,77 @@ Webpack在所有的 async chunk 中，找到来自 node_modules ，并且名字�
 
 
 
+
+### SplitChunksPlugin 
+
+
+
+[ https://juejin.im/post/5edd942af265da76f8601199?utm_source=gold_browser_extension ]( https://juejin.im/post/5edd942af265da76f8601199?utm_source=gold_browser_extension )
+
+
+
+SplitChunksPlugin 引入缓存组（cacheGroups）对模块（module）进行分组，每个缓存组根据规则将匹配到的模块分配到代码块（chunk）中，每个缓存组的打包结果可以是单一 chunk，也可以是多个 chunk。
+
+
+
+webpack 做了一些通用性优化，我们手动配置 SplitChunksPlugin 进行优化前，需要先理解 webpack 默认做了哪些优化，是怎么做的，之后才能根据自己的需要进行调整。既然造了 SplitChunksPlugin，自己肯定得用上，webpack 的默认优化就是通过 SplitChunksPlugin 配置实现的，如下：
+
+
+
+```js
+module.exports = {
+  //...
+  optimization: {
+    splitChunks: {
+      //在cacheGroups外层的属性设定适用于所有缓存组，不过每个缓存组内部可以重设这些属性
+      chunks: "async", //将什么类型的代码块用于分割，三选一： "initial"：入口代码块 | "all"：全部 | "async"：按需加载的代码块
+      minSize: 30000, //大小超过30kb的模块才会被提取
+      maxSize: 0, //只是提示，可以被违反，会尽量将chunk分的比maxSize小，当设为0代表能分则分，分不了不会强制
+      minChunks: 1, //某个模块至少被多少代码块引用，才会被提取成新的chunk
+      maxAsyncRequests: 5, //分割后，按需加载的代码块最多允许的并行请求数，在webpack5里默认值变为6
+      maxInitialRequests: 3, //分割后，入口代码块最多允许的并行请求数，在webpack5里默认值变为4
+      automaticNameDelimiter: "~", //代码块命名分割符
+      name: true, //每个缓存组打包得到的代码块的名称
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/, //匹配node_modules中的模块
+          priority: -10, //优先级，当模块同时命中多个缓存组的规则时，分配到优先级高的缓存组
+        },
+        default: {
+          minChunks: 2, //覆盖外层的全局属性
+          priority: -20,
+          reuseExistingChunk: true, //是否复用已经从原代码块中分割出来的模块
+        },
+      },
+    },
+  },
+};
+
+```
+
+
+
+其中五个属性是控制代码分割规则的关键，我再额外提一提：
+
+
+
+- minSize(默认 30000)：使得比这个值大的模块才会被提取。
+- minChunks（默认 1）：用于界定至少重复多少次的模块才会被提取。
+- maxInitialRequests（默认 3）：一个代码块最终就会对应一个请求数，所以该属性决定入口最多分成的代码块数量，太小的值会使你无论怎么分割，都无法让入口的代码块变小。
+- maxAsyncRequests（默认 5）：同上，决定每次按需加载时，代码块的最大数量。
+- test：通过正则表达式精准匹配要提取的模块，可以根据项目结构制定各种规则，是手动优化的关键。
+
+
+
+这些规则一旦制定，只有全部满足的模块才会被提取，所以需要根据项目情况合理配置才能达到满意的优化结果。
+
+
+
+
+
+
+
+
 ### mini-css-extract-plugin
 **This plugin extracts CSS into separate files.**
 

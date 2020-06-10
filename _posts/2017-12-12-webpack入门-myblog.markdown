@@ -474,7 +474,60 @@ if (module.hot) {
 }
 ```
 
+
+
+
+
+###  optimization 
+
+
+
+
+
+####  chunkIds 
+
+```js
+boolean = false
+```
+
+```js
+string: 'natural' | 'named' | 'size' | 'total-size' | 'deterministic'
+```
+
+
+
+Tells webpack which algorithm to use when choosing chunk ids. Setting optimization.chunkIds to false tells webpack that none of built-in algorithms should be used, as custom one can be provided via plugin. There are couple of defaults for optimization.chunkIds
+
+
+
+告诉webpack在选择块id时使用哪种算法。设置优化。chunkIds to false告诉webpack不应该使用内置算法，因为自定义算法可以通过插件提供。优化有两个默认值
+
+
+
+ Also if the environment is development then `optimization.chunkIds` is set to `'named'`, while in production it is set to `'deterministic'` 
+
+
+
+if none of the above, `optimization.chunkIds` will be defaulted to `'natural'`
+
+
+
+
+
+| Option            | Description                                                  |
+| :---------------- | :----------------------------------------------------------- |
+| `'natural'`       | Numeric ids in order of usage.  数字id的使用顺序。           |
+| `'named'`         | Readable ids for better debugging.  可读的id，以便更好地调试。 |
+| `'deterministic'` | Short numeric ids which will not be changing between compilation. Good for long term caching. Enable by default for production mode.   简短的数字id，在编译之间不会改变。适合长期缓存。在生产模式下默认启用。 |
+| `'size'`          | Numeric ids focused on minimal initial download size.  数字id关注最小的初始下载大小。 |
+| `'total-size'`    | numeric ids focused on minimal total download size.  数字id集中于最小的下载大小。 |
+
+
+
+
+
 ### 输出文件分析
+
 [https://segmentfault.com/a/1190000015088834#articleHeader8](https://segmentfault.com/a/1190000015088834#articleHeader8)
 
 

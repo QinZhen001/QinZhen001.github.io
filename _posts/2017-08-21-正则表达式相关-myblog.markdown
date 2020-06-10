@@ -70,7 +70,7 @@ alert(str2)  //我爱*****，***上太阳升
 
 ### match
  match()  在字符串中搜索复合规则的内容，搜索成功就返回内容，格式为数组，失败就返回null。
- 
+
 ```javascript
 例子：找出指定格式的所有数字，如下找到 123，54，33，879
 
@@ -103,7 +103,6 @@ console.log(b);
 console.log(str.match(/W3c(school)/));
 ```
 执行上诉代码的结果为W3cschool,school
-
 
 ----------
 
@@ -342,8 +341,13 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 而 (?<=exp)这个是放后面的。
 
-
 ----------
+
+
+
+
+
+
 
 **(?:pattern)**
 
@@ -396,6 +400,40 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 
 非获取匹配，反向否定预查，与正向否定预查类似，只是方向相反。例如“(?<!95|98|NT|2000)Windows”能匹配“3.1Windows”中的“Windows”，但不能匹配“2000Windows”中的“Windows”。这个地方不正确，有问题 
+
+
+
+
+
+
+
+### `\b`和`\B`的区别
+
+
+
+[ https://segmentfault.com/a/1190000013084624 ]( https://segmentfault.com/a/1190000013084624 )
+
+
+
+`\b` - 一个词的边界
+
+ **匹配必须出现在 `\w`（字母数字）和 `\W`（非字母数字）字符之间的边界上。** 
+
+
+
+`\B` - 一个非单词边界
+
+
+
+```haskell
+模式: `\Bend\w*\b`
+
+原字符串: `end sends endure lender`
+
+匹配结果: `ends`和`ender`
+```
+
+
 
 
 
@@ -459,5 +497,5 @@ const s = '3[a2[c]]' 返回accaccacc
 ```
 
 
-  [1]: https://s2.ax1x.com/2019/08/16/mZyck9.png
-  [2]: https://s2.ax1x.com/2019/08/16/mZyo0e.png
+[1]: https://s2.ax1x.com/2019/08/16/mZyck9.png
+[2]: https://s2.ax1x.com/2019/08/16/mZyo0e.png

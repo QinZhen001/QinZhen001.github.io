@@ -109,7 +109,20 @@ git branch --unset-upstream
 命令行 : $ git push origin --delete <BranchName>
 ```
 
+
+
+
+
+
+
 ### 丢弃所有本地修改的方法
+
+**重要**
+
+**重要**
+
+**重要**
+
 ```
 git checkout .
 ```

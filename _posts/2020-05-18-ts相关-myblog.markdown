@@ -217,6 +217,145 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
+##  void 
+
+
+
+
+
+###  声明一个 void 类型的变量 
+
+
+
+声明一个 void 类型的变量没有什么作用，因为它的值只能为 `undefined` 或 `null`：
+
+```tsx
+let unusable: void = undefined;
+```
+
+
+
+
+
+## Never
+
+
+
+`never` 类型表示的是那些永不存在的值的类型。 例如，`never` 类型是那些总是会抛出异常或根本就不会有返回值的函数表达式或箭头函数表达式的返回值类型。
+
+
+
+```tsx
+// 返回never的函数必须存在无法达到的终点
+function error(message: string): never {
+  throw new Error(message);
+}
+
+function infiniteLoop(): never {
+  while (true) {}
+}
+
+```
+
+
+
+###  never 实现全面性检查 
+
+```tsx
+type Foo = string | number;
+
+function controlFlowAnalysisWithNever(foo: Foo) {
+  if (typeof foo === "string") {
+    // 这里 foo 被收窄为 string 类型
+  } else if (typeof foo === "number") {
+    // 这里 foo 被收窄为 number 类型
+  } else {
+    // foo 在这里是 never
+    const check: never = foo;
+  }
+}
+
+```
+
+
+
+
+
+注意在 else 分支里面，我们把收窄为 never 的 foo 赋值给一个显示声明的 never 变量。如果一切逻辑正确，那么这里应该能够编译通过。但是假如后来有一天你的同事修改了 Foo 的类型：
+
+```tsx
+type Foo = string | number | boolean;
+```
+
+
+
+然而他忘记同时修改 `controlFlowAnalysisWithNever` 方法中的控制流程，这时候 else 分支的 foo 类型会被收窄为 `boolean` 类型，导致无法赋值给 never 类型，这时就会产生一个编译错误。通过这个方式，我们可以确保
+
+
+
+`controlFlowAnalysisWithNever` 方法总是穷尽了 Foo 的所有可能类型。 通过这个示例，我们可以得出一个结论：**使用 never 避免出现新增了联合类型没有对应的实现，目的就是写出类型绝对安全的代码。**
+
+
+
+## 断言
+
+
+
+```tsx
+let someValue: any = "this is a string";
+let strLength: number = (<string>someValue).length;
+```
+
+
+
+---
+
+
+
+```tsx
+let someValue: any = "this is a string";
+let strLength: number = (someValue as string).length;
+```
+
+
+
+
+
+## in 关键字
+
+
+
+```tsx
+interface Admin {
+  name: string;
+  privileges: string[];
+}
+
+interface Employee {
+  name: string;
+  startDate: Date;
+}
+
+type UnknownEmployee = Employee | Admin;
+
+function printEmployeeInformation(emp: UnknownEmployee) {
+  console.log("Name: " + emp.name);
+  if ("privileges" in emp) {
+    console.log("Privileges: " + emp.privileges);
+  }
+  if ("startDate" in emp) {
+    console.log("Start Date: " + emp.startDate);
+  }
+}
+
+```
+
+
+
+## 交叉类型
+
+
+
 
 
 
