@@ -1123,6 +1123,40 @@ document.body.addEventListener('touchstart', function noop() { })
 
 
 
+
+### nth-of-type 和 nth-child
+
+
+
+ div：nth-of-type（n） 
+
+ 代表他是第n个类型为div的子元素，不管在他之前有多少 个同级元素，只要不是div类型就都不算数，就是说这个div元素不一定在父元素中是第n个子元素，但他一定是第n个div元素 
+
+
+
+ div：nth- child（n） 
+
+ 就代表他是父元素的div元素，并且！并且他是爸爸元素的第n个孩子元素，他之前的所有同级元素都算数 
+
+ 如果第n个子元素不是div元素，那对不起，爸爸要的不是你，爸爸宁可没有儿子也不会乱认儿子 
+
+
+
+ **总结 ：nth- child的要求比较高，可以多用nth-of-type**
+
+
+
+补充
+
+nth-of-type(2n)   =>  设置偶数元素样式
+
+nth-of-type(2n+1)  => 设置奇数元素样式
+
+
+
+
+
+
 [1]: http://www.w3chtml.com/css3/properties/user-interface/images/content-box.png
 [2]: http://www.w3chtml.com/css3/properties/user-interface/images/border-box.png
 [3]: http://images2015.cnblogs.com/blog/1098079/201702/1098079-20170209145030213-330247522.png

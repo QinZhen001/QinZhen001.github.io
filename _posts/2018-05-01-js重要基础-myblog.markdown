@@ -2841,6 +2841,73 @@ null == 0 // null在设计上，在此处不尝试转型. 所以 结果为false.
 
 
 
+###  **IntersectionObserver** 
+
+[ https://developer.mozilla.org/zh-CN/docs/Web/API/IntersectionObserver ]( https://developer.mozilla.org/zh-CN/docs/Web/API/IntersectionObserver )
+
+[ http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html ]( http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html )
+
+
+
+
+
+**IntersectionObserver 常常被用作懒加载** 
+
+
+
+**IntersectionObserver的兼容性并不好，IE上无法使用** 
+
+
+
+`IntersectionObserver`**接口** (从属于[Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)) 提供了一种异步观察目标元素与其祖先元素或顶级文档视窗([viewport](https://developer.mozilla.org/zh-CN/docs/Glossary/Viewport))交叉状态的方法。祖先元素与视窗([viewport](https://developer.mozilla.org/zh-CN/docs/Glossary/Viewport))被称为**根(root)。**
+
+
+
+
+
+当一个`IntersectionObserver`对象被创建时，其被配置为监听根中一段给定比例的可见区域。一旦IntersectionObserver被创建，则无法更改其配置，所以一个给定的观察者对象只能用来监听可见区域的特定变化值；然而，你可以在同一个观察者对象中配置监听多个目标元素。
+
+
+
+
+
+```js
+var intersectionObserver = new IntersectionObserver(function(entries) {
+  // If intersectionRatio is 0, the target is out of view
+  // and we do not need to do anything.
+  if (entries[0].intersectionRatio <= 0) return;
+
+  loadItems(10);
+  console.log('Loaded new items');
+});
+// start observing
+intersectionObserver.observe(document.querySelector('.scrollerFooter'));
+
+```
+
+
+
+
+
+entries 参数，它是个`IntersectionObserverEntry`对象数组 
+
+
+
+`IntersectionObserverEntry`提供观察元素的信息，有七个属性。
+
+
+
+* boundingClientRect  目标元素的矩形信息
+* intersectionRatio   相交区域和目标元素的比例值   intersectionRect/boundingClientRect 不可见时小于等于0
+*  intersectionRect    目标元素和视窗（根）相交的矩形信息 可以称为相交区域
+*  isIntersecting      目标元素当前是否可见 Boolean值 可见为true
+*  rootBounds              根元素的矩形信息，没有指定根元素就是当前视窗的矩形信息
+*  target                      观察的目标元素
+*  time                返回一个记录从`IntersectionObserver`的时间到交叉被触发的时间的时间戳
+
+
+
+> **intersectionRatio**和**isIntersecting**是用来判断元素是否可见的 
 
 
 
@@ -2848,8 +2915,11 @@ null == 0 // null在设计上，在此处不尝试转型. 所以 结果为false.
 
 
 
+**总结：其实就是观察一个元素是否在视窗可见。**
 
+**总结：其实就是观察一个元素是否在视窗可见。**
 
+**总结：其实就是观察一个元素是否在视窗可见。** 
 
 
 
