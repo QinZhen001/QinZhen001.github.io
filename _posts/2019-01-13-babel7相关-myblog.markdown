@@ -45,8 +45,7 @@ tags:
 >babel-node is a CLI that works exactly the same as the Node.js CLI
 You should not be using babel-node in production
 
-
----- 
+----
 
 ```javascript
 let fun = () => console.log('hello babel')
@@ -84,8 +83,11 @@ babel的相关插件
 * @babel/preset-react
 * @babel/preset-typescript
 
-
 ### @babel/preset-env
+
+[ https://jdc.jd.com/archives/212962 ]( https://jdc.jd.com/archives/212962 )
+
+
 
 
 那么我们在安装了@babel/preset-env，并且在.babelrc中配置了@babel/preset-env之后
@@ -145,10 +147,101 @@ findIndex方法和padStart方法，这两个方法作为es6提出的新方法，
 
 
 >引用别人的一段理解：解释的很好
-babel 编译过程处理第一种情况 - 统一语法的形态，通常是高版本语法编译成低版本的，比如 ES6 语法编译成 ES5 或 ES3。而 babel-polyfill 处理第二种情况 - 让目标浏览器支持所有特性，不管它是全局的，还是原型的，或是其它。这样，通过 babel-polyfill，不同浏览器在特性支持上就站到同一起跑线。
+>babel 编译过程处理第一种情况 - 统一语法的形态，通常是高版本语法编译成低版本的，比如 ES6 语法编译成 ES5 或 ES3。而 babel-polyfill 处理第二种情况 - 让目标浏览器支持所有特性，不管它是全局的，还是原型的，或是其它。这样，通过 babel-polyfill，不同浏览器在特性支持上就站到同一起跑线。
+>
+>
 
 
 >我对polyfill的理解：polyfill我们又称垫片，见名知意，所谓垫片也就是垫平不同浏览器或者不同环境下的差异，因为有的环境支持这个函数，有的环境不支持这种函数，解决的是有与没有的问题，这个是靠单纯的@babel/preset-env不能解决的，因为@babel/preset-env解决的是将高版本写法转化成低版本写法的问题，因为不同环境下低版本的写法有可能不同而已。
+
+
+
+------
+
+
+
+
+
+####  useBuiltIns 
+
+
+
+`@babel/preset-env` 与按需加载 polyfill 相关的选项是 `useBuiltIns`，它有两个值需要重点关注： `entry` 和 `usage`。
+
+
+
+当值为 `entry` 时，Babel 会将 `import"@babel/polyfill"` 或者 `require("@babel/polyfill")` 语句根据我们指定的环境配置替换为单个的 polyfill require。
+
+
+
+如将
+
+```js
+import "@babel/polyfill";
+```
+
+替换为
+
+```js
+import "core-js/modules/es7.string.pad-start";
+import "core-js/modules/es7.string.pad-end";
+```
+
+
+
+-----
+
+
+
+ https://www.babeljs.cn/docs/babel-preset-env#modules 
+
+
+
+
+ 
+
+
+
+####  targets 
+
+`string | Array | { [string]: string }`，默认为`{}`。
+
+
+
+```json
+{
+  "targets": "> 0.25%, not dead"
+}
+```
+
+或支持最低环境版本的对象：
+
+```json
+{
+  "targets": {
+    "chrome": "58",
+    "ie": "11"
+  }
+}
+```
+
+
+
+**如果未指定targets，则旁注`@babel/preset-env`将默认转换所有ECMAScript 2015+代码。**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ### @babel/plugin-transform-runtime
@@ -199,7 +292,6 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 
 这一类helper已经是被从@babel/runtime包require进来了，这都是@babel/runtime的功劳，但是事情还没完，我们还有个包@babel/plugin-transform-runtime没提到就用了，这个包的作用其实就是辅助@babel/runtime的，因为有了@babel/plugin-transform-runtime它会帮我自动动态require  @babel/runtime中的内容，如果没有这个@babel/plugin-transform-runtime，那么我们要使用@babel/runtime中的内容，就只有像require('@babel/polyfill')那样人工去手动添加了，所以@babel/plugin-transform-runtime非常方便，由于@babel/plugin-transform-runtime是一个插件，所以它是需要配置到.babelrc中的，这一点要记住。
-
 
 -----
 
@@ -376,7 +468,6 @@ This option configures how @babel/preset-env handles polyfills.
 
 This option enables a new plugin that replaces the statement import "@babel/polyfill" or require("@babel/polyfill") with individual requires for @babel/polyfill based on environment.
 
-
 ---------------
 
 
@@ -465,7 +556,6 @@ This package has been deprecated
 
 使用gulp-remove-use-strict也不行。
 
-
 ----
 
 **最终解决办法：**
@@ -512,7 +602,6 @@ gulp-babel don't produce any output file or doesn't work properly
 
 [https://stackoverflow.com/questions/52599370/gulp-babel-dont-produce-any-output-file-or-doesnt-work-properly](https://stackoverflow.com/questions/52599370/gulp-babel-dont-produce-any-output-file-or-doesnt-work-properly)
 
-
 ---------
 
 
@@ -523,9 +612,9 @@ gulp-babel don't produce any output file or doesn't work properly
 
 
   **使用这个  "babel-preset-env": "^1.7.0",**
-  
+
   **而且不使用babel7相关东西 全部降低到babel6相关**
-  
+
   >服Orz
 
 

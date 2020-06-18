@@ -1156,6 +1156,49 @@ nth-of-type(2n+1)  => 设置奇数元素样式
 
 
 
+### 去除type:number时input的箭头
+
+
+
+```css
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="number"]{
+    -moz-appearance: textfield;
+}
+
+```
+
+
+
+另外补充一点  即使在 `type="number"` 时，HTML 输入元素的值也总会返回字符串。如果这个值无法被 `parseFloat()` 解析，则会返回原始的值。 
+
+
+
+如果想自动将用户的输入值转为数值类型，可以给 `v-model` 添加 `number` 修饰符：
+
+```html
+<input v-model.number="age" type="number">
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 [1]: http://www.w3chtml.com/css3/properties/user-interface/images/content-box.png
 [2]: http://www.w3chtml.com/css3/properties/user-interface/images/border-box.png

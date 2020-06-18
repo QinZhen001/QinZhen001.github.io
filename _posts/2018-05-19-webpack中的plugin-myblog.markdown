@@ -57,9 +57,26 @@ class ConsoleLogOnBuildWebpackPlugin {
 
 # 正文
 
+
+
 ## 常用的plugin
 
+
+
+### DefinePlugin
+
+[ https://www.webpackjs.com/plugins/define-plugin/ ]( https://www.webpackjs.com/plugins/define-plugin/ )
+
+
+
+`DefinePlugin` 允许创建一个在**编译**时可以配置的全局常量。这可能会对开发模式和发布模式的构建允许不同的行为非常有用。如果在开发构建中，而不在发布构建中执行日志记录，则可以使用全局常量来决定是否记录日志。这就是 `DefinePlugin` 的用处，设置它，就可以忘记开发和发布构建的规则。
+
+
+
+
+
 ### CommonsChunkPlugin
+
 [https://zhuanlan.zhihu.com/p/26710831?refer=ElemeFE](https://zhuanlan.zhihu.com/p/26710831?refer=ElemeFE)
 
 CommonsChunkPlugin 插件，是一个可选的用于建立一个独立文件(又称作 chunk)的功能，这个文件包括多个入口 chunk 的公共模块。
