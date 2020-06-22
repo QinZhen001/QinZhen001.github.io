@@ -1696,6 +1696,26 @@ console.log("res",res)    // false
 
 
 
+### htmlEncode
+
+
+
+转码html 防止xss攻击
+
+
+
+```js
+function htmlEncode(text) {
+  return document.createElement('a').appendChild( document.createTextNode(text) ).parentNode.innerHTML;
+}
+```
+
+
+
+
+
+
+
 
 
 

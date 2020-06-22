@@ -146,6 +146,101 @@ babelrc: false}).code;
 
 
 
+[ https://juejin.im/post/5eefff756fb9a0589b027d97?utm_source=gold_browser_extension ]( https://juejin.im/post/5eefff756fb9a0589b027d97?utm_source=gold_browser_extension )
+
+
+
+
+
+为什么会出现这个插件？
+
+
+
+```js
+import { Affix, Avatar, Button, Rate } from 'antd';
+
+import 'antd/lib/affix/style';
+import 'antd/lib/avatar/style';
+import 'antd/lib/button/style';
+import 'antd/lib/rate/style';
+```
+
+
+
+ 会不会觉得这样的代码不够优雅？ 
+
+
+
+ 简单来说，`babel-plugin-import` 就是解决了上面的问题，**为组件库实现单组件按需加载并且自动引入其样式** 
+
+
+
+```js
+import { Button } from 'antd';   
+
+
+↓ ↓ ↓ ↓ ↓ ↓
+
+
+var _button = require('antd/lib/button');
+require('antd/lib/button/style');
+```
+
+
+
+
+
+总结
+
+
+
+我们来总结一下，`babel-plugin-import` 和普遍的 `babel` 插件一样，会遍历代码的 `ast`，然后在 `ast` 上做了一些事情：
+
+
+
+1. **收集依赖**：找到 `importDeclaration`，分析出包 `a` 和依赖 `b,c,d....`，假如 `a` 和 `libraryName` 一致，就将 `b,c,d...` 在内部收集起来
+
+2. **判断是否使用**：在多种情况下（比如文中提到的 `CallExpression`）判断 收集到的 `b,c,d...` 是否在代码中被使用，如果有使用的，就调用 `importMethod` 生成新的 `impport` 语句
+
+3. **生成引入代码**：根据配置项生成代码和样式的 `import` 语句
+
+
+
+
+
+
+
+
+-----
+
+
+
+这个插件怎么用?
+
+
+
+简单来说就需要关心三个参数即可：
+
+```js
+{
+  "libraryName": "antd",     // 包名
+  "libraryDirectory": "lib", // 目录，默认 lib
+  "style": true,             // 是否引入 style
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## preset
 
 通过使用或创建一个 preset 即可轻松使用一组插件。

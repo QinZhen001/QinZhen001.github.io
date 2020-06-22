@@ -146,6 +146,28 @@ setTimeout(() => {
 
 
 
+###  did you register the component correctly 
+
+[ https://blog.csdn.net/qq_34164814/article/details/88788892 ]( https://blog.csdn.net/qq_34164814/article/details/88788892 )
+
+
+
+报错：
+
+Unknown custom element: `<select-teacher-with-group>` - did you register the component correctly? For recursive components, make sure to provide the "name" option.
+
+
+
+
+
+ components多写了一个 ，很坑的，Orz。。。
+
+
+
+
+
+
+
 
 
 ## 每个页面的包裹布局

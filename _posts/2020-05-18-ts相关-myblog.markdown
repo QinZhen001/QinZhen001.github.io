@@ -179,44 +179,6 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
-## tsconfig
-
-
-
-```js
-{
-  "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    // 支持装饰器    
-    "experimentalDecorators": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    // 将每个文件作为单独的模块
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
-  },
-  "include": [
-    "src"
-  ]
-}
-
-```
-
-
-
 ##  void 
 
 
@@ -355,6 +317,111 @@ function printEmployeeInformation(emp: UnknownEmployee) {
 ## 交叉类型
 
 
+
+
+
+
+
+##  **declare**  
+
+[ https://juejin.im/entry/5907f5020ce46300617bfb44 ]( https://juejin.im/entry/5907f5020ce46300617bfb44 )
+
+
+
+```tsx
+// 作为全局变量使用：
+declare namespace UUU{
+    let a:number
+}
+ 
+// 作为模块加载使用：
+declare module "UUU" {
+    export =UUU
+}
+```
+
+
+
+
+
+## keyof
+
+
+
+```js
+function prop<T, K extends keyof T>(obj: T, key: K) {
+    return obj[key];
+}
+
+---------------------------------------------------------------
+
+function prop2<T>(obj: T, key: keyof T) {
+    return obj[key];
+}
+
+
+
+let o = {
+    p1: 0,
+    p2: ''
+}
+
+let v = prop(o, 'p1') // is number, K is of type 'p1'
+let v2 = prop2(o, 'p1') // is number | string, no extra info is captured
+
+```
+
+
+
+The difference is that in the first case the return type will be `T[K]` while in the second case it will be `T[keyof T]`.
+
+
+
+ `K` can at it's widest be `keyof T` but it can be a specific string literal type representing a key. This means if `K` is a specific property the return value will be of the same type as the property:
+
+
+
+
+
+
+
+
+
+## tsconfig
+
+
+
+```js
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    // 支持装饰器    
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    // 将每个文件作为单独的模块
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src"
+  ]
+}
+
+```
 
 
 

@@ -24,9 +24,15 @@ tags:
 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 
 Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。 
 
-## Koa2 中间件机制
 
-[https://juejin.im/post/5a5f5a126fb9a01cb0495b4c](https://juejin.im/post/5a5f5a126fb9a01cb0495b4c)
+
+## node的http模块创建服务与Express或Koa框架有何不同
+
+
+
+express是一个服务端框架,框架简单封装了node的http模块,express支持node原生的写法,express不仅封装好服务器，还封装了中间件、路由等特征，方便开发web服务器，换句话说express = http模块 + 中间件 + 路由 
+
+https://juejin.im/post/5a5f5a126fb9a01cb0495b4c)
 
 
 
@@ -178,6 +184,43 @@ myEmitter.on('event', () => {
 });
 myEmitter.emit('event');
 ```
+
+
+
+
+
+
+
+
+
+## Koa2 中间件机制
+
+https://juejin.im/post/5a5f5a126fb9a01cb0495b4c
+
+
+
+
+
+## Express和Koa框架中间件有什么不同
+
+
+
+- express 中间件：是通过 next 的机制，即上一个中间件会通过 next 触发下一个中间件   (express中间件处理方式是线性的，next过后继续寻找下一个中间件，当然如果没有调用next()的话，就不会调用下一个函数了，调用就会被终止)
+- koa2 中间件：是通过 async await 实现的，中间件执行顺序是“洋葱圈”模型（推荐）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
