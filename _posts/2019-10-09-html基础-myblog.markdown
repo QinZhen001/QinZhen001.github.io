@@ -78,37 +78,7 @@ if (document.currentScript.async) {
 
 
 
-### Selection
-
-[ https://developer.mozilla.org/zh-CN/docs/Web/API/Selection ]( https://developer.mozilla.org/zh-CN/docs/Web/API/Selection )
-
-
-
-
-
- 表示用户选择的文本范围或光标的当前位置。 
-
-
-
-```js
-const selection = window.getSelection() ;
-```
-
-- `selection` 是一个 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象。 如果想要将 `selection` 转换为字符串，可通过连接一个空字符串（""）或使用 [`String.toString()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/toString) 方法。
-
-
-
-
-
- 一般来说，插入光标的位置可通过 Selection 获取，这时它被标记为 `Collapsed`，这表示选区被压缩至一点，即光标位置。但要注意它与 `focus` 事件或 [`Document.activeElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement) 等的值没有必然联系。 
-
-
-
-
-
-
-
-###  **Range** 
+##  **Range** 
 
 
 
@@ -116,7 +86,7 @@ const selection = window.getSelection() ;
 
 
 
-
+ Range对象代表页面上一段连续的区域，通过Range对象可以获取或者修改页面上任何区域的内容。也可以通过Range的方法进行复制和移动页面任何区域的元素。 
 
 
 
@@ -136,7 +106,7 @@ const selection = window.getSelection() ;
 
 
 
-属性：
+### 属性
 
 
 
@@ -163,6 +133,96 @@ const selection = window.getSelection() ;
 [`Range.startOffset`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/startOffset) 只读
 
 返回一个表示 `Range` 起点在 `startContainer` 中的位置的数字。
+
+
+
+
+
+
+
+### 例子
+
+
+
+
+
+```html
+<body>
+  <table id="mytable" border="1">
+    <tr>
+      <td>内容1</td>
+      <td>内容2</td>
+    </tr>
+    <tr>
+      <td>内容3</td>
+      <td>内容4</td>
+    </tr>
+  </table>
+  <button onclick="delrow()">删除第一行</button>
+</body>
+
+```
+
+
+
+```html
+<script>
+  function delrow() {
+    var table = document.getElementById("mytable");
+    if (table.rows.length > 0) {
+      var row = table.rows[0];
+      var rangeObj = document.createRange();
+      rangeObj.setStartBefore(row);
+      rangeObj.setEndAfter(row);
+      rangeObj.deleteContents();
+    }
+  }
+</script>
+```
+
+
+
+
+
+
+
+### 兼容性
+
+
+
+ https://www.caniuse.com/#search=createRange 
+
+
+
+ createRange 兼容性非常好，可以使用
+
+
+
+## Selection
+
+[ https://developer.mozilla.org/zh-CN/docs/Web/API/Selection ]( https://developer.mozilla.org/zh-CN/docs/Web/API/Selection )
+
+
+
+
+
+ 表示用户选择的文本范围或光标的当前位置。 
+
+
+
+```js
+const selection = window.getSelection() ;
+```
+
+- `selection` 是一个 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象。 如果想要将 `selection` 转换为字符串，可通过连接一个空字符串（""）或使用 [`String.toString()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/toString) 方法。
+
+
+
+
+
+ 一般来说，插入光标的位置可通过 Selection 获取，这时它被标记为 `Collapsed`，这表示选区被压缩至一点，即光标位置。但要注意它与 `focus` 事件或 [`Document.activeElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement) 等的值没有必然联系。 
+
+
 
 
 

@@ -365,3 +365,43 @@ backface-visibility 属性定义当元素不面向屏幕时是否可见。
 
 
 
+###   `input`框输入超出宽度
+
+
+
+ 如何判断input框中输入超出input框的宽度
+
+
+
+**使用`clientWidth`与`scrollWidth`对比**
+
+
+
+`input`一类标签在渲染文本时,会讲超出部分渲染为横向滚动,并且`scrollWidth`能读到其渲染完毕所需的正常值
+
+
+
+
+
+核心代码就一句话:
+
+
+
+```js
+const visible = this.$input.clientWidth < this.$input.scrollWidth
+
+if(visible){
+  // TODO something
+}
+```
+
+
+
+
+
+
+
+
+
+
+

@@ -420,7 +420,6 @@ keep-alive需要其包裹的组件有name属性，
 
 所以建议大家把 route 的 name属性设置和 route对应component的name设成一样的。
 
-
 ----------
 
 
@@ -431,7 +430,7 @@ keep-alive需要其包裹的组件有name属性，
 
 
 
-### 其他
+## 其他
 其他一些值得考虑的优化点：
 
 * HTTP2
@@ -562,6 +561,101 @@ function ts (gen) {
 
 
 上面代码核心思想是：通过yield关键字可以将任务暂停执行，从而让出主线程的控制权；通过定时器可以将“未完成的任务”重新放在任务队列中继续执行。
+
+
+
+### Timeline 面板概览
+
+
+
+[ https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool ]( https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool )
+
+
+
+**火焰图**。 CPU 堆叠追踪的可视化。
+
+
+
+您可以在**火焰图**上看到一到三条垂直的虚线。
+
+1. 蓝线代表 `DOMContentLoaded` 事件。 
+
+2. 绿线代表首次绘制的时间。 
+
+3. 红线代表 `load` 事件。
+
+   
+
+
+
+> 当所有js同步代码执行完毕，触发 DOMContentLoaded 
+>
+> 等待html的所有资源都加载完成才会触发，这些资源包括css、js、图片视频等，触发 load 
+
+
+
+
+
+### **DOMContentLoaded**
+
+[ https://zhuanlan.zhihu.com/p/43282197 ]( https://zhuanlan.zhihu.com/p/43282197 )
+
+
+
+```html
+<html lang="en">
+  <head>
+    <title>css阻塞</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded');
+      })
+    </script>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css" rel="stylesheet">
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+
+
+```html
+<html lang="en">
+  <head>
+    <title>css阻塞</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded');
+      })
+    </script>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css" rel="stylesheet">
+
+    <script>
+      console.log('到我了没');
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+
+
+
+
+
+
+直接说结论吧
+
+
+
+1. 如果页面中同时存在css和js，并且存在js在css后面，则DOMContentLoaded事件会在css加载完后才执行。
+2. 其他情况下，DOMContentLoaded都不会等待css加载，并且DOMContentLoaded事件也不会等待图片、视频等其他资源加载。
 
 
 

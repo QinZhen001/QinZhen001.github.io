@@ -100,7 +100,6 @@ clear	white-space	bottom	min-height
 5. 为动画的元素使用绝对定位 absolute / fixed
 6. 不要使用 table 布局，可能很小的一个小改动会造成整个 table 的重新布局
 
-
 ----------
 
 
@@ -176,7 +175,6 @@ div.style.height = '20px';
 浏览器会按照渲染队列批量执行来优化重排过程，一并修改样式 
 这样就把本该4次的重排优化为1次
 
-
 ----------
 
 但是我们现在想要修改样式后在控制台打印
@@ -199,7 +197,6 @@ console.log(div.offsetHeight);
 想一想其实这么做是有道理的 
 毕竟浏览器不确定在接下来的代码中你是否还会修改同样的样式 
 为了保证获得正确的值，它不得不立刻执行渲染队列触发重排（错的不是我，是这个世界）
-
 
 ----------
 
@@ -286,7 +283,6 @@ for(var i = 0; i < 1e5; i++){
 ul.parentNode.replaceChild(clone,ul); <--
 ```
 
-
 ----------
 
 
@@ -299,5 +295,4 @@ ul.parentNode.replaceChild(clone,ul); <--
 
 
 
-  [1]: http://img.caibaojian.com/uploads/2016/11/1478763564983256.png
-  
+[1]: http://img.caibaojian.com/uploads/2016/11/1478763564983256.png
