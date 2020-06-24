@@ -320,7 +320,7 @@ export default function({ types: t }) {
 
 * 插件在 Presets 前运行。
 * 插件顺序从前往后排列。
-* eset 顺序是颠倒的（从后往前）。
+* preset 顺序是颠倒的（从后往前）。
 
 
 例子：

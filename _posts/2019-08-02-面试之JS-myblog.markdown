@@ -2376,6 +2376,7 @@ const result = find(items, (item, index) => item.a === 2)
 var id = 21;
 
 function foo() {
+    // setTimeout 是在window全局环境下执行的
     setTimeout(function(){
         console.log('id:', this.id);
       	// 输出 21

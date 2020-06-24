@@ -210,7 +210,6 @@ require('antd/lib/button/style');
 
 
 
-
 -----
 
 
@@ -232,6 +231,24 @@ require('antd/lib/button/style');
 
 
 
+
+
+
+
+
+
+
+
+
+###  [babel-plugin-dynamic-import-node](https://github.com/airbnb/babel-plugin-dynamic-import-node) 
+
+
+
+ https://github.com/airbnb/babel-plugin-dynamic-import-node 
+
+
+
+ Babel plugin to transpile `import()` to a deferred `require()`,  
 
 
 
