@@ -30,4 +30,19 @@
 使用return false阻止浏览器的默认行为
 
 
-  [1]: https://github.com/QinZhen001/QinZhen001.github.io/blob/master/img/website-QR%20-code.png
+
+## 2020-06-28
+
+调整详情页 右边侧边栏catalog-body的样式 
+
+(调整h2_nav 和 h3_nav 对应样式)
+
+
+
+
+
+由于window下安装jekyll和python等库比较麻烦,所以在此并没有开启工作流调整less下的文件，而是直接修改less编译后的css文件夹下的文件。
+
+
+
+[1]: https://github.com/QinZhen001/QinZhen001.github.io/blob/master/img/website-QR%20-code.png
