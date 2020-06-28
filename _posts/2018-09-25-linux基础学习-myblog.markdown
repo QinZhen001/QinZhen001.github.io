@@ -12,20 +12,10 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
-
-
+# 正文
 [Bash 常用命令](https://github.com/judasn/Linux-Tutorial/blob/master/markdown-file/Bash.md)
 
-
-
 [网页链接](https://github.com/CyC2018/CS-Notes/blob/97a21c792753c2b7a6a74e8c7ef5875f7d95bc26/notes/Linux.md)
-
-
-
-
-
-
 
 
 许多程序需要开机启动。它们在Windows叫做"服务"（service），在Linux就叫做"守护进程"（daemon）
@@ -378,6 +368,28 @@ curl(选项)(参数)
 
 ### grep
 
+[https://www.runoob.com/linux/linux-comm-grep.html](https://www.runoob.com/linux/linux-comm-grep.html)
+
+
+
+Linux grep 命令用于查找文件里符合条件的字符串。
+
+
+
+grep 指令用于查找内容包含指定的范本样式的文件，如果发现某文件的内容符合所指定的范本样式，预设 grep 指令会把含有范本样式的那一列显示出来。若不指定任何文件名称，或是所给予的文件名为 **-**，则 grep 指令会从标准输入设备读取数据。
+
+
+
+---
+
+
+
+在当前目录中，查找后缀有 file 字样的文件中包含 test 字符串的文件，并打印出该字符串的行
+
+```bash
+grep test *file 
+```
+
 
 
 
@@ -445,7 +457,7 @@ mv test.txt wbk.txt
 
 
 
-## 补充
+# 补充
 
 
 
@@ -676,13 +688,7 @@ r=redhat  p=package  m=management
 
 
 
-
-
-## 问题
-
-
-
-
+# 问题
 
 
 
