@@ -12,18 +12,38 @@ tags:
 > “Yeah It's on. ”
 
 
-# 正文
+
+[linux下文件的复制、移动与删除](https://www.cnblogs.com/qiuhong10/p/7940410.html)
+
+[Linux中ps命令详解](https://blog.csdn.net/tanga842428/article/details/52742360)
+
 [Bash 常用命令](https://github.com/judasn/Linux-Tutorial/blob/master/markdown-file/Bash.md)
 
 [网页链接](https://github.com/CyC2018/CS-Notes/blob/97a21c792753c2b7a6a74e8c7ef5875f7d95bc26/notes/Linux.md)
 
 
+
+
+# 正文
+
+
+* Linux 严格 区分大小写
+
+* **Linux 中所有内容以文件形式保存，包括硬件**
+
+* Linux 中一切内容皆为文件
+
+* Linux不靠扩展名区分文件类型，它靠的是权限来区分
+
+
+
+
+
 许多程序需要开机启动。它们在Windows叫做"服务"（service），在Linux就叫做"守护进程"（daemon）
 
-[linux下文件的复制、移动与删除](https://www.cnblogs.com/qiuhong10/p/7940410.html)
 
 
-[Linux中ps命令详解](https://blog.csdn.net/tanga842428/article/details/52742360)
+
 
 
 ### linux进程状态
@@ -57,6 +77,37 @@ tags:
 1. /root ：/root等同于root用户bai。
 
 2. du/home：/home等同于/home/当前的普通用户名。
+
+
+
+### linux文件权限
+
+例子：
+
+-rw-r--r--.  1  root  root 
+
+
+
+> 第一个root是所有者 第二个root是所属组
+>
+> . 代表ACL权限
+>
+> 1 代表引用计数
+
+
+
+
+
+
+
+* 第一位代表文件类型（-文件    d目录   l软连接文件）
+
+* 后面每三位为一组  (第一组是所有者 第二组是所属组 第三组是所有人)
+  * rw-  u所有者
+  * r--  g所属组
+  * r--  o其他人
+
+* r读  w写  x执行
 
 
 
@@ -451,6 +502,20 @@ mv test.txt wbk.txt
 
 
 
+### systemctl
+
+[https://blog.csdn.net/skh2015java/article/details/94012643](https://blog.csdn.net/skh2015java/article/details/94012643)
+
+Linux 服务管理两种方式service和systemctl
+
+
+
+systemd是Linux系统最新的初始化系统(init),作用是提高系统的启动速度，尽可能启动较少的进程，尽可能更多进程并发启动。
+
+
+
+systemd对应的进程管理命令是systemctl
+
 
 
 
@@ -626,13 +691,33 @@ yum list installed | grep php
 
 
 
-### RPM 
+### rpm
 
 [https://www.cnblogs.com/ftl1012/p/rpm.html](https://www.cnblogs.com/ftl1012/p/rpm.html)
 
 
 
 **rpm命令**是RPM软件包的管理工具。rpm原本是Red Hat Linux发行版专门用来管理Linux各项套件的程序，由于它遵循GPL规则且功能强大方便，因而广受欢迎。逐渐受到其他发行版的采用。RPM套件管理方式的出现，让Linux易于安装，升级，间接提升了Linux的适用度。
+
+
+
+#### 查看库安装位置
+
+
+
+例子：
+
+
+
+```bash
+rpm -ql nginx
+```
+
+
+
+
+
+
 
 
 

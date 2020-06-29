@@ -1189,6 +1189,44 @@ input[type="number"]{
 
 
 
+### Object标签
+
+
+
+
+
+`<object>`标签是一个HTML标签，用于在网页中显示音频，视频，图像，PDF和Flash等多媒体；它通常用于嵌入由浏览器插件处理的Flash页面元素，如Flash和Java项目。它还可以用于在HTML页面内显示另一个网页。
+
+
+
+
+
+```html
+  <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" id="elnFlvPlayer" width="100%" height="100%"
+    codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+    <param name="wmode" value="transparent">
+    <param name="FlashVars"
+      value="videoPath=https://file5-sdgh.21tb.com/202006291656/d1c2cccd2f5abc5fa720a17c7c3a22f0/sf-server/file/getFile/bd00a5451dacaa76b3b28be8bc46b4d8-C_1523333333333/xiao100/210fe65098f5454da7a7e903a617e75f_0100/video/mp4/210fe65098f5454da7a7e903a617e75f.mp4&amp;isComplete=false&amp;watermarkUser=&amp;watermarkId=&amp;courseId=210fe65098f5454da7a7e903a617e75f&amp;scoId=test&amp;serviceUrl=/html/study/study.saveProgress.do&amp;viewMode=browsed&amp;locationTime=0&amp;rate=0">
+    <param name="movie" value="/els/flash/NewCourseElnFlvPlayer.swf?v=0206">
+    <param name="quality" value="high">
+    <param name="bgcolor" value="#869ca7">
+    <param name="allowFullScreen" value="true">
+    <param name="allowScriptAccess" value="sameDomain"><embed swliveconnect="true" name="elnFlvPlayer"
+      wmode="transparent" src="/els/flash/NewCourseElnFlvPlayer.swf?v=0206"
+      flashvars="videoPath=https://file5-sdgh.21tb.com/202006291656/d1c2cccd2f5abc5fa720a17c7c3a22f0/sf-server/file/getFile/bd00a5451dacaa76b3b28be8bc46b4d8-C_1523333333333/xiao100/210fe65098f5454da7a7e903a617e75f_0100/video/mp4/210fe65098f5454da7a7e903a617e75f.mp4&amp;courseId=210fe65098f5454da7a7e903a617e75f&amp;scoId=test&amp;isComplete=false&amp;watermarkUser=&amp;watermarkId=&amp;serviceUrl=/html/study/study.saveProgress.do&amp;viewMode=browsed&amp;locationTime=0&amp;rate=0"
+      quality="high" bgcolor="#869ca7" width="100%" height="100%" align="middle" play="true" loop="false"
+      allowscriptaccess="sameDomain" allowfullscreen="true" type="application/x-shockwave-flash"
+      pluginspage="http://www.adobe.com/go/getflashplayer"></object>
+```
+
+
+
+
+
+
+
+
+
 ## css3
 
 
