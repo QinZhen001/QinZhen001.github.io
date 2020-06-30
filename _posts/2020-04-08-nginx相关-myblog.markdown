@@ -32,6 +32,22 @@ Nginx更长于底层服务器端资源的处理（静态资源处理转发、反
 
 
 
+常见场景：
+
+- 静态资源服务器
+- 动态匹配
+- 反向代理
+- Gzip 压缩
+- 负载均衡
+
+
+
+
+
+
+
+
+
 ### 安装 
 
 [https://juejin.im/post/5ea931866fb9a043815146fb](https://juejin.im/post/5ea931866fb9a043815146fb)
@@ -62,8 +78,70 @@ yum install nginx
 
 
 
+### 配置
 
-# 补充
+
+
+#### location
+
+1. `=` 精确匹配路径，用于不含正则表达式的 uri 前，如果匹配成功，不再进行后续的查找；
+2. `^~` 用于不含正则表达式的 uri； 前，表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找；
+3. `~` 表示用该符号后面的正则去匹配路径，区分大小写；
+4. `~*` 表示用该符号后面的正则去匹配路径，不区分大小写。跟 `~` 优先级都比较低，如有多个location的正则能匹配的话，则使用正则表达式最长的那个；
+
+如果 uri 包含正则表达式，则必须要有 `~` 或 `~*` 标志。
+
+
+
+-----
+
+
+
+* “location / {} ” :  是普通location , 遵循最大前缀匹配, 如果后面还有正则匹配, 如果正则匹配到了,正则匹配就会覆盖此配置; 
+* “location = / {} ” :  用的是"="号, 是精确匹配, 只能匹配到  http://host:port/ 请求;
+
+
+
+#### 校验配置
+
+
+
+```bash
+nginx -t
+```
+
+如果看到的是下面这种就是成功了
+
+```bash
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+
+
+
+
+
+
+
+
+### 重新加载
+
+
+
+向主进程发送信号，重新加载配置文件，热重启
+
+```bash
+nginx -s reload
+```
+
+
+
+
+
+这样就可以做到不停服务，平滑的更新 nginx 的配置文件。这样做的好处就是客户体验好，比如我正在数据传输，如果你这时重启 nginx，可能就会造成数据丢失。这个时候，我们就可以温柔的采用 nginx -s reload 命令加载配置文件。
+
+
 
 
 
@@ -185,33 +263,143 @@ pc端Nginx配置如下：
 
 
 
-
-
-### 校验配置
+### 动态匹配（请求过滤）
 
 
 
-```bash
-nginx -t -q
+>通常在开发环境或者测试环境的时候呢我们修改了代码，因为浏览器缓存，可能不会生效，需要手动清除缓存，才能看到修改后的效果，这里我们做一个配置让浏览器不缓存相关的资源。
+>
+>
+
+```
+location ~* \.(js|css|png|jpg|gif)$ {
+    add_header Cache-Control no-store;
+}
+```
+
+
+
+`~* \.(js|css|png|jpg|gif)$` 是匹配以相关文件类型然后单独处理。 `add_header` 是给请求的响应加上一个头信息`Cache-Control no-store`，告知浏览器禁用缓存，每次都从服务器获取 
+
+
+
+
+
+
+
+###  开启 gzip 压缩
+
+[网页GZIP压缩检测](http://tool.chinaz.com/gzips/)
+
+
+
+gzip 是一种常用的网页压缩技术，传输的网页经过 gzip 压缩之后大小通常可以变为原来的一半甚至更小（官网原话），更小的网页体积也就意味着带宽的节约和传输速度的提升，特别是对于访问量巨大大型网站来说，每一个静态资源体积的减小，都会带来可观的流量与带宽的节省。
+
+
+
+使用 gzip 不仅需要 Nginx 配置，浏览器端也需要配合，需要在请求消息头中包含 `Accept-Encoding: gzip`（IE5 之后所有的浏览器都支持了，是现代浏览器的默认设置）。一般在请求 html 和 css 等静态资源的时候，支持的浏览器在 request 请求静态资源的时候，会加上 `Accept-Encoding: gzip` 这个 header，表示自己支持 gzip 的压缩方式，Nginx 在拿到这个请求的时候，如果有相应配置，就会返回经过 gzip 压缩过的文件给浏览器，并在 response 相应的时候加上 `content-encoding: gzip` 来告诉浏览器自己采用的压缩方式（因为浏览器在传给服务器的时候一般还告诉服务器自己支持好几种压缩方式），浏览器拿到压缩的文件后，根据自己的解压方式进行解析。
+
+
+
+先来看看 Nginx 怎么进行 gzip 配置，和之前的配置一样，为了方便管理，还是在 `/etc/nginx/conf.d/` 文件夹中新建配置文件 `gzip.conf` ：
+
+
+
+
+
+```
+# /etc/nginx/conf.d/gzip.conf
+
+gzip on; # 默认off，是否开启gzip
+gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+# 上面两个开启基本就能跑起了，下面的愿意折腾就了解一下
+gzip_static on;
+gzip_proxied any;
+gzip_vary on;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+# gzip_min_length 1k;
+gzip_http_version 1.1;
+
+```
+
+
+
+* **gzip_types**：要采用 gzip 压缩的 MIME 文件类型，其中 text/html 被系统强制启用；
+* **gzip_static**：默认 off，该模块启用后，Nginx 首先检查是否存在请求静态文件的 gz 结尾的文件，如果有则直接返回该 `.gz` 文件内容；
+* **gzip_proxied**：默认 off，nginx做为反向代理时启用，用于设置启用或禁用从代理服务器上收到相应内容 gzip 压缩；
+* **gzip_vary**：用于在响应消息头中添加 `Vary：Accept-Encoding`，使代理服务器根据请求头中的 `Accept-Encoding` 识别是否启用 gzip 压缩；
+* **gzip_comp_level**：gzip 压缩比，压缩级别是 1-9，1 压缩级别最低，9 最高，级别越高压缩率越大，压缩时间越长，建议 4-6；
+* **gzip_buffers**：获取多少内存用于缓存压缩结果，16 8k 表示以 8k*16 为单位获得；
+* **gzip_min_length**：允许压缩的页面最小字节数，页面字节数从header头中的 `Content-Length` 中进行获取。默认值是 0，不管页面多大都压缩。建议设置成大于 1k 的字节数，小于 1k 可能会越压越大；
+* **gzip_http_version**：默认 1.1，启用 gzip 所需的 HTTP 最低版本；
+
+
+
+
+
+#### Webpack 的 gzip 配置
+
+[https://juejin.im/post/5ea931866fb9a043815146fb#heading-22](https://juejin.im/post/5ea931866fb9a043815146fb#heading-22)
+
+
+
+```js
+// vue-cli3 的 vue.config.js 文件
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+
+module.exports = {
+  // gzip 配置
+  configureWebpack: config => {
+    if (process.env.NODE_ENV === 'production') {
+      // 生产环境
+      return {
+        plugins: [new CompressionWebpackPlugin({
+          test: /\.js$|\.html$|\.css/,    // 匹配文件名
+          threshold: 10240,               // 文件压缩阈值，对超过10k的进行压缩
+          deleteOriginalAssets: false     // 是否删除源文件
+        })]
+      }
+    }
+  },
+  ...
+}
+
 ```
 
 
 
 
 
-### 重新加载
+那么为啥这里 Nginx 已经有了 gzip 压缩，Webpack 这里又整了个 gzip 呢，因为如果全都是使用 Nginx 来压缩文件，会耗费服务器的计算资源，如果服务器的 `gzip_comp_level` 配置的比较高，就更增加服务器的开销，相应增加客户端的请求时间，得不偿失。
 
 
 
-```bash
-nginx -s reload
+如果压缩的动作在前端打包的时候就做了，把打包之后的高压缩等级文件作为静态资源放在服务器上，Nginx 会优先查找这些压缩之后的文件返回给客户端，**相当于把压缩文件的动作从 Nginx 提前给 Webpack 打包的时候完成，节约了服务器资源，所以一般推介在生产环境应用 Webpack 配置 gzip 压缩**。
+
+
+
+### 图片防盗链
+
+
+
 ```
+server {
+  listen       80;        
+  server_name  *.sherlocked93.club;
+  
+  # 图片防盗链
+  location ~* \.(gif|jpg|jpeg|png|bmp|swf)$ {
+    valid_referers none blocked server_names ~\.google\. ~\.baidu\. *.qq.com; 
+    # 只允许本机 IP 外链引用，感谢 @木法传 的提醒，将百度和谷歌也加入白名单
+    if ($invalid_referer){
+      return 403;
+    }
+  }
+}
 
-
-
-
-
-
+```
 
 
 
@@ -269,4 +457,105 @@ try_files 会到硬盘里尝试找这个文件。如果存在名为 `/$root/exam
 
 
 又找不到，就会 fall back 到 try_files 的最后一个选项 /index.html，发起一个内部 “子请求”，也就是相当于 nginx 发起一个 HTTP 请求到 `http://localhost/index.html`。 
+
+
+
+
+
+
+
+## 最佳实践
+
+
+
+* 为了使 Nginx 配置更易于维护，建议为每个服务创建一个单独的配置文件，存储在 `/etc/nginx/conf.d` 目录，根据需求可以创建任意多个独立的配置文件。
+
+* 独立的配置文件，建议遵循以下命名约定 `<服务>.conf`，比如域名是 `sherlocked93.club`，那么你的配置文件的应该是这样的 `/etc/nginx/conf.d/sherlocked93.club.conf`，如果部署多个服务，也可以在文件名中加上 Nginx 转发的端口号，比如 `sherlocked93.club.8080.conf`，如果是二级域名，建议也都加上 `fe.sherlocked93.club.conf`。
+
+* 常用的、复用频率比较高的配置可以放到 `/etc/nginx/snippets` 文件夹，在 Nginx 的配置文件中需要用到的位置 include 进去，以功能来命名，并在每个 snippet 配置文件的开头注释标明主要功能和引入位置，方便管理。比如之前的 `gzip`、`cors` 等常用配置，我都设置了 snippet。
+
+* Nginx 日志相关目录，内以 `域名.type.log` 命名（比如 `be.sherlocked93.club.access.log` 和 `be.sherlocked93.club.error.log` ）位于 `/var/log/nginx/` 目录中，为每个独立的服务配置不同的访问权限和错误日志文件，这样查找错误时，会更加方便快捷。
+
+
+
+
+
+
+
+## 问题
+
+
+
+
+
+### 地址匹配
+
+[https://blog.coding.net/blog/tips-in-configuring-Nginx-location](https://blog.coding.net/blog/tips-in-configuring-Nginx-location)
+
+
+
+```
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        location = /helloworld {
+                return 602;
+        }
+        location /helloworld {
+                return 603;
+        }
+        
+        ## 生产环境中如下两个 location 在另外一个文件中，通过 include 包含进来
+        location /ii {
+                return 604;
+        }
+        location ~ /ii/[^\/]+/[^\/]+ {
+                return 605;
+        }
+        ##
+        
+        location ~ ^/helloworld/(scripts|styles|images).* {
+                return 606;
+        }
+```
+
+
+
+`http://localhost/helloworld/ii/hello/world` ==> 605 不符合预期，预期为【603】
+
+
+
+
+
+为何我一个以 /helloworld 开头的 URL 会被匹配到 605 这个以 /ii 开头的 location 里面来。在当时的生产环境中，以 /ii 的配置统一放在另外一个文件中，这里是很难直观的察觉出来这个 /ii 跟访问的 URL 里面的 /ii 的关系。
+
+
+
+
+
+最终选择了`~ "/ii/[^\/]+/[^\/]+"`这个作为最终的匹配项。
+
+
+
+到这里问题就完全展现出来了，我们本来的意思，是要以 /ii 开头，后面有两个或者更多的 / 分割的 URL 模型才匹配，但是这里的正则表达式匹配写的不够精准，导致了匹配错误。正则表达式没有限制必须从开头匹配，所以才会匹配到 /helloworld/ii/hello/world 这样的 URL 。
+
+
+
+解决办法就是在这个正则表达式前面加上 ^ 来强制 URL 必须以 /ii 开头才能匹配.
+
+
+
+由
+`/ii/[^\/]+/[^\/]+`
+变成
+`^/ii/[^\/]+/[^\/]+`
+
+
+
+总结：
+
+**location 尽量精确就尽量精确，否则出现问题的时候，非常难以查找**
+
+
 
