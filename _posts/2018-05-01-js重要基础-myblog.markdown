@@ -409,14 +409,20 @@ Object.is(NaN, NaN) // true
 
 
 
-### padStart()，padEnd()
+### Es6新增字符串方法 includes startsWith endsWith padStart padEnd
 ES6 引入了字符串补全长度的功能，如果某个字符串不够指定长度，会在头部活尾部补全。
+
+* includes() 返回布尔值，表示是否找到了参数字符串
+* startsWith() : 返回布尔值，表示参数字符串是否在原字符串的头部
+* endsWith() : 返回布尔值，表示参数字符串是否在原字符串的头部
 
 
 * padStart() 用于头部补全；
 * padEnd() 用于尾部补全。
 
 ```javascript
+// 第一个参数表示最终生成字符串的长度
+
 
 'x'.padStart(5, 'ab') // 'ababx'
 'x'.padStart(4, 'ab') // 'abax'
