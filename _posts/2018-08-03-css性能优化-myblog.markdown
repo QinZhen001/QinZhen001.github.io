@@ -16,10 +16,18 @@ tags:
 [网页链接](https://juejin.im/post/5b6133a351882519d346853f)
 
 ### 内联首屏关键CSS（Critical CSS）
+
+[https://www.w3cplus.com/css/understanding-critical-css.html](https://www.w3cplus.com/css/understanding-critical-css.html)
+
+
+
 性能优化中有一个重要的指标——首次有效绘制（First Meaningful Paint，简称FMP）即指页面的首要内容（primary content）出现在屏幕上的时间。这一指标影响用户看到页面前所需等待的时间，而**内联首屏关键CSS,即Critical CSS，可以称之为首屏关键CSS**能减少这一时间。
 
 
+
 大家应该都习惯于通过link标签引用外部CSS文件。但需要知道的是，将CSS直接内联到HTML文档中能使CSS更快速地下载。而使用外部CSS文件时，需要在HTML文档下载完成后才知道所要引用的CSS文件，然后才下载它们。所以说，**内联CSS能够使浏览器开始页面渲染的时间提前**，因为在HTML下载完成之后就能渲染了。
+
+
 
 
 既然内联CSS能够使页面渲染的开始时间提前，那么是否可以内联所有的CSS呢？答案显然是否定的，这种方式并不适用于内联较大的CSS文件。因为初始拥塞窗口3存在限制（TCP相关概念，通常是 14.6kB，压缩后大小），如果内联CSS后的文件超出了这一限制，系统就需要在服务器和浏览器之间进行更多次的往返，这样并不能提前页面渲染时间。因此，我们应当**只将渲染首屏内容所需的关键CSS内联到HTML中**。
@@ -27,8 +35,37 @@ tags:
 
 
 既然已经知道内联首屏关键CSS能够优化性能了，那下一步就是如何确定首屏关键CSS了。显然，我们不需要手动确定哪些内容是首屏关键CSS。Github上有一个项目Critical CSS4，可以将属于首屏的关键样式提取出来，大家可以看一下该项目，结合自己的构建工具进行使用。当然为了保证正确，大家最好再亲自确认下提取出的内容是否有缺失。
+
 不过内联CSS有一个缺点，内联之后的CSS不会进行缓存，每次都会重新下载。不过如上所说，如果我们将内联后的文件大小控制在了14.6kb以内，这似乎并不是什么大问题。
+
 如上，我们已经介绍了为什么要内联关键CSS以及如何内联，那么剩下的CSS我们怎么处理好呢？建议使用外部CSS引入剩余CSS，这样能够启用缓存，除此之外还可以异步加载它们。
+
+
+
+
+
+将css inline嵌入HTML，允许我们在一次请求中把css送给用户。在html中看起来就是这样子的：
+
+```html
+<!doctype html>
+<head>
+  <style> /* inlined critical CSS */ </style>
+  <script> loadCSS('non-critical.css'); </script>
+</head>
+<body>
+  ...body goes here
+</body>
+</html>
+
+```
+
+
+
+
+
+
+
+
 
 ### 异步加载CSS
 
@@ -142,7 +179,6 @@ CSS中更多的选择器是不会匹配的，所以在考虑性能问题时，�
 其次，多个@import会导致下载顺序紊乱。在IE中，@import会引发资源文件的下载顺序被打乱，即排列在@import后面的js文件先于@import下载，并且打乱甚至破坏@import自身的并行下载。
 
 所以不要使用这一方法，使用link标签就行了。
-
 
 ----------
 

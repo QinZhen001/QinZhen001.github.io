@@ -311,6 +311,32 @@ You can generate the required JSON file for this tool by running
 
 
 
+
+## 性能
+
+
+
+### 谷歌pagespeed页面性能分析
+
+[https://developers.google.com/speed/pagespeed/insights](https://developers.google.com/speed/pagespeed/insights)
+
+
+
+### 页面性能分析
+
+[https://www.webpagetest.org/](https://www.webpagetest.org/)
+
+
+
+
+
+
+
+
+
+
+
+
 ## 需要翻墙
 
 ### 图标库

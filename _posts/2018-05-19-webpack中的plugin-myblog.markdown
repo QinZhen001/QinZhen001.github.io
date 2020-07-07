@@ -791,6 +791,107 @@ module.exports = {
 
 
 
+### html-critical-webpack-plugin
+
+[https://github.com/anthonygore/html-critical-webpack-plugin#readme](https://github.com/anthonygore/html-critical-webpack-plugin#readme)
+
+
+
+[Critical CSS and Webpack: Automatically Minimize Render-Blocking CSS](https://vuejsdevelopers.com/2017/07/24/critical-css-webpack/)
+
+
+
+This plugin extracts critical CSS and runs after all files have been emitted so you can use it after Mini CSS Extract Plugin and HTML Webpack Plugin.
+
+
+
+这个插件提取关键的CSS并在所有文件发出后运行，所以你可以在迷你CSS提取插件和HTML Webpack插件后使用它。
+
+
+
+执行后，这会将Webpack捆绑输出中的HTML文件更新为：
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bootstrap Critical</title>
+  <style type="text/css">
+    /* Critical CSS is inlined into the document head, abbreviated here. */
+    body {
+      font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+      font-size: 14px;
+      line-height: 1.42857;
+      color: #333;
+      background-color: #fff;
+    }
+    ...
+  </style>
+  <link href="/style.96106fab.css" rel="preload" as="style" onload="this.rel='stylesheet'">
+  <noscript>
+      <link href="/style.96106fab.css" rel="stylesheet">
+  </noscript>
+  <script>
+    /*A script for loading the non-critical CSS goes here, omitted for brevity.*/
+  </script>
+</head>
+<body>
+  <!--App content goes here, omitted for brevity.-->
+  <script type="text/javascript" src="/build_main.js"></script>
+</body>
+</html>
+```
+
+
+
+
+
+#### Preload non-critical CSS
+
+You'll also notice that the non-critical CSS is loaded with a sophisticated-looking `link`. The `preload` value tells the browser to start fetching the non-critical CSS for pending use. But crucially, `preload` is not render-blocking, so the browser will go ahead and paint the page whether the preload resource is completed or not.
+
+
+
+> 您还会注意到，非关键CSS加载了外观精美的`link`。该`preload`值告诉浏览器开始获取非关键CSS以供未决使用。但至关重要的是，`preload`它不是渲染阻塞的，因此，无论预加载资源是否完成，浏览器都将继续绘制页面。
+
+
+
+
+
+
+
+The `onload` attribute in the `link` allows us to run a script when the non-critical CSS has eventually loaded. The *Critical* module automatically inlines a script into the document that provides a cross-browser compatible way of loading the non-critical stylesheet into the page.
+
+
+
+> `onload`属性`link`允许我们在非关键CSS最终加载后运行脚本。在*关键*模块自动内联脚本成提供加载非关键样式表放到页面的一个跨浏览器兼容的方式文件。
+
+
+
+```html
+<link href="/style.96106fab.css" rel="preload" as="style" onload="this.rel='stylesheet'">
+```
+
+
+
+> **Note: you should probably only use this in a production build, not development, as it will make your build really slow!**
+>
+> 
+>
+> 注意：您可能只应该在生产版本中使用它，而不要在开发中使用它，因为这会使您的构建速度变慢！
+
+
+
+
+
+
+
+
+
 
 
 

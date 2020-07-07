@@ -239,6 +239,46 @@ HTTP2 基于 SPDY，专注于性能，最大的一个目标是在用户和网站
 
 
 
+
+
+### X-Cache Header
+
+[https://stackoverflow.com/questions/3027492/x-cache-header-explanation](https://stackoverflow.com/questions/3027492/x-cache-header-explanation)
+
+
+
+
+
+`CDN` (`Content Delivery Network`) adds `X-cache` header to HTTP Response. `X-cache:HIT` means that your request was served by CDN, not origin servers. CDN is a special network designed to cache content, so that usr request served faster + to unload origin servers.
+
+
+
+CDN(内容传递网络)将X-cache头添加到HTTP响应中。x -高速缓存:命中意味着你的请求是由CDN服务的，而不是源服务器。CDN是一种特殊的网络，旨在缓存内容，使usr请求服务更快+卸载源服务器。
+
+
+
+Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate HIT, MISS etc. You can simply install firebug plugin in firefox and request some progressive download video, probably it'll be served by cdn node, so the HOST header in response might contain smth like cdn.rt.com and there will be "X- " headers
+
+
+
+此外，CDNs还提供了一堆“X-”头信息。它们表示命中、未命中等。你可以简单地在firefox中安装firebug插件并请求一些渐进的下载视频，可能它会被cdn节点服务，所以主机头响应可能包含smth像cdn.rt.com，将有“X-”头
+
+
+
+> **X-Cache** corresponds to the result, whether the proxy has served the result from cache (HIT for yes, and MISS for no)
+>
+> X-Cache与结果相对应，无论代理是否已从缓存提供结果（HIT为是，MISS为否）
+
+
+
+
+
+
+
+
+
+
+
 # 补充
 
 
