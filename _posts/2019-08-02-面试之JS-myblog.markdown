@@ -1991,6 +1991,86 @@ Promise.myAll = function(...args){
 
 
 
+
+
+### Promise.all出现错误不停止
+
+Promise.all中任何一个Promise出现错误的时候都会执行reject，导致其他正常返回的数据也无法使用，如何解决？
+
+
+
+
+
+* 把单个promise中的reject操作换成resolve(new Error("xxx"))
+* 在单个promise函数执行时catch错误
+* 引入Promise.allSettled
+* 第三方库promise-transaction
+
+
+
+
+
+
+
+```js
+// 在单个promise函数执行时catch错误
+
+  function fetch1() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(111)
+      }, 1000)
+    })
+  }
+
+
+  function fetch2() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("fetch2")
+      }, 2000)
+    })
+  }
+
+
+  function fetch3() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("fetch3")
+      }, 2000)
+    })
+  }
+
+  let arr = [fetch1().catch(e => {
+    console.log("我在这里捕获了错误", e)
+    debugger
+  }),
+  fetch2(),
+  fetch3()
+  ]
+  Promise.all(arr).then(res => {
+    console.log(res)
+    for (let item of res) {
+      console.log(item)
+    }
+  }).catch(e => {
+    console.log("那么这里就无法捕获错误")
+    debugger
+    console.log("e", e)
+  })
+
+```
+
+
+
+
+
+
+
+
+
+
+
 ## const本质
 
 **const实际上保证的，并不是变量的值不得改动，而是变量指向的那个内存地址所保存的数据不得改动**

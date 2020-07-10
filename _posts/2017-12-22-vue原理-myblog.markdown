@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Vue深入响应式原理"
+title:      "Vue原理"
 date:       2017-12-22 12:45:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -12,8 +12,7 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
-
+## 响应式原理
 
 [网页链接](https://cn.vuejs.org/v2/guide/reactivity.html)
 
@@ -130,13 +129,13 @@ Vue.component('example', {
 
 
 
-## 源码
+### 源码
 
 [ https://mp.weixin.qq.com/s/4ke__PpGpQNPGXbr1MEgAA ]( https://mp.weixin.qq.com/s/4ke__PpGpQNPGXbr1MEgAA )
 
 
 
-### 更新数据渲染页面
+#### 更新数据渲染页面
 
 
 
@@ -351,7 +350,7 @@ export default Watcher
 
 
 
-### 批量更新防止重复渲染
+#### 批量更新防止重复渲染
 
 
 
@@ -383,6 +382,50 @@ export default Watcher
 2.  初始化 子组件数据 
 3.  new 子组件Wacther 
 4.  new 父组件Watcher
+
+
+
+
+
+### 为什么需要虚拟dom diff
+
+既然vue通过数据劫持可以精确探测数据在具体dom上的变化，为什么还需要虚拟dom diff？
+
+
+
+答案：
+
+
+
+现代前端框架有两种方式侦测变化，一种是pull，一种是push
+
+
+
+* pull其代表为react，我们可以回忆一下react是如何侦测到变化的，我们通常会用setState Api显式更新，然后 React会进行一层层的 Virtual dom diff操作找出差异，然后 Patch到DOM上， React从一开始就不知道到是哪发生了变化，只是知道「有变化了」，然后再进行比较暴力的Diff操作查找「哪发生变化了」，另外一个代表就是 Angular的脏检查操作
+* push：vue的响应式系统则是push的代表，当vue程序初始化的时候就会对数据data进行依赖的收集，一但数据发生变化，响应式系统就会立刻得知。因此vue是一开始就知道是「在哪发生变化了」，但是这又会产生一个问题，如果你熟悉ue的响应式系统就知道，通常一个绑定一个数据就需要一个 Watcher。一但我们的绑定细粒度过高就会产生大量的 Watcher，这会芾来內存以及依赖追踪的开销，而细粒度过低会无法精准侦测变化因此vue的设计是选择中等细粒度的方案在组件级别进行push侦测的方式也就是那套响应式系统通常我们会第一时间侦测到发生变化的组件然后在组件内部进行Virtual dom diff获取更加具体的差异，而 Virtual dom diff则是pukl操作，vue是push+pull结合的方式进行变化侦测的。
+
+![](https://s1.ax1x.com/2020/07/09/UegPQx.png)
+
+
+
+
+
+
+
+
+
+
+
+### react为什么要整虚拟dom
+
+
+
+* react的架构根本感知不到数据变化，也无法得知数据变化会影响到哪些dom，他只能通过diff vdom来找出差异点。
+* 而vue的架构和react是完全不一样的，vue是可以知道精准的知道数据变化的，也可以知道这个数据变化会影响到哪些dom。
+
+
+
+
 
 
 
