@@ -93,6 +93,12 @@ module.exports = function createApp (context) {
 
 
 
+### 数据预取存储容器 (Data Store)
+
+[https://ssr.vuejs.org/zh/guide/data.html#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%8F%96%E5%AD%98%E5%82%A8%E5%AE%B9%E5%99%A8-data-store](https://ssr.vuejs.org/zh/guide/data.html#数据预取存储容器-data-store)
+
+
+
 
 
 
