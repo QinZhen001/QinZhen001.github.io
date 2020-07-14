@@ -1267,7 +1267,48 @@ module.exports = function(source){
 
 
 
+### Share Variables Between Javascript and Sass
 
+[https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass](https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass)
+
+
+
+```scss
+// styles/animation.scss
+$animation-length: 250;
+$animation-length-ms: $animation-length + 0ms;
+
+:export {
+  animationMillis: $animation-length-ms;
+}
+
+.component-enter {
+  ...
+
+  transition: all $animation-length-ms ease-in;
+}
+
+```
+
+
+
+```js
+// js/animation.js
+import styles from '../styles/animation.scss'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+
+const millis = parseInt(styles.animationMillis)
+
+...
+
+<CSSTransitionGroup
+  transitionName="component"
+  transitionEnterTimeout={millis}
+  transitionLeaveTimeout={millis}
+/>
+
+...
+```
 
 
 
