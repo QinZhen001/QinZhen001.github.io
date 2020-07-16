@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "babel基础相关"
+title:      "babel相关"
 date:       2017-07-28 22:54:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -251,6 +251,59 @@ require('antd/lib/button/style');
  Babel plugin to transpile `import()` to a deferred `require()`,  
 
 
+
+
+
+### babel-plugin-transform-remove-console
+
+[https://www.npmjs.com/package/babel-plugin-transform-remove-console](https://www.npmjs.com/package/babel-plugin-transform-remove-console)
+
+This plugin removes all `console.*` calls.
+
+
+
+
+
+## config
+
+> babel.config.js
+
+
+
+### 区分环境
+
+
+
+```js
+module.exports = (api) => {
+  // 缓存
+  // https://www.babeljs.cn/docs/config-files#apiversion
+  api.cache(true)
+  return {
+    presets: [
+    // https://github.com/vuejs/vue-cli/tree/master/packages/@vue/babel-preset-app
+      '@vue/cli-plugin-babel/preset'
+    ], 
+    'env': {
+      // 开发环境  
+      'development': {
+      // babel-plugin-dynamic-import-node plugin only does one thing by converting all import() to require().
+      // This plugin can significantly increase the speed of hot updates, when you have a large number of pages.
+      // https://panjiachen.github.io/vue-element-admin-site/guide/advanced/lazy-loading.html
+        'plugins': ['dynamic-import-node']
+      },
+      // 正式环境  
+      'production': {
+        plugins: [
+          // 正式环境清楚console.log
+          ['transform-remove-console', { exclude: ['error', 'warn'] }]
+        ]
+      }
+    }
+  }
+}
+
+```
 
 
 
