@@ -166,6 +166,28 @@ Unknown custom element: `<select-teacher-with-group>` - did you register the com
 
 
 
+###  vue-router报错 NavigationDuplicated
+
+[https://blog.csdn.net/gxdvip/article/details/101016946](https://blog.csdn.net/gxdvip/article/details/101016946)
+
+vue router 升级到3.1.x 后，重复点击导航时（连续点击相同路由链接）控制台出现报错 {_name: "NavigationDuplicated", name: "NavigationDuplicated"}，虽然不影响功能使用，但也不能视而不见。
+
+
+
+```js
+
+// 捕获 router.push 异常
+ 
+this.$router.push(route).catch(err => {
+    console.log('输出报错',err)
+})
+
+```
+
+
+
+
+
 
 
 
