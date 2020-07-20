@@ -427,11 +427,35 @@ export default Watcher
 
 
 
+### v-show 与 v-if 区别
+
+1.  v-hsow和v-if的区别： v-show是css切换，v-if是完整的销毁和重新创建。
+2.  使用 频繁切换时用v-show，运行时较少改变时用v-if
+3.  v-if=‘false’ v-if是条件渲染，当false的时候不会渲染
 
 
 
 
 
+### 绑定 class 的数组用法
+
+* 对象方法 `v-bind:class="{'orange': isRipe, 'green': isNotRipe}"`
+
+* 数组方法  `v-bind:class="[class1, class2]"`
+
+* 行内 `v-bind:style="{color: color, fontSize: fontSize+'px' }"`
+
+
+
+
+
+### 组件中 data 为什么是函数
+
+> 为什么组件中的 data 必须是一个函数，然后 return 一个对象，而 new Vue 实例里，data 可以直接是一个对象？
+
+
+
+因为组件是用来复用的，JS 里对象是引用关系，这样作用域没有隔离，而 new Vue 的实例，是不会被复用的，因此不存在引用对象的问题。
 
 
 
