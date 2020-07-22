@@ -188,6 +188,24 @@ this.$router.push(route).catch(err => {
 
 
 
+### 给组件绑定的事件为什么无法触发？
+
+在 Vue 2.0 中，为**自定义**组件绑定**原生**事件必须使用 `.native` 修饰符：
+
+
+
+```html
+<my-component @click.native="handleClick">Click Me</my-component>
+```
+
+
+
+从易用性的角度出发，对 `el-button` 组件进行了处理，使它可以监听 `click` 事件：
+
+```html
+<el-button @click="handleButtonClick">Click Me</el-button>
+```
+
 
 
 
