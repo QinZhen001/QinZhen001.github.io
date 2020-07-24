@@ -1410,6 +1410,38 @@ export default {
 
 
 
+
+
+### 替换/合并已有的 Attribute
+
+[https://cn.vuejs.org/v2/guide/components-props.html#%E6%9B%BF%E6%8D%A2-%E5%90%88%E5%B9%B6%E5%B7%B2%E6%9C%89%E7%9A%84-Attribute](https://cn.vuejs.org/v2/guide/components-props.html#替换-合并已有的-Attribute)
+
+
+
+想象一下 `<bootstrap-date-input>` 的模板是这样的：
+
+```html
+<input type="date" class="form-control">
+```
+
+为了给我们的日期选择器插件定制一个主题，我们可能需要像这样添加一个特别的类名：
+
+```html
+<bootstrap-date-input
+  data-date-picker="activated"
+  class="date-picker-theme-dark"
+></bootstrap-date-input>
+```
+
+在这种情况下，我们定义了两个不同的 `class` 的值：
+
+- `form-control`，这是在组件的模板内设置好的
+- `date-picker-theme-dark`，这是从组件的父级传入的
+
+对于绝大多数 attribute 来说，从外部提供给组件的值会替换掉组件内部设置好的值。所以如果传入 `type="text"` 就会替换掉 `type="date"` 并把它破坏！庆幸的是，`class` 和 `style` attribute 会稍微智能一些，即两边的值会被合并起来，从而得到最终的值：`form-control date-picker-theme-dark`。
+
+
+
 ## 进阶
 
 
