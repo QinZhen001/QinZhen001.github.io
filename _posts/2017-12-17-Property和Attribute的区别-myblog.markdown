@@ -23,16 +23,24 @@ property 和 attribute非常容易混淆，两个单词的中文翻译也都非�
 * Attribute就是dom节点自带的属性，例如html中常用的id、class、title、align等，它的值只能够是字符串；
 
 
+
+
+
+**只要是DOM标签中出现的属性（html代码），都是Attribute**
+
+
+
+
  html中有这样一段代码：
 
 `<input id="in_1" value="1" sth="whatever">`
 
 简单的在html页面上创建一个input输入栏（注意在这个标签中添加了一个DOM中不存在的属性“sth”），此时在JS执行如下语句
-```
+```js
 var in1 = document.getElementById('in_1');
 ```
 执行语句
-```
+```js
 console.log(in1);
 ```
 从console的打印结果，可以看到in1含有一个名为“attributes”的属性，它的类型是NamedNodeMap，同时还有“id”和“value”两个基本的属性，但没有“sth”这个自定义的属性。
