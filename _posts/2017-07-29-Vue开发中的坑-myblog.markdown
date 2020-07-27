@@ -208,9 +208,69 @@ this.$router.push(route).catch(err => {
 
 
 
+### 无法监听scroll事件
+
+[https://www.jb51.net/article/171961.htm](https://www.jb51.net/article/171961.htm)
+
+vue中监听滚动条滚动事件，清一色的使用`document.addEventListener('scroll',function(){})`
 
 
-## 每个页面的包裹布局
+
+如果,我们不想在document监听事件，该怎么做？ **(特别是当你并不是整页滚动，而是页面中拥有一个fixed固定的头部时,这个时候document.addEventListener scroll是不准确的，除非减去fixed的header高度)**
+
+
+
+```html
+ <div class="body-container" @scroll="scrollEvent">
+ <ul>
+ <li></li>
+ ……
+ <li></li>
+ </ul>
+ </div>
+```
+
+
+
+上面的写法，我发现即使我的li标签足够多，撑满一页，页面滚动的时候并不能触发到scrollEvent，是什么原因呢？
+
+
+
+经过仔细思考，猜想应该是滚动事件并不是在我`<div class="body-container" @scroll="scrollEvent">`这个div上触发的，因为滚动条并没有出现在我这个div上。这个div完全被li标签撑起来了，产生滚动事件的就是document了。
+
+
+
+```html
+<div style="height: 300px" @scroll="scrollEvent">
+ <div style="height: 200px"></div>
+ <div style="height: 200px"></div>
+ <div style="height: 200px"></div>
+</div>
+```
+
+
+
+当我在这个300px固定高度的div中滚动的时候，果然触发了scrollEvent，问题原因找到了，接下来就是解决了。
+
+
+
+**只要外面的包裹层拥有固定高度，就能触发滚动事件了**
+
+
+
+**如果还不能触发scroll事件，包裹层加上 overflow: scroll;那就无敌问稳了**
+
+
+
+至此，功能完美的实现了，而且没有使用`document.addEventListener`破坏vue的完整性
+
+
+
+## 补充
+
+
+
+### 每个页面的包裹布局
 
 
 
