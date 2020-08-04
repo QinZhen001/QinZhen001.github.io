@@ -376,7 +376,7 @@ if(e._isScroller) return;
 开源解决方案中，也是既提供了 `click` 事件，又提供了`touchstart` 事件。如 vant 中的 `button` 组件
 
 
- 
+
 
 **那么，是否可以将 `click` 事件全部替换成 `touchstart` 呢？为什么开源框架还会给出 `click` 事件呢？**
 

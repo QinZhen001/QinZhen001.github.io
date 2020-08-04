@@ -2949,15 +2949,47 @@ V8 引入字节码，也就有了一个相对弹性的空间，内存和执行�
 
 
 
+### ServiceWorker 和 WebWorker 区别
+
+
+
+Web Workers 是 现代浏览器 提供的一个javascript多线程解决方案，我们可以将一些大计算量的代码交由web Worker运行。JavaScript语言执行采用的是单线程模型，也就是说，所有任务排成一个队列，一次只能做一件事。但是有了webworker后就不一样了。
+
+
+
+Service Worker是基于Web Worker的事件驱动的，他们执行的机制都是新开一个线程去处理一些额外的，以前不能直接处理的任务。对于Web Worker，我们可以使用它来进行复杂的计算，因为它并不阻塞浏览器主线程的渲染。而Service Worker，我们可以用它来进行本地缓存或请求转发，相当于一个浏览器端本地的proxy。
 
 
 
 
 
+> 例如使用Service Worker来进行缓存，是用javascript代码来拦截浏览器的http请求，并设置缓存的文件，直接返回，不经过web服务器，然后，我们就可以开发基于浏览器的离线应用。这使得我们的web应用减少对网络的依赖。 如果我们使用了Service Worker做缓存，浏览器http请求会先经过Service Worker，通过url mapping去匹配，如果匹配到了，则使用缓存数据，如果匹配失败，则继续执行你指定的动作。一般情况下，匹配失败则让页面显示“网页无法打开”。
 
 
 
 
+
+#### ServiceWorker 报错:the current origin ('null') is not supported
+
+
+
+> SW registration failed with error SecurityError: Failed to register a ServiceWorker: The URL protocol of the current origin ('null') is not supported.
+
+
+
+The 1st argument to `ServiceWorkerContainer.register` is an URL. The error message indicates that your browser is refusing to use a resource because the origin is null - which happens often for local (file://) resources. `service-worker.js` is local - I'll bet this is why you're getting the cross origin resource issue
+
+
+
+Service worker will work only if you run it on a server. Just by opening the index.html from the finder will not work. You can use python -m SimpleHTTPServer or any to get started.
+
+
+
+服务工作者只有在服务器上运行时才能工作。仅仅从finder中打开index.html是不起作用的。
+
+
+
+第一件事是服务工作者只能在https或localhost中的安全模式下工作。 它不适用于本地资源，例如file：//或http。
 
 
 
