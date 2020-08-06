@@ -2995,6 +2995,26 @@ Service worker will work only if you run it on a server. Just by opening the ind
 
 
 
+
+
+### postMessage
+
+[https://www.cnblogs.com/EricZLin/p/10534537.html](https://www.cnblogs.com/EricZLin/p/10534537.html)
+
+
+
+```
+ xxx.postMessage('xxx', '*');
+ 
+ 其中xxx是我们要发送消息的目标
+```
+
+
+
+
+
+
+
 [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
 
 
