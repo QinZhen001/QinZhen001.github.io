@@ -244,6 +244,140 @@ context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 
 
 
+## html2canvas
+
+[http://html2canvas.hertzen.com/](http://html2canvas.hertzen.com/)
+
+
+
+```js
+  html2canvas(infoCard.$el, {
+              allowTaint: true, // 允许污染
+              useCORS: true, // 使用跨域
+              width: width,
+              height: height,
+              scrollY: 0,
+              scrollX: 0,
+       }).then(canvas => {
+              const dataUrl = canvas.toDataURL()
+              console.log('dataUrl', dataUrl)
+              document.body.append(canvas)
+       })
+```
+
+
+
+
+
+### html2canvas截图不全的问题
+
+
+
+### 资源未加载
+
+**在点击保存图片时，此时要保存的资源较多，造成模块并没有完全加载完毕，就已经生成了截图**
+
+
+
+解决方案：(加上一个延时操作)
+
+
+
+```js
+      setTimeout(() => {
+        html2canvas(img, { canvas: canvas }).then(function(canvas) {
+          _this.photoUrl = canvas.toDataURL();
+        });
+      }, 500);
+```
+
+
+
+### 滚动造成
+
+
+
+**滚轮滑动造成的，主要是html2canvas是根据body进行截图，若内容高度高于body时，就会出现这样的问题(大概意思就是有滚动条时造成的)**
+
+
+
+解决方案：(在生成截图前，先把滚动条置顶)
+
+
+
+```js
+window.pageYOffset = 0;
+document.documentElement.scrollTop = 0
+document.body.scrollTop = 0
+```
+
+
+
+### 部分白屏
+
+
+
+**html2canvas绘制完图片后会有部分白屏**
+
+
+
+因为在不设置scrollY的情况下，canvas绘制页面时会根据全局页面的滚动情况自动向下偏移。当然了，scrollX也是一样的道理。
+
+
+
+scrollY: 0, 其他的参数根据自己情况配置，这个参数一定不能少
+
+```js
+html2canvas(htmlDom, {
+    scrollY: 0, 
+    scrollX: 0,
+}).
+```
+
+
+
+### 绘制图片偏移
+
+**用html2canvas绘制完图片后，始终会有个偏移距离**
+
+
+
+观察绘制的box，是不是存在类似transform:translateX(-50%)这种样式
+
+
+
+解决方案：用户绘图的区域不用transform来定位，换一种没有偏移的方式，比如设置百分比或者固定宽高。
+
+
+
+
+
+### 移动端图片出现模糊
+
+dpr的问题,配置scale
+
+
+
+```js
+html2canvas(infoCard.$el, {
+   scale: 2
+})
+```
+
+
+
+###  
+
+
+
+
+
+
+
+
+
+
+
 
 ## 补充
 
@@ -411,5 +545,5 @@ canvas {
 
 
 
-  [1]: http://www.w3school.com.cn/i/arc.gif
-  [2]: http://img.alicdn.com/tps/TB1RgLULpXXXXatXVXXXXXXXXXX-667-309.png
+[1]: http://www.w3school.com.cn/i/arc.gif
+[2]: http://img.alicdn.com/tps/TB1RgLULpXXXXatXVXXXXXXXXXX-667-309.png

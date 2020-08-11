@@ -1235,6 +1235,85 @@ input[type="number"]{
 
 
 
+### 父元素padding子元素absolute相对于父元素哪里定位
+
+[https://blog.csdn.net/qq_41064446/article/details/78623429](https://blog.csdn.net/qq_41064446/article/details/78623429)
+
+
+
+```html
+  <div class="parent" >
+    parent
+    <div class="children" >children</div>
+  </div>
+```
+
+
+
+```scss
+    .parent{
+      display: inline-block;
+      position: relative;
+      padding-top:100px;
+      width: 500px;
+      height: 500px;
+      background: red
+    }
+    
+    .children{
+      position: absolute;
+      /* 父元素的padding-top不起作用 */
+      top:0;
+      width:100px;
+      height: 100px;
+      background: rebeccapurple;   
+    }
+```
+
+
+
+
+
+![](https://s1.ax1x.com/2020/08/07/ahF7UP.png)
+
+
+
+
+
+
+
+
+
+### 宽高1:1切割图片
+
+我们有一张长方形的图片，希望切出长宽相等的正方形出来，同时这个的边长为长方形的宽。
+
+
+
+我们可以使用css中background属性实现
+
+
+
+```css
+ .test{
+      width: 160px;
+      height: 160px;
+      background-image: url("./touxiang.png");
+      background-position: 0 0;
+      // 宽度100% 高度自适应
+      background-size: 100% auto;  
+      background-repeat: no-repeat;
+    }
+```
+
+
+
+
+
+
+
+![](https://s1.ax1x.com/2020/08/10/aHmsUK.png)
+
 
 
 

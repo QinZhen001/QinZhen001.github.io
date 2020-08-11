@@ -3015,6 +3015,78 @@ Service worker will work only if you run it on a server. Just by opening the ind
 
 
 
+### 在class中使用箭头函数作为属性
+
+[https://www.jianshu.com/p/989a2eb87046](https://www.jianshu.com/p/989a2eb87046)
+
+
+
+```js
+class Warrior{
+    constructor(element){
+        this.element = element
+    }
+    
+    // 这个是属性会至于原型链 __proto__ 上
+    ready(){
+        return `${this.element} is ready for attaching `
+    }
+}
+
+const aWarrior = new Warrior("zidea")
+
+const button = {
+    onClick : null
+}
+
+button.onClick = aWarrior.ready
+button.onClick()
+
+```
+
+
+
+
+
+因为ready在aWarrior的`__proto__`上，所以运行的结果不难想象应该为 undefined is ready for attaching undefine 
+
+
+
+这是因为 button onclick 引用了 Warrior 的 attach 的方法。但是这里 button 中并没有 element 这个属性。所以 undefined。这也就是我们常说的 this 指向的问题。
+
+
+
+```js
+button.onClick = aWarrior.ready.bind(aWarrior)
+button.onClick()
+```
+
+
+
+我们通过 bind 的方法将我们方法绑定到指定的对象，这样我们的方法就有了 context 也就是上下文
+
+
+
+**当然我们也可以也使用 es6 的箭头函数作为 ready 属性，这个箭头好处就是我无需再写 bind 来讲方法绑定到指定对象，箭头方法中 this 对象。**
+
+
+
+```js
+// 改写ready
+// 这样ready不会在 __proto__ 上 而会在new出来的实例上
+ready = ()=>{
+        return `${this.element} is ready for attaching `
+ }
+```
+
+
+
+
+
+
+
+
+
 [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
 
 
