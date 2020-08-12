@@ -357,6 +357,36 @@ CDN 虽好，但 CDN 有可能被劫持，导致下载的文件是被篡改过�
 
 
 
+## audio标签
+
+
+
+### 切换url播放
+
+```html
+  <audio id="Audio" src="https://demo.dj63.com//2016/串烧舞曲/20150926/全中文CLUB音乐情一动心就痛情感慢摇串烧.mp3" controls>11111</audio>
+  <button onclick="changeUrl()">切换audio url</button>
+```
+
+
+
+```js
+  const audio = document.getElementById("Audio")
+  const url2 = "https://demo.dj63.com//2016/%E4%B8%B2%E7%83%A7%E8%88%9E%E6%9B%B2/20161123/[%E9%A3%8E%E5%90%B9%E9%BA%A6%E6%B5%AA]%E6%89%93%E9%80%A0%E4%B8%AD%E8%8B%B1%E6%96%87%E6%97%8B%E5%BE%8B%E5%BC%B9%E8%B7%B3CLUB%E8%88%9E%E6%9B%B2%E4%B8%B2%E7%83%A7.mp3"
+
+  function changeUrl(){
+    audio.src = url2
+    // 记得调用play()  
+    audio.play()	
+  }
+```
+
+
+
+
+
+
+
 
 
 
