@@ -309,7 +309,50 @@ context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 window.pageYOffset = 0;
 document.documentElement.scrollTop = 0
 document.body.scrollTop = 0
+
+window.pageXOffset = 0
+document.documentElement.scrollLeft = 0
+document.body.scrollLeft = 0
 ```
+
+
+
+
+
+### 滚动条造成
+
+[http://html2canvas.hertzen.com/configuration](http://html2canvas.hertzen.com/configuration)
+
+
+
+html2canvas 默认参数
+
+| windowWidth  | `Window.innerWidth`  | Window width to use when rendering `Element`, which may affect things like Media queries (渲染元素时使用的窗口宽度，这可能会影响媒体查询等内容) |
+| ------------ | -------------------- | ------------------------------------------------------------ |
+| windowHeight | `Window.innerHeight` | Window height to use when rendering `Element`, which may affect things like Media queries (渲染元素时使用的窗口高度，这可能会影响媒体查询等内容) |
+
+
+
+但是随着我们缩放窗口页面会出现滚动条，导致html2canvas截图不全。
+
+
+
+解决方案：
+
+
+
+```js
+   html2canvas(infoCard.$el, {
+          width: width,
+          height: height,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: document.body.scrollWidth,
+          windowHeight: document.body.scrollHeight,
+        })
+```
+
+
 
 
 
@@ -352,7 +395,7 @@ html2canvas(htmlDom, {
 
 
 
-### 移动端图片出现模糊
+### 图片出现模糊
 
 dpr的问题,配置scale
 
@@ -366,9 +409,65 @@ html2canvas(infoCard.$el, {
 
 
 
-###  
+还可能是background-image属性的问题，html2canvas对background-image的支持不太好，会出现图片模糊
 
 
+
+解决方法：使用img标签，设置src属性
+
+
+
+```html
+<!-- 有问题的写法 -->
+<div :style="{backgroundImage:'url(' + info.career_photo + ')'}" class="avatar">
+</div>
+```
+
+
+
+```scss
+.avatar {
+   position: relative;
+   width: 160px;
+   height: 160px;
+   background-position: 0 0;
+   // 宽度100% 高度自适应
+   background-size: 100% auto;
+   background-repeat: no-repeat;
+   overflow: hidden;
+}
+```
+
+
+
+改成正确的写法
+
+
+
+```html
+<div v-if="info.career_photo" class="avatar">
+   <img class="avatar-img" :src="info.career_photo" alt>
+</div>
+```
+
+
+
+```scss
+     .avatar {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        overflow: hidden;
+        .avatar-img {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 160px;
+          height: 240px;
+        }
+      }
+```
 
 
 
@@ -380,6 +479,26 @@ html2canvas(infoCard.$el, {
 
 
 ## 补充
+
+### canvas.width和canvas.style.width区别
+
+[https://segmentfault.com/a/1190000016819776?utm_source=tag-newest](https://segmentfault.com/a/1190000016819776?utm_source=tag-newest)
+
+
+
+canvas本身是一个画布，我们怎么理解画布，决定了我们是否能正确的理解canvas.width和canvas.style.width的区别。**canvas.width就是画布真实的大小**，这个画布不是我们能看到的画布，我们能看见的画布，已经是在浏览器处理canvas.style.width/canvas.style.height之后，加工处理后的画布。
+
+
+
+而cavnas.style.width/canvas.style.height决定了画布以怎样的形式进行缩放展示给页面
+
+
+
+- canvas.width / canvas.height 表示画布真实大小，其实我们并不可见
+- canvas.style.width / canvas.style.height 表示画布输出到浏览器我们可见的/最终的大小
+- 不提供canvas真实大小时，默认按`300*150`处理，如果canvas.style也没提供，那么style.width为空，注意并不是`300*150`
+
+
 
 ### 图片纯前端JS压缩的实现
 
@@ -530,6 +649,32 @@ canvas {
 ```
 
 >width="400" height="400" 也可以在js中声明
+
+
+
+
+
+### 反锯齿使得drawImage图片更清晰
+
+[https://www.twle.cn/l/yufei/canvas/canvas-basic-imagesmooth.html](https://www.twle.cn/l/yufei/canvas/canvas-basic-imagesmooth.html)
+
+
+
+`drawImage()` 默认情况下是抗锯齿的，也就是平滑化了
+
+
+
+**而设置这个抗锯齿的属性是 `imageSmoothingEnabled` ， 默认值为 `true`**
+
+
+
+`ctx.imageSmoothingEnabled` 用于设置图片是否平滑，也就是是否抗锯齿
+
+`true` 表示图片平滑（默认值），`false` 表示图片不平滑
+
+
+
+
 
 
 

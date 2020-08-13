@@ -3085,6 +3085,32 @@ ready = ()=>{
 
 
 
+### window.innerWidth
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Window/innerWidth](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/innerWidth)
+
+
+
+只读的 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window) 属性 `**innerWidth**` 返回以像素为单位的窗口的内部宽度。**如果垂直滚动条存在，则这个属性将包括它的宽度。**
+
+
+
+如果你需要获取除去滚动条和边框的窗口宽度，请使用根元素`<html>`的[`clientWidth`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/clientWidth) 属性。
+
+```js
+document.documentElement.clientWidth
+```
+
+
+
+同理，window.innerHeight也是一样的道理
+
+
+
+
+
+
+
 
 
 [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
