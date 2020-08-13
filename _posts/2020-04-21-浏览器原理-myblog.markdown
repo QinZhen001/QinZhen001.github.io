@@ -195,18 +195,81 @@ DNS服务器想给你返回什么IP就给你返回什么，所以他可以在幕
 
 
 
+### setTimeout存在最低间隔
+
 规定要求setTimeout中低于4ms的时间间隔算为4ms
 
 
 
 
 
+###  DOMContentLoaded触发时机
+
+
+
+```html
+<html lang="en">
+ <head>
+ <title>css阻塞</title>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <script>
+ document.addEventListener('DOMContentLoaded', function() {
+ console.log('DOMContentLoaded');
+ })![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d30219afd9e84bc99875991b7d284435~tplv-k3u1fbpfcp-zoom-1.image)
+
+![](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/87519598e6484ec38db8daed23f586c9~tplv-k3u1fbpfcp-zoom-1.image)
+ </script>
+ <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css" rel="stylesheet">
+ </head>
+ <body>
+ </body>
+</html>
+```
+
+
+
+**css还未加载完，就已经触发了DOMContentLoaded事件了。因为css后面没有任何js代码。**
 
 
 
 
 
+```html
+<html lang="en">
+ <head>
+ <title>css阻塞</title>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <script>
+ document.addEventListener('DOMContentLoaded', function() {
+ console.log('DOMContentLoaded');
+ })
+ </script>
+ <link href="https://cdn.bootcss.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css" rel="stylesheet">
+ <script>
+ console.log('到我了没');
+ </script>
+ </head>
+ <body>
+ </body>
+</html>
+```
 
+
+
+接下来我们对第二种情况做测试，很简单，就在css后面加一行代码就行了
+
+我们可以看到，只有在css加载完成后，才会触发DOMContentLoaded事件。
+
+
+
+因此，我们可以得出结论：
+
+- 如果页面中同时存在css和js，并且存在js在css后面，则DOMContentLoaded事件会在css加载完后才执行。
+- 其他情况下，DOMContentLoaded都不会等待css加载，并且DOMContentLoaded事件也不会等待图片、视频等其他资源加载。
+
+## 
 
 
 
