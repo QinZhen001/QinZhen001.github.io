@@ -3247,11 +3247,96 @@ Child5.prototype.constructor = Child5
 
 
 
+### 异步串行题
 
 
 
+[https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension](https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension)
 
 
+
+先看题目：
+
+```js
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const subFlow = createFlow([() => delay(1000).then(() => log("c"))]);
+
+createFlow([
+  () => log("a"),
+  () => log("b"),
+  subFlow,
+  [() => delay(1000).then(() => log("d")), () => log("e")],
+]).run(() => {
+  console.log("done");
+});
+
+// 需要按照 a,b,延迟1秒,c,延迟1秒,d,e, done 的顺序打印
+
+```
+
+答案：
+
+
+
+```js
+
+function createFlow(effects = []) {
+  // 拍平数组
+  let sources = effects.slice().flat();
+
+  function run(cb) {
+    while (sources.length) {
+      const task = sources.shift();
+      //  next 把 cb 放到下一个flow的run中执行
+      const next = () => createFlow(sources).run(cb);
+      if (typeof task == "function") {
+        const res = task();
+        if ( res?.then) {
+          // task 函数返回一个promise
+          res.then(next);
+          return;
+        }
+      } else if (task.isFlow) {
+        task.run(next);
+        return;
+      }
+    }
+   cb?.()
+    
+  }
+
+  return {
+    run,
+    isFlow: true,
+  };
+}
+```
+
+
+
+await解决方案：
+
+```js
+function createFlow(effects = []) {
+  // 拍平数组
+  let sources = effects.slice().flat();
+
+  async function run(cb) {
+    while (sources.length) {
+      const task = sources.shift();
+      typeof task == "function" 
+      ? await task() // 是函数
+      : await task.run() // 是createFlow
+    }
+   cb?.()
+  }
+  return {
+    run,
+  };
+}
+
+```
 
 
 

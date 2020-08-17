@@ -83,7 +83,7 @@ axios.all([getUserAccount(), getUserPermissions()])
 ### axios API
 可以通过将相关配置传递给 axios 来进行请求。
 axios(config)
-```
+```js
 // 发送一个 POST 请求
 axios({
   method: 'post',
@@ -95,7 +95,7 @@ axios({
 });
 ```
 axios(url[, config])
-```
+```js
 // 发送一个 GET 请求 (GET请求是默认请求模式)
 axios('/user/12345');
 ```
