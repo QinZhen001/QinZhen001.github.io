@@ -2207,6 +2207,24 @@ p的状态由 p1,p2,p3决定，分成以下；两种情况：
 
 
 
+[https://developer.mozilla.org/zh-CN/docs/Web/Events/DOMContentLoaded](https://developer.mozilla.org/zh-CN/docs/Web/Events/DOMContentLoaded)
+
+
+
+> 注意：**`DOMContentLoaded`** 事件必须等待其所属script之前的样式表加载解析完成才会触发。
+
+
+
+
+
+```js
+document.addEventListener('DOMContentLoaded',function(){
+    console.log('DOMContentLoaded!!!!!!!');
+});
+```
+
+
+
 
 
 ## new的优先级

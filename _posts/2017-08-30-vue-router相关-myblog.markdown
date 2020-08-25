@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "vue-router多个路由地址绑定一个组件"
+title:      "vue-router相关"
 date:       2017-08-30 22:15:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -12,10 +12,64 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+# 正文
+
+
+## 基础
+
+
+
+### 模式
+
+hash模式：
+
+* 可以改变URL，但不会触发页面重新加载（hash的改变会记录在window.hisotry中）因此并不算是一次http请求，所以这种模式不利于SEO优化
+* 只能修改#后面的部分，因此只能跳转与当前URL同文档的URL
+* 只能通过字符串改变URL
+* 通过window.onhashchange监听hash的改变，借此实现无刷新跳转的功能。
+
+
+
+history模式：
+
+* 新的URL可以是与当前URL同源的任意 URL，也可以与当前URL一样，但是这样会把重复的一次操作记录到栈中
+* 通过参数stateObject可以添加任意类型的数据到记录中
+* 可额外设置title属性供后续使用
+* 通过pushState、replaceState实现无刷新跳转的功能。 **（这种方式URL的改变属于http请求，因此会重新请求服务器，这也使得我们必须在服务端配置好地址，否则会出现404，为确保不出问题，最好在项目中配置404页面）**
+
+
+
+存在一个问题
+
+​    当应用通过vue-router跳转到某个页面后，因为此时是前端路由控制页面跳转，虽然url改变，但是页面只是内容改变，并没有重新请求，所以这套流程没有任何问题。但是，如果在当前的页面刷新一下，此时会重新发起请求，如果nginx没有匹配到当前url，就会出现404的页面。
+
+​    那为什么hash模式不会出现这个问题呢
+
+​    上文已讲，hash虽然可以改变URL，但不会被包括在HTTP请求中。它被用来指导浏览器动作，并不影响服务器端，因此，改变hash并没有改变url，所以页面路径还是之前的路径，nginx不会拦截。 因此，切记在使用history模式时，需要服务端允许地址可访问，否则就会出现404的尴尬场景。
+
+
+
+### popstate
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Window/popstate_event](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/popstate_event)
+
+
+
+需要注意的是调用`history.pushState()`或`history.replaceState()`不会触发`popstate`事件。只有在做出浏览器动作时，才会触发该事件，如用户点击浏览器的回退按钮（或者在Javascript代码中调用`history.back()`或者`history.forward()`方法）
+
+
+
+
+
+## 多个路由地址绑定一个组件出问题
+
 [网页链接](http://blog.csdn.net/fungleo/article/details/54140095)
 
 [在vue-admin中的解决方案](https://panjiachen.github.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html#%E7%82%B9%E5%87%BB%E4%BE%A7%E8%BE%B9%E6%A0%8F-%E5%88%B7%E6%96%B0%E5%BD%93%E5%89%8D%E8%B7%AF%E7%94%B1)
+
+
+
+多个路由地址绑定一个组件造成 created 不执行的解决方法
 
 ### 问题所在
 由于路由没有发生变化，因此，切换组件，只有在第一次进入的时候会执行created。
@@ -66,12 +120,15 @@ computed: {
     return this.$route.name !== undefined? this.$route.name + +new Date(): this.$route + +new Date()
   }
  }
- ```
+```
 
 
 **但这也有一个弊端就是 url 后面有一个很难看的 query 后缀如 xxx.com/article/list?t=1496832345025**
 
+
+
 ## 总结
+
 看文档要仔细 = = 
 https://router.vuejs.org/zh-cn/essentials/dynamic-matching.html#%E5%93%8D%E5%BA%94%E8%B7%AF%E7%94%B1%E5%8F%82%E6%95%B0%E7%9A%84%E5%8F%98%E5%8C%96
 

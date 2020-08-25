@@ -1,0 +1,258 @@
+---
+layout:     post
+title:      "vue3相关"
+date:       2020-04-13 10:54:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Vue
+---
+
+> “Yeah It's on. ”
+>
+
+
+
+## 前序
+
+
+
+### Reflect 
+
+
+
+[ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect ]( https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect )
+
+
+
+ 首先我们要了解一下，为什么会新添加这么一个全局对象？如果你看过Reflect的一些函数，你就会发现，这个对象上的方法基本上都可以从Object上面找到，找不到的那些，也是可以通过对对象命令式的操作去实现的；那么为什么还要新添加一个呢？ 
+
+
+
+
+
+1. Reflect上面的一些方法并不是专门为对象设计的，比如Reflect.apply方法，它的参数是一个函数，如果使用Object.apply(func)会让人感觉很奇怪。
+
+2. 用一个单一的全局对象去存储这些方法，能够保持其它的JavaScript代码的整洁、干净。不然的话，这些方法可能是全局的，或者要通过原型来调用。
+
+3. 将一些命令式的操作如delete，in等使用函数来替代，这样做的目的是为了让代码更加好维护，更容易向下兼容；也避免出现更多的保留字。
+
+
+
+
+
+```js
+Reflect.apply
+Reflect.construct
+Reflect.defineProperty
+Reflect.deleteProperty
+Reflect.enumerate // 废弃的
+Reflect.get
+Reflect.getOwnPropertyDescriptor
+Reflect.getPrototypeOf
+Reflect.has
+Reflect.isExtensible
+Reflect.ownKeys
+Reflect.preventExtensions
+Reflect.set
+Reflect.setPrototypeOf
+```
+
+
+
+### Proxy基础
+
+
+
+[ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler ]( https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler )
+
+
+
+Proxy 对象用于定义基本操作的自定义行为（如属性查找，赋值，枚举，函数调用等），等同于在语言层面做出修改，所以属于一种“元编程”（meta programming），即对编程语言进行编程。
+
+
+
+
+# 正文
+
+
+
+[Vue3 的响应式和以前有什么区别?源码级别详细]( https://juejin.im/post/5e92d863f265da47e57fe065?utm_source=gold_browser_extension#heading-13 )
+
+
+
+
+
+而 Vue3 所使用的 Proxy，则是这样拦截的：
+
+```js
+new Proxy(data, {
+  get(key) { },
+  set(key, value) { },
+})
+```
+
+可以看到，根本不需要关心具体的 key，它去拦截的是 「修改 data 上的任意 key」 和 「读取 data 上的任意 key」。
+
+所以，不管是已有的 key  还是新增的 key，都逃不过它的魔爪。
+
+但是 Proxy 更加强大的地方还在于 Proxy 除了 get 和 set，还可以拦截更多的操作符。
+
+
+
+---
+
+
+
+先最小化的讲解一下响应式的原理，其实就是在 Proxy 第二个参数 `handler` 也就是[陷阱操作符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler)中，拦截各种取值、赋值操作，依托 `track` 和 `trigger` 两个函数进行依赖收集和派发更新。
+
+`track` 用来在读取时收集依赖。
+
+`trigger` 用来在更新时触发依赖。
+
+### 
+
+### track
+
+```js
+function track(target: object, type: TrackOpTypes, key: unknown) {
+  const depsMap = targetMap.get(target);
+  // 收集依赖时 通过 key 建立一个 set
+  let dep = new Set()
+  targetMap.set(ITERATE_KEY, dep)
+  // 这个 effect 可以先理解为更新函数 存放在 dep 里
+  dep.add(effect)    
+}
+
+```
+
+`target` 是原对象。
+
+`type` 是本次收集的类型，也就是收集依赖的时候用来标识是什么类型的操作，比如上文依赖中的类型就是 `get`，这个后续会详细讲解。
+
+```
+key` 是指本次访问的是数据中的哪个 key，比如上文例子中收集依赖的 key 就是 `count
+```
+
+首先全局会存在一个 `targetMap`，它用来建立 `数据 -> 依赖` 的映射，它是一个 WeakMap 数据结构。
+
+而 `targetMap` 通过数据 `target`，可以获取到 `depsMap`，它用来存放这个数据对应的所有响应式依赖。
+
+`depsMap` 的每一项则是一个 Set 数据结构，而这个 Set 就存放着对应 key 的更新函数。
+
+是不是有点绕？我们用一个具体的例子来举例吧。
+
+```js
+const target = { count: 1}
+const data = reactive(target)
+
+const effection = effect(() => {
+  console.log(data.count)
+})
+```
+
+对于这个例子的依赖关系，
+
+1. 全局的 `targetMap` 是：
+
+```js
+targetMap: {
+  { count: 1 }: dep    
+}
+
+```
+
+1. dep 则是
+
+```js
+dep: {
+  count: Set { effection }
+}
+
+```
+
+这样一层层的下去，就可以通过 `target` 找到 `count` 对应的更新函数 `effection` 了。
+
+### trigger
+
+这里是最小化的实现，仅仅为了便于理解原理，实际上要复杂很多，
+
+其实 `type` 的作用很关键，先记住，后面会详细讲。
+
+```js
+export function trigger(
+  target: object,
+  type: TriggerOpTypes,
+  key?: unknown,
+) {
+  // 简化来说 就是通过 key 找到所有更新函数 依次执行
+  const dep = targetMap.get(target)
+  dep.get(key).forEach(effect => effect())
+}
+```
+
+
+
+
+
+### 应用程序初始化
+
+
+
+```js
+// 在 Vue.js 3.0 中，初始化一个应用的方式如下
+import { createApp } from 'vue'
+import App from './app'
+const app = createApp(App)
+app.mount('#app')
+
+```
+
+
+
+```js
+const createApp = ((...args) => {
+  // 创建 app 对象
+  const app = ensureRenderer().createApp(...args)
+  const { mount } = app
+  // 重写 mount 方法
+  app.mount = (containerOrSelector) => {
+    // ...
+  }
+  return app
+})
+```
+
+
+
+
+
+
+
+
+
+## 补充
+
+
+
+
+
+### vue3.0优化
+
+
+
+vue3.0它通过编译阶段对静态模板的分析，编译生成了 Block tree。Block tree 是一个将模版基于动态节点指令切割的嵌套区块，每个区块内部的节点结构是固定的，而且每个区块只需要以一个 Array 来追踪自身包含的动态节点。**借助 Block tree，Vue.js 将 vnode 更新性能由与模版整体大小相关提升为与动态内容的数量相关**，这是一个非常大的性能突破。
+
+
+
+Vue.js 3.0 在编译阶段还包含了对 Slot 的编译优化、事件侦听函数的缓存优化，并且在运行时重写了 diff 算法
+
+
+
+
+
+
+
+
+
