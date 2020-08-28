@@ -1422,15 +1422,50 @@ input[type="number"]{
 
 
 
+## 补充
 
 
 
+### :first-child 不生效的问题
+
+[https://www.jianshu.com/p/4837fb9a6f6e](https://www.jianshu.com/p/4837fb9a6f6e)
+
+我们经常有需求需要查找第一个子元素，但是使用了:first-child后发现没有效果，其实是我们理解错了:first-child的用法
+
+```scss
+E::first-child { sRules }
+```
+
+解读：匹配**同类型**中的第一个同级兄弟元素E。
+
+这里有个问题，当父元素的第一个子元素类型不是E类型时，会失效，如：
 
 
 
+```scss
+p:first-child{color:#f00;}
+
+<div>
+    <h2>我是一个标题</h2>
+    <p>我是一个p</p>
+</div>
+```
+
+你会发现，没有选中p元素，这是因为div的第一个子元素不是p类型的，而是h2，因此这种情况下我们应该使用
+
+```scss
+E:first-of-type { sRules }
+```
+
+解读：匹配**同类型中的第一个同级兄弟元素E**。
 
 
 
+> 这里的同类型是指元素类型p,div,span等等与类名无关，不是同一类名就可以触发，必须是同类型
+
+
+
+同理 :last-child 也是一样的
 
 
 
