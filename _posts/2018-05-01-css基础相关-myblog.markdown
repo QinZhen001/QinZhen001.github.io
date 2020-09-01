@@ -1471,9 +1471,23 @@ E:first-of-type { sRules }
 
 
 
+### background-image默认值padding盒子
+
+background-image: 定位的起点默认是是padding的外边缘, 可以通过background-origin修改
 
 
 
+```
+background-origin: padding-box|border-box|content-box;
+```
+
+
+
+| 值          | 描述                           |
+| :---------- | :----------------------------- |
+| padding-box | 背景图像相对于内边距框来定位。 |
+| border-box  | 背景图像相对于边框盒来定位。   |
+| content-box | 背景图像相对于内容框来定位。   |
 
 
 
