@@ -658,7 +658,7 @@ function setTimeout(fn, delay) {
 
 
 
-### 关于this的一道面试题
+### 关于this的面试题
 
 ```javascript
   function foo() { // 运行
@@ -691,6 +691,83 @@ function setTimeout(fn, delay) {
 ```
 
 
+
+
+
+----
+
+
+
+值的输出
+
+
+
+```js
+var num = 1; // 这里在自执行函数里被改为4
+
+let obj = {
+  num: 2,
+  add: function () {
+    this.num = 3;
+    (function () {
+      console.log(this) // 这里自执行函数的this指向window
+      console.log(this.num); // 1
+      this.num = 4; // 改变 window.num
+    })();
+    console.log(this.num); // 3
+  },
+  sub: function () {
+    console.log(this.num);
+  },
+};
+
+obj.add(); // 输出 1 3  
+console.log(obj.num); // 3
+console.log(num); // 4
+
+const sub = obj.sub;
+sub(); // 4  sub在window环境下执行
+
+```
+
+
+
+----
+
+
+
+```js
+var num = 10;
+
+const obj = { num: 20 };
+
+obj.fn = (function (num) {
+  // 传进来的num是20
+  this.num = num * 3;  // 60
+  num++; // 21
+  console.log(this) // 这里的this指向window
+  
+
+  return function (n) {
+    this.num += n; // 65
+    num++; // 22
+    console.log(num); 
+    console.log(this) // 这里的this要看具体执行 可能是window 可能是obj
+  };
+
+})(obj.num);
+
+
+var fn = obj.fn;
+fn(5); // 22
+
+obj.fn(10); // 23
+
+console.log(num, obj.num);  //  65  30
+// 第一个num 相当于window.num 在fn(5)中 变成了65
+// obj.num 在obj.fn(10)的执行中 20 + 10 变成了30
+
+```
 
 
 
@@ -3265,7 +3342,7 @@ Child5.prototype.constructor = Child5
 
 
 
-### 异步串行题
+## 异步串行题
 
 
 
@@ -3355,6 +3432,121 @@ function createFlow(effects = []) {
 }
 
 ```
+
+
+
+
+
+
+
+## var声明的全局变量会挂载到window
+
+```js
+let num = 2;
+console.log(window.num) // 2
+```
+
+
+
+```js
+let num1 = 2;
+let num2 = 2;
+console.log(window.num1) //undefined
+console.log(window.num2) //undefined
+```
+
+
+
+## 各种值的相加
+
+[https://juejin.im/post/6866920515420815374?utm_source=gold_browser_extension#heading-10](https://juejin.im/post/6866920515420815374?utm_source=gold_browser_extension#heading-10)
+
+
+
+```js
+console.log([] + [])  // ""
+console.log({} + []) // [object Object]
+console.log([] == ![]) // true
+console.log(true + false) // 1
+```
+
+
+
+**包装类型在运算的时候，会先调用`valueOf`方法，如果`valueOf`返回的还是包装类型，那么再调用`toString`方法**
+
+
+
+```js
+// 还是 数组
+const val = [].valueOf()
+// 数组 toString 默认会将数组各项使用逗号 "," 隔开, 比如 [1,2,3].toSting 变成了"1,2,3",空数组 toString 就是空字符串
+const val1 = val.toString() // val1 是空字符串
+
+
+console.log([] + [])  // ""
+// 面的代码相当于
+console.log("" + "")
+
+```
+
+
+
+-----
+
+
+
+```js
+console.log({} + [])
+
+// 对象 {}隐氏转换成了[object Object],然后与""相加
+```
+
+
+
+-------
+
+
+
+```js
+console.log([] == ![])
+```
+
+对于`===`, 会严格比较两者的值，但是对于`==`就不一样了
+
+1. 比如 `null == undefined`
+2. 如果非`number`与`number`比较，会将其转换为`number`
+3. 如果比较的双方中由一方是`boolean`,那么会先将`boolean`转换为`number`
+
+```js
+// 这个输出 false
+console.log(![])
+// 套用上面第三条 将 false 转换为 数值
+// 这个输出 0
+console.log(Number(false))
+// 包装类型与 基本类型 == 先将包装类型通过 valueOf toString 转换为基本类型 
+// 输出 ""
+console.log([].toString())
+// 套用第2条， 将空字符串转换为数值、
+// 输出 0
+console.log(Number(""))
+// 所以
+console.log(0 == 0)
+
+```
+
+
+
+-----
+
+
+
+```js
+console.log(true + false)
+```
+
+两个基本类型相加，如果其中一方是字符，则将其他的转换为字符相加，否则将类型转换为`Number`,然后相加, `Number(true)` 是`1`, `Number(false)`是`0`, 所以结果是 `1`
+
+
 
 
 
