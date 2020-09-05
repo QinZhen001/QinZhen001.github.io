@@ -281,6 +281,146 @@ let strLength: number = (someValue as string).length;
 
 
 
+### 类型守卫与类型区分
+
+```js
+let pet = getSmallPet();
+
+// 每一个成员访问都会报错
+if (pet.swim) {
+    pet.swim();
+}
+else if (pet.fly) {
+    pet.fly();
+}
+
+```
+
+为了让这段代码工作，我们要使用类型断言：
+
+```js
+let pet = getSmallPet();
+
+if ((pet as Fish).swim) {
+    (pet as Fish).swim();
+} else if ((pet as Bird).fly) {
+    (pet as Bird).fly();
+}
+```
+
+
+
+### 用户自定义的类型守卫
+
+类型守卫就是一些表达式，它们会在运行时检查以确保在某个作用域里的类型。
+
+```js
+function isFish(pet: Fish | Bird): pet is Fish {
+    return (pet as Fish).swim !== undefined;
+}
+
+```
+
+在这个例子里，`pet is Fish`就是类型谓词。 谓词为`parameterName is Type`这种形式，`parameterName`必须是来自于当前函数签名里的一个参数名。
+
+
+
+每当使用一些变量调用`isFish`时，TypeScript会将变量缩减为那个具体的类型，只要这个类型与变量的原始类型是兼容的。
+
+
+
+```js
+// 'swim' 和 'fly' 调用都没有问题了
+
+if (isFish(pet)) {
+    pet.swim();
+}
+else {
+    pet.fly();
+}
+```
+
+注意TypeScript不仅知道在`if`分支里`pet`是`Fish`类型； 它还清楚在`else`分支里，一定_不是_`Fish`类型，一定是`Bird`类型。
+
+
+
+#### 使用`in`操作符
+
+`in`操作符可以作为类型细化表达式来使用。
+
+
+
+对于`n in x`表达式，其中`n`是字符串字面量或字符串字面量类型且`x`是个联合类型，那么`true`分支的类型细化为有一个可选的或必须的属性`n`，`false`分支的类型细化为有一个可选的或不存在属性`n`。
+
+
+
+```js
+function move(pet: Fish | Bird) {
+    if ("swim" in pet) {
+        return pet.swim();
+    }
+    return pet.fly();
+}
+
+```
+
+
+
+### 类型断言
+
+由于可以为`null`的类型是通过联合类型实现，那么你需要使用类型守卫来去除`null`。 幸运地是这与在JavaScript里写的代码一致：
+
+```js
+function f(sn: string | null): string {
+    if (sn == null) {
+        return "default";
+    }
+    else {
+        return sn;
+    }
+}
+```
+
+这里很明显地去除了`null`，你也可以使用短路运算符：
+
+```js
+function f(sn: string | null): string {
+    return sn || "default";
+}
+```
+
+
+
+如果编译器不能够去除`null`或`undefined`，你可以使用类型断言手动去除。 语法是添加`!`后缀：`identifier!`从`identifier`的类型里去除了`null`和`undefined`：
+
+
+
+错误的情况：
+
+```js
+function broken(name: string | null): string {
+  function postfix(epithet: string) {
+    return name.charAt(0) + '.  the ' + epithet; // error, 'name' is possibly null
+  }
+  name = name || "Bob";
+  return postfix("great");
+}
+```
+
+正确的写法：
+
+```js
+function fixed(name: string | null): string {
+  function postfix(epithet: string) {
+    return name!.charAt(0) + '.  the ' + epithet; // ok
+  }
+  name = name || "Bob";
+  return postfix("great");
+}
+```
+
+
+
 
 
 ## in 关键字
@@ -477,3 +617,155 @@ Unfortunately, there is no other workaround for this problem. Please do not remo
 
 
  >tsconfig中isolatedModules选项默认为true，这个选项无法更改！！！
+
+
+
+
+
+
+
+
+
+## 补充
+
+
+
+
+
+### 函数重载
+
+*不要*把一般的重载放在精确的重载前面：
+
+```js
+/* 错误 */
+declare function fn(x: any): any;
+declare function fn(x: HTMLElement): number;
+declare function fn(x: HTMLDivElement): string;
+
+var myElem: HTMLDivElement;
+var x = fn(myElem); // x: any, wat?
+
+```
+
+*应该*排序重载令精确的排在一般的之前：
+
+```js
+/* OK */
+declare function fn(x: HTMLDivElement): string;
+declare function fn(x: HTMLElement): number;
+declare function fn(x: any): any;
+
+var myElem: HTMLDivElement;
+var x = fn(myElem); // x: string, :)
+```
+
+*为什么*：TypeScript会选择*第一个匹配到的重载*当解析函数调用的时候。 当前面的重载比后面的“普通”，那么后面的被隐藏了不会被调用。
+
+
+
+
+
+### **尽量使用使用联合类型**
+
+*不要*为仅在某个位置上的参数类型不同的情况下定义重载：
+
+```js
+/* WRONG */
+interface Moment {
+    utcOffset(): number;
+    utcOffset(b: number): Moment;
+    utcOffset(b: string): Moment;
+}
+```
+
+*应该*尽可能地使用联合类型：
+
+```js
+/* OK */
+interface Moment {
+    utcOffset(): number;
+    utcOffset(b: number|string): Moment;
+}
+```
+
+注意我们没有让`b`成为可选的，因为签名的返回值类型不同。
+
+
+
+
+
+
+
+### `readonly` vs `const`
+
+最简单判断该用`readonly`还是`const`的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用`const`，若做为属性则使用`readonly`。
+
+
+
+
+
+### 额外的属性检查
+
+```js
+interface SquareConfig {
+  color?: string;
+  width?: number;
+}
+
+function createSquare(config: SquareConfig): { color: string; area: number } {
+  // ...
+}
+
+let mySquare = createSquare({ colour: "red", width: 100 });
+
+```
+
+注意传入`createSquare`的参数拼写为`colour`而不是`color`。 在 JavaScript 里，这会默默地失败。
+
+你可能会争辩这个程序已经正确地类型化了，因为`width`属性是兼容的，不存在`color`属性，而且额外的`colour`属性是无意义的。
+
+
+
+然而，TypeScript 会认为这段代码可能存在 bug。 对象字面量会被特殊对待而且会经过_额外属性检查_，当将它们赋值给变量或作为参数传递的时候。 如果一个对象字面量存在任何“目标类型”不包含的属性时，你会得到一个错误。
+
+
+
+```js
+// error: Object literal may only specify known properties, but 'colour' does not exist in type 'SquareConfig'. Did you mean to write 'color'?
+let mySquare = createSquare({ colour: "red", width: 100 });
+
+```
+
+绕开这些检查非常简单。 最简便的方法是使用类型断言：
+
+```js
+let mySquare = createSquare({ width: 100, opacity: 0.5 } as SquareConfig);
+```
+
+然而，最佳的方式是能够添加一个字符串索引签名，前提是你能够确定这个对象可能具有某些做为特殊用途使用的额外属性。 如果`SquareConfig`带有上面定义的类型的`color`和`width`属性，并且_还会_带有任意数量的其它属性，那么我们可以这样定义它：
+
+```js
+interface SquareConfig {
+  color?: string;
+  width?: number;
+  [propName: string]: any;
+}
+```
+
+我们稍后会讲到索引签名，但在这我们要表示的是`SquareConfig`可以有任意数量的属性，并且只要它们不是`color`和`width`，那么就无所谓它们的类型是什么。
+
+----
+
+
+
+还有最后一种跳过这些检查的方式，这可能会让你感到惊讶，它就是将这个对象赋值给一个另一个变量： 因为`squareOptions`不会经过额外属性检查，所以编译器不会报错。
+
+
+
+```js
+let squareOptions = { colour: "red", width: 100 };
+let mySquare = createSquare(squareOptions);
+```
+
+
+
