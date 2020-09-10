@@ -421,7 +421,23 @@ function fixed(name: string | null): string {
 
 
 
+## 推断类型
 
+
+
+由于最终的通用类型取自候选类型，有些时候候选类型共享相同的通用类型，但是却没有一个类型能做为所有候选类型的类型。例如：
+
+```js
+let zoo = [new Rhino(), new Elephant(), new Snake()];
+```
+
+这里，我们想让zoo被推断为`Animal[]`类型，但是这个数组里没有对象是`Animal`类型的，因此不能推断出这个结果。 为了更正，当候选类型不能使用的时候我们需要明确的指出类型：
+
+```tsx
+let zoo: Animal[] = [new Rhino(), new Elephant(), new Snake()];
+```
+
+如果没有找到最佳通用类型的话，类型推断的结果为联合数组类型，`(Rhino | Elephant | Snake)[]`。
 
 ## in 关键字
 
@@ -528,6 +544,10 @@ The difference is that in the first case the return type will be `T[K]` while in
 
 
 ## tsconfig
+
+
+
+[配置的项解释](https://www.cnblogs.com/gina/p/8960754.html)
 
 
 
@@ -766,6 +786,61 @@ interface SquareConfig {
 let squareOptions = { colour: "red", width: 100 };
 let mySquare = createSquare(squareOptions);
 ```
+
+
+
+
+
+
+### 集成在Webpack
+
+```javascript
+npm install ts-loader --save-dev
+```
+
+
+基本webpack.config.js
+
+
+```javascript
+module.exports = {
+    entry: "./src/index.tsx",
+    output: {
+        filename: "bundle.js"
+    },
+    resolve: {
+        // Add '.ts' and '.tsx' as a resolvable extension.
+        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+    },
+    module: {
+        loaders: [
+            // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'
+            { test: /\.tsx?$/, loader: "ts-loader" }
+        ]
+    }
+};
+```
+
+[或者awesome-typescript-loader](https://www.npmjs.com/package/awesome-typescript-loader)
+
+#### awesome-typescript-loader
+
+**Differences between ts-loader**
+
+
+
+
+awesome-typescript-loader loader was created mostly to speed-up compilation in my own projects. Some of them are quite big and I wanted to have full control on how my files are compiled. There are two major points:
+
+1. atl has first-class integration with Babel and enables caching possibilities. This can be useful for those who use Typescript with Babel. When useBabel and useCache flags are enabled, typescript's emit will be transpiled with Babel and cached. So next time if source file (+environment) has the same checksum we can totally skip typescript's and babel's transpiling. This significantly reduces build time in this scenario.
+2. atl is able to fork type-checker and emitter to a separate process, which also speeds-up some development scenarios (e.g. react with react-hot-loader) So your webpack compilation will end earlier and you can explore compiled version in your browser while your files are typechecked.
+
+---
+
+1. atl与Babel有一流的集成，可以实现缓存。这对于使用带有Babel的Typescript的人来说非常有用。当启用useBabel和useCache标志时，typescript的emit将使用Babel进行转换并缓存。所以下次如果源文件（+环境）具有相同的校验和，我们可以完全跳过typescript和babel的转换。这大大减少了此方案中的构建时间。
+2. atl能够将类型检查器和发射器分叉到一个单独的进程，这也加快了一些开发方案（例如与react-hot-loader的反应）所以你的webpack编译将提前结束，你可以在浏览器中探索编译版本你的文件是typechecked
+
+
 
 
 

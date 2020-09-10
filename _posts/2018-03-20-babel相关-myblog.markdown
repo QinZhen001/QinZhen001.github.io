@@ -20,6 +20,8 @@ tags:
 
 [网页链接](https://segmentfault.com/p/1210000008466178)
 
+[https://juejin.im/post/6844903602822053895#heading-3](https://juejin.im/post/6844903602822053895#heading-3)
+
 
 
 babel可以将当前运行平台(浏览器、node服务器)尚不支持的下一代或几代js语法编译为当前支持的js语法版本，比如可以把es6 es7和es8的js代码编译为es5的代码。
