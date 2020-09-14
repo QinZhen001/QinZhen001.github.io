@@ -18,9 +18,17 @@ tags:
 
 ## interface
 
+在面向对象语言中，接口是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类去实现。
 
 
-###  接口(interface)允许有任意的属性 
+
+TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类的一部分行为进行抽象](https://ts.xcatliu.com/advanced/class-and-interfaces.html#类实现接口)以外，也常用于对「对象的形状（Shape）」进行描述。
+
+
+
+
+
+###  任意属性 
 
 [ https://ts.xcatliu.com/basics/type-of-object-interfaces ]( https://ts.xcatliu.com/basics/type-of-object-interfaces )
 
@@ -259,6 +267,107 @@ type Foo = string | number | boolean;
 
 
 
+
+
+## unknown
+
+`unknown` 类型只能被赋值给 `any` 类型和 `unknown` 类型本身
+
+
+
+```js
+let value: unknown;
+
+let value1: unknown = value; // OK
+let value2: any = value; // OK
+let value3: boolean = value; // Error
+let value4: number = value; // Error
+let value5: string = value; // Error
+let value6: object = value; // Error
+let value7: any[] = value; // Error
+let value8: Function = value; // Error
+
+```
+
+
+
+
+
+直观地说，这是有道理的：只有能够保存任意类型值的容器才能保存 `unknown` 类型的值。毕竟我们不知道变量 `value` 中存储了什么类型的值。
+
+
+
+```js
+let value: unknown;
+
+value.foo.bar; // Error
+value.trim(); // Error
+value(); // Error
+new value(); // Error
+value[0][1]; // Error
+
+```
+
+将 `value` 变量类型设置为 `unknown` 后，这些操作都不再被认为是类型正确的。通过将 `any` 类型改变为 `unknown` 类型，我们已将允许所有更改的默认设置，更改为禁止任何更改。
+
+
+
+
+
+## Partial
+
+`Partial<T>` 的作用就是将某个类型里的属性全部变为可选项 `?`。
+
+
+
+**定义**
+
+```tsx
+/**
+ * node_modules/typescript/lib/lib.es5.d.ts
+ * Make all properties in T optional
+ */
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+
+```
+
+在以上代码中，首先通过 `keyof T` 拿到 `T` 的所有属性名，然后使用 `in` 进行遍历，将值赋给 `P`，最后通过 `T[P]` 取得相应的属性值。中间的 `?` 号，用于将所有属性变为可选。
+
+
+
+例子：
+
+
+
+```js
+interface Todo {
+  title: string;
+  description: string;
+}
+
+function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
+  return { ...todo, ...fieldsToUpdate };
+}
+
+const todo1 = {
+  title: "Learn TS",
+  description: "Learn TypeScript",
+};
+
+const todo2 = updateTodo(todo1, {
+  description: "Learn TypeScript Enum",
+});
+
+```
+
+
+
+
+
+
+
 ## 断言
 
 
@@ -418,6 +527,10 @@ function fixed(name: string | null): string {
   return postfix("great");
 }
 ```
+
+
+
+
 
 
 

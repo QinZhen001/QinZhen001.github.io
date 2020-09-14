@@ -69,7 +69,7 @@ reflow(回流)是导致DOM脚本执行效率低的关键因素之一，页面上
 
 当p节点上发生reflow时，hello和body也会重新渲染，甚至h5和ol都会收到影响。
 
-### 什么时候会导致reflow发生呢？
+#### 什么时候会导致reflow发生呢？
 
 * 改变窗口大小
 * 改变文字大小
@@ -91,7 +91,7 @@ overflow-y	font-weight	overflow	left
 font-family	line-height	vertical-align	right
 clear	white-space	bottom	min-height
 
-### 减少reflow对性能的影响的建议
+#### 减少reflow对性能的影响的建议
 
 1. 不要一条一条地修改 DOM 的样式，预先定义好 class，然后修改 DOM 的 className
 2. 把 DOM 离线后修改，比如：先把 DOM 给 display:none (有一次 Reflow)，然后你修改100次，然后再把它显示出来
@@ -132,9 +132,46 @@ outline-width	box-shadow	background-size
 ### 优化动画
 css3 动画是优化的重中之重。除了做到上面两点，减少 Reflow 和 Repaints 之外，还需要注意以下方面。
 
+
+
+#### transition优化
+
+[https://juejin.im/post/6844904077394984968](https://juejin.im/post/6844904077394984968)
+
+
+
+> 在使用height，width，margin，padding作为transition的值时，会造成浏览器主线程的工作量较重，例如从margin-left：-20px渲染到margin-left:0，主线程需要计算样式margin-left:-19px,margin-left:-18px，一直到margin-left:0，而且每一次主线程计算样式后，合成进程都需要绘制到GPU然后再渲染到屏幕上，前后总共进行20次主线程渲染，20次合成线程渲染，20+20次，总计40次计算。
+
+
+
+> 而如果使用transform的话，例如tranform:translate(-20px,0)到transform:translate(0,0)，主线程只需要进行一次tranform:translate(-20px,0)到transform:translate(0,0)，然后合成线程去一次将-20px转换到0px，这样的话，总计1+20计算。
+
+
+
+**结论：在使用css3 transtion做动画效果时，优先选择transform，尽量不要使用height，width，margin和padding。**
+
+
+
+如今，`transform` 是用来制作动画的最佳属性，因为 GPU 可以辅助这项繁重的工作。因此，可以将动画的限制在以下几种类型。
+
+ 
+
+- `opacity`
+- `translate`
+- `rotate`
+- `scale`
+
+
+
+
+
+
+
 ### 启用 GPU 硬件加速
 GPU（Graphics Processing Unit） 是图像处理器。GPU 硬件加速是指应用 GPU 的图形性能对浏览器中的一些图形操作交给 GPU 来完成，因为 GPU 是专门为处理图形而设计，所以它在速度和能耗上更有效率。
+
 GPU 加速可以不仅应用于3D，而且也可以应用于2D。这里， GPU 加速通常包括以下几个部分：Canvas2D，布局合成（Layout Compositing）, CSS3转换（transitions），CSS3 3D变换（transforms），WebGL和视频(video)。
+
 ```
 /*
  * 根据上面的结论
@@ -150,6 +187,16 @@ div {
 }
 ```
 需要注意的是，开启硬件加速相应的也会有额外的开销
+
+
+
+在 Blink 和 WebKit 浏览器中，会为具有 CSS 过渡或不透明度动画的元素创建新的图层，但是许多开发人员使用`translateZ(0)` 或 `translate3d(0, 0, 0)` 手动强制创建图层。
+
+
+
+强制创建图层可确保在动画开始时立即绘制图层并准备就绪（创建和绘制图层是一项非常重要的操作，可能会延迟动画的开始），并且没有由于抗锯齿的变化导致外观上的突然变化。不过，应该谨慎地进行使用它，[过多的图层可能会导致出现 jank](http://wesleyhales.com/blog/2013/10/26/Jank-Busting-Apples-Home-Page/)。
+
+
 
 
 ### 浏览器的优化：渲染队列
@@ -193,7 +240,7 @@ console.log(div.offsetHeight);
 有同学可能不懂了，不是说浏览器有渲染队列优化机制吗？ 
 为什么这样写就会发生4次重排 
 因为offsetLeft/Top/Width/Height非常叼 
-它们会强制刷新队列要求样式修改任务立刻执行 
+**它们会强制刷新队列要求样式修改任务立刻执行 **
 想一想其实这么做是有道理的 
 毕竟浏览器不确定在接下来的代码中你是否还会修改同样的样式 
 为了保证获得正确的值，它不得不立刻执行渲染队列触发重排（错的不是我，是这个世界）
@@ -208,6 +255,12 @@ console.log(div.offsetHeight);
 * getComputedStyle()（IE中currentStyle）
 
 >我们在修改样式过程中，要尽量避免使用上面的属性
+
+
+
+
+
+
 
 
 ### 重绘与重排的性能优化
