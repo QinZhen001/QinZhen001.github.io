@@ -185,6 +185,54 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
+interface
+
+```tsx
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface SetPoint {
+  (x: number, y: number): void;
+}
+
+```
+
+
+
+type 
+
+```tsx
+type Point = {
+  x: number;
+  y: number;
+};
+
+type SetPoint = (x: number, y: number) => void;
+
+```
+
+
+
+**与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
+
+```
+// primitive
+type Name = string;
+
+// object
+type PartialPointX = { x: number; };
+type PartialPointY = { y: number; };
+
+// union
+type PartialPoint = PartialPointX | PartialPointY;
+
+// tuple
+type Data = [number, string];
+
+```
+
 
 
 ##  void 
@@ -527,6 +575,27 @@ function fixed(name: string | null): string {
   return postfix("great");
 }
 ```
+
+
+
+
+
+### 自定义类型保护的类型谓词
+
+
+
+```tsx
+function isNumber(x: any): x is number {
+  return typeof x === "number";
+}
+
+function isString(x: any): x is string {
+  return typeof x === "string";
+}
+
+```
+
+
 
 
 
