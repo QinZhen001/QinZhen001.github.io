@@ -217,7 +217,7 @@ type SetPoint = (x: number, y: number) => void;
 
 **与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
 
-```
+```tsx
 // primitive
 type Name = string;
 

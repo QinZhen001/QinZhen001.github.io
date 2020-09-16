@@ -240,13 +240,18 @@ You can combine async and await with .resolves or .rejects.
 
 
 ```javascript
+
 test('the data is peanut butter', async () => {
   await expect(fetchData()).resolves.toBe('peanut butter');
 });
 ```
 
 
-### Setup and Teardown
+### 
+
+### Manual Mocks
+
+[https://jestjs.io/docs/en/manual-mocks](https://jestjs.io/docs/en/manual-mocks)
 
 
 
