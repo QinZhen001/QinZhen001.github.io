@@ -1,4 +1,5 @@
 ---
+
 layout:     post
 title:      "html基础"
 date:       2019-10-09 17:33:00
@@ -384,6 +385,365 @@ CDN 虽好，但 CDN 有可能被劫持，导致下载的文件是被篡改过�
 
 
 
+
+## Attributes and properties
+
+[https://javascript.info/dom-attributes-and-properties](https://javascript.info/dom-attributes-and-properties)
+
+
+
+总结
+
+- **Attributes – is what’s written in HTML.**
+- **Properties – is what’s in DOM objects.**
+
+
+
+|      | Properties                                                   | Attributes                 |
+| :--- | :----------------------------------------------------------- | :------------------------- |
+| Type | Any value, standard properties have types described in the spec | A string                   |
+| Name | Name is case-sensitive                                       | Name is not case-sensitive |
+
+For most situations using DOM properties is preferable. We should refer to attributes only when DOM properties do not suit us, when we need exactly attributes, for instance:
+
+- We need a non-standard attribute. But if it starts with `data-`, then we should use `dataset`.
+- We want to read the value “as written” in HTML. The value of the DOM property may be different, for instance the `href` property is always a full URL, and we may want to get the “original” value.
+
+
+
+
+
+----
+
+
+
+When the browser loads the page, it “reads” (another word: “parses”) the HTML and generates DOM objects from it. For element nodes, most standard HTML attributes automatically become properties of DOM objects.
+
+
+
+For instance, if the tag is `<body id="page">`, then the DOM object has `body.id="page"`.
+
+
+
+But the attribute-property mapping is not one-to-one
+
+
+
+
+
+
+
+
+
+---
+
+
+
+[DOM properties](https://javascript.info/dom-attributes-and-properties#dom-properties)
+
+We’ve already seen built-in DOM properties. There are a lot. But technically no one limits us, and if there aren’t enough, we can add our own.
+
+DOM nodes are regular JavaScript objects. We can alter them.
+
+
+
+For instance, let’s create a new property in `document.body`:
+
+
+
+```js
+document.body.myData = {
+  name: 'Caesar',
+  title: 'Imperator'
+};
+
+alert(document.body.myData.title); // Imperator
+```
+
+We can add a method as well:
+
+```js
+document.body.sayTagName = function() {
+  alert(this.tagName);
+};
+
+document.body.sayTagName(); // BODY (the value of "this" in the method is document.body)
+
+```
+
+We can also modify built-in prototypes like `Element.prototype` and add new methods to all elements:
+
+```js
+Element.prototype.sayHi = function() {
+  alert(`Hello, I'm ${this.tagName}`);
+};
+
+document.documentElement.sayHi(); // Hello, I'm HTML
+document.body.sayHi(); // Hello, I'm BODY
+```
+
+So, DOM properties and methods behave just like those of regular JavaScript objects:
+
+- They can have any value.
+- They are case-sensitive (write `elem.nodeType`, not `elem.NoDeTyPe`).
+
+
+
+----
+
+[HTML attributes](https://javascript.info/dom-attributes-and-properties#html-attributes)
+
+
+
+In HTML, tags may have attributes. When the browser parses the HTML to create DOM objects for tags, it recognizes *standard* attributes and creates DOM properties from them.
+
+
+
+在HTML中，标签可以有属性。当浏览器解析HTML以创建标记的DOM对象时，它识别标准属性并从中创建DOM属性。
+
+
+
+So when an element has `id` or another *standard* attribute, the corresponding property gets created. But that doesn’t happen if the attribute is non-standard.s
+
+
+
+因此，当一个元素具有id或另一个标准属性时，相应的属性将被创建。但是如果属性是非标准的，就不会发生这种情况。
+
+
+
+For instance:
+
+```html
+<body id="test" something="non-standard">
+  <script>
+    alert(document.body.id); // test
+    // non-standard attribute does not yield a property
+    alert(document.body.something); // undefined
+  </script>
+</body>
+```
+
+Please note that a standard attribute for one element can be unknown for another one. For instance, `"type"` is standard for `<input>` ([HTMLInputElement](https://html.spec.whatwg.org/#htmlinputelement)), but not for `<body>` ([HTMLBodyElement](https://html.spec.whatwg.org/#htmlbodyelement)). Standard attributes are described in the specification for the corresponding element class.
+
+
+
+Here we can see it:
+
+```html
+<body id="body" type="...">
+  <input id="input" type="text">
+  <script>
+    alert(input.type); // text
+    alert(body.type); // undefined: DOM property not created, because it's non-standard
+  </script>
+</body>
+```
+
+So, if an attribute is non-standard, there won’t be a DOM-property for it. Is there a way to access such attributes?
+
+
+
+Sure. All attributes are accessible by using the following methods:
+
+- `elem.hasAttribute(name)` – checks for existence.
+- `elem.getAttribute(name)` – gets the value.
+- `elem.setAttribute(name, value)` – sets the value.
+- `elem.removeAttribute(name)` – removes the attribute.
+
+These methods operate exactly with what’s written in HTML.
+
+
+
+Also one can read all attributes using `elem.attributes`: a collection of objects that belong to a built-in [Attr](https://dom.spec.whatwg.org/#attr) class, with `name` and `value` properties.
+
+
+
+Here’s a demo of reading a non-standard property:
+
+```html
+<body something="non-standard">
+  <script>
+    alert(document.body.getAttribute('something')); // non-standard
+  </script>
+</body>
+
+```
+
+
+
+HTML attributes have the following features:
+
+- Their name is case-insensitive (`id` is same as `ID`).    // 不区分大小写的
+- Their values are always strings.
+
+
+
+Here’s an extended demo of working with attributes:
+
+```html
+<body>
+  <div id="elem" about="Elephant"></div>
+
+  <script>
+    alert( elem.getAttribute('About') ); // (1) 'Elephant', reading
+
+    elem.setAttribute('Test', 123); // (2), writing
+
+    alert( elem.outerHTML ); // (3), see if the attribute is in HTML (yes)
+
+    for (let attr of elem.attributes) { // (4) list all
+      alert( `${attr.name} = ${attr.value}` );
+    }
+  </script>
+</body>
+```
+
+Please note:
+
+1. `getAttribute('About')` – the first letter is uppercase here, and in HTML it’s all lowercase. But that doesn’t matter: attribute names are case-insensitive.
+2. We can assign anything to an attribute, but it becomes a string. So here we have `"123"` as the value.
+3. All attributes including ones that we set are visible in `outerHTML`.
+4. The `attributes` collection is iterable and has all the attributes of the element (standard and non-standard) as objects with `name` and `value` properties.
+
+
+
+---
+
+[Property-attribute synchronization](https://javascript.info/dom-attributes-and-properties#property-attribute-synchronization)
+
+
+
+When a standard attribute changes, the corresponding property is auto-updated, and (with some exceptions) vice versa.
+
+In the example below `id` is modified as an attribute, and we can see the property changed too. And then the same backwards:
+
+
+
+```html
+<input>
+
+<script>
+  let input = document.querySelector('input');
+
+  // attribute => property
+  input.setAttribute('id', 'id');
+  alert(input.id); // id (updated)
+
+  // property => attribute
+  input.id = 'newId';
+  alert(input.getAttribute('id')); // newId (updated)
+</script>
+
+```
+
+But there are exclusions, for instance `input.value` synchronizes only from attribute → to property, but not back:
+
+```html
+<input>
+
+<script>
+  let input = document.querySelector('input');
+
+  // attribute => property
+  input.setAttribute('value', 'text');
+  alert(input.value); // text
+
+  // NOT property => attribute
+  input.value = 'newValue';
+  alert(input.getAttribute('value')); // text (not updated!)
+</script>
+```
+
+In the example above:
+
+- Changing the attribute `value` updates the property.
+- But the property change does not affect the attribute.
+
+
+
+That “feature” may actually come in handy, because the user actions may lead to `value` changes, and then after them, if we want to recover the “original” value from HTML, it’s in the attribute.
+
+----
+
+DOM properties are not always strings. For instance, the `input.checked` property (for checkboxes) is a boolean:
+
+
+
+```html
+<input id="input" type="checkbox" checked> checkbox
+
+<script>
+  alert(input.getAttribute('checked')); // the attribute value is: empty string
+  alert(input.checked); // the property value is: true
+</script>
+
+```
+
+There are other examples. The `style` attribute is a string, but the `style` property is an object:
+
+
+
+```html
+<div id="div" style="color:red;font-size:120%">Hello</div>
+
+<script>
+  // string
+  alert(div.getAttribute('style')); // color:red;font-size:120%
+
+  // object
+  alert(div.style); // [object CSSStyleDeclaration]
+  alert(div.style.color); // red
+</script>
+
+```
+
+Most properties are strings though.
+
+---
+
+
+
+**All attributes starting with “data-” are reserved for programmers’ use. They are available in the `dataset` property.**
+
+
+
+Multiword attributes like `data-order-state` become camel-cased: `dataset.orderState`.
+
+
+
+Here’s a rewritten “order state” example:
+
+
+
+```html
+<style>
+  .order[data-order-state="new"] {
+    color: green;
+  }
+
+  .order[data-order-state="pending"] {
+    color: blue;
+  }
+
+  .order[data-order-state="canceled"] {
+    color: red;
+  }
+</style>
+
+<div id="order" class="order" data-order-state="new">
+  A new order.
+</div>
+
+<script>
+  // read
+  alert(order.dataset.orderState); // new
+
+  // modify
+  order.dataset.orderState = "pending"; // (*)
+</script>
+```
+
+Using `data-*` attributes is a valid, safe way to pass custom data.
 
 
 

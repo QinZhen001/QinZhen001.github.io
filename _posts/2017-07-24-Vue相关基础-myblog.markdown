@@ -1379,6 +1379,39 @@ export default {
 
 
 
+
+
+### props
+
+
+
+
+
+#### 支持多种type
+
+```js
+// 正确的写法 
+status: {
+      type: [Array, Number],
+      default: 2
+ }
+
+
+// 错误的写法
+ status: {
+      type: Array | Number,
+      default: 2
+ }
+```
+
+
+
+
+
+
+
+
+
 ## 进阶
 
 
@@ -1831,6 +1864,44 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 
 
+### $attrs属性透传
+
+[https://juejin.im/post/6865451649817640968](https://juejin.im/post/6865451649817640968)
+
+先看官方对 `vm.$attrs` 的定义：
+
+> 包含了父作用域中不作为 prop 被识别 (且获取) 的 attribute 绑定 **(class 和 style 除外)**。当一个组件没有声明任何 prop 时，这里会包含所有父作用域的绑定 (class 和 style 除外)，并且可以通过 v-bind="$attrs" 传入内部组件——在创建高级别的组件时非常有用。
+
+
+
+大白话：调用一个组件的时候传入属性 (`class` 和 `style` 除外)，而且不在该组件内部的 `props` 中声明，就可以通过 `v-bind="$attrs"` 传入该组件的内部组件
+
+
+
+
+
+```vue
+<!-- Input 组件 -->
+<template>
+  <div class="hello input-con">
+    <label>输入框：</label>
+    <el-input v-bind="$attrs"></el-input>
+  </div>
+</template>
+<script>
+export default {
+  name: 'Input'
+}
+</script>
+
+```
+
+调用上面的组件
+
+```vue
+<Input placeholder="我是默认值"
+        :clearable="true"/> 
+```
 
 
 
@@ -1838,8 +1909,325 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 
 
+#### 动态组件如何透传属性
 
 
+
+虽然上面可以解决了大部分的问题了，但同事发现并不能满足场景，主要是他用了动态组件 `component`。他的想法是通过 `JSON Schema` 的方式生成表单，其中应用了动态组件 `component`，这是一个很棒的想法，相信现在很多公司应该都有类似的做法。
+
+
+
+```vue
+<!-- 动态组件，根据 JSON 配置 调用 Input 或者 Select 组件等等 -->
+<template>
+  <div class="hello">
+    <div v-for="(config, index) in configJsonArr" :key="config.type + index">
+      <!-- 动态组件，根据配置中的 Type 来决定调用的是 Input 还是 Select -->
+      <component :is="config.type" :configProps="config.props"></component>
+    </div>
+  </div>
+</template>
+
+<script>
+import Input from './Input'
+import Select from './Select'
+
+export default {
+  name: 'Config',
+  components: {
+    Input,
+    Select
+  },
+  props: {
+    // 动态组件 JSON schema 的配置
+    configJsonArr: {
+      type: Array,
+      required: true,
+      default: () => []
+    }
+  }
+}
+</script>
+
+```
+
+其中 `configJsonArr` 为如下：
+
+
+
+```js
+[{
+  type: 'Input',
+  props: {
+    placeholder: '我是默认值',
+    clearable: true
+  }
+}, {
+  type: 'Select',
+  props: {
+    placeholder: '我是默认值'
+  }
+}, {
+  type: 'Input',
+  props: {
+    placeholder: '我是默认值',
+    suffixIcon: 'el-icon-delete'
+  }
+}]
+
+```
+
+其中 `Input` 组件类似如下：
+
+```html
+<template>
+  <div class="hello input-con">
+    <label>输入框：</label>
+    <el-input ></el-input>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Input'
+}
+</script>
+
+```
+
+这个时候，假如我们直接在 `el-input` 设置 `v-bind="$attrs"` 是不行的，原因在于动态组件传入的属性 `configProps` 是一个对象，而不是解构后的对象属性，那怎么办呢？
+
+```js
+[{
+  type: 'Input',
+  props: {
+    placeholder: '我是默认值',
+    clearable: true
+  }
+}, {
+  type: 'Select',
+  props: {
+    placeholder: '我是默认值'
+  }
+}, {
+  type: 'Input',
+  props: {
+    placeholder: '我是默认值',
+    suffixIcon: 'el-icon-delete'
+  }
+}]
+
+```
+
+其中 `Input` 组件类似如下：
+
+```html
+<template>
+  <div class="hello input-con">
+    <label>输入框：</label>
+    <el-input ></el-input>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Input'
+}
+</script>
+```
+
+这个时候，假如我们直接在 `el-input` 设置 `v-bind="$attrs"` 是不行的，原因在于动态组件传入的属性 `configProps` 是一个对象，而不是解构后的对象属性，那怎么办呢？
+
+
+
+**我们可以使用渲染函数！**
+
+
+
+```js
+// @returns {VNode}
+createElement(
+  // {String | Object | Function}
+  // 一个 HTML 标签名、组件选项对象，或者
+  // resolve 了上述任何一种的一个 async 函数。必填项。
+  'div',
+
+  // {Object}
+  // 一个与模板中 attribute 对应的数据对象。可选。
+  {
+    // (详情见下一节)
+  },
+
+  // {String | Array}
+  // 子级虚拟节点 (VNodes)，由 `createElement()` 构建而成，
+  // 也可以使用字符串来生成“文本虚拟节点”。可选。
+  [
+    '先写一些文字',
+    createElement('h1', '一则头条'),
+    createElement(MyComponent, {
+      props: {
+        someProp: 'foobar'
+      }
+    })
+  ]
+)
+
+```
+
+我们再将重点放在第二个参数 `Object` 中，我们可以在这个 `Object` 中指定相关的属性值，比如 `class`、`style`、`attrs`(普通的 `HTML attribute`)、组件的 `props`【这个就是我们这一期重点关注的属性值】....。具体如下：
+
+```js
+// 第二个参数 `Object` 中
+
+{
+  // 与 `v-bind:class` 的 API 相同，
+  // 接受一个字符串、对象或字符串和对象组成的数组
+  'class': {
+    foo: true,
+    bar: false
+  },
+  // 与 `v-bind:style` 的 API 相同，
+  // 接受一个字符串、对象，或对象组成的数组
+  style: {
+    color: 'red',
+    fontSize: '14px'
+  },
+  // 普通的 HTML attribute
+  attrs: {
+    id: 'foo'
+  },
+  // 组件 prop
+  props: {
+    myProp: 'bar'
+  },
+  // DOM property
+  domProps: {
+    innerHTML: 'baz'
+  },
+  // 事件监听器在 `on` 内，
+  // 但不再支持如 `v-on:keyup.enter` 这样的修饰器。
+  // 需要在处理函数中手动检查 keyCode。
+  on: {
+    click: this.clickHandler
+  },
+  // 仅用于组件，用于监听原生事件，而不是组件内部使用
+  // `vm.$emit` 触发的事件。
+  nativeOn: {
+    click: this.nativeClickHandler
+  },
+  // 自定义指令。注意，你无法对 `binding` 中的 `oldValue`
+  // 赋值，因为 Vue 已经自动为你进行了同步。
+  directives: [
+    {
+      name: 'my-custom-directive',
+      value: '2',
+      expression: '1 + 1',
+      arg: 'foo',
+      modifiers: {
+        bar: true
+      }
+    }
+  ],
+  // 作用域插槽的格式为
+  // { name: props => VNode | Array<VNode> }
+  scopedSlots: {
+    default: props => createElement('span', props.text)
+  },
+  // 如果组件是其它组件的子组件，需为插槽指定名称
+  slot: 'name-of-slot',
+  // 其它特殊顶层 property
+  key: 'myKey',
+  ref: 'myRef',
+  // 如果你在渲染函数中给多个元素都应用了相同的 ref 名，
+  // 那么 `$refs.myRef` 会变成一个数组。
+  refInFor: true
+}
+```
+
+可以看到，我们可以在上面这个对象中设置 `props` 属性的值的时候，将它解构掉就可以了。
+
+核心代码实现，如下所示：
+
+
+
+```js
+// 这其实就是一个组件
+const CompFormItem = {
+  components: {
+    Input, Select
+  },
+  name: 'FormItem',
+  props: {
+    // 传入配置
+    configJson: {
+      required: true
+    }
+  },
+  // h 实际上就是 createElement 参数
+  render (h) {
+    // 第一个参数就是配置中的 type，也就是我们的组件名称
+    return h(`${this.configJson.type}`, {
+      props: {
+        // 针对 props 进行解构
+        ...this.configJson.props || {}
+      },
+      attrs: {
+        // 针对 attrs 进行解构
+        ...this.configJson.props || {}
+      }
+    })
+  }
+}
+
+```
+
+这样我们再在 `Input` 组件中写上 `v-bind="$attrs"` 就可以了
+
+```html
+<template>
+  <div class="hello input-con">
+    <label>输入框：</label>
+    <el-input v-bind="$attrs"></el-input>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Input'
+}
+</script>
+```
+
+
+
+---
+
+
+
+**更好的方法是使用 v-bind.props="xxx"**
+
+
+
+[v-bind](https://cn.vuejs.org/v2/api/#v-bind)
+
+- `.prop` - 作为一个 DOM property 绑定而不是作为 attribute 绑定。([差别在哪里？](https://stackoverflow.com/questions/6003819/properties-and-attributes-in-html#answer-6004028))
+- `.camel` - (2.1.0+) 将 kebab-case attribute 名转换为 camelCase。(从 2.1.0 开始支持)
+- `.sync` (2.3.0+) 语法糖，会扩展成一个更新父组件绑定值的 `v-on` 侦听器。
+
+
+
+
+
+```vue
+<!-- 通过 prop 修饰符绑定 DOM attribute -->
+<div v-bind:text-content.prop="text"></div>
+
+<!-- prop 绑定。“prop”必须在 my-component 中声明。-->
+<my-component :prop="someThing"></my-component>
+
+<!-- 通过 $props 将父组件的 props 一起传给子组件 -->
+<child-component v-bind="$props"></child-component>
+```
 
 
 
