@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "webpack入门"
+title:      "webpack学习"
 date:       2017-12-12 14:34:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -76,6 +76,35 @@ devserver作为webpack配置选项中的一项，以下是它的一些配置选�
 | port                | 设置默认监听端口，如果省略，默认为”8080“                                                                                                        |
 | inline              | 设置为true，当源文件改变时会自动刷新页面                                                                                                          |
 | historyApiFallback  | 在开发单页应用时非常有用，它依赖于HTML5 history API，如果设置为true，所有的跳转将指向index.html                                                   |
+
+
+
+### Bundle VS Chunk VS Module
+
+首先对于“模块”(module)的概念相信大家都没有异议，它指的就是我们在编码过程中有意识的封装和组织起来的代码片段。狭义上我们首先联想到的是碎片化的 React 组件，或者是 CommonJS 模块又或者是 ES6 模块，但是对 Webpack 和 Loader 而言，广义上的模块还包括样式和图片，甚至说是不同类型的文件
+
+
+
+而“包”(bundle) 就是把相关代码都打包进入的单个文件。如果你不想把所有的代码都放入一个包中，你可以把它们划分为多个包，也就是“块”(chunk) 中。从这个角度上看，“块”等于“包”，它们都是对代码再一层的组织和封装。如果必须要给一个区分的话，通常我们在讨论时，bundle 指的是所有模块都打包进入的单个文件，而 chunk 指的是按照某种规则的模块集合，chunk 的体积大于单个模块，同时小于整个 bundle
+
+
+
+（但如果要仔细的深究，**Chunk**是 Webpack 用于管理打包流程中的技术术语，甚至能划分为不同类型的 chunk。我想我们不用从这个角度理解。只需要记住上一段的定义即可）
+
+
+
+作者：李熠
+链接：https://juejin.im/post/6844903846993461256
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+
+
+
 
 
 
@@ -238,8 +267,12 @@ module.exports = {
    ...
 ```
 
+### Splitting
 
-### Code Splitting
+
+
+#### Code Splitting
+
 [https://zhuanlan.zhihu.com/p/26710831?refer=ElemeFE](https://zhuanlan.zhihu.com/p/26710831?refer=ElemeFE)
 
 
@@ -256,8 +289,25 @@ Code Splitting 主要有 2 种方式：
 
 之所以把业务代码和第三方库代码分离出来，是因为产品经理的需求是源源不断的，因此业务代码更新频率大，相反第三方库代码更新迭代相对较慢且可以锁版本，所以可以充分利用浏览器的缓存来加载这些第三方库。
 
-
 而按需加载的适用场景，比如说「访问某个路由的时候再去加载对应的组件」，用户不一定会访问所有的路由，所以没必要把所有路由对应的组件都先在开始的加载完；更典型的例子是「某些用户他们的权限只能访问某些页面」，所以没必要把他们没权限访问的页面的代码也加载。
+
+
+
+#### Bundle splitting
+
+打包分离 (Bundle splitting)：为了更好的缓存创建更多、更小的文件（但仍然以每一个文件一个请求的方式进行加载）
+
+
+
+打包分离背后的思想非常简单。如果你有一个体积巨大的文件，并且只改了一行代码，用户仍然需要重新下载整个文件。但是如果你把它分为了两个文件，那么用户只需要下载那个被修改的文件，而浏览器则可以从缓存中加载另一个文件。
+
+**值得注意的是因为打包分离与缓存相关，所以对站点的首次访问者来说没有区别**
+
+
+
+
+
+
 
 ### Runtime
 
@@ -788,61 +838,6 @@ determineDate();
 
 
 
-
-
-
-
-## 遇到的问题
-
-### webpack安装出错,webpack不是内部或者外部命令
-
-首先你需要安装一个全局的webpack
-
->npm install webpack -g
-
-这样你才可以正确的使用webpack这个命令
-
-### 更快捷的执行打包任务
-在命令行中输入命令需要代码类似于`node_modules/.bin/webpack`这样的路径其实是比较烦人的，不过值得庆幸的是npm可以引导任务执行，对npm进行配置后可以在命令行中使用简单的`npm start`命令来替代上面略微繁琐的命令。在package.json中对scripts对象进行相关设置即可，设置方法如下。
-```
-{
-  "name": "webpack-sample-project",
-  "version": "1.0.0",
-  "description": "Sample webpack project",
-  "scripts": {
-    "start": "webpack" // 修改的是这里，JSON文件不支持注释，引用时请清除
-  },
-  "author": "zhang",
-  "license": "ISC",
-  "devDependencies": {
-    "webpack": "3.10.0"
-  }
-}
-```
-
->注：package.json中的script会安装一定顺序寻找命令对应位置，本地的node_modules/.bin路径就在这个寻找清单中，所以无论是全局还是局部安装的Webpack，你都不需要写前面那指明详细的路径了。
-
-
-作者：zhangwang
-链接：http://www.jianshu.com/p/42e11515c10f
-來源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
-
-### windows不支持NODE_ENV
-
-**windows不支持NODE_ENV=development的设置方式。会报错**
-
-
-
-当使用NODE_ENV =production,来设置环境变量时，大多数Windows命令提示将会阻塞(报错)。 （异常是Windows上的Bash，它使用本机Bash。）同样，Windows和POSIX命令如何使用环境变量也有区别。
-
-
-**解决**
-
-安装cross-env使得您可以使用单个命令，而不必担心为平台正确设置或使用环境变量。
-
-
 ## 补充
 
 
@@ -1348,7 +1343,112 @@ const millis = parseInt(styles.animationMillis)
 
 
 
+### optimization配置项
 
+`cacheGroups`配置才是最重要，它允许自定义规则分离 chunk。并且每条`cacheGroups`规则下都允许定义上面提到的`chunks`和`minSize`字段用于覆盖全局配置（又或者将`cacheGroups`规则中`enforce`参数设为`true`来忽略全局配置）
+
+
+
+```js
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          antv: {
+            test: /[\\/]node_modules[\\/]@antv[\\/]/,
+            name: 'antv',
+            priority: 20, // 优先级，否则会被打包到vendors
+            chunks: 'all'
+          },
+          vendors: {
+            test: /node_modules/,
+            name: 'vendors',
+            reuseExistingChunk: true,
+            chunks: 'all'
+          }
+        }
+      },
+      runtimeChunk: {
+        name: 'runtime'
+      },
+      minimizer: [
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: false,
+          terserOptions: {
+            compress: {
+              drop_console: false
+            }
+          }
+        }),
+        new OptimizeCSSAssetsPlugin({})
+      ]
+    }
+```
+
+
+
+----
+
+
+
+`cacheGroups`里默认自带`vendors`配置来分离`node_modules`里的类库模块，它的默认配置如下：
+
+```js
+cacheGroups: {
+  vendors: {
+    test: /[\\/]node_modules[\\/]/,
+    priority: -10
+  },
+```
+
+如果你不想使用它的配置，你可以把它设为`false`又或者重写它。这里我选择重写，并且加入了额外的配置`name`和`enforce`:
+
+```js
+vendors: {
+  test: /[\\/]node_modules[\\/]/,
+  name: 'vendors',
+  enforce: true,
+},
+```
+
+
+
+最后介绍以上并没有出现但是仍然常用的两个配置：`priority`和`reuseExistingChunk`
+
+* `reuseExistingChunk`: 该选项只会出现在`cacheGroups`的分离规则中，意味重复利用现有的 chunk。例如 chunk 1 拥有模块 A、B、C；chunk 2 拥有模块 B、C。如果 `reuseExistingChunk` 为 `false` 的情况下，在打包时插件会为我们单独创建一个 chunk 名为 `common~for~1~2`，它包含公共模块 B 和 C。而如果该值为`true`的话，因为 chunk 2 中已经拥有公共模块 B 和 C，所以插件就不会再为我们创建新的模块
+* `priority`: 很容易想象到我们会在`cacheGroups`中配置多个 chunk 分离规则。如果同一个模块同时匹配多个规则怎么办，`priority`解决的这个问题。注意所有默认配置的`priority`都为负数，所以自定义的`priority`必须大于等于0才行
+
+
+
+
+
+---
+
+`maxInitialRequests`和`minSize`确实就是插件自作多情的杰作了。插件自带一些分离 chunk 的规则：如果即将分离的 chunk 文件体积小于 30KB 的话，那么就不会将该 chunk 分离出来；并且限制并行下载的 chunk 最大请求个数为 3 个。通过覆盖 `minSize` 和 `maxInitialRequests` 配置就能够重写这两个参数。
+
+
+
+
+
+
+`maxInitialRequests`和`minSize`是在`splitChunks`根目录中的，我们暂且称它为全局配置
+
+
+
+
+
+## 面试
+
+
+
+### webpack 是如何解决两次引入的
+
+[https://segmentfault.com/a/1190000008521430](https://segmentfault.com/a/1190000008521430)
+
+
+
+不同文件中多次import同一个文件，webpack并不会多次打包，只会在打包后的文件中会多次引用打包后的该文件对应的函数。
 
 
 

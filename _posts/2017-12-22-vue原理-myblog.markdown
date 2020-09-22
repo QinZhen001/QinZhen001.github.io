@@ -483,6 +483,66 @@ export default Watcher
 
 
 
+###  vm.$set 原理
+
+
+
+
+
+查看源码
+
+```js
+Vue.prototype.$set = set;
+
+/**
+ * Set a property on an object. Adds the new property and
+ * triggers change notification if the property doesn't
+ * already exist.
+ */
+function set (target, key, val) {
+  if (process.env.NODE_ENV !== 'production' &&
+    (isUndef(target) || isPrimitive(target))
+  ) {
+    warn(("Cannot set reactive property on undefined, null, or primitive value: " + ((target))));
+  }
+  if (Array.isArray(target) && isValidArrayIndex(key)) {
+    // 是数组 有有效的index  
+    target.length = Math.max(target.length, key);
+    // splice 已经是 被修改过的splice方法
+    target.splice(key, 1, val);
+    return val
+  }
+  if (key in target && !(key in Object.prototype)) {
+    target[key] = val;
+    return val
+  }
+  // 拿到observer  
+  var ob = (target).__ob__;
+  // 不是响应式数据  
+  if (!ob) {
+    target[key] = val;
+    return val
+  }
+  defineReactive$$1(ob.value, key, val);
+  ob.dep.notify();
+  return val
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 [1]: https://cn.vuejs.org/images/data.png
