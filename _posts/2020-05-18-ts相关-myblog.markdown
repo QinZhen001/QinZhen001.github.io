@@ -166,75 +166,6 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
-### interface和type区别
-
-
-
-相同点：
-
-
-
-*  都可以描述一个对象或者函数 
-*  都允许拓展（extends） 
-  *  interface extends interface (接口继承接口)  
-  *  type extends type (类型继承类型) 
-  *  interface extends type (接口继承类型)  
-  *  type extends interface (类型继承接口) 
-
-
-
-
-
-interface
-
-```tsx
-interface Point {
-  x: number;
-  y: number;
-}
-
-interface SetPoint {
-  (x: number, y: number): void;
-}
-
-```
-
-
-
-type 
-
-```tsx
-type Point = {
-  x: number;
-  y: number;
-};
-
-type SetPoint = (x: number, y: number) => void;
-
-```
-
-
-
-**与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
-
-```tsx
-// primitive
-type Name = string;
-
-// object
-type PartialPointX = { x: number; };
-type PartialPointY = { y: number; };
-
-// union
-type PartialPoint = PartialPointX | PartialPointY;
-
-// tuple
-type Data = [number, string];
-
-```
-
-
-
 ##  void 
 
 
@@ -1026,3 +957,106 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 
 
+
+
+## 面试
+
+
+
+
+
+### type 和 interface 的区别
+
+
+
+**type 只是一个类型别名，并不会产生类型**。
+
+
+
+> - An interface can be named in an extends or implements clause, but a type alias for an object type literal cannot.
+> - An interface can have multiple merged declarations, but a type alias for an object type literal cannot.
+
+
+
+**type 关键字的产生的东西官方有一个名字 type aliases ，就是类型别名，重点是它是别名不是真正的类型**
+
+
+
+**interface是接口，type是类型，本身就是两个概念。只是碰巧表现上比较相似。**
+**希望定义一个变量类型，就用type，如果希望是能够继承并约束的，就用interface。**
+
+
+
+
+
+相同点：
+
+
+
+*  都可以描述一个对象或者函数 
+*  都允许拓展（extends） 
+   *  interface extends interface (接口继承接口)  
+   *  type extends type (类型继承类型) 
+   *  interface extends type (接口继承类型)  
+   *  type extends interface (类型继承接口) 
+
+
+
+
+
+interface
+
+```tsx
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface SetPoint {
+  (x: number, y: number): void;
+}
+
+```
+
+
+
+type 
+
+```tsx
+type Point = {
+  x: number;
+  y: number;
+};
+
+type SetPoint = (x: number, y: number) => void;
+
+```
+
+
+
+**与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
+
+```tsx
+// primitive
+type Name = string;
+
+// object
+type PartialPointX = { x: number; };
+type PartialPointY = { y: number; };
+
+// union
+type PartialPoint = PartialPointX | PartialPointY;
+
+// tuple
+type Data = [number, string];
+
+```
+
+
+
+
+
+作者：七月流萤
+链接：https://juejin.im/post/6844903749501059085
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

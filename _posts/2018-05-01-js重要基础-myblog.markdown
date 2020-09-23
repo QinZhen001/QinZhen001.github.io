@@ -3109,6 +3109,30 @@ document.documentElement.clientWidth
 
 
 
+### e.persisted
+
+最近，看flexible.js源码发现这样一块源码，里面用到persisted
+
+```js
+  win.addEventListener('pageshow', function(e) {
+      if (e.persisted) {
+          clearTimeout(tid);
+          tid = setTimeout(refreshRem, 300);
+      }
+  }, false);
+```
+
+
+
+**persisted**属性返回一个布尔值，指示是否直接从服务器加载网页，或者当发生**pageshow**或**pagehide**事件时页面是否被缓存。此属性是只读的。
+
+
+
+一个布尔值，指示网页是否从缓存加载。
+
+- 可能的值：true - 页面由浏览器缓存
+- false - 浏览器不缓存页面
+
 
 
 

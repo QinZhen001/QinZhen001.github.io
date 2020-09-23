@@ -284,7 +284,39 @@ CommonChunksPlugin 会找到多数模块中都共有的东西，并且把它提�
 
 这就保证了所有公用的模块，都会被抽出成为独立的包，几乎完全避免了多页应用中，重复加载相同模块的问题。
 
-**虽然 webpack 4.0 提供的 SplitChunksPlugin 非常好用，但截止到写这篇文章的时候（2018年5月），依然存在一个坑，那就是 html-webpack-plugin 还不完全支持 SplitChunksPlugin，生成的公用模块包还无法自动注入到 html 中。**
+
+
+-----
+
+
+
+举个例子：
+
+```js
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    }
+  }
+```
+
+
+
+`optimization.splitChunks.chunks = 'all'`配置也就是在说：“把所有`node_modules`里的东西都放到`vendors~main.js`的文件中去”
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

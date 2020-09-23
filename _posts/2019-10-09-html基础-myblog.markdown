@@ -747,7 +747,39 @@ Using `data-*` attributes is a valid, safe way to pass custom data.
 
 
 
+## activeElement
 
+当前获得焦点的元素:
+
+```js
+var x = document.activeElement.tagName;
+// BUTTON
+```
+
+一个别的例子：
+
+```js
+document.activeElement.blur()
+```
+
+
+
+## attribute中的dir 
+
+**dir**是一个指示元素中文本方向的枚举属性。它的取值如下：
+
+- ltr, 指从左到右，用于那种从左向右书写的语言（比如英语）；
+
+- rtl, 指从右到左，用于那种从右向左书写的语言（比如阿拉伯语）；
+
+- auto, 指由用户代理决定方向。它在解析元素中字符时会运用一个基本算法，直到发现一个具有强方向性的字符，然后将这一方向应用于整个元素。
+
+
+
+```js
+const isRTL = document.documentElement.getAttribute('dir') == 'rtl'
+fakeElem.style[ isRTL ? 'right' : 'left' ] = '-9999px'
+```
 
 
 

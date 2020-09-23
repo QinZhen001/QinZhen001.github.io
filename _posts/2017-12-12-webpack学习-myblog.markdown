@@ -19,7 +19,6 @@ tags:
 
 [webpack从入门到工程实践](https://github.com/zhangwang1990/blogs/blob/master/articles/webpack%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5.md)
 
-
 [https://webpack.toobug.net/zh-cn/](https://webpack.toobug.net/zh-cn/)
 
 ### 什么是Webpack
@@ -1390,9 +1389,11 @@ const millis = parseInt(styles.animationMillis)
 
 ----
 
+**有一点非常重要：**
 
 
-`cacheGroups`里默认自带`vendors`配置来分离`node_modules`里的类库模块，它的默认配置如下：
+
+**`cacheGroups`里默认自带`vendors`配置来分离`node_modules`里的类库模块**，它的默认配置如下：
 
 ```js
 cacheGroups: {
@@ -1436,6 +1437,21 @@ vendors: {
 
 
 
+最后介绍以上并没有出现但是仍然常用的两个配置：`priority`和`reuseExistingChunk`
+
+
+
+- `reuseExistingChunk`: 该选项只会出现在`cacheGroups`的分离规则中，意味重复利用现有的 chunk。例如 chunk 1 拥有模块 A、B、C；chunk 2 拥有模块 B、C。如果 `reuseExistingChunk` 为 `false` 的情况下，在打包时插件会为我们单独创建一个 chunk 名为 `common~for~1~2`，它包含公共模块 B 和 C。而如果该值为`true`的话，因为 chunk 2 中已经拥有公共模块 B 和 C，所以插件就不会再为我们创建新的模块
+- `priority`: 很容易想象到我们会在`cacheGroups`中配置多个 chunk 分离规则。如果同一个模块同时匹配多个规则怎么办，`priority`解决的这个问题。注意所有默认配置的`priority`都为负数，所以自定义的`priority`必须大于等于0才行
+
+### 
+
+
+作者：李熠
+链接：https://juejin.im/post/6844903846993461256
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
 
 
 ## 面试
@@ -1449,6 +1465,67 @@ vendors: {
 
 
 不同文件中多次import同一个文件，webpack并不会多次打包，只会在打包后的文件中会多次引用打包后的该文件对应的函数。
+
+
+
+### webpack是如何实现动态导入的
+
+[https://juejin.im/post/6844903888319954952](https://juejin.im/post/6844903888319954952)
+
+
+
+![](https://user-gold-cdn.xitu.io/2019/7/11/16be0d655244d397?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+
+
+```
+import被转化成了__webpack_require__.e(/*! import() */ 0)
+```
+
+
+
+`__webpack_require__.e`就是requireEnsure
+
+
+
+![](https://user-gold-cdn.xitu.io/2019/7/11/16be0df85e18743c?imageslim)
+
+
+
+代码可能有点眼花，看下来无非就是做了这么一件事情。
+
+1. 根据 `installedChunks` 检查是否加载过该 **chunk**
+2. 假如没加载过，则发起一个 **`JSONP`** 请求去加载 **chunk**
+3. 设置一些请求的错误处理，然后返回一个 **Promise**。
+
+
+
+当 Promise 返回之后，就会继续执行我们之前的异步请求回调
+
+```js
+__webpack_require__.e(/*! import() */ 0)
+    .then(
+        __webpack_require__.bind(null, /*! ./async */ "./src/async.js")
+    )
+  ...
+```
+
+这里直接调用了 `__webpack_require__` 去加载我们的 `异步模块` 。
+
+
+
+**这里就有两个问题？**
+
+ 
+
+1. **`__webpack_require__` 是根据我们之前传入的 `modules` 来获取 `module` 的，但是，在 `__webpack_require__.e` 中并没有看到有对 `modules` 执行操作的代码。那 `modules` 到底是什么时候被更新的呢？**
+2. `promise` 把 `resolve` 和 `reject` 全部存入了 `installedChunks` 中， 并没有在获取异步chunk成功的`onload` 回调中执行 `resolve`，那么，`resolve` 是什么时候被执行的呢?
+
+
+
+
+
+
 
 
 
