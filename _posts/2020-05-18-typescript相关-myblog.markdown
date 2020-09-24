@@ -166,6 +166,74 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
+
+
+### 操作符
+
+
+
+#### !操作符
+
+**x! 将从 x 值域中排除 null 和 undefined 。**
+
+```js
+function myFunc(maybeString: string | undefined | null) {
+  // Type 'string | null | undefined' is not assignable to type 'string'.
+  // Type 'undefined' is not assignable to type 'string'. 
+  const onlyString: string = maybeString; // Error
+  const ignoreUndefinedAndNull: string = maybeString!; // Ok
+}
+```
+
+**调用函数时忽略 undefined 类型**
+
+```js
+type NumGenerator = () => number;
+
+function myFunc(numGenerator: NumGenerator | undefined) {
+  // Object is possibly 'undefined'.(2532)
+  // Cannot invoke an object which is possibly 'undefined'.(2722)
+  const num1 = numGenerator(); // Error
+  const num2 = numGenerator!(); //OK
+}
+
+```
+
+**确定赋值断言**
+
+在 TypeScript 2.7 版本中引入了确定赋值断言，即允许在实例属性和变量声明后面放置一个 `!` 号，从而告诉 TypeScript 该属性会被明确地赋值。为了更好地理解它的作用，我们来看个具体的例子：
+
+```js
+let x: number;
+initialize();
+// Variable 'x' is used before being assigned.(2454)
+console.log(2 * x); // Error
+
+function initialize() {
+  x = 10;
+}
+
+
+```
+
+很明显该异常信息是说变量 x 在赋值前被使用了，要解决该问题，我们可以使用确定赋值断言：
+
+```js
+let x!: number;
+initialize();
+console.log(2 * x); // Ok
+
+function initialize() {
+  x = 10;
+}
+```
+
+通过 `let x!: number;` 确定赋值断言，TypeScript 编译器就会知道该属性会被明确地赋值。
+
+
+
+
+
 ##  void 
 
 
@@ -293,7 +361,11 @@ value[0][1]; // Error
 
 
 
-## Partial
+## 工具类型
+
+
+
+### Partial
 
 `Partial<T>` 的作用就是将某个类型里的属性全部变为可选项 `?`。
 
@@ -340,6 +412,47 @@ const todo2 = updateTodo(todo1, {
 });
 
 ```
+
+
+
+
+
+### Required
+
+既然可以快速地把某个接口中定义的属性全部声明为可选，那能不能把所有的可选的属性变成必选的呢？答案是可以的，针对这个需求，我们可以使用 `Required<T>` 工具类型，具体的使用方式如下：
+
+```tsx
+interface PullDownRefreshConfig {
+  threshold: number;
+  stop: number;
+}
+
+type PullDownRefreshOptions = Partial<PullDownRefreshConfig>
+
+/**
+ * type PullDownRefresh = {
+ *   threshold: number;
+ *   stop: number;
+ * }
+ */
+type PullDownRefresh = Required<Partial<PullDownRefreshConfig>>
+
+```
+
+同样，我们来看一下 `Required<T>` 工具类型是如何实现的：
+
+```tsx
+/**
+ * Make all properties in T required
+ */
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
+```
+
+原来在 `Required<T>` 工具类型内部，通过 `-?` 移除了可选属性中的 `?`，使得属性从可选变为必选的。
+
+
 
 
 
@@ -1040,7 +1153,7 @@ type SetPoint = (x: number, y: number) => void;
 // primitive
 type Name = string;
 
-// object
+// object！
 type PartialPointX = { x: number; };
 type PartialPointY = { y: number; };
 
