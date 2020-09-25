@@ -21,6 +21,10 @@ tags:
 
 [https://webpack.toobug.net/zh-cn/](https://webpack.toobug.net/zh-cn/)
 
+[深入理解 webpack 文件打包机制](https://zhuanlan.zhihu.com/p/32706935)
+
+
+
 ### 什么是Webpack
 WebPack可以看做是**模块打包机**：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。
 
@@ -1465,6 +1469,74 @@ vendors: {
 
 
 不同文件中多次import同一个文件，webpack并不会多次打包，只会在打包后的文件中会多次引用打包后的该文件对应的函数。
+
+
+
+**关键点installedModules**
+
+```js
+// dist/index.xxxx.js
+(function(modules) {
+  // 已经加载过的模块
+  var installedModules = {};
+
+  // 模块加载函数
+  function __webpack_require__(moduleId) {
+    if(installedModules[moduleId]) {
+      return installedModules[moduleId].exports;
+    }
+    var module = installedModules[moduleId] = {
+      i: moduleId,
+      l: false,
+      exports: {}
+    };
+    modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+    module.l = true;
+    return module.exports;
+  }
+  return __webpack_require__(__webpack_require__.s = 3);
+})([
+/* 0 */
+(function(module, exports, __webpack_require__) {
+  var util = __webpack_require__(1);
+  console.log(util);
+  module.exports = "index 2";
+}),
+/* 1 */
+(function(module, exports) {
+  module.exports = "Hello World";
+}),
+/* 2 */
+(function(module, exports, __webpack_require__) {
+  var index2 = __webpack_require__(0);
+  index2 = __webpack_require__(0);
+  var util = __webpack_require__(1);
+  console.log(index2);
+  console.log(util);
+}),
+/* 3 */
+(function(module, exports, __webpack_require__) {
+  module.exports = __webpack_require__(2);
+})]);
+```
+
+1. 首先 webpack 将所有模块(可以简单理解成文件)包裹于一个函数中，并传入默认参数，这里有三个文件再加上一个入口模块一共四个模块，将它们放入一个数组中，取名为 modules，并通过数组的下标来作为 moduleId。
+2. 将 modules 传入一个自执行函数中，自执行函数中包含一个 installedModules 已经加载过的模块和一个模块加载函数，最后加载入口模块并返回。
+3. *__webpack_require__* 模块加载，先判断 installedModules 是否已加载，加载过了就直接返回 exports 数据，没有加载过该模块就通过 *modules[moduleId].call(module.exports, module, module.exports, __webpack_require__)* 执行模块并且将 module.exports 给返回。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

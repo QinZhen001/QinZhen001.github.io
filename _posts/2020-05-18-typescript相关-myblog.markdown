@@ -456,6 +456,79 @@ type Required<T> = {
 
 
 
+### Pick
+
+何为Pick?
+
+就是从一个复合类型中，取出几个想要的类型的组合，例如：
+
+```tsx
+// 原始类型
+interface TState {
+	name: string;
+	age: number;
+	like: string[];
+}
+// 如果我只想要name和age怎么办，最粗暴的就是直接再定义一个（我之前就是这么搞得）
+// 这样的弊端是什么？就是在Tstate发生改变的时候，TSingleState并不会跟着一起改变，所以应该这么写
+interface TSingleState {
+	name: string;
+	age: number;
+}
+
+interface TSingleState extends Pick<TState, "name" | "age"> {};
+```
+
+如何实现Pick？
+
+```tsx
+type Pick<T, K extends keyof T> = {
+	[key in k]: T[key]
+}
+```
+
+
+
+
+
+
+
+## 泛型
+
+
+
+### 泛型约束
+
+```tsx
+function loggingIdentity<T>(arg: T): T {
+    console.log(arg.length);  // Error: T doesn't have .length
+    return arg;
+}
+```
+
+相比于操作any所有类型，我们想要限制函数去处理任意带有.length属性的所有类型。 只要传入的类型有这个属性，我们就允许，就是说至少包含这一属性。 为此，我们需要列出对于T的约束要求。
+
+
+
+为此，我们定义一个接口来描述约束条件。 创建一个包含 .length属性的接口，使用这个接口和**extends**关键字来实现约束：
+
+```tsx
+interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity<T extends Lengthwise>(arg: T): T {
+    console.log(arg.length);  // Now we know it has a .length property, so no more error
+    return arg;
+}
+```
+
+
+
+
+
+
+
 
 
 

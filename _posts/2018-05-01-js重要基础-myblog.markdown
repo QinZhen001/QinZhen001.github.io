@@ -3143,6 +3143,34 @@ document.documentElement.clientWidth
 
 
 
+### 控制异步任务大量并发
+
+有时候仅仅是单个依次执行任务又过于节约了，所以我们也要允许多个任务「并发」执行。
+
+```js
+import _ from 'lodash'
+
+const { maxParallelExecuteCount = 1 } = this.config;
+const chunkedTasks = _.chunk(this.tasks, maxParallelExecuteCount);
+
+return chunkedTasks.reduce((prevPromise, curChunkedTask) => {
+  return prevPromise.then(prevResults => {
+    return Promise.all(
+      curChunkedTask.map(curTask => {
+        let curPromise = curTask()
+        curPromise = !isPromiseObj(curPromise) ? Promise.resolve(curPromise) : curPromise
+        return curPromise
+      })
+    ).then(curChunkedResults => [ ...prevResults, curChunkedResults ])
+  })
+}, Promise.resolve([]))
+
+```
+
+
+
+
+
 
 
 
