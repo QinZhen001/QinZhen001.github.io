@@ -1222,6 +1222,108 @@ const obj = {
 
 
 
+#### Symbol.iterator部署遍历器生成方法
+
+[https://es6.ruanyifeng.com/#docs/iterator](https://es6.ruanyifeng.com/#docs/iterator)
+
+
+
+对于原生部署 Iterator 接口的数据结构，不用自己写遍历器生成函数，`for...of`循环会自动遍历它们。除此之外，其他数据结构（主要是对象）的 Iterator 接口，都需要自己在`Symbol.iterator`属性上面部署，这样才会被`for...of`循环遍历。
+
+
+
+```js
+class RangeIterator {
+  constructor(start, stop) {
+    this.value = start;
+    this.stop = stop;
+  }
+
+  [Symbol.iterator]() { return this; }
+
+  next() {
+    var value = this.value;
+    if (value < this.stop) {
+      this.value++;
+      return {done: false, value: value};
+    }
+    return {done: true, value: undefined};
+  }
+}
+
+function range(start, stop) {
+  return new RangeIterator(start, stop);
+}
+
+for (var value of range(0, 3)) {
+  console.log(value); // 0, 1, 2
+}
+```
+
+上面代码是一个类部署 Iterator 接口的写法。`Symbol.iterator`属性对应一个函数，执行后返回当前对象的遍历器对象。
+
+
+
+下面是通过遍历器实现指针结构的例子。
+
+```js
+function Obj(value) {
+  this.value = value;
+  this.next = null;
+}
+
+Obj.prototype[Symbol.iterator] = function() {
+  var iterator = { next: next };
+
+  var current = this;
+
+  function next() {
+    if (current) {
+      var value = current.value;
+      current = current.next;
+      return { done: false, value: value };
+    } else {
+      return { done: true };
+    }
+  }
+  return iterator;
+}
+
+var one = new Obj(1);
+var two = new Obj(2);
+var three = new Obj(3);
+
+one.next = two;
+two.next = three;
+
+for (var i of one){
+  console.log(i); // 1, 2, 3
+}
+
+```
+
+下面是另一个类似数组的对象调用数组的`Symbol.iterator`方法的例子。
+
+```js
+let iterable = {
+  0: 'a',
+  1: 'b',
+  2: 'c',
+  length: 3,
+  [Symbol.iterator]: Array.prototype[Symbol.iterator]
+};
+for (let item of iterable) {
+  console.log(item); // 'a', 'b', 'c'
+}
+
+```
+
+
+
+
+
+
+
 ### Array.from
 
 

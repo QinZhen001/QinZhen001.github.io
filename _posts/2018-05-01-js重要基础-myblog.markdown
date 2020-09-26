@@ -3109,11 +3109,63 @@ document.documentElement.clientWidth
 
 
 
+### e.persisted
+
+最近，看flexible.js源码发现这样一块源码，里面用到persisted
+
+```js
+  win.addEventListener('pageshow', function(e) {
+      if (e.persisted) {
+          clearTimeout(tid);
+          tid = setTimeout(refreshRem, 300);
+      }
+  }, false);
+```
+
+
+
+**persisted**属性返回一个布尔值，指示是否直接从服务器加载网页，或者当发生**pageshow**或**pagehide**事件时页面是否被缓存。此属性是只读的。
+
+
+
+一个布尔值，指示网页是否从缓存加载。
+
+- 可能的值：true - 页面由浏览器缓存
+- false - 浏览器不缓存页面
+
 
 
 
 
 [1]: https://pic3.zhimg.com/50/2e9a57f3043adfd954e147c8718c3266_hd.jpg
+
+
+
+
+
+### 控制异步任务大量并发
+
+有时候仅仅是单个依次执行任务又过于节约了，所以我们也要允许多个任务「并发」执行。
+
+```js
+import _ from 'lodash'
+
+const { maxParallelExecuteCount = 1 } = this.config;
+const chunkedTasks = _.chunk(this.tasks, maxParallelExecuteCount);
+
+return chunkedTasks.reduce((prevPromise, curChunkedTask) => {
+  return prevPromise.then(prevResults => {
+    return Promise.all(
+      curChunkedTask.map(curTask => {
+        let curPromise = curTask()
+        curPromise = !isPromiseObj(curPromise) ? Promise.resolve(curPromise) : curPromise
+        return curPromise
+      })
+    ).then(curChunkedResults => [ ...prevResults, curChunkedResults ])
+  })
+}, Promise.resolve([]))
+
+```
 
 
 

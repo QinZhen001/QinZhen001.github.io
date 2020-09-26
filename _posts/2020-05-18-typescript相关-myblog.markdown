@@ -18,9 +18,17 @@ tags:
 
 ## interface
 
+在面向对象语言中，接口是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类去实现。
 
 
-###  接口(interface)允许有任意的属性 
+
+TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类的一部分行为进行抽象](https://ts.xcatliu.com/advanced/class-and-interfaces.html#类实现接口)以外，也常用于对「对象的形状（Shape）」进行描述。
+
+
+
+
+
+###  任意属性 
 
 [ https://ts.xcatliu.com/basics/type-of-object-interfaces ]( https://ts.xcatliu.com/basics/type-of-object-interfaces )
 
@@ -158,22 +166,69 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
-### interface和type区别
+
+
+### 操作符
 
 
 
-相同点：
+#### !操作符
+
+**x! 将从 x 值域中排除 null 和 undefined 。**
+
+```js
+function myFunc(maybeString: string | undefined | null) {
+  // Type 'string | null | undefined' is not assignable to type 'string'.
+  // Type 'undefined' is not assignable to type 'string'. 
+  const onlyString: string = maybeString; // Error
+  const ignoreUndefinedAndNull: string = maybeString!; // Ok
+}
+```
+
+**调用函数时忽略 undefined 类型**
+
+```js
+type NumGenerator = () => number;
+
+function myFunc(numGenerator: NumGenerator | undefined) {
+  // Object is possibly 'undefined'.(2532)
+  // Cannot invoke an object which is possibly 'undefined'.(2722)
+  const num1 = numGenerator(); // Error
+  const num2 = numGenerator!(); //OK
+}
+
+```
+
+**确定赋值断言**
+
+在 TypeScript 2.7 版本中引入了确定赋值断言，即允许在实例属性和变量声明后面放置一个 `!` 号，从而告诉 TypeScript 该属性会被明确地赋值。为了更好地理解它的作用，我们来看个具体的例子：
+
+```js
+let x: number;
+initialize();
+// Variable 'x' is used before being assigned.(2454)
+console.log(2 * x); // Error
+
+function initialize() {
+  x = 10;
+}
 
 
+```
 
-*  都可以描述一个对象或者函数 
-*  都允许拓展（extends） 
-  *  interface extends interface (接口继承接口)  
-  *  type extends type (类型继承类型) 
-  *  interface extends type (接口继承类型)  
-  *  type extends interface (类型继承接口) 
+很明显该异常信息是说变量 x 在赋值前被使用了，要解决该问题，我们可以使用确定赋值断言：
 
+```js
+let x!: number;
+initialize();
+console.log(2 * x); // Ok
 
+function initialize() {
+  x = 10;
+}
+```
+
+通过 `let x!: number;` 确定赋值断言，TypeScript 编译器就会知道该属性会被明确地赋值。
 
 
 
@@ -256,6 +311,225 @@ type Foo = string | number | boolean;
 
 
 `controlFlowAnalysisWithNever` 方法总是穷尽了 Foo 的所有可能类型。 通过这个示例，我们可以得出一个结论：**使用 never 避免出现新增了联合类型没有对应的实现，目的就是写出类型绝对安全的代码。**
+
+
+
+
+
+## unknown
+
+`unknown` 类型只能被赋值给 `any` 类型和 `unknown` 类型本身
+
+
+
+```js
+let value: unknown;
+
+let value1: unknown = value; // OK
+let value2: any = value; // OK
+let value3: boolean = value; // Error
+let value4: number = value; // Error
+let value5: string = value; // Error
+let value6: object = value; // Error
+let value7: any[] = value; // Error
+let value8: Function = value; // Error
+
+```
+
+
+
+
+
+直观地说，这是有道理的：只有能够保存任意类型值的容器才能保存 `unknown` 类型的值。毕竟我们不知道变量 `value` 中存储了什么类型的值。
+
+
+
+```js
+let value: unknown;
+
+value.foo.bar; // Error
+value.trim(); // Error
+value(); // Error
+new value(); // Error
+value[0][1]; // Error
+
+```
+
+将 `value` 变量类型设置为 `unknown` 后，这些操作都不再被认为是类型正确的。通过将 `any` 类型改变为 `unknown` 类型，我们已将允许所有更改的默认设置，更改为禁止任何更改。
+
+
+
+
+
+## 工具类型
+
+
+
+### Partial
+
+`Partial<T>` 的作用就是将某个类型里的属性全部变为可选项 `?`。
+
+
+
+**定义**
+
+```tsx
+/**
+ * node_modules/typescript/lib/lib.es5.d.ts
+ * Make all properties in T optional
+ */
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+
+```
+
+在以上代码中，首先通过 `keyof T` 拿到 `T` 的所有属性名，然后使用 `in` 进行遍历，将值赋给 `P`，最后通过 `T[P]` 取得相应的属性值。中间的 `?` 号，用于将所有属性变为可选。
+
+
+
+例子：
+
+
+
+```js
+interface Todo {
+  title: string;
+  description: string;
+}
+
+function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
+  return { ...todo, ...fieldsToUpdate };
+}
+
+const todo1 = {
+  title: "Learn TS",
+  description: "Learn TypeScript",
+};
+
+const todo2 = updateTodo(todo1, {
+  description: "Learn TypeScript Enum",
+});
+
+```
+
+
+
+
+
+### Required
+
+既然可以快速地把某个接口中定义的属性全部声明为可选，那能不能把所有的可选的属性变成必选的呢？答案是可以的，针对这个需求，我们可以使用 `Required<T>` 工具类型，具体的使用方式如下：
+
+```tsx
+interface PullDownRefreshConfig {
+  threshold: number;
+  stop: number;
+}
+
+type PullDownRefreshOptions = Partial<PullDownRefreshConfig>
+
+/**
+ * type PullDownRefresh = {
+ *   threshold: number;
+ *   stop: number;
+ * }
+ */
+type PullDownRefresh = Required<Partial<PullDownRefreshConfig>>
+
+```
+
+同样，我们来看一下 `Required<T>` 工具类型是如何实现的：
+
+```tsx
+/**
+ * Make all properties in T required
+ */
+type Required<T> = {
+  [P in keyof T]-?: T[P];
+};
+```
+
+原来在 `Required<T>` 工具类型内部，通过 `-?` 移除了可选属性中的 `?`，使得属性从可选变为必选的。
+
+
+
+
+
+### Pick
+
+何为Pick?
+
+就是从一个复合类型中，取出几个想要的类型的组合，例如：
+
+```tsx
+// 原始类型
+interface TState {
+	name: string;
+	age: number;
+	like: string[];
+}
+// 如果我只想要name和age怎么办，最粗暴的就是直接再定义一个（我之前就是这么搞得）
+// 这样的弊端是什么？就是在Tstate发生改变的时候，TSingleState并不会跟着一起改变，所以应该这么写
+interface TSingleState {
+	name: string;
+	age: number;
+}
+
+interface TSingleState extends Pick<TState, "name" | "age"> {};
+```
+
+如何实现Pick？
+
+```tsx
+type Pick<T, K extends keyof T> = {
+	[key in k]: T[key]
+}
+```
+
+
+
+
+
+
+
+## 泛型
+
+
+
+### 泛型约束
+
+```tsx
+function loggingIdentity<T>(arg: T): T {
+    console.log(arg.length);  // Error: T doesn't have .length
+    return arg;
+}
+```
+
+相比于操作any所有类型，我们想要限制函数去处理任意带有.length属性的所有类型。 只要传入的类型有这个属性，我们就允许，就是说至少包含这一属性。 为此，我们需要列出对于T的约束要求。
+
+
+
+为此，我们定义一个接口来描述约束条件。 创建一个包含 .length属性的接口，使用这个接口和**extends**关键字来实现约束：
+
+```tsx
+interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity<T extends Lengthwise>(arg: T): T {
+    console.log(arg.length);  // Now we know it has a .length property, so no more error
+    return arg;
+}
+```
+
+
+
+
+
+
+
+
 
 
 
@@ -418,6 +692,31 @@ function fixed(name: string | null): string {
   return postfix("great");
 }
 ```
+
+
+
+
+
+### 自定义类型保护的类型谓词
+
+
+
+```tsx
+function isNumber(x: any): x is number {
+  return typeof x === "number";
+}
+
+function isString(x: any): x is string {
+  return typeof x === "string";
+}
+
+```
+
+
+
+
+
+
 
 
 
@@ -844,3 +1143,106 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 
 
+
+
+## 面试
+
+
+
+
+
+### type 和 interface 的区别
+
+
+
+**type 只是一个类型别名，并不会产生类型**。
+
+
+
+> - An interface can be named in an extends or implements clause, but a type alias for an object type literal cannot.
+> - An interface can have multiple merged declarations, but a type alias for an object type literal cannot.
+
+
+
+**type 关键字的产生的东西官方有一个名字 type aliases ，就是类型别名，重点是它是别名不是真正的类型**
+
+
+
+**interface是接口，type是类型，本身就是两个概念。只是碰巧表现上比较相似。**
+**希望定义一个变量类型，就用type，如果希望是能够继承并约束的，就用interface。**
+
+
+
+
+
+相同点：
+
+
+
+*  都可以描述一个对象或者函数 
+*  都允许拓展（extends） 
+   *  interface extends interface (接口继承接口)  
+   *  type extends type (类型继承类型) 
+   *  interface extends type (接口继承类型)  
+   *  type extends interface (类型继承接口) 
+
+
+
+
+
+interface
+
+```tsx
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface SetPoint {
+  (x: number, y: number): void;
+}
+
+```
+
+
+
+type 
+
+```tsx
+type Point = {
+  x: number;
+  y: number;
+};
+
+type SetPoint = (x: number, y: number) => void;
+
+```
+
+
+
+**与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
+
+```tsx
+// primitive
+type Name = string;
+
+// object！
+type PartialPointX = { x: number; };
+type PartialPointY = { y: number; };
+
+// union
+type PartialPoint = PartialPointX | PartialPointY;
+
+// tuple
+type Data = [number, string];
+
+```
+
+
+
+
+
+作者：七月流萤
+链接：https://juejin.im/post/6844903749501059085
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

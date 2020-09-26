@@ -3550,6 +3550,208 @@ console.log(true + false)
 
 
 
+## 深拷贝如何解决循环引用
+
+需要解决拷贝对象内的循环引用问题（使用数组记录拷贝过的对象，记录一个拷贝对象的数据结构，{source:原拷贝对象，target:拷贝后的对象}）
+
+
+
+```js
+//存放已拷贝的对象用于循环引用检测
+let objArr = [];
+ 
+function deepCopy(obj) {
+  //判断循环引用检测
+  for (let ele of objArr) {
+    if (obj === ele.source) {
+      // 在递归中已经出现过  
+      return ele.target;
+    }
+  }
+  //拷贝容器
+  let newObj = {};
+ 
+  //将拷贝的对象放入数组中用于循环引用检测
+  objArr.push({
+    source: obj, //被拷贝对象上的原引用对象，用于循环检测比对
+    target: newObj
+  })
+ 
+  // 使用Reflect可以检测到Symbol类型的属性
+  Reflect.ownKeys(obj).forEach(key => {
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === 'object') {
+        // 使用Array.from对拷贝的数组进行处理
+        newObj[key] = Object.prototype.toString.call(obj[key]) === '[object Array]' ? Array.from(deepCopy(obj[key], key)) : deepCopy(obj[key], key);
+      } else {
+        // 属性值为原始类型的值
+        newObj[key] = obj[key];
+      }
+    }
+  })
+  return newObj;
+}
+```
+
+使用递归的方式可能会造成爆栈，解决办法就是采用迭代的方式
+
+```js
+function cloneForce(x) {
+  //拷贝对象记录
+  const uniqueList = []; 
+ 
+  let root = {};
+ 
+  // 循环数组
+  const loopList = [{
+    parent: root,
+    key: undefined,
+    data: x,
+  }];
+ 
+  while (loopList.length) {
+    //深拷贝，元素出栈
+    const node = loopList.pop();
+    const parent = node.parent;
+    const key = node.key;
+    const data = node.data;
+ 
+    let res = parent;
+    if (typeof key !== 'undefined') {
+      res = parent[key] = {};
+    }
+ 
+    // 判断数据是否存在
+    let uniqueData = find(uniqueList, data);、
+    //数据存在
+    if (uniqueData) {
+      parent[key] = uniqueData.target;
+      break; // 中断本次循环
+    }
+ 
+    //数据不存在，将其放入数组
+    uniqueList.push({
+      source: data,
+      target: res,
+    });
+ 
+    for (let k in data) {
+      if (data.hasOwnProperty(k)) {
+        if (typeof data[k] === 'object') {
+          // 下一次循环
+          loopList.push({
+            parent: res,
+            key: k,
+            data: data[k],
+          });
+        } else {
+          res[k] = data[k];
+        }
+      }
+    }
+  }
+ 
+  return root;
+}
+ 
+function find(arr, item) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].source === item) {
+      return arr[i];
+    }
+  }
+ 
+  return null;
+}
+```
+
+
+
+## 对象引用输出题
+
+```js
+  const a = { b: 3 }
+
+  function foo(obj) {
+    obj.b = 5
+    return obj
+  }
+
+  const aa = foo(a)
+  console.log(a.b) // 5 
+  console.log(aa.b) // 5
+```
+
+
+
+
+
+##  原型链中的原型对象赋值无效
+
+```js
+  function Ofo() { }
+
+  function Bick() {
+    this.name = 'mybick'
+  }
+
+  var myBick = new Ofo()
+  Ofo.prototype = new Bick()
+
+  var youbick = new Bick()
+
+
+  console.log(myBick.name)  // undefined
+  console.log(youbick.name) // mybick
+```
+
+
+
+我们在看几个例子：
+
+```js
+  function Person() { }
+
+  Person.prototype.name = "John";
+
+  var man = new Person();
+  // 对象字面量 改变了prototype的地址
+  Person.prototype = {
+    name: "Mike"
+  };
+  // 所以这里无法修改name
+  Person.prototype.name = "Tom";
+
+  console.log(man.name); // John
+```
+
+
+
+```js
+  function Person() { }
+
+  Person.prototype.name = "John";
+  var man = new Person();
+  // 这里的Person.prototype 和上面的Person.prototype 指向同一个地址
+  // 并没有修改prototype
+  // 所以修改name有效	
+  Person.prototype.name = "Tom";
+
+  console.log(man.name); // Tom
+```
+
+
+
+```js
+  function Person() { }
+  Person.prototype.name = "John";
+  var man = new Person();
+  // man 已经生成 man对应的Person.prototype已经固化	
+  Person.prototype = {
+    name: "Tom"
+  };
+  console.log(man.name); // Tom
+```
 
 
 
@@ -3557,14 +3759,34 @@ console.log(true + false)
 
 
 
+---
+
+我们在看几个例子：
+
+```js
+  function Test() { }
+  Test.prototype = { x: 1 };
+  var a = new Test();
+  Test.prototype = { y: 2 };
+  var b = new Test();
+  console.log(a.x, a.y); // 1 undefined
+  console.log(b.x, b.y); // undefined 2
+```
 
 
 
-
-
-
-
-
+```js
+  function Test() { }
+  // 在a生成前 改变Test.prototype才有效果
+  var a = new Test(); 
+  // a已经生成了 a 对应的Test.prototype已经固化
+  // 下面的代码只对b有效
+  Test.prototype = { x: 1 }; 
+  var b = new Test();
+  Test.prototype = { y: 2 }; // b已经生成了 b 对应的Test.prototype已经固化
+  console.log(a.x, a.y);  // undefined undefined
+  console.log(b.x, b.y);  // 1 undefined
+```
 
 
 
