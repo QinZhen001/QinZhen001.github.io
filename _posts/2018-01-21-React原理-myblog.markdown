@@ -384,3 +384,146 @@ react 事件注册过程其实主要做了2件事：事件注册、事件存储�
 
 * 事件注册 - 组件挂载阶段，根据组件内的声明的事件类型-onclick，onchange 等，给 document 上添加事件 -addEventListener，并指定统一的事件处理程序 dispatchEvent。
 * 事件存储 - 就是把 react 组件内的所有事件统一的存放到一个对象里，缓存起来，为了在触发事件的时候可以查找到对应的方法去执行。
+
+
+
+
+
+### 错误捕获机制
+
+
+
+#### Error Boundary（错误边界）
+
+[https://zh-hans.reactjs.org/docs/error-boundaries.html#introducing-error-boundaries](https://zh-hans.reactjs.org/docs/error-boundaries.html#introducing-error-boundaries)
+
+部分 UI 的 JavaScript 错误不应该导致整个应用崩溃，为了解决这个问题，React 16 引入了一个新的概念 —— 错误边界。
+
+
+
+错误边界是一种 React 组件，这种组件**可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI**，而不是渲染那些崩溃了的子组件树。错误边界在渲染期间、生命周期方法和整个组件树的构造函数中捕获错误。
+
+
+
+
+
+[https://mp.weixin.qq.com/s/2ZYz0dFWpa5dW3p7gjaqsA](https://mp.weixin.qq.com/s/2ZYz0dFWpa5dW3p7gjaqsA)
+
+为了实现这个特性，就一定需要捕获到错误。
+
+所以在`React`源码中，所有`用户代码`都被包裹在一个方法中执行。
+
+
+
+类似如下：
+
+```jsx
+function wrapper(func) {
+  try {
+    func();
+  } catch(e) {
+    // ...处理错误
+  }
+}
+```
+
+本来一切都很完美，但是`React`作为世界级前端框架，受众广泛，凡事都讲究做到极致。
+
+这不，有人提issue：
+
+> 你们这样在`try catch`中执行`用户代码`会让浏览器调试工具的`Pause on exceptions`失效。
+
+
+
+对用户来说，我写在`componentDidMount`中的代码明明未捕获错误，可是错误发生时`Pause on exceptions`却失效了，确实有些让人困惑。
+
+所以，在生产环境，`React`继续使用`try catch`实现`wrapper`。
+
+而在开发环境，为了更好的调试体验，需要重新实现一套`try catch`机制，包含如下功能：
+
+- 捕获`用户代码`抛出的错误，使`Error Boundary`功能正常运行
+- 不捕获`用户代码`抛出的错误，使`Pause on exceptions`不失效
+
+
+
+#### 捕获用户代码抛出的错误
+
+但是不能使用`try catch`，因为这会让`Pause on exceptions`失效。
+
+解决办法是：监听`window`的`error`事件。
+
+
+
+根据**GlobalEventHandlers.onerror MDN**[1]，该事件可以监听到两类错误：
+
+- js运行时错误（包括语法错误）。`window`会触发`ErrorEvent`接口的`error`事件
+- 资源（如`<img>`或`<script>`）加载失败错误。加载资源的元素会触发`Event`接口的`error`事件，可以在`window`上捕获该错误
+
+
+
+实现开发环境使用的`wrapperDev`：
+
+```jsx
+// 开发环境wrapper
+function wrapperDev(func) {
+  function handleWindowError(error) {
+    // 收集错误交给Error Boundary处理
+  }
+
+  window.addEventListener('error', handleWindowError);
+  func();
+  window.removeEventListener('error', handleWindowError);
+}
+
+```
+
+开发环境`func`内如果抛出错误，代码的执行会中断。
+
+比如执行如下代码，`finish`会被打印。
+
+```js
+wrapperPrd(() => {throw Error(123)})
+console.log('finish');
+```
+
+但是执行如下代码，代码执行中断，`finish`不会被打印。
+
+```js
+wrapperDev(() => {throw Error(123)})
+console.log('finish');
+```
+
+如何在不捕获`用户代码`抛出错误的前提下，又能让后续代码的执行不中断呢？
+
+
+
+#### 如何让代码执行不中断
+
+答案是：通过`dispatchEvent`触发`事件回调`，在`回调`中调用`用户代码`。
+
+
+
+
+
+根据**EventTarget.dispatchEvent MDN**[2]：
+
+不同于`DOM`节点触发的事件（比如`click`事件）回调是由`event loop`异步触发。
+
+通过`dispatchEvent`触发的事件是同步触发，并且在事件回调中抛出的`错误`不会影响`dispatchEvent`的调用者（caller）。
+
+让我们继续改造`wrapperDev`。
+
+首先创建虚构的`DOM`节点、事件对象、虚构的事件类型：
+
+```
+
+```
+
+
+
+
+
+
+
+
+
