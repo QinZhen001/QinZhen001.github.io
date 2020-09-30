@@ -491,9 +491,248 @@ type Pick<T, K extends keyof T> = {
 
 
 
+### Record
+
+Record<K extends keyof any, T> 的作用是将 K 中所有的属性的值转化为 T 类型。
 
 
-## 泛型
+
+```tsx
+// node_modules/typescript/lib/lib.es5.d.ts
+
+/**
+ * Construct a type with a set of properties K of type T
+ */
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+```
+
+
+
+
+
+### Exclude
+
+Exclude<T, U> 的作用是将某个类型中属于另一个的类型移除掉。
+
+
+
+定义
+
+```tsx
+// node_modules/typescript/lib/lib.es5.d.ts
+
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
+```
+
+如果 T 能赋值给 U 类型的话，那么就会返回 never 类型，否则返回 T 类型。最终实现的效果就是将 T 中某些属于 U 的类型移除掉。
+
+
+
+例子：
+
+```tsx
+type T0 = Exclude<"a" | "b" | "c", "a">; // "b" | "c"
+type T1 = Exclude<"a" | "b" | "c", "a" | "b">; // "c"
+type T2 = Exclude<string | number | (() => void), Function>; // string | number
+```
+
+
+
+### Extract
+
+Extract<T, U> 的作用是从 T 中提取出 U 。
+
+定义：
+
+```tsx
+// node_modules/typescript/lib/lib.es5.d.ts
+
+/**
+ * Extract from T those types that are assignable to U
+ */
+type Extract<T, U> = T extends U ? T : never;
+```
+
+
+
+如果 T 能赋值给 U 类型的话，那么就会返回 T 类型，否则返回 never 类型。
+
+示例：
+
+```tsx
+type T0 = Extract<"a" | "b" | "c", "a" | "f">; // "a"
+type T1 = Extract<string | number | (() => void), Function>; // () => void
+```
+
+
+
+
+
+
+
+### ReturnType
+
+ReturnType<T> 的作用是用于获取函数 T 的返回类型。
+
+
+
+定义
+
+```ts
+// node_modules/typescript/lib/lib.es5.d.ts
+
+/**
+ * Obtain the return type of a function type
+ */
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+
+```
+
+
+
+```tsx
+// 这是一个三元表达式
+T extends (...args: any) => infer R ? R : any;
+// 返回 R 或者 any
+```
+
+
+
+例子：
+
+```tsx
+type T0 = ReturnType<() => string>; // string
+type T1 = ReturnType<(s: string) => void>; // void
+type T2 = ReturnType<<T>() => T>; // {}
+type T3 = ReturnType<<T extends U, U extends number[]>() => T>; // number[]
+type T4 = ReturnType<any>; // any
+type T5 = ReturnType<never>; // any
+type T6 = ReturnType<string>; // Error
+type T7 = ReturnType<Function>; // Error
+```
+
+
+
+#### 使用ReturnType应用redux中的action
+
+
+
+```tsx
+// actionCreator.ts
+
+import * as Types from './actionTypes';
+
+type AddTodoAction = {
+    type: typeof Types.ADD_TODO;
+    payload: string;
+}
+
+type RemoveTodoAction = {
+    type: typeof Types.REMOVE_TODO,
+    payload: number;
+}
+
+export type Actions = AddTodoAction | RemoveTodoAction;
+
+export const createAddTodo = (text: string): AddTodoAction => ({
+    type: Types.ADD_TODO,
+    payload: text,
+});
+
+export const createRemoveTodo = (id: number): RemoveTodoAction => ({
+    type: Types.REMOVE_TODO,
+    payload: id,
+});
+```
+
+当我们完成了 actionCreator 和 reducer 的连接！这一点非常重要，只有这样，我们才能借助 ts 的类型保证 actionCreator 返回的值一定和 reducer 内部的 action 类型是一致的。
+
+
+
+因为 actionCreator 返回的是 action 对象，为什么我们不使用 ReturnType 直接拿到函数的返回值类型，作为对应的 Action 类型呢，这样就自动完成了关联操作。
+
+
+
+```tsx
+import * as Types from './actionTypes';
+
+type AddTodoAction = ReturnType<typeof createAddTodo>;
+
+type RemoveTodoAction = ReturnType<typeof createRemoveTodo>;
+
+export type Actions = AddTodoAction | RemoveTodoAction;
+
+export const createAddTodo = (text: string) => ({
+    type: Types.ADD_TODO,
+    payload: text,
+});
+
+export const createRemoveTodo = (id: number) => ({
+    type: Types.REMOVE_TODO,
+    payload: id,
+});
+```
+
+
+
+让我们来看看此时 reducer 内部 action 的类型
+
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4ubmxhcmsuY29tL3l1cXVlLzAvMjAyMC9wbmcvMTM1MjQyMS8xNTk3Mzc1Nzk2MDUwLWM0ZTczZjY1LTc1ODAtNGU4NC05YjIzLWQxMjFjMmY5MzI4Ni5wbmc?x-oss-process=image/format,png#align=left&display=inline&height=111&margin=%5Bobject%20Object%5D&name=image.png&originHeight=222&originWidth=942&size=28766&status=done&style=none&width=471#pic_center)
+
+推断失败
+
+
+
+这个时候就要使用as const
+
+[https://blog.csdn.net/yunfeihe233/article/details/108027882](https://blog.csdn.net/yunfeihe233/article/details/108027882)
+
+
+
+
+
+
+
+
+
+
+
+### infer
+
+在条件类型语句中，可以用 infer 声明一个类型变量并且对它进行使用。
+
+
+
+```tsx
+type ReturnType<T> = T extends (
+  ...args: any[]
+) => infer R ? R : any;
+```
+
+以上代码中 infer R 就是声明一个变量来承载传入函数签名的返回值类型，简单说就是用它取到函数返回值的类型方便之后使用。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 泛型 generic
 
 
 
@@ -836,7 +1075,206 @@ The difference is that in the first case the return type will be `T[K]` while in
 
 
 
+## typeof
 
+在 TypeScript 中，`typeof` 操作符可以用来获取一个变量或对象的类型。
+
+
+
+```tsx
+interface Person {
+  name: string;
+  age: number;
+}
+
+const sem: Person = { name: "semlinker", age: 30 };
+type Sem = typeof sem; // type Sem = Person
+```
+
+此外，`typeof` 操作符除了可以获取对象的结构类型之外，它也可以用来获取函数对象的类型，比如：
+
+```tsx
+function toArray(x: number): Array<number> {
+  return [x];
+}
+
+type Func = typeof toArray; // -> (x: number) => number[]
+
+```
+
+
+
+
+
+
+
+
+
+
+
+## as const
+
+[https://blog.csdn.net/yunfeihe233/article/details/108027882](https://blog.csdn.net/yunfeihe233/article/details/108027882)
+
+**告诉 ts 在进行类型推断时告诉 ts，我是一个字面量类型，不要把我简化归约！**
+
+> TypeScript 3.4 introduces a new construct for literal values called *`const`* assertions. Its syntax is a type assertion with `const` in place of the type name (e.g. `123 as const`). When we construct new literal expressions with `const` assertions, we can signal to the language that
+>
+> - no literal types in that expression should be widened (e.g. no going from `"hello"` to `string`)
+> - object literals get `readonly` properties
+> - array literals become `readonly` tuples
+>
+> 
+>
+> 翻译
+>
+> - 表达式中的任何字面量类型都不应该被扩展；
+> - 对象字面量的属性，将使用 `readonly` 修饰；
+> - 数组字面量将变成 `readonly` 元组。
+
+
+
+
+
+
+
+
+
+
+
+例子;
+
+
+
+```typescript
+// Type '"hello"'
+let x = "hello" as const;
+
+// Type 'readonly [10, 20]'
+let y = [10, 20] as const;
+
+// Type '{ readonly text: "hello" }'
+let z = { text: "hello" } as const;
+```
+
+从官方的介绍中，对我们最有用的是
+
+**no literal types in that expression should be widened (e.g. no going from `"hello"` to `string`)**
+
+
+
+> 对于字面量类型 “hello” 来讲，在类型推导中会被扩展为 string 类型，对于字面量量类型 9999 来说，在推导中会被扩展为 number 类型。
+
+
+
+通过 as const 被声明的字面量类型，在类型推导中不会被扩展成为 “**父类型**”，
+
+
+
+#### 在redux中应用
+
+利用这个特性，我们可以在定义 actionType 时候这样写
+
+```tsx
+export const ADD_TODO = 'ADD_TODO' as const;
+
+export const REMOVE_TODO = 'REMOVE_TODO' as const;
+```
+
+这时候，我们再去看看 ts 对 actionCreator 函数返回值类型的推断
+
+
+
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4ubmxhcmsuY29tL3l1cXVlLzAvMjAyMC9wbmcvMTM1MjQyMS8xNTk3MzgxNzAwMzM5LWZkM2JiMWQ5LWY0ZDItNDQ5NS05OTg1LTNkODQ3M2VhZWRkZC5wbmc?x-oss-process=image/format,png#align=left&display=inline&height=165&margin=%5Bobject%20Object%5D&name=image.png&originHeight=330&originWidth=910&size=50819&status=done&style=none&width=455#pic_center)
+
+
+
+
+
+
+
+## 类型编程
+
+
+
+### 获取所有的 actionCreator 函数类型
+
+
+
+在实际编写类型的过程中，其实可以注意到，我们进行类型标注的行为，使用 ReturnType 类型函数，多么像在编程，我们传进去一个类型，得到一个新类型。那么是否，我们可以利用这种类型编程的能力，做到自动类型推断呢？
+
+
+
+我们只要编写 actionType 和 actionCreator ，reducer 内部会自动的得到 action 类型，不需要我们手动去指定。
+
+
+
+先看看我们现在已经有了什么，在我们通过 as const 定义过 actionType 后，我们可以通过 ReturnType 拿到对应 actionCreator 函数返回值的类型，而这个类型，正好是我们需要的 Action 的类型，最后我们标注到 reducer 的参数即可。
+
+
+
+所以我们现在做的应该是，怎么获取 actionCreators.ts 文件里的所有 actionCreator 函数类型，并且循环的将所有他们的返回值类型抽出来，并组合成一个可辨识联合类型。
+
+
+
+#### 简单需要妥协的做法
+
+我们先解决，如何获取所有的 actionCreator 函数类型？最简单的做法是将所有 actionCreator 定义到一个对象上，我们导出这个对象即可。
+
+```tsx
+export const actionCreators = {
+    createAddTodo: (text: string) => ({
+        type: Types.ADD_TODO,
+        payload: text,
+        time: new Date(),
+    }) as const,
+    createRemoveTodo: (id: number) => ({
+        type: Types.REMOVE_TODO,
+        payload: id,
+    }) as const,
+}
+```
+
+
+
+![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4ubmxhcmsuY29tL3l1cXVlLzAvMjAyMC9wbmcvMTM1MjQyMS8xNTk3Mzg5Mzk1MjQ4LTczYjBiN2VhLWNjYzQtNGEwOS05NzQ4LWY0M2VjYTdiMjRkOS5wbmc?x-oss-process=image/format,png#align=left&display=inline&height=374&margin=%5Bobject%20Object%5D&name=image.png&originHeight=748&originWidth=958&size=104631&status=done&style=none&width=479#pic_center)
+
+
+
+#### 偏要勉强的做法
+
+现在我们已经获取到需要的 actionCreator 函数的类型了，只是我们需要将所有的 actionCreator 函数定义到一个对象上。那如果我偏不，偏要勉强，偏要在不改变编写习惯的基础上，达到同样的目标呢。
+
+
+
+我们需要想办法把除了 ActionCreator 之外的类型过滤掉。既然要过滤，那我们就要先确定 **什么是一个 ActionCreator ?**
+
+
+
+这里我们对 ActionCreator 下一个定义，**一个接受不定参数，返回一个 Action 对象的函数，就是 ActionCreator**。
+
+**什么又是 Action 呢？一个带有 .type 属性的对象就是 Action 对象。**
+
+
+
+```tsx
+type Action = {
+    type: string;
+    [otherKey: string]: unknown;
+};
+
+type ActionCreator = (...args: unknown[]) => Action;
+
+```
+
+自动过滤
+
+```tsx
+type ExtractActionCreaotrKey<T> = {
+    [K in keyof T]: T[K] extends ActionCreator ? K : never;
+}[keyof T]
+
+```
 
 
 
@@ -881,63 +1319,6 @@ The difference is that in the first case the return type will be `T[K]` while in
 }
 
 ```
-
-
-
-
-
-## 遇到的问题
-
-
-
-
-
-### All files must be modules when the '--isolatedModules' flag is provided
-
-
-
-[ https://roblox-ts.com/docs/usage/workflow-issues ]( https://roblox-ts.com/docs/usage/workflow-issues )
-
-
-
-This error is encountered when a file in your project is not considered a module (referring to “modules” in JavaScript, not ModuleScripts). As per the ECMAScript specification, files are considered modules in TypeScript when they contain at least one import or export. If a file is *not* a module, then it will share its top-most scope with every other file in your project.
-
-
-
-当您的项目中的一个文件不被认为是一个模块时(引用JavaScript中的模块，而不是ModuleScripts)，就会遇到这个错误。**根据ECMAScript规范，当文件包含至少一个导入或导出时，文件被认为是TypeScript中的模块**。如果文件不是模块，那么它将与项目中的所有其他文件共享其最顶层的作用域。
-
-
-
-
-Therefore, the solution here is to ensure that every file in your project has at least one `import` or `export` statement. If you don’t need either, then you can provide an empty export statement:
-
-
- 因此，这里的解决方案是确保项目中的每个文件至少有一个导入或导出语句。如果您不需要这两个语句，那么您可以提供一个空的export语句
-
-
-
-``` js
-export {}
-```
-
-
-
-
-
-Unfortunately, there is no other workaround for this problem. Please do not remove the isolatedModules flag from your tsconfig file, as this does not fix the problem, it only suppresses the error.
-
-
-
-
-
-不幸的是，对于这个问题没有其他的解决方法。请不要从tsconfig文件中删除isolatedModules标志，因为这并不能解决问题，它只会抑制错误。
-
-
-
-
- >tsconfig中isolatedModules选项默认为true，这个选项无法更改！！！
-
-
 
 
 
@@ -1091,6 +1472,10 @@ let mySquare = createSquare(squareOptions);
 
 
 
+
+
+
+
 ### 集成在Webpack
 
 ```javascript
@@ -1138,6 +1523,63 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 1. atl与Babel有一流的集成，可以实现缓存。这对于使用带有Babel的Typescript的人来说非常有用。当启用useBabel和useCache标志时，typescript的emit将使用Babel进行转换并缓存。所以下次如果源文件（+环境）具有相同的校验和，我们可以完全跳过typescript和babel的转换。这大大减少了此方案中的构建时间。
 2. atl能够将类型检查器和发射器分叉到一个单独的进程，这也加快了一些开发方案（例如与react-hot-loader的反应）所以你的webpack编译将提前结束，你可以在浏览器中探索编译版本你的文件是typechecked
+
+
+
+
+
+## 遇到的问题
+
+
+
+
+
+### All files must be modules when the '--isolatedModules' flag is provided
+
+
+
+[ https://roblox-ts.com/docs/usage/workflow-issues ]( https://roblox-ts.com/docs/usage/workflow-issues )
+
+
+
+This error is encountered when a file in your project is not considered a module (referring to “modules” in JavaScript, not ModuleScripts). As per the ECMAScript specification, files are considered modules in TypeScript when they contain at least one import or export. If a file is *not* a module, then it will share its top-most scope with every other file in your project.
+
+
+
+当您的项目中的一个文件不被认为是一个模块时(引用JavaScript中的模块，而不是ModuleScripts)，就会遇到这个错误。**根据ECMAScript规范，当文件包含至少一个导入或导出时，文件被认为是TypeScript中的模块**。如果文件不是模块，那么它将与项目中的所有其他文件共享其最顶层的作用域。
+
+
+
+
+Therefore, the solution here is to ensure that every file in your project has at least one `import` or `export` statement. If you don’t need either, then you can provide an empty export statement:
+
+
+ 因此，这里的解决方案是确保项目中的每个文件至少有一个导入或导出语句。如果您不需要这两个语句，那么您可以提供一个空的export语句
+
+
+
+``` js
+export {}
+```
+
+
+
+
+
+Unfortunately, there is no other workaround for this problem. Please do not remove the isolatedModules flag from your tsconfig file, as this does not fix the problem, it only suppresses the error.
+
+
+
+
+
+不幸的是，对于这个问题没有其他的解决方法。请不要从tsconfig文件中删除isolatedModules标志，因为这并不能解决问题，它只会抑制错误。
+
+
+
+
+ >tsconfig中isolatedModules选项默认为true，这个选项无法更改！！！
+
+
 
 
 

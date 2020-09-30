@@ -515,11 +515,44 @@ console.log('finish');
 
 首先创建虚构的`DOM`节点、事件对象、虚构的事件类型：
 
-```
+```js
+// 创建虚构的DOM节点
+const fakeNode = document.createElement('fake');
+// 创建event
+const event = document.createEvent('Event');
+// 创建虚构的event类型
+const evtType = 'fake-event';
 
 ```
 
+初始化事件对象，监听事件。在事件回调中调用`用户代码`。触发事件：
 
+```js
+function wrapperDev(func) {
+  function handleWindowError(error) {
+    // 收集错误交给Error Boundary处理
+  }
+  
+  function callCallback() {
+    fakeNode.removeEventListener(evtType, callCallback, false); 
+    func();
+  }
+  
+  const event = document.createEvent('Event');
+  const fakeNode = document.createElement('fake');
+  const evtType = 'fake-event';
+
+  window.addEventListener('error', handleWindowError);
+  fakeNode.addEventListener(evtType, callCallback, false);
+
+  event.initEvent(evtType, false, false);
+  
+
+  fakeNode.dispatchEvent(event);
+  
+  window.removeEventListener('error', handleWindowError);
+}
+```
 
 
 
