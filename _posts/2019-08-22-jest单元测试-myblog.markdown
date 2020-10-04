@@ -247,13 +247,36 @@ test('the data is peanut butter', async () => {
 ```
 
 
-### 
+
 
 ### Manual Mocks
 
 [https://jestjs.io/docs/en/manual-mocks](https://jestjs.io/docs/en/manual-mocks)
 
 
+
+
+
+## 补充
+
+
+
+
+
+
+
+### testing-library
+
+[https://testing-library.com/docs/react-testing-library/example-intro](https://testing-library.com/docs/react-testing-library/example-intro)
+
+
+
+在react中，我们使用下面的库进行单元测试
+
+```js
+"@testing-library/jest-dom": "^4.2.4"
+"@testing-library/react": "^9.3.2"
+```
 
 
 
