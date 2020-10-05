@@ -18,11 +18,11 @@ tags:
 ### 选择器
 
 ```html
-element>element(子选择期) 	div>p 	选择父级是 <div> 元素的 <p> 元素
+element > element(子选择期) 	div>p 	选择父级是 <div> 元素的 <p> 元素
 
-element+element(相邻兄弟选择器) 	div+p 	选择紧接着<div>元素之后的<p>元素
+element + element(相邻兄弟选择器) 	div+p 	选择紧接着<div>元素之后的<p>元素
 
-element+element(通用兄弟选择器) 	div+p 	选择<div>元素之后的所有<p>元素
+element ~ element(通用兄弟选择器) 	div+p 	选择<div>元素之后的所有<p>元素
 
 ```
 
