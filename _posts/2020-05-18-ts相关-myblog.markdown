@@ -14,6 +14,8 @@ tags:
 
 
 
+# 正文
+
 
 
 ## interface
@@ -568,6 +570,76 @@ type Extract<T, U> = T extends U ? T : never;
 type T0 = Extract<"a" | "b" | "c", "a" | "f">; // "a"
 type T1 = Extract<string | number | (() => void), Function>; // () => void
 ```
+
+
+
+
+
+### Omit
+
+[https://segmentfault.com/a/1190000022429482](https://segmentfault.com/a/1190000022429482)
+
+`Omit<T, K>` 类型让我们可以从另一个对象类型中剔除某些属性，并创建一个新的对象类型：
+
+
+
+例子：
+
+```tsx
+type User = {
+id: string;
+name: string;
+email: string;
+};
+
+type UserWithoutEmail = Omit<User, "email">;
+
+// 等价于:
+type UserWithoutEmail = {
+id: string;
+name: string;
+};
+```
+
+
+
+-----
+
+```tsx
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>,'size'>{
+  // 是否禁用
+  disabled?:boolean
+  size?:InputSize
+  icon?:IconProp,
+  // 前缀 
+  prepend?: string | ReactElement
+  // 后缀
+  append?:string | ReactElement
+  onChange?: (e:ChangeEvent<HTMLInputElement>) => void 
+}
+
+```
+
+
+
+
+
+---
+
+
+
+推导：
+
+
+
+```tsx
+type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+
+
+type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+```
+
+
 
 
 
@@ -1688,3 +1760,78 @@ type Data = [number, string];
 链接：https://juejin.im/post/6844903749501059085
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+# 补充
+
+
+
+## 需要一个有value属性的对象
+
+需要一个有value属性的对象，这个ts应该怎么写？
+
+```tsx
+interface DataSourceObject {
+  value:string 
+}
+export type DataSourceType<T = {}> = T & DataSourceObject
+
+// DataSourceType 一定含有value
+```
+
+
+
+
+
+
+
+
+
+# 遇到的问题
+
+
+
+## e.target.value无法推断
+
+[https://stackoverflow.com/questions/59222530/property-value-does-not-exist-on-type-eventtarget-htmlinputelement-ts2339](https://stackoverflow.com/questions/59222530/property-value-does-not-exist-on-type-eventtarget-htmlinputelement-ts2339)
+
+
+
+```tsx
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setUserName(value)
+  }
+```
+
+
+
+出现报错
+
+```
+Property 'value' does not exist on type 'EventTarget & HTMLInputElement'.ts(2339)
+```
+
+
+
+解决：
+
+[https://stackoverflow.com/questions/44321326/property-value-does-not-exist-on-type-eventtarget-in-typescript](https://stackoverflow.com/questions/44321326/property-value-does-not-exist-on-type-eventtarget-in-typescript)
+
+改成这样
+
+```tsx
+(<HTMLInputElement>event.target).value
+```
+
+Here's another fix that works for me:
+
+```tsx
+(event.target as HTMLInputElement).value
+```
+
+
+
