@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Vuex简单分析"
+title:      "vuex相关分析"
 date:       2017-11-12 16:55:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

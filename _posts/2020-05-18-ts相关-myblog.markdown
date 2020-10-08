@@ -1176,7 +1176,81 @@ type Func = typeof toArray; // -> (x: number) => number[]
 
 
 
+## Record & Dictionary & Many
 
+这几个语法糖是从 `lodash` 的 types 源码中学到的，平时工作中的使用频率还挺高。
+
+```tsx
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+
+interface Dictionary<T> {
+  [index: string]: T;
+};
+
+interface NumericDictionary<T> {
+  [index: number]: T;
+};
+
+const data:Dictionary<number> = {
+  a: 3,
+  b: 4
+}
+```
+
+
+
+## class
+
+[https://www.sitepen.com/blog/advanced-typescript-concepts-classes-and-types](https://www.sitepen.com/blog/advanced-typescript-concepts-classes-and-types)
+
+When using the `class` keyword in TypeScript, you are actually creating *two* things with the same identifier:
+
+
+
+- A TypeScript interface containing all the instance methods and properties of the class; and
+- A JavaScript variable with a *different* (anonymous) constructor function type
+
+ 
+
+In other words, the example class above is effectively just shorthand for this code:
+
+```tsx
+// our TypeScript `Point` type
+interface Point {
+  x: number;
+  y: number;
+  toString(): string;
+}
+
+// our JavaScript `Point` variable, with a constructor type
+let Point: {
+  new (x: number, y: number): Point;
+  prototype: Point;
+
+  // static class properties and methods are actually part
+  // of the constructor type!
+  fromOtherPoint(point: Point): Point;
+};
+
+// `Function` does not fulfill the defined type so
+// it needs to be cast to 
+Point =  function (this: Point, x: number, y: number): void {
+  // ...
+};
+
+// static properties/methods go on the JavaScript variable...
+Point.fromOtherPoint = function (point: Point): Point {
+  // ...
+};
+
+// instance properties/methods go on the prototype
+Point.prototype.toString = function (): string {
+  // ...
+};
+
+```
 
 
 
@@ -1786,6 +1860,53 @@ export type DataSourceType<T = {}> = T & DataSourceObject
 
 
 
+## `is` 来判定值的类型
+
+```tsx
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    let code = 'BAD_REQUEST'
+    if (err.isAxiosError) {
+      code = `Axios-${err.code}`
+    } else if (err instanceof Sequelize.BaseError) {
+
+    }
+    ctx.body = {
+      code
+    }
+  }
+})
+
+```
+
+在 `err.code` 处，会编译出错，提示 `Property 'code' does not exist on type 'Error'.ts(2339)`。
+
+此时可以使用 `as AxiosError` 或者 `as any` 来避免报错，不过强制类型转换也不够友好
+
+```tsx
+if ((err as AxiosError).isAxiosError) {
+  code = `Axios-${(err as AxiosError).code}`
+}
+
+```
+
+此时可以使用 `is` 来判定值的类型
+
+```tsx
+function isAxiosError (error: any): error is AxiosError {
+  return error.isAxiosError
+}
+
+if (isAxiosError(err)) {
+  code = `Axios-${err.code}`
+}
+```
+
+
+
+
 
 
 
@@ -1834,4 +1955,8 @@ Here's another fix that works for me:
 ```
 
 
+
+
+
+## refers to a value, but is being used as a type here.
 
