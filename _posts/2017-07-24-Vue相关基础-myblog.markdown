@@ -1408,6 +1408,19 @@ status: {
 
 
 
+### {{}}保留换行符
+
+在vue中，我们使用{{}}操作符会删除掉换行符
+
+
+
+如果要保留换行符
+
+
+
+* 使用 v-html
+* 设置css  white-space: pre-line; 或  white-space: pre-wrap;
+
 
 
 

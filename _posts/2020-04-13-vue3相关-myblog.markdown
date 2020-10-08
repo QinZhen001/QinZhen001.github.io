@@ -228,31 +228,303 @@ const createApp = ((...args) => {
 
 
 
+### diff
+
+[https://mp.weixin.qq.com/s/jW3-icYQaJVITCYi730iIw](https://mp.weixin.qq.com/s/jW3-icYQaJVITCYi730iIw)
+
+
+
+```js
+// packages/runtime-core/src/renderer.ts
+function getSequence(arr: number[]): number[] {
+  const p = arr.slice() // 拷贝一个数组 p
+  const result = [0]
+  let i, j, u, v, c
+  const len = arr.length
+  for (i = 0; i < len; i++) {
+    const arrI = arr[i]
+    // 排除等于 0 的情况
+    if (arrI !== 0) {
+      j = result[result.length - 1]
+      // 与最后一项进行比较
+      if (arr[j] < arrI) { 
+        p[i] = j // 最后一项与 p 对应的索引进行对应
+        result.push(i)
+        continue
+      }
+      // arrI 比 arr[j] 小，使用二分查找找到后替换它
+      // 定义二分查找区间
+      u = 0
+      v = result.length - 1
+      // 开启二分查找
+      while (u < v) {
+        // 取整得到当前位置
+        c = ((u + v) / 2) | 0
+        if (arr[result[c]] < arrI) {
+          u = c + 1
+        } else {
+          v = c
+        }
+      }
+      // 比较 => 替换
+      if (arrI < arr[result[u]]) {
+        if (u > 0) { 
+          p[i] = result[u - 1]  // 正确的结果
+        }
+        result[u] = i // 有可能替换会导致结果不正确，需要一个新数组 p 记录正确的结果
+      }
+    }
+  }
+  u = result.length
+  v = result[u - 1]
+  // 倒叙回溯 用 p 覆盖 result 进而找到最终正确的索引
+  while (u-- > 0) {
+    result[u] = v
+    v = p[v]
+  }
+  return result
+}
+```
+
+> 贪心 + 二分查找法
+
+`getSequence` 的作用就是找到那些不需要移动的元素，在遍历的过程中，我们可以直接跳过不进行其他操作。
+
+
+
+Vue3 通过拷贝一个数组，用来存储正确的结果，然后通过回溯赋值的方式解决了贪心 + 二分查找替换方式可能造成的值不正确的问题。
 
 
 
 
-## 补充
+
+## 优化
 
 
 
 
 
-### vue3.0优化
+### **Block Tree 和 PatchFlags**
 
 
+[https://zhuanlan.zhihu.com/p/150732926](https://zhuanlan.zhihu.com/p/150732926)
 
 vue3.0它通过编译阶段对静态模板的分析，编译生成了 Block tree。Block tree 是一个将模版基于动态节点指令切割的嵌套区块，每个区块内部的节点结构是固定的，而且每个区块只需要以一个 Array 来追踪自身包含的动态节点。**借助 Block tree，Vue.js 将 vnode 更新性能由与模版整体大小相关提升为与动态内容的数量相关**，这是一个非常大的性能突破。
 
 
 
-Vue.js 3.0 在编译阶段还包含了对 Slot 的编译优化、事件侦听函数的缓存优化，并且在运行时重写了 diff 算法
+**Block 配合 PatchFlags 做到靶向更新**
+
+
+
+#### **v-for 的元素作为 Block**
+
+不仅 `v-if` 会让 `DOM` 结构不稳定，`v-for` 也会，但是 `v-for` 的情况稍微复杂一些。思考如下模板：
+
+```html
+<div>
+    <p v-for="item in list">{{ item }}</p>
+    <i>{{ foo }}</i>
+    <i>{{ bar }}</i>
+</div>
+```
+
+假设 list 值由 `[1 ,2]` 变为 `[1]`，按照之前的思路，最外层的 `<div>` 标签作为一个 `Block`，那么它更新前后对应的 `Block Tree` 应该是：
+
+```js
+// 前
+const prevBlock = {
+    tag: 'div',
+    dynamicChildren: [
+        { tag: 'p', children: 1, 1 /* TEXT */ },
+        { tag: 'p', children: 2, 1 /* TEXT */ },
+        { tag: 'i', children: ctx.foo, 1 /* TEXT */ },
+        { tag: 'i', children: ctx.bar, 1 /* TEXT */ },
+    ]
+}
+
+// 后
+const nextBlock = {
+    tag: 'div',
+    dynamicChildren: [
+        { tag: 'p', children: item, 1 /* TEXT */ },
+        { tag: 'i', children: ctx.foo, 1 /* TEXT */ },
+        { tag: 'i', children: ctx.bar, 1 /* TEXT */ },
+    ]
+}
+```
+
+`prevBlcok` 中有四个动态节点，`nextBlock` 中有三个动态节点。这时候要如何进行 `Diff`？有的同学可能会说拿 `dynamicChildren` 进行传统 `Diff`，这是不对的，因为传统 `Diff` 的一个前置条件是同层级节点间的 `Diff`，但是 `dynamicChildren` 内的节点未必是同层级的，这一点我们之前就提到过。
+
+
+
+实际上我们只需要让 `v-for` 的元素也作为一个 `Block` 就可以了。这样无论 `v-for` 怎么变化，它始终都是一个 `Block`，这保证了结构稳定，无论 `v-for` 怎么变化，这颗 `Block Tree` 看上去都是：
+
+```js
+const block = {
+    tag: 'div',
+    dynamicChildren: [
+        // 这是一个 Block 哦，它有 dynamicChildren
+        { tag: Fragment, dynamicChildren: [/*.. v-for 的节点 ..*/] }
+        { tag: 'i', children: ctx.foo, 1 /* TEXT */ },
+        { tag: 'i', children: ctx.bar, 1 /* TEXT */ },
+    ]
+}
+```
+
+
+
+#### **不稳定的 Fragment**
+
+刚刚我们使用一个 `Fragment` 并让它充当 `Block` 的角色解决了 `v-for` 元素所在层级的结构稳定，但我们来看一下这个 `Fragment` 本身：
+
+```js
+{ tag: Fragment, dynamicChildren: [/*.. v-for 的节点 ..*/] }
+```
+
+对于如下这样的模板：
+
+```html
+<p v-for="item in list">{{ item }}</p>
+```
+
+在 list 由 `[1, 2]` 变成 `[1]` 的前后，`Fragment` 这个 `Block` 看上去应该是：
+
+```js
+// 前
+const prevBlock = {
+    tag: Fragment,
+    dynamicChildren: [
+        { tag: 'p', children: item, 1 /* TEXT */ },
+        { tag: 'p', children: item, 2 /* TEXT */ }
+    ]
+}
+
+// 后
+const prevBlock = {
+    tag: Fragment,
+    dynamicChildren: [
+        { tag: 'p', children: item, 1 /* TEXT */ }
+    ]
+}
+```
+
+我们发现，`Fragment` 这个 `Block` 仍然面临结构不稳定的情况，**所谓结构不稳定从结果上看指的是更新前后一个 `block` 的 `dynamicChildren` 中收集的动态节点数量或顺序的不一致**。这种不一致会导致我们没有办法直接进行靶向 `Diff`，怎么办呢？其实对于这种情况是没有办法的，我们只能抛弃 `dynamicChildren` 的 `Diff`，并回退到传统 `Diff`：即 `Diff` `Fragment` 的 `children` 而非 `dynamicChildren`。
+
+
+
+但需要注意的是 `Fragment` 的子节点(`children`)仍然可以是 `Block`：
+
+```js
+const block = {
+    tag: Fragment,
+    children: [
+        { tag: 'p', children: item, dynamicChildren: [/*...*/], 1 /* TEXT */ },
+        { tag: 'p', children: item, dynamicChildren: [/*...*/], 1 /* TEXT */ }
+    ]
+}
+```
+
+这样，对于 `<p>` 标签及其子代节点的 `Diff` 将恢复 `Block Tree` 的 `Diff` 模式。
+
+
+
+
+
+### 静态提升
+
+`Vue3` 的 `Compiler` 如果开启了 `hoistStatic` 选项则会提升静态节点，或静态的属性，这可以减少创建 `VNode` 的消耗，如下模板所示：
+
+```html
+<div>
+    <p>text</p>
+</div>
+```
+
+在没有被提升的情况下其渲染函数相当于：
+
+```js
+function render() {
+    return (openBlock(), createBlock('div', null, [
+        createVNode('p', null, 'text')
+    ]))
+}
+```
+
+很明显，`p` 标签是静态的，它不会改变。但是如上渲染函数的问题也很明显，如果组件内存在动态的内容，当渲染函数重新执行时，即使 `p` 标签是静态的，那么它对应的 `VNode` 也会重新创建。当开启静态提升后，其渲染函数如下：
+
+```js
+const hoist1 = createVNode('p', null, 'text')
+
+function render() {
+    return (openBlock(), createBlock('div', null, [
+        hoist1
+    ]))
+}
+
+```
+
+
+
+#### **使用自定义指令的元素**
+
+实际上一个元素如果使用除 `v-pre/v-cloak` 之外的所有 `Vue` 原生提供的指令，都不会被提升，使用自定义指令也不会被提升，例如：
+
+```html
+<p v-custom></p>
+```
+
+和使用 `key` 一样，会为这段模板对应的 `VNode` 打上 `NEED_PATCH` 标志。顺便讲一下手写渲染函数时如何应用自定义指令，自定义指令是一种运行时指令，与组件的生命周期类似，一个 `VNode` 对象也有它自己生命周期
+
+ 
+
+### 手写高性能渲染函数
+
+**几个需要记住的小点：**
+
+1. 一个 `Block` 就是一个特殊的 `VNode`，可以理解为它只是比普通 `VNode` 多了一个 `dynamicChildren` 属性
+2. `createBlock()` 函数和 `createVNode()` 函数的调用签名几乎相同，实际上 `createBlock()` 函数内部就是封装了 `createVNode()`，这再次证明 `Block` 就是 `VNode`。
+3. 在调用 `createBlock()` 创建 `Block` 前要先调用 `openBlock()` 函数，通常这两个函数配合逗号运算符一同出现：
+
+```js
+render() {
+    return (openBlock(), createBlock('div'))
+}
+```
+
+
+
+### **Slot hint**
+
+我们在“稳定的 Fragment”一节中提到了 `slot hint`，当我们为组件编写插槽内容时，为了告诉 runtime：“我们已经能够保证插槽内容的结构稳定”，则需要使用 `slot hint`：
+
+```js
+render() {
+    return (openBlock(), createBlock(Comp, null, {
+        default: () => [
+            refVal.value
+               ? (openBlock(), createBlock('p', ...)) 
+               ? (openBlock(), createBlock('div', ...)) 
+        ],
+        // slot hint
+        _: 1
+    }))
+}
+```
+
+当然如果你不能保证这一点，或者觉得心智负担大，那么就不要写 `hint` 了。
 
 
 
 
 
 
+
+
+
+
+
+## 补充
 
 
 

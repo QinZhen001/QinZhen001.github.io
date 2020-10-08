@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "commonjs中exports和module.exports"
+title:      "commonjs相关"
 date:       2017-10-30 20:31:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -13,7 +13,7 @@ tags:
 
 
 ## 正文
- 
+
 [网页链接](https://www.ycjcl.cc/2017/02/10/module-exportshe-exportsde-qu-bie/)
 
 ### Module.exports
@@ -23,12 +23,13 @@ module.exports对象是由模块系统创建的。
 ### exports
 exports变量是在模块的文件级别作用域内有效的，它在模块被执行前被赋于 module.exports 的值。它有一个快捷方式，以便 module.exports.f = ... 可以被更简洁地写成exports.f = ...。 注意，就像任何变量，如果一个新的值被赋值给exports，它就不再绑定到module.exports(其实是exports.属性会自动挂载到没有命名冲突的module.exports.属性)
 
+
 ### require
 
 从require导入方式去理解，关键有两个变量(全局变量module.exports，局部变量exports)、一个返回值(module.exports)
 
 
-```
+```js
 console.log(exports); // {}  
 console.log(module.exports);  // {}  
 console.log(exports === module.exports);    // true  
@@ -58,7 +59,7 @@ console.log(module);
 ----------
 
 
-```
+```javascript
 // 2.js
 exports.id = 'exports的id';  
 exports.id2 = 'exports的id2';  
@@ -77,7 +78,7 @@ module.exports = {
 };
 ```
 
-```
+```javascript
 // 3.js
 var a = require('./2.js');  
 // 当属性和函数在module.exports都有定义时：
@@ -99,7 +100,7 @@ console.log(a.func2());    // 报错了 TypeError: a.func2 is not a function
 
 
 ----------
-```
+```javascript
 // 4.js
 var a = require('./5.js');  
 // 若传的是类，new一个对象
@@ -110,7 +111,7 @@ console.log(person.speak()); // my name is Kylin ,my age is 20
 // a.speak();  // my name is kylin ,my age is 20
 ```
 
-```
+```javascript
 // 5.js
 // Person类
 function Person(name,age){  
@@ -130,6 +131,61 @@ module.exports = Person;
 ```
 
 **说了这么多，其实建议就是，如果只是单一属性或方法的话，就使用exports.属性/方法。要是导出多个属性或方法或使用对象构造方法，结合prototype等，就建议使用module.exports = {}**
+
+
+
+
+#### require.context
+
+[https://juejin.im/post/6844903583113019405#heading-0](https://juejin.im/post/6844903583113019405#heading-0)
+
+
+可以使用 require.context() 方法来创建自己的（模块）上下文，这个方法有 3 个参数：
+
+
+
+- 要搜索的文件夹目录
+- 是否还应该搜索它的子目录，
+- 以及一个匹配文件的正则表达式。
+
+```js
+require.context(directory, useSubdirectories = false, regExp = /^\.\//)
+ 
+
+require.context("./test", false, /\.test\.js$/);
+//（创建了）一个包含了 test 文件夹（不包含子目录）下面的、所有文件名以 `.test.js` 结尾的、能被 require 请求到的文件的上下文。
+ 
+
+require.context("../", true, /\.stories\.js$/);
+//（创建了）一个包含了父级文件夹（包含子目录）下面，所有文件名以 `.stories.js` 结尾的文件的上下文。
+
+
+```
+
+
+
+> **require.context模块导出（返回）一个（require）函数**，这个函数可以接收一个参数：request 函数–这里的 request 应该是指在 require() 语句中的表达式
+
+
+
+导出的方法有 3 个属性： resolve, keys, id。
+
+- resolve 是一个函数，它返回请求被解析后得到的模块 id。
+- keys 也是一个函数，它返回一个数组，由所有可能被上下文模块处理的请求组成。
+- id 是上下文模块里面所包含的模块 id. 它可能在你使用 module.hot.accept 的时候被用到
+
+
+
+
+作者：LuckDay
+链接：https://juejin.im/post/6844903583113019405
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
 
 
 

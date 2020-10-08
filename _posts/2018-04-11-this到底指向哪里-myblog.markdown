@@ -161,8 +161,8 @@ console.log( b ); // 5
 
 **new绑定**
 Js中new与传统的面向类的语言机制不同，Js中的“构造函数”其实和普通函数没有任何区别。
-  
-  
+
+
 其实当我们使用new来调用函数的时候，发生了下列事情：
 
 
@@ -226,3 +226,58 @@ console.log(o.average, o.sum); // logs 2, 6
 链接：https://juejin.im/post/5acb1d326fb9a028d2083ce2
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+
+
+### bind(this)
+
+
+
+```js
+var myObj = {
+    specialFunction: function () {
+
+    },
+    anotherSpecialFunction: function () {
+
+    }
+    getAsyncData: function (cb) {
+        cb();
+    },
+    render: function () {
+        var that = this;
+        this.getAsyncData(function () {
+            that.specialFunction();
+            that.anotherSpecialFunction();
+        });
+    }
+};
+
+myObj.render();
+```
+
+If we had left our function calls as `this.specialFunction()`, then we would have received the following error:
+
+```javascript
+Uncaught TypeError: Object [object global] has no method 'specialFunction'
+```
+
+We need to keep the context of the `myObj` object referenced for when the callback function is called. Calling `that.specialFunction()` enables us to maintain that context and correctly execute our function. However, this could be neatened somewhat by using `Function.prototype.bind()`.
+
+
+
+Let’s rewrite our example:
+
+```js
+render: function () {
+    this.getAsyncData(function () {
+        this.specialFunction();
+        this.anotherSpecialFunction();
+    }.bind(this));
+}
+```
+

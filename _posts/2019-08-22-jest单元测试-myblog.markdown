@@ -247,7 +247,7 @@ test('the data is peanut butter', async () => {
 ```
 
 
-### 
+
 
 ### Manual Mocks
 
@@ -257,6 +257,7 @@ test('the data is peanut butter', async () => {
 
 
 
+## 补充
 
 
 
@@ -264,6 +265,85 @@ test('the data is peanut butter', async () => {
 
 
 
+### testing-library
+
+[https://testing-library.com/docs/react-testing-library/example-intro](https://testing-library.com/docs/react-testing-library/example-intro)
+
+
+
+在react中，我们使用下面的库进行单元测试
+
+```js
+"@testing-library/jest-dom": "^4.2.4"
+"@testing-library/react": "^9.3.2"
+```
+
+
+
+
+
+#### debug
+
+[https://testing-library.com/docs/react-testing-library/api](https://testing-library.com/docs/react-testing-library/api)
+
+
+
+This method is a shortcut for `console.log(prettyDOM(baseElement))`.
+
+```tsx
+import React from 'react'
+import { render } from '@testing-library/react'
+
+const HelloWorld = () => <h1>Hello World</h1>
+const { debug } = render(<HelloWorld />)
+debug()
+// <div>
+//   <h1>Hello World</h1>
+// </div>
+// you can also pass an element: debug(getByTestId('messages'))
+// and you can pass all the same arguments to debug as you can
+// to prettyDOM:
+// const maxLengthToPrint = 10000
+// debug(getByTestId('messages'), maxLengthToPrint, {highlight: false})
+
+```
+
+
+
+#### `cleanup`
+
+
+
+Unmounts React trees that were mounted with [render](https://testing-library.com/docs/react-testing-library/api#render).
+
+> Please note that this is done automatically if the testing framework you're using supports the `afterEach` global (like mocha, Jest, and Jasmine). If not, you will need to do manual cleanups after each test.
+
+For example, if you're using the [ava](https://github.com/avajs/ava) testing framework, then you would need to use the `test.afterEach` hook like so:
+
+```tsx
+import { cleanup, render } from '@testing-library/react'
+import test from 'ava'
+
+test.afterEach(cleanup)
+
+test('renders into document', () => {
+  render(<div />)
+  // ...
+})
+
+// ... more tests ...
+```
+
+
+
+#### 使用querySelector
+
+```tsx
+const wrapper = render(
+     <Input  placeholder="sizes" size="lg"></Input>
+   )
+const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
+```
 
 
 
@@ -271,9 +351,9 @@ test('the data is peanut butter', async () => {
 
 
 
+#### FAQ
 
-
-
+[https://testing-library.com/docs/react-testing-library/faq](https://testing-library.com/docs/react-testing-library/faq)
 
 
 
