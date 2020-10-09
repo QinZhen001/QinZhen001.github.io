@@ -1472,7 +1472,7 @@ type ExtractActionCreaotrKey<T> = {
 
 
 
-## 补充
+# 补充
 
 
 
@@ -1669,6 +1669,32 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 1. atl与Babel有一流的集成，可以实现缓存。这对于使用带有Babel的Typescript的人来说非常有用。当启用useBabel和useCache标志时，typescript的emit将使用Babel进行转换并缓存。所以下次如果源文件（+环境）具有相同的校验和，我们可以完全跳过typescript和babel的转换。这大大减少了此方案中的构建时间。
 2. atl能够将类型检查器和发射器分叉到一个单独的进程，这也加快了一些开发方案（例如与react-hot-loader的反应）所以你的webpack编译将提前结束，你可以在浏览器中探索编译版本你的文件是typechecked
+
+
+
+## tsc命令
+
+
+
+### --project，-p
+
+* 此命令接受一个string	
+
+Compile a project given a valid configuration file. The argument can be a file path to a valid JSON configuration file, or a directory path to a directory containing a `tsconfig.json` file. See [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) documentation for more details.
+
+
+
+```js
+script:{
+   "test:types": "tsc -p types/test",
+}
+```
+
+
+
+
+
+
 
 
 

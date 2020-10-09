@@ -59,6 +59,29 @@ history模式：
 
 
 
+## 路由组件(`RouteComponent`)
+
+ [https://juejin.im/post/6880529850159874062?utm_source=gold_browser_extension](https://juejin.im/post/6880529850159874062?utm_source=gold_browser_extension)
+
+
+
+当路由成功匹配时，就需要在`router-view`渲染一个组件，这个需要被渲染的组件就是`路由组件`
+
+`RouteConfig`中`component、components`中定义的`vue组件`就是路由组件
+
+
+
+路由组件的特殊性
+
+- 拥有**只在路由组件中生效**的守卫(`beforeRouteEnter 、beforeRouteUpdate、beforeRouteLeave`)
+- 你是否跟我一样，曾经在组件中调用`beforeRouteEnter`发现没有生效，那是因为这个守卫只能在`路由组件`中被调用，在所有非路由组件中都不会被调用，包括路由组件的后代组件；你如果想在路由组件中实现`beforeRouteEnter`类似守卫监听效果，可以通过`watch $route`来手动判断
+
+
+
+
+
+# 补充
+
 
 
 ## 多个路由地址绑定一个组件出问题
@@ -127,7 +150,7 @@ computed: {
 
 
 
-## 总结
+# 总结
 
 看文档要仔细 = = 
 https://router.vuejs.org/zh-cn/essentials/dynamic-matching.html#%E5%93%8D%E5%BA%94%E8%B7%AF%E7%94%B1%E5%8F%82%E6%95%B0%E7%9A%84%E5%8F%98%E5%8C%96

@@ -3792,5 +3792,107 @@ function find(arr, item) {
 
 
 
+### for..in,for..of 和 Object.keys的区别
+
+for..in
+
+* 遍历对象及其原型链上可枚举的属性
+* 如果用于遍历数组，除了遍历其元素外，还会遍历开发者对数组对象自定义的可枚举属性及其原型链上的可枚举属性
+* 遍历对象返回的属性名和遍历数组返回的索引都是string类型
+
+> 不推荐在数组中使用for in遍历
+
+
+
+```js
+  Array.prototype.getLength = function () {
+    return this.length
+  }
+
+  const arr = ['a', 'b', 'c']
+  arr.name = 'yd'
+  Object.defineProperty(arr, 'age', {
+    enumerable: true,
+    value: 5,
+    writable: true,
+    configurable: true
+  })
+
+  for(let item in arr){
+    console.log(item) // 0 1 2 name age getLength
+  }
+
+  const len =  arr.getLength()
+  console.log('len',len) // 3
+```
+
+----
+
+for..of 
+
+* 支持遍历数组，类数组对象(DOM NodeList)，字符串，Map对象，Set对象
+* 不支持遍历普通对象
+* 遍历后输出的结果为数组元素的值
+* 不会遍历到**对象属性及其原型属性**
+
+```js
+  Array.prototype.getLength = function(){
+    return this.length
+  }
+
+  const arr = ['a','b','c']
+  arr.name = 'yd'
+  Object.defineProperty(arr,'age',{
+    enumerable:true,
+    value:17,
+    writable:true,
+    configurable:true
+  })
+
+  for(let i of arr){
+    console.log(i) // a b c 
+  }
+```
+
+
+
+
+
+----
+
+Object.keys
+
+* 返回对象自身可枚举属性组成的数组
+* 不会遍历对象原型链上的属性以及Symbol属性
+
+
+
+```js
+  function Company() {
+    this.name = 'yd'
+  }
+
+  Company.prototype.getName = function () {
+    return this.name
+  }
+  const yd = new Company()
+  Object.defineProperty(yd, 'age', {
+    enumerable: true,
+    value: 5,
+    writable: true,
+    configurable: true
+  })
+  Object.defineProperty(yd, 'address', {
+    enumerable: false,
+    calue: '北京',
+    writable: true,
+    configurable: true
+  })
+
+  console.log(Object.keys(yd)) // ["name", "age"]
+```
+
+
+
 
 
