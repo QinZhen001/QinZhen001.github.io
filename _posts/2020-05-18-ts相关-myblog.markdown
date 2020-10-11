@@ -162,8 +162,6 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
-
-
 **一定要记住静态属性和方法的检查、实例属性和方法的检查是不同的 Interface**
 
 
@@ -640,6 +638,41 @@ type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 ```
 
 
+
+
+
+### InstanceType
+
+[https://www.typescriptlang.org/docs/handbook/utility-types.html#instancetypetype](https://www.typescriptlang.org/docs/handbook/utility-types.html#instancetypetype)
+
+
+
+定义：
+
+
+
+例子：
+
+```tsx
+class C {
+  x = 0;
+  y = 0;
+}
+
+type T0 = InstanceType<typeof C>;
+//    ^ = type T0 = C
+type T1 = InstanceType<any>;
+//    ^ = type T1 = any
+type T2 = InstanceType<never>;
+//    ^ = type T2 = never
+type T3 = InstanceType<string>;
+Type 'string' does not satisfy the constraint 'new (...args: any) => any'.
+//    ^ = type T3 = any
+type T4 = InstanceType<Function>;
+Type 'Function' does not satisfy the constraint 'new (...args: any) => any'.
+  Type 'Function' provides no match for the signature 'new (...args: any): any'.
+//    ^ = type T4 = any
+```
 
 
 
@@ -1470,6 +1503,32 @@ type ExtractActionCreaotrKey<T> = {
 
 
 
+### noImplicitAny
+
+https://segmentfault.com/a/1190000019768261
+
+`noImplicitAny`编译器选项所做的，基本上是将TypeScript从*可选类型语言*转换为*强制类型检验语言*。这使得TypeScript离JavaScript的超集稍微远了一些，因为简单的：
+
+```tsx
+function logMe(x) {
+  console.log(x);
+}
+// error TS7006: Parameter 'x' implicitly has an 'any' type.
+```
+
+也将报错——你必须明确声明`x`的类型为`any`:
+
+```tsx
+function logMe(x: any) {
+  console.log(x);
+}
+ // OK
+```
+
+这意味着，如果你要把*现有的JS代码库*迁移到TS，那除了更改文件扩展名，你还得做一些较复杂的东西。这还意味着，在编写代码时，您需要更多地关注类型，如果不指定类型，编译器就总是会「抱怨」。由于在实际情况中*显式地声明`any`*被认为是不好的实践，所以在开发过程的早期，您就需要分配*正确的类型*。如果没有显式的声明，这可能意味着「我太懒了，没有正确地注释这里的类型」。
+
+
+
 
 
 # 补充
@@ -1698,6 +1757,14 @@ script:{
 
 
 
+## ts对应的错误码
+
+[https://www.tslang.cn/docs/handbook/error.html](https://www.tslang.cn/docs/handbook/error.html)
+
+
+
+
+
 
 
 ## 遇到的问题
@@ -1759,7 +1826,76 @@ Unfortunately, there is no other workaround for this problem. Please do not remo
 
 
 
-## 面试
+
+
+## 需要一个有value属性的对象
+
+需要一个有value属性的对象，这个ts应该怎么写？
+
+```tsx
+interface DataSourceObject {
+  value:string 
+}
+export type DataSourceType<T = {}> = T & DataSourceObject
+
+// DataSourceType 一定含有value
+```
+
+
+
+
+
+## `is` 来判定值的类型
+
+```tsx
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    let code = 'BAD_REQUEST'
+    if (err.isAxiosError) {
+      code = `Axios-${err.code}`
+    } else if (err instanceof Sequelize.BaseError) {
+
+    }
+    ctx.body = {
+      code
+    }
+  }
+})
+
+```
+
+在 `err.code` 处，会编译出错，提示 `Property 'code' does not exist on type 'Error'.ts(2339)`。
+
+此时可以使用 `as AxiosError` 或者 `as any` 来避免报错，不过强制类型转换也不够友好
+
+```tsx
+if ((err as AxiosError).isAxiosError) {
+  code = `Axios-${(err as AxiosError).code}`
+}
+
+```
+
+此时可以使用 `is` 来判定值的类型
+
+```tsx
+function isAxiosError (error: any): error is AxiosError {
+  return error.isAxiosError
+}
+
+if (isAxiosError(err)) {
+  code = `Axios-${err.code}`
+}
+```
+
+
+
+
+
+
+
+# 面试
 
 
 
@@ -1865,73 +2001,6 @@ type Data = [number, string];
 
 
 
-# 补充
-
-
-
-## 需要一个有value属性的对象
-
-需要一个有value属性的对象，这个ts应该怎么写？
-
-```tsx
-interface DataSourceObject {
-  value:string 
-}
-export type DataSourceType<T = {}> = T & DataSourceObject
-
-// DataSourceType 一定含有value
-```
-
-
-
-
-
-## `is` 来判定值的类型
-
-```tsx
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (err) {
-    let code = 'BAD_REQUEST'
-    if (err.isAxiosError) {
-      code = `Axios-${err.code}`
-    } else if (err instanceof Sequelize.BaseError) {
-
-    }
-    ctx.body = {
-      code
-    }
-  }
-})
-
-```
-
-在 `err.code` 处，会编译出错，提示 `Property 'code' does not exist on type 'Error'.ts(2339)`。
-
-此时可以使用 `as AxiosError` 或者 `as any` 来避免报错，不过强制类型转换也不够友好
-
-```tsx
-if ((err as AxiosError).isAxiosError) {
-  code = `Axios-${(err as AxiosError).code}`
-}
-
-```
-
-此时可以使用 `is` 来判定值的类型
-
-```tsx
-function isAxiosError (error: any): error is AxiosError {
-  return error.isAxiosError
-}
-
-if (isAxiosError(err)) {
-  code = `Axios-${err.code}`
-}
-```
-
-
-
 
 
 
@@ -1985,4 +2054,145 @@ Here's another fix that works for me:
 
 
 ## refers to a value, but is being used as a type here.
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Define prototype 
+
+> error TS2339: Property 'applyParams' does not exist on type 'Function'.
+
+```js
+Function.prototype.applyParams = (params: any) => {
+     this.apply(this, params);
+}
+```
+
+
+
+解决：
+
+Define the method on an interface named `Function` in a `.d.ts` file. This will cause it to [declaration merge](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) with the global `Function` type:
+
+```js
+interface Function {
+    applyParams(params: any): void;
+}
+```
+
+
+
+## constructor function
+
+[https://www.typescriptlang.org/docs/handbook/classes.html#constructor-functions](https://www.typescriptlang.org/docs/handbook/classes.html#constructor-functions)
+
+在ts中我们如何用function模拟一个class？
+
+
+
+```tsx
+let Greeter = (function () {
+  function Greeter(message) {
+    this.greeting = message;
+  }
+
+  Greeter.prototype.greet = function () {
+    return "Hello, " + this.greeting;
+  };
+
+  return Greeter;
+})();
+
+let greeter;
+greeter = new Greeter("world");
+console.log(greeter.greet()); // "Hello, world"
+```
+
+
+
+
+
+## 'new' expression implicitly has an 'any' type.ts(7009)
+
+[https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript](https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript)
+
+```tsx
+const TestVectorLayer = function(layerName: string) {
+};
+
+const layer = new TestVectorLayer("");
+```
+
+报错：
+
+```
+'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.ts(7009)
+```
+
+
+
+为什么会有这个报错？
+
+
+
+我们先看前置知识
+
+[noImplicitAny](#noImplicitAny)
+
+
+
+You can fix this by switching to a class, but in your case this seems a bit more complicated because the inheritance is done by the underlying framework. Because of that, you will have to do something a bit more complicated and it's not ideal:
+
+
+
+```ts
+interface TestVectorLayer {
+  // members of your "class" go here
+}
+
+const TestVectorLayer = function (this: TestVectorLayer, layerName: string) {
+  // ...
+  console.log(layerName);
+  ol.layer.Image.call(this, opts);
+} as any as { new (layerName: string): TestVectorLayer; };
+
+ol.inherits(TestVectorLayer, ol.layer.Image);
+
+export default TestVectorLayer; 
+Then in the file with TestComponent:
+
+const layer = new TestVectorLayer(layerName); // no more compile error
+
+```
+
+
+
+---
+
+
+
+```tsx
+
+interface TestVectorLayer{
+  layerName:string
+}
+
+const TestVectorLayer = function(this:TestVectorLayer,layerName: string) {
+  this.layerName = layerName
+} as any  as { new (layerName: string): TestVectorLayer; };
+
+// 如果不加 as { new (layerName: string): TestVectorLayer; };
+// 无法推断出下面的111不合法
+const layer = new TestVectorLayer(111) 
+ 
+```
 
