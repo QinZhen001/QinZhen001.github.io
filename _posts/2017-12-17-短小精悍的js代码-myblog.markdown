@@ -1742,6 +1742,43 @@ function htmlEncode(text) {
 
 
 
+### 位运算控制权限
+
+位运算关系到[vue3的组合静态标记中的patchFlag](https://github.com/vuejs/vue-next/blob/master/packages/shared/src/patchFlags.ts)和[react源码中的EventFlag](https://github.com/facebook/react/blob/master/packages/react-dom/src/events/EventSystemFlags.js)，一定要搞明白，而且位运算本身就是做组合权限教研的最佳实践，按位或授权，按位与校验权限，除了理解vue3和react源码外，我们做组件开发的时候也用的到
+
+
+
+```js
+  let TEXT = 1 
+  let CLASS = 1 << 2 
+  let PROPS = 1 << 3 
+
+  // 授权 TEXT和CLASS
+  let permisson = TEXT | CLASS 
+
+
+  let hasTextPermisson = !!(permisson & TEXT)
+  console.log('是否有TEXT权限',hasTextPermisson)
+
+  let hasClassPermisson = !!(permisson & CLASS)
+  console.log('是否有CLASS权限',hasClassPermisson)
+
+  let hasPropsPermisson = !!(permisson & PROPS)
+  console.log('是否有PROPS权限',hasPropsPermisson)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

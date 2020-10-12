@@ -1537,6 +1537,10 @@ function logMe(x: any) {
 
 
 
+
+
+
+
 ### 函数重载
 
 *不要*把一般的重载放在精确的重载前面：
@@ -1735,6 +1739,19 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 
 
+### 编译单文件
+
+```
+tsc --out final.js class.ts
+```
+
+* final.js 最终生成文件
+* class.ts 要转化的ts文件
+
+
+
+
+
 ### --project，-p
 
 * 此命令接受一个string	
@@ -1757,7 +1774,11 @@ script:{
 
 
 
-## ts对应的错误码
+
+
+
+
+### ts对应的错误码
 
 [https://www.tslang.cn/docs/handbook/error.html](https://www.tslang.cn/docs/handbook/error.html)
 
@@ -1826,9 +1847,7 @@ Unfortunately, there is no other workaround for this problem. Please do not remo
 
 
 
-
-
-## 需要一个有value属性的对象
+## 有value属性的对象（同时支持泛型）
 
 需要一个有value属性的对象，这个ts应该怎么写？
 
@@ -2195,4 +2214,87 @@ const TestVectorLayer = function(this:TestVectorLayer,layerName: string) {
 const layer = new TestVectorLayer(111) 
  
 ```
+
+
+
+
+
+## 在class prototype中定义方法
+
+[https://stackoverflow.com/questions/26780224/defining-prototype-property-in-typescript](https://stackoverflow.com/questions/26780224/defining-prototype-property-in-typescript)
+
+
+
+```tsx
+class Test{
+  constructor(){}
+}
+
+Test.prototype.xxx = function(){
+  
+}
+```
+
+出现报错：
+
+```
+Property 'xxx' does not exist on type 'Test'.ts(2339)
+```
+
+解决方案：
+
+```ts
+class A {
+    attributeId:string;
+}
+A.prototype.attributeId = "InternalId";
+
+```
+
+
+
+引申出一个问题：
+
+我们在class中定义的属性是不是都会放进class prototype中？
+
+
+
+**答案是否定的**
+
+
+
+举个例子：
+
+```tsx
+class A {
+  attributeId:string;
+  //  aaa并不会出现在prototype中
+  aaa:string
+  constructor(obj:any){
+    this.aaa = obj.aaa
+  }
+}
+A.prototype.attributeId = "InternalId";
+
+let a = new A({aaa:123})
+```
+
+编译成es5
+
+```js
+var A = /** @class */ (function () {
+    function A(obj) {
+        this.aaa = obj.aaa;
+    }
+    return A;
+}());
+A.prototype.attributeId = "InternalId";
+var a = new A({ aaa: 123 });
+```
+
+
+
+
+
+
 
