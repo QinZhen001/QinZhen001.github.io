@@ -401,7 +401,23 @@ if(visible){
 
 
 
+### leading-trim 实现垂直居中
+
+[https://juejin.im/post/6882275388920332302?utm_source=gold_browser_extension](https://juejin.im/post/6882275388920332302?utm_source=gold_browser_extension)
+
+```css
+h1 { 
+ text-edge: cap alphabetic;
+ leading-trim: both;
+}
+```
 
 
 
+Text Crop
 
+[http://text-crop.eightshapes.com/](http://text-crop.eightshapes.com/)
+
+Want to rid your components of that pesky space above and below a block of text due to line height
+
+删除你的组件的讨厌的空间上面和下面的文本块由于行高
