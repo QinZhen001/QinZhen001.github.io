@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "jest单元测试"
+title:      "单元测试相关"
 date:       2019-08-22 16:04:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -12,8 +12,11 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+# 正文
 
+
+
+## jest
 
 [https://jestjs.io/docs/en/getting-started](https://jestjs.io/docs/en/getting-started)
 
@@ -248,8 +251,121 @@ test('the data is peanut butter', async () => {
 
 
 
+### Mock
 
-### Manual Mocks
+
+
+#### Mock a function
+
+```tsx
+function forEach(items, callback) {
+  for (let index = 0; index < items.length; index++) {
+    callback(items[index]);
+  }
+}
+```
+
+To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
+
+```tsx
+const mockCallback = jest.fn(x => 42 + x);
+forEach([0, 1], mockCallback);
+
+// The mock function is called twice
+expect(mockCallback.mock.calls.length).toBe(2);
+
+// The first argument of the first call to the function was 0
+expect(mockCallback.mock.calls[0][0]).toBe(0);
+
+// The first argument of the second call to the function was 1
+expect(mockCallback.mock.calls[1][0]).toBe(1);
+
+// The return value of the first call to the function was 42
+expect(mockCallback.mock.results[0].value).toBe(42);
+```
+
+
+
+#### Mock Modules
+
+Suppose we have a class that fetches users from our API. The class uses [axios](https://github.com/axios/axios) to call the API then returns the `data` attribute which contains all the users:
+
+```tsx
+// users.js
+import axios from 'axios';
+
+class Users {
+  static all() {
+    return axios.get('/users.json').then(resp => resp.data);
+  }
+}
+
+export default Users;
+```
+
+Now, in order to test this method without actually hitting the API (and thus creating slow and fragile tests), we can use the `jest.mock(...)` function to automatically mock the axios module.
+
+Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want `axios.get('/users.json')` to return a fake response.
+
+```tsx
+// users.test.js
+import axios from 'axios';
+import Users from './users';
+
+jest.mock('axios');
+
+test('should fetch users', () => {
+  const users = [{name: 'Bob'}];
+  const resp = {data: users};
+  axios.get.mockResolvedValue(resp);
+
+  // or you could use the following depending on your use case:
+  // axios.get.mockImplementation(() => Promise.resolve(resp))
+
+  return Users.all().then(data => expect(data).toEqual(users));
+});
+```
+
+
+
+#### Mock Implementations
+
+Still, there are cases where it's useful to go beyond the ability to specify return values and full-on replace the implementation of a mock function. This can be done with `jest.fn` or the `mockImplementationOnce` method on mock functions.
+
+```tsx
+const myMockFn = jest.fn(cb => cb(null, true));
+
+myMockFn((err, val) => console.log(val));
+// > true
+```
+
+The `mockImplementation` method is useful when you need to define the default implementation of a mock function that is created from another module:
+
+```tsx
+// foo.js
+module.exports = function () {
+  // some implementation;
+};
+
+// test.js
+jest.mock('../foo'); // this happens automatically with automocking
+const foo = require('../foo');
+
+// foo is a mock function
+foo.mockImplementation(() => 42);
+foo();
+// > 42
+```
+
+
+
+
+
+
+
+
+
+#### Manual Mocks
 
 [https://jestjs.io/docs/en/manual-mocks](https://jestjs.io/docs/en/manual-mocks)
 
@@ -257,15 +373,7 @@ test('the data is peanut butter', async () => {
 
 
 
-## 补充
-
-
-
-
-
-
-
-### testing-library
+## testing-library
 
 [https://testing-library.com/docs/react-testing-library/example-intro](https://testing-library.com/docs/react-testing-library/example-intro)
 
@@ -361,9 +469,139 @@ const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
 
 
 
+## testing-library/react
+
+[https://testing-library.com/docs/react-testing-library/api](https://testing-library.com/docs/react-testing-library/api)
 
 
 
 
 
+#### render
+
+> render函数的返回值是RenderResult
+
+```tsx
+function render(
+  ui: React.ReactElement<any>,
+  options?: {
+    /* You won't often use this, expand below for docs on options */
+  }
+): RenderResult
+```
+
+
+
+例子：
+
+```tsx
+import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+
+test('renders a message', () => {
+  const { container, getByText } = render(<Greeting />)
+  expect(getByText('Hello, world!')).toBeInTheDocument()
+  expect(container.firstChild).toMatchInlineSnapshot(`
+    <h1>Hello, World!</h1>
+  `)
+})
+```
+
+
+
+#### container
+
+By default, `React Testing Library` will create a `div` and append that `div` to the `document.body` and this is where your React component will be rendered. If you provide your own HTMLElement `container` via this option, it will not be appended to the `document.body` automatically.
+
+
+
+**如果我们要通过className来查找元素，经常使用container**
+
+
+
+例子：
+
+```tsx
+let wrapper = render(<AutoComplete {...testProps}/>)
+wrapper.container.querySelectorAll('.suggestion-item').length
+```
+
+
+
+#### test input onChange handlers
+
+```ts
+import React from 'react'
+import { render, fireEvent } from '@testing-library/react'
+
+test('change values via the fireEvent.change method', () => {
+  const handleChange = jest.fn()
+  const { container } = render(<input type="text" onChange={handleChange} />)
+  const input = container.firstChild
+  fireEvent.change(input, { target: { value: 'a' } })
+  expect(handleChange).toHaveBeenCalledTimes(1)
+  expect(input.value).toBe('a')
+})
+
+test('select drop-downs must use the fireEvent.change', () => {
+  const handleChange = jest.fn()
+  const { container } = render(
+    <select onChange={handleChange}>
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+  )
+  const select = container.firstChild
+  const option1 = container.getElementsByTagName('option').item(0)
+  const option2 = container.getElementsByTagName('option').item(1)
+
+  fireEvent.change(select, { target: { value: '2' } })
+
+  expect(handleChange).toHaveBeenCalledTimes(1)
+  expect(option1.selected).toBe(false)
+  expect(option2.selected).toBe(true)
+})
+
+test('checkboxes (and radios) must use fireEvent.click', () => {
+  const handleChange = jest.fn()
+  const { container } = render(
+    <input type="checkbox" onChange={handleChange} />
+  )
+  const checkbox = container.firstChild
+  fireEvent.click(checkbox)
+  expect(handleChange).toHaveBeenCalledTimes(1)
+  expect(checkbox.checked).toBe(true)
+})
+```
+
+
+
+#### unmount
+
+This will cause the rendered component to be unmounted. **This is useful for testing what happens when your component is removed from the page** (like testing that you don't leave event handlers hanging around causing memory leaks).
+
+```tsx
+import { render } from '@testing-library/react'
+
+const { container, unmount } = render(<Login />)
+unmount()
+// your component has been unmounted and now: container.innerHTML === ''
+```
+
+
+
+
+
+#### rerender
+
+It'd probably be better if you test the component that's doing the prop updating to ensure that the props are being updated correctly (see [the Guiding Principles section](https://testing-library.com/docs/guiding-principles)). That said, if you'd prefer to update the props of a rendered component in your test, this function can be used to update props of the rendered component.
+
+```tsx
+import { render } from '@testing-library/react'
+
+const { rerender } = render(<NumberDisplay number={1} />)
+
+// re-render the same component with different props
+rerender(<NumberDisplay number={2} />)
+```
 

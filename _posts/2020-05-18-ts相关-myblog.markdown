@@ -1414,9 +1414,66 @@ var cat = new Cat('Tom');
 
 
 
+## as 
 
 
-## as const
+
+### as用作重新赋值
+
+出现报错：
+
+```
+Property 'url' does not exist on type 'DataSourceObject'.
+```
+
+
+
+```tsx
+  const renderOption = (item:DataSourceType) => {
+    item = item as  DataSourceType<GithubUserProps>
+    return (
+      <>
+        <h2>Name: {item.value}</h2>
+         <p>url: {item.url}</p>
+      </>
+    )
+  }
+```
+
+解决方案:
+
+* 将as的结果赋值给一个新的变量
+
+
+
+```tsx
+ interface GithubUserProps {
+  login:string,
+  url:string,
+  avatar_url:string 
+}
+
+
+const renderOption = (item:DataSourceType) => {
+    const itemWithGithub = item as  DataSourceType<GithubUserProps>
+    return (
+      <>
+        <h2>Name: {itemWithGithub.value}</h2>
+         <p>url: {itemWithGithub.url}</p>
+      </>
+    )
+  }
+```
+
+
+
+
+
+
+
+
+
+### as const
 
 [https://blog.csdn.net/yunfeihe233/article/details/108027882](https://blog.csdn.net/yunfeihe233/article/details/108027882)
 

@@ -1771,6 +1771,39 @@ function htmlEncode(text) {
 
 
 
+### 删除字符串中的某一个字符
+
+如果我们只想删除字符串中一个指定字符，该如何做？
+
+```js
+let str = "aabbccddeetgbnghbb";
+str = str.replace("b", "");  // 'aabccddeetgbnghbb'
+```
+
+有一个缺点:
+
+* **只能删除第一次遇到指定的字符**
+* 如果要删除第二次遇到指定的字符，可以把string转array，两次indexOf找到下标，再删除
+
+
+
+### 获取字符串中某字符第二次出现的下标
+
+```js
+var res = "a-b-c-d";
+var index = find(res,'-',1);   //字符串res中第二个‘-’的下标
+var ress = res.substring(index);  //ress的值为 "-c-d"
+
+
+function find(str,cha,num){
+    var x=str.indexOf(cha);
+    for(var i=0;i<num;i++){
+        x=str.indexOf(cha,x+1);
+    }
+    return x;
+}
+```
+
 
 
 

@@ -71,3 +71,30 @@ By default the child component does not perform the enter transition when it fir
 
 * type: `boolean`
 * default: `false`
+
+
+
+
+
+
+
+### 测试
+
+[https://reactcommunity.org/react-transition-group/testing](https://reactcommunity.org/react-transition-group/testing)
+
+
+
+> 当我们使用测试框架事关闭react-transition-group的动画过渡效果
+
+In some situations, like visual snapshot testing, it's helpful to disable transitions so they don't complicate the test, or introduce abitrary waits. To make this easier `react-transition-group` exposes a way to globally toggle transitions. When set, **all** transitions, when toggled, will immediately switch to their entered or exited states as appropriate.
+
+
+
+```js
+import { config } from 'react-transition-group
+
+config.disabled = true
+```
+
+
+
