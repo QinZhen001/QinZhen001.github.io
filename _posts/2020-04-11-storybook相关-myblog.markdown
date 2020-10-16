@@ -104,13 +104,15 @@ Storybook在你的应用程序之外运行，所以你可以独立开发UI组件
 
 
 
-## 爬坑
+## 问题
 
 
 
+### addon-info
 
 
-###  vue中使用addon-info 
+
+####  vue中使用addon-info 
 
 
 
@@ -139,6 +141,62 @@ Installed `@storybook/addon-info` to work with a Vue app, but I've been unable t
 [ https://github.com/storybooks/storybook/blob/next/ADDONS_SUPPORT.md ]( https://github.com/storybooks/storybook/blob/next/ADDONS_SUPPORT.md )
 
 
+
+#### Warning: Failed prop type
+
+出现Warning
+
+```js
+checkPropTypes.js:20 Warning: Failed prop type: Invalid prop `type` of type `symbol` supplied to `TableComponent`, expected `function`.
+    in TableComponent (created by Story)
+    in Story (created by storyFn)
+    in storyFn
+    in ErrorBoundary
+```
+
+定位错误:
+
+```tsx
+storiesOf("Input component", module)
+  .add("大小不同的 Input", sizeInput)
+
+const sizeInput = () => (
+  <>
+    <Input
+      style={{width:'300px'}}
+      defaultValue="large size"
+      size='lg'
+    ></Input>
+    <Input
+      style={{width:'300px'}}
+      placeholder="small size"
+      size='sm'  
+    ></Input>
+  </>
+);
+```
+
+这会导致addon-info出现"Unknown" Component
+
+**No propTypes defined!**  (sizeInput 并不是返回一个组件)
+
+
+
+
+
+解决:
+
+```tsx
+const sizeInput = () => (
+    <Input
+      style={{width:'300px'}}
+      placeholder="small size"
+      size='sm'  
+    ></Input>
+);
+```
+
+这样就可以推到出类型。
 
 
 
@@ -180,4 +238,43 @@ Calling `configure` from `@storybook/react` more than once in your `.storybook/c
 
 
 
+
+### addon-actions
+
+
+
+#### action无法触发
+
+错误的写法：
+
+action无法触发
+
+```tsx
+import { action } from "@storybook/addon-actions";
  
+<Menu onSelect={(index) => action(`asdsd ${index}`)}>
+    <MenuItem>cool link</MenuItem>
+    <MenuItem disabled>disabled</MenuItem>
+    <MenuItem>cool link 2</MenuItem>
+    <MenuItem>cool link 3</MenuItem>
+    <MenuItem>cool link 4</MenuItem>
+  </Menu>
+```
+
+解决方案:
+
+```tsx
+<Menu onSelect={action('selected')}>
+    <MenuItem>cool link</MenuItem>
+    <MenuItem disabled>disabled</MenuItem>
+    <MenuItem>cool link 2</MenuItem>
+    <MenuItem>cool link 3</MenuItem>
+    <MenuItem>cool link 4</MenuItem>
+  </Menu>
+```
+
+
+
+
+
+

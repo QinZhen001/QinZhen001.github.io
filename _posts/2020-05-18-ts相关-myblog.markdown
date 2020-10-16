@@ -2300,6 +2300,51 @@ TypeScript还有一种感叹号（`!`）结尾的语法，它会从前面的表�
 
 
 
+### Event类型使用错误
+
+```tsx
+<li  onMouseEnter: (e: MouseEvent) => {
+          .....
+      }>
+     	......
+</li>
+```
+
+出现报错
+
+```
+(property) JSX.IntrinsicElements.li: React.DetailedHTMLProps<React.LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>
+```
+
+查找原因：
+
+react使用的事件是合成事件，而上面的MouseEvent使用的是global.d.ts中的MouseEvent（ES6定义的），**并没有使用react中的MouseEvent**
+
+解决：
+
+```tsx
+import React, {
+  MouseEvent
+} from "react";
+
+
+<li  onMouseEnter: (e: MouseEvent) => {
+          .....
+      }>
+     	......
+</li>
+```
+
+
+
+
+
+
+
+
+
+
+
 ## e.target.value无法推断
 
 [https://stackoverflow.com/questions/59222530/property-value-does-not-exist-on-type-eventtarget-htmlinputelement-ts2339](https://stackoverflow.com/questions/59222530/property-value-does-not-exist-on-type-eventtarget-htmlinputelement-ts2339)
@@ -2629,8 +2674,4 @@ let DecoratedCat = DecorateAnimal(Cat);
 
 
 ## 
-
-
-
-
 
