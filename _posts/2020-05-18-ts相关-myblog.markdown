@@ -2211,6 +2211,95 @@ type Data = [number, string];
 
 
 
+## 在react中使用ts的问题
+
+
+
+### React  children type
+
+[https://stackoverflow.com/questions/53688899/typescript-and-react-children-type](https://stackoverflow.com/questions/53688899/typescript-and-react-children-type)
+
+
+
+我们要怎么样才能在react中判断children类型？
+
+
+
+This is what worked for me:
+
+```tsx
+interface Props {
+  children: React.ReactNode
+}
+```
+
+**Edit** I would recommend using `children: React.ReactNode` instead now.
+
+
+
+----
+
+
+
+You can use `ReactChildren` and `ReactChild`:
+
+```tsx
+import React, { ReactChildren, ReactChild } from 'react';
+
+interface AuxProps {
+  children: ReactChild | ReactChildren;
+}
+
+const Aux = ({ children }: AuxProps) => (<div>{children}</div>);
+
+export default Aux;
+```
+
+
+
+---
+
+
+
+推荐一点做法：
+
+使用as重新赋值:
+
+```tsx
+  const childrenComponent = React.Children.map(children, (child, i) => {
+      const childElement = child as FunctionComponentElement<MenuItemProps>
+	  ......	
+    })
+```
+
+
+
+
+
+### as HTMLElement
+
+
+
+```tsx
+ReactDOM.render(
+  <Hello name="TypeScript" enthusiasmLevel={10} />,
+  document.getElementById('root') as HTMLElement
+);
+
+```
+
+这里还有一点要指出，就是最后一行`document.getElementById('root') as HTMLElement`。 这个语法叫做*类型断言*，有时也叫做*转换*。 当你比类型检查器更清楚一个表达式的类型的时候，你可以通过这种方式通知TypeScript。
+
+
+
+这里，我们之所以这么做是因为`getElementById`的返回值类型是`HTMLElement | null`。 简单地说，`getElementById`返回`null`是当无法找对对应`id`元素的时候。 我们假设`getElementById`总是成功的，因此我们要使用`as`语法告诉TypeScript这点。
+
+
+
+TypeScript还有一种感叹号（`!`）结尾的语法，它会从前面的表达式里移除`null`和`undefined`。 所以我们也*可以*写成`document.getElementById('root')!`，但在这里我们想写的更清楚些。
+
+
+
 ## e.target.value无法推断
 
 [https://stackoverflow.com/questions/59222530/property-value-does-not-exist-on-type-eventtarget-htmlinputelement-ts2339](https://stackoverflow.com/questions/59222530/property-value-does-not-exist-on-type-eventtarget-htmlinputelement-ts2339)
@@ -2539,7 +2628,7 @@ let DecoratedCat = DecorateAnimal(Cat);
 
 
 
-
+## 
 
 
 
