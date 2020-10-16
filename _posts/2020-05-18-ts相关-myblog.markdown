@@ -2478,5 +2478,70 @@ var a = new A({ aaa: 123 });
 
 
 
+## [Property 'prototype' does not exist](https://stackoverflow.com/questions/50215073/property-prototype-does-not-exist)
+
+[https://stackoverflow.com/questions/50215073/property-prototype-does-not-exist](https://stackoverflow.com/questions/50215073/property-prototype-does-not-exist)
+
+
+
+```
+error TS2339: Property 'prototype' does not exist on ....
+```
+
+
+
+解决：
+
+```tsx
+interface IPrototype { prototype: any; }
+
+(IORedis as IPrototype & Redis).prototype ...
+```
+
+**Another option** might be to declare your const like this:
+
+```tsx
+interface IPrototype { prototype: any; }
+type MyRedis = Redis & IPrototype;
+const IORedis: MyRedis = jest.genMockFromModule<MyRedis>('ioredis');
+```
+
+
+
+## new() 出现问题
+
+[https://stackoverflow.com/questions/34698710/defining-typescript-generic-type-with-new](https://stackoverflow.com/questions/34698710/defining-typescript-generic-type-with-new)
+
+
+
+[Argument of type 'typeof Cat' is not assignable to parameter of type 'new () => Cat'.](https://github.com/microsoft/TypeScript/issues/13149)
+
+
+
+The reason was that **I didn't set default values for the properties in the constructor**, hence the parameterless `new(): T` won't match.
+
+
+
+```tsx
+class Animal {
+    // constructor() {} // (This constructor works)
+    // constructor(public p: string) {} // (This constructor errors) (p 没有设置默认值)
+    constructor(public p = '') {} // (This constructor works)
+}
+class Cat extends Animal {}
+
+declare function DecorateAnimal<T extends Animal>(original: { new(): T }): { 
+    new(): T; 
+};
+
+let DecoratedCat = DecorateAnimal(Cat);
+```
+
+
+
+
+
+
+
 
 
