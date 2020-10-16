@@ -667,80 +667,7 @@ options[i].name = "Hello"
 
 
 
-#### 陷阱Literal Array与Literal Object
-
-
-
-```jsx
-{this.props.items.map(i =>
-    <Cell data={i} options={this.props.options || []} />
-)}
-```
-
-
-
-若options为空，则会使用[]。[]每次会生成新的Array，因此导致Cell每次的props都不一样，导致需要重绘。解决方法如下:
-
-```jsx
-const default = [];
-{this.props.items.map(i =>
-  <Cell data={i} options={this.props.options || default} />
-)}
-```
-
-
-
-
-
-#### 内联函数
-
-
-
-
-
-函数也经常作为props传递，由于每次需要为内联函数创建一个新的实例，所以每次function都会指向不同的内存地址。比如：
-
-```jsx
-render() {
-     <MyInput onChange={e => this.props.update(e.target.value)} />;
-}
-```
-
-以及：
-
-```jsx
-update(e) {
-     this.props.update(e.target.value);
-}
-render() {
-     return <MyInput onChange={this.update.bind(this)} />;
-}
-```
-
-注意第二个例子也会导致创建新的函数实例。
-
-**为了解决这个问题，需要提前绑定this指针：**
-
-```jsx
-constructor(props) {
-    super(props);
-    this.update = this.update.bind(this);
-  }
-  update(e) {
-    this.props.update(e.target.value);
-  }
-  render() {
-    return <MyInput onChange={this.update} />;
-  }
-```
-
->这也是性能优化中要做到的，因为render()可能会调用多次，所以要把把绑定this操作移到render()外面
-
-
-
-
-
-#### displayName
+### displayName
 
 HOC 创建的容器组件会与任何其他组件一样，会显示在 [React Developer Tools](https://github.com/facebook/react-devtools) 中。为了方便调试，请选择一个显示名称，以表明它是 HOC 的产物。
 
@@ -1091,6 +1018,110 @@ function MyComponent() {
 ```
 
 
+
+
+
+### React.cloneElement
+
+[https://zh-hans.reactjs.org/docs/react-api.html#cloneelement](https://zh-hans.reactjs.org/docs/react-api.html#cloneelement)
+
+
+
+```tsx
+React.cloneElement(
+  element,
+  [props],
+  [...children]
+)
+```
+
+
+
+以 `element` 元素为样板克隆并返回新的 React 元素。**返回元素的 props 是将新的 props 与原始元素的 props 浅层合并后的结果**。新的子元素将取代现有的子元素，而来自原始元素的 `key` 和 `ref` 将被保留。
+
+
+
+`React.cloneElement()` 几乎等同于：
+
+```
+<element.type {...element.props} {...props}>{children}</element.type>
+
+```
+
+
+
+
+
+
+
+### 陷阱Literal Array与Literal Object
+
+
+
+```jsx
+{this.props.items.map(i =>
+    <Cell data={i} options={this.props.options || []} />
+)}
+```
+
+
+
+若options为空，则会使用[]。[]每次会生成新的Array，因此导致Cell每次的props都不一样，导致需要重绘。解决方法如下:
+
+```jsx
+const default = [];
+{this.props.items.map(i =>
+  <Cell data={i} options={this.props.options || default} />
+)}
+```
+
+
+
+
+
+### 内联函数
+
+
+
+
+
+函数也经常作为props传递，由于每次需要为内联函数创建一个新的实例，所以每次function都会指向不同的内存地址。比如：
+
+```jsx
+render() {
+     <MyInput onChange={e => this.props.update(e.target.value)} />;
+}
+```
+
+以及：
+
+```jsx
+update(e) {
+     this.props.update(e.target.value);
+}
+render() {
+     return <MyInput onChange={this.update.bind(this)} />;
+}
+```
+
+注意第二个例子也会导致创建新的函数实例。
+
+**为了解决这个问题，需要提前绑定this指针：**
+
+```jsx
+constructor(props) {
+    super(props);
+    this.update = this.update.bind(this);
+  }
+  update(e) {
+    this.props.update(e.target.value);
+  }
+  render() {
+    return <MyInput onChange={this.update} />;
+  }
+```
+
+>这也是性能优化中要做到的，因为render()可能会调用多次，所以要把把绑定this操作移到render()外面
 
 
 
