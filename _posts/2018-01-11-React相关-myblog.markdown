@@ -1045,7 +1045,6 @@ React.cloneElement(
 
 ```
 <element.type {...element.props} {...props}>{children}</element.type>
-
 ```
 
 

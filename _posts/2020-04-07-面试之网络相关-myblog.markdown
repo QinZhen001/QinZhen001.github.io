@@ -12,37 +12,8 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
 
-### Cache-Control
-
-Cache-Control是通用首部字段，请求报文和响应报文双方都会使用的首部
-
-通过指定首部字段 Cache-Control 的指令，就能操作缓存的工作机 制。
-
-
-指令的参数是可选的，多个指令之间通过“,”分隔。首部字段 CacheControl 的指令可用于请求及响应时
-
-
-```
-Cache-Control: private, max-age=0, no-cache
-```
-
-
-
-
-
-
-
-* no-store: 真正的不进行缓存
-* no-cache: 告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，一定要到源服务器进行副本有效性校验。 **(所以一个重要的注意点：no-cache不是没有缓存)**
-* must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
-
->no-cache从字面意义上很容易误解为不缓存，但是no-cache代表不缓存过期的资源，缓存会向服务器进行有效处理确认之后处理资源，更确切的说，no-cache应该是do-not-serve-from-cache-without-revalidation
-
-
-
-**no-cache的目的就是为了防止从缓存中获取过期的资源。**
+# Http相关
 
 
 
@@ -61,33 +32,6 @@ Cache-Control: private, max-age=0, no-cache
 
 
 
-### HTTP2
-
-**二进制分帧**
-
-http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称之为二进制分帧。
-
-协议格式为帧，帧由 Frame Header（头信息帧）和 Frame Payload（数据帧）组成
-
-
-头部压缩 HPACK
-
-
-
-
-
-### get和post区别
-
-* GET把参数包含在URL中，POST通过request body传递参数
-* **GET请求会被浏览器主动cache，而POST不会，除非手动设置。**
-* GET请求只能进行url编码，而POST支持多种编码方式。
-* GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留
-* 对参数的数据类型，GET只接受ASCII字符，而POST没有限制。
-* GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。
-
-
-
-
 ### http常用响应头
 
 * Access-Control-Allow-Origin   指定哪些网站可以跨域源资源共享	
@@ -97,6 +41,10 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 * ETag 对于某个资源的某个特定版本的一个标识符
 * Expires 指定一个日期/时间，超过该时间则认为此回应已经过期
 * Last-Modified 所请求的对象的最后修改日期
+
+
+
+
 
 
 
@@ -185,10 +133,6 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 
 
 
-
-
-
-
 ### HTTP连接的优化怎么做
 
 
@@ -212,6 +156,98 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 重用已对目标server打开的空暇持久连接，就能够避免缓慢的连接建立阶段。同一时候，已经打开的连接还能够避免慢启动的拥塞适应阶段。以便更快的进行传输数据。
 
 如今的web应用程序都是并行连接+持久连接的形式。
+
+
+
+
+
+### HTTP2
+
+**二进制分帧**
+
+http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称之为二进制分帧。
+
+协议格式为帧，帧由 Frame Header（头信息帧）和 Frame Payload（数据帧）组成
+
+
+头部压缩 HPACK
+
+
+
+
+
+# Https相关
+
+
+
+
+
+# 网络安全相关
+
+
+
+
+
+# 缓存相关
+
+
+
+
+
+## Cache-Control
+
+Cache-Control是通用首部字段，请求报文和响应报文双方都会使用的首部
+
+通过指定首部字段 Cache-Control 的指令，就能操作缓存的工作机 制。
+
+
+指令的参数是可选的，多个指令之间通过“,”分隔。首部字段 CacheControl 的指令可用于请求及响应时
+
+
+```
+Cache-Control: private, max-age=0, no-cache
+```
+
+
+
+* no-store: 真正的不进行缓存
+* no-cache: 告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，一定要到源服务器进行副本有效性校验。 **(所以一个重要的注意点：no-cache不是没有缓存)**
+* must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
+
+>no-cache从字面意义上很容易误解为不缓存，但是no-cache代表不缓存过期的资源，缓存会向服务器进行有效处理确认之后处理资源，更确切的说，no-cache应该是do-not-serve-from-cache-without-revalidation
+
+
+
+**no-cache的目的就是为了防止从缓存中获取过期的资源。**
+
+
+
+# 跨域
+
+
+
+
+
+# 其他
+
+
+
+### get和post区别
+
+* GET把参数包含在URL中，POST通过request body传递参数
+* **GET请求会被浏览器主动cache，而POST不会，除非手动设置。**
+* GET请求只能进行url编码，而POST支持多种编码方式。
+* GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留
+* 对参数的数据类型，GET只接受ASCII字符，而POST没有限制。
+* GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。
+
+
+
+
+
+
+
+
 
 
 
@@ -275,9 +311,7 @@ DNS是应用层协议，事实上他是为其他应用层协议工作的，包�
 
 
 
-### http 连接复用
 
-**在发送http的请求头中设置Connection: keep-alive。**
 
 
 

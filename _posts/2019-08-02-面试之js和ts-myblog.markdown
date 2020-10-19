@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "面试之js和ts"
+title:      "面试之JS"
 date:       2019-08-02 11:22:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -2517,104 +2517,6 @@ Function.__proto__ === Function.prototype					// true
 
 
 
-### 一道关于异步任务队列的面试题
-
-
-实现下面这道题中的machine函数
-
-```javascript
-function machine() {
-    
-}
-
-
-machine('ygy').execute() 
-// start ygy
-machine('ygy').do('eat').execute(); 
-// start ygy
-// ygy eat
-machine('ygy').wait(5).do('eat').execute();
-// start ygy
-// wait 5s（这里等待了5s）
-// ygy eat
-machine('ygy').waitFirst(5).do('eat').execute();
-// wait 5s
-// start ygy
-// ygy eat
-```
-
-
-分析：链式调用，返回this，wait异步任务，需要维护一个任务队列，waitFirst可以插入到任务队列头部，execute依次执行所有任务
-
-
-
-```javascript
-    class Action {
-        constructor(name) {
-            this.queue = []
-            this.name = name
-            this.queue.push(new QueueItem(0, () => console.log(`start ${name}`)))
-        }
-
-        do(action) {
-            this.queue.push(new QueueItem(0, () => console.log(`${this.name} ${action}`)))
-            return this
-        }
-
-        wait(time) {
-            this.queue.push(new QueueItem(time, () => console.log(`wait ${time}s`)))
-            return this
-        }
-
-        waitFirst(time) {
-            this.queue.unshift(new QueueItem(time, () => console.log(`wait ${time}s`)))
-            return this
-        }
-
-
-        async execute() {
-            while (this.queue.length > 0) {
-                const curItem = this.queue.shift()
-                if (!curItem.defer) {
-                    curItem.callback()
-                    continue
-                }
-                await this.defer(curItem.defer, curItem.callback)
-            }
-        }
-
-        defer(time, callback) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    callback()
-                    resolve(true)
-                }, time * 1000)
-            })
-        }
-    }
-
-
-    class QueueItem {
-        constructor(defer, callback) {
-            this.defer = defer
-            this.callback = callback
-        }
-    }
-
-
-    function machine(name) {
-        return new Action(name)
-    }
-
-```
-
-作者：尹光耀
-链接：https://juejin.im/post/5c8f30606fb9a070ef60996d
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
-
-
 
 
 ## Load 和 DOMContentLoaded 区别
@@ -2657,16 +2559,6 @@ document.addEventListener('DOMContentLoaded',function(){
 
 
 >相同点:在 if判断语句中,值都默认为 false
-
-
-
-## 函数声明和函数表达式的区别
-
-
-* function max(){}表示函数声明，可以放在代码的任何位置，也可以在任何地方成功调用；
-* var max  = function(){};表示函数表达式，即将一个匿名函数赋值给一个变量，实现通过变量来调用这个匿名函数，但它需要在声明过后才能进行调用，如果调用在声明之前就会报如上红色字体的错误。而这在函数声明中不会出现这样的错误。
-
-
 
 
 
@@ -2794,9 +2686,7 @@ function foo() {
 
 
 
-## ECMAScript 和 JavaScript的关系
 
-JavaScript是在浏览器执行的语言， 是因为它有BOM和DOM，前者提供了一些诸如window.open的函数， 后者提供了一些如document.querySelector的函数。 如果想让它在其他非浏览器平台运行的话， 肯定是不能有这两个的， 而JavaScript - BOM - DOM = ECMAScript。 比如Node平台， 内部的语言就是ECMAScript。 当然因为习惯， 即使我们在用Node的时候， 很多时候也是直接叫JavaScript而不是ES。
 
 
 
@@ -3001,173 +2891,6 @@ Promise.all中任何一个Promise出现错误的时候都会执行reject，导�
 
 
 
-### 实现Promise.finally
-
-
-
-
-
-
-
-
-
-
-
-### 请实现一个有难度的串行prommise 
-
-
-要求：不管resolve还是reject都不可以终止串行的执行，要从头执行到尾。
-
-
-
-```javascript
-const p1 = () => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve('111');
-    }, 1000)
-  });
-}
-const p2 = () => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve('222');
-      }
-      , 2000)
-  });
-}
-const p3 = () => {
-  return new Promise((resolve, reject) => {
-    reject("333");
-  });
-}
-const p4 = () => {
-  return new Promise((resolve, reject) => {
-    resolve("444");
-  });
-}
-const p5 = () => {
-  return new Promise((resolve, reject) => {
-    resolve("555");
-  });
-}
-
-
-async function f(...args) {
-  const arr = args.slice()
-  if (arr.length) {
-    try {
-      const fn = arr.shift()
-      const res = await fn()
-      console.log("res", res)
-    } catch (e) {
-      console.log("err", e)
-      // ....
-    } finally {
-      f(...arr)
-    }
-  }
-}
-
-
-f(p1, p2, p3, p4, p5)
-
-```
-
-
-
-
-
-### 异步串行题
-
-
-
-[https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension](https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension)
-
-
-
-先看题目：
-
-```js
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const subFlow = createFlow([() => delay(1000).then(() => log("c"))]);
-
-createFlow([
-  () => log("a"),
-  () => log("b"),
-  subFlow,
-  [() => delay(1000).then(() => log("d")), () => log("e")],
-]).run(() => {
-  console.log("done");
-});
-
-// 需要按照 a,b,延迟1秒,c,延迟1秒,d,e, done 的顺序打印
-
-```
-
-答案：
-
-
-
-```js
-function createFlow(effects = []) {
-  // 拍平数组
-  let sources = effects.slice().flat();
-
-  function run(cb) {
-    while (sources.length) {
-      const task = sources.shift();
-      //  next 把 cb 放到下一个flow的run中执行
-      const next = () => createFlow(sources).run(cb);
-      if (typeof task == "function") {
-        const res = task();
-        if ( res?.then) {
-          // task 函数返回一个promise
-          res.then(next);
-          return;
-        }
-      } else if (task.isFlow) {
-        task.run(next);
-        return;
-      }
-    }
-   cb?.()
-    
-  }
-
-  return {
-    run,
-    isFlow: true,
-  };
-}
-```
-
-
-
-await解决方案：
-
-```js
-function createFlow(effects = []) {
-  // 拍平数组
-  let sources = effects.slice().flat();
-
-  async function run(cb) {
-    while (sources.length) {
-      const task = sources.shift();
-      typeof task == "function" 
-      ? await task() // 是函数
-      : await task.run() // 是createFlow
-    }
-   cb?.()
-  }
-  return {
-    run,
-  };
-}
-
-```
-
 
 
 
@@ -3196,6 +2919,102 @@ function createFlow(effects = []) {
 
 
 
+## 一道关于异步任务队列的面试题
+
+
+实现下面这道题中的machine函数
+
+```javascript
+function machine() {
+    
+}
+
+
+machine('ygy').execute() 
+// start ygy
+machine('ygy').do('eat').execute(); 
+// start ygy
+// ygy eat
+machine('ygy').wait(5).do('eat').execute();
+// start ygy
+// wait 5s（这里等待了5s）
+// ygy eat
+machine('ygy').waitFirst(5).do('eat').execute();
+// wait 5s
+// start ygy
+// ygy eat
+```
+
+
+分析：链式调用，返回this，wait异步任务，需要维护一个任务队列，waitFirst可以插入到任务队列头部，execute依次执行所有任务
+
+
+
+```javascript
+    class Action {
+        constructor(name) {
+            this.queue = []
+            this.name = name
+            this.queue.push(new QueueItem(0, () => console.log(`start ${name}`)))
+        }
+
+        do(action) {
+            this.queue.push(new QueueItem(0, () => console.log(`${this.name} ${action}`)))
+            return this
+        }
+
+        wait(time) {
+            this.queue.push(new QueueItem(time, () => console.log(`wait ${time}s`)))
+            return this
+        }
+
+        waitFirst(time) {
+            this.queue.unshift(new QueueItem(time, () => console.log(`wait ${time}s`)))
+            return this
+        }
+
+
+        async execute() {
+            while (this.queue.length > 0) {
+                const curItem = this.queue.shift()
+                if (!curItem.defer) {
+                    curItem.callback()
+                    continue
+                }
+                await this.defer(curItem.defer, curItem.callback)
+            }
+        }
+
+        defer(time, callback) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    callback()
+                    resolve(true)
+                }, time * 1000)
+            })
+        }
+    }
+
+
+    class QueueItem {
+        constructor(defer, callback) {
+            this.defer = defer
+            this.callback = callback
+        }
+    }
+
+
+    function machine(name) {
+        return new Action(name)
+    }
+
+```
+
+
+作者：尹光耀
+链接：https://juejin.im/post/5c8f30606fb9a070ef60996d
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
 
@@ -3203,7 +3022,11 @@ function createFlow(effects = []) {
 
 
 
+## 函数声明和函数表达式的区别
 
+
+* function max(){}表示函数声明，可以放在代码的任何位置，也可以在任何地方成功调用；
+* var max  = function(){};表示函数表达式，即将一个匿名函数赋值给一个变量，实现通过变量来调用这个匿名函数，但它需要在声明过后才能进行调用，如果调用在声明之前就会报如上红色字体的错误。而这在函数声明中不会出现这样的错误。
 
 
 
@@ -3360,7 +3183,117 @@ const result = find(items, (item, index) => item.a === 2)
 
 
 
+## 找到数组中的重复元素
 
+
+
+给定两个排好序的数组A,B,大小分别为n,m。给出一个高效算法查找A中的哪些元素存在B数组中
+
+A = [1,2,2,3,4,6,7,7,7,18,22]
+
+B = [2,3,4,6,8,18,21,42]
+
+答案 [2, 2, 3, 4, 6, 18]
+
+
+
+
+
+解决：双指针
+
+
+
+
+
+```javascript
+
+let a = [1, 2, 2, 3, 4, 6, 7, 7, 7, 18, 22]
+let b = [2, 3, 4, 6, 8, 18, 21, 42]
+
+let aIndex = 0
+let bIndex = 0
+let curA = a[0]
+let curB = b[0]
+let res = []
+while (aIndex < a.length) {
+    if (curA < curB) {
+        aIndex++
+        curA = a[aIndex]
+    } else if (curA === curB) {
+        res.push(curA)
+        aIndex++
+        curA = a[aIndex]
+    } else {
+        bIndex++
+        curB = b[bIndex]
+    }
+}
+
+console.log(res)
+```
+
+
+
+## 请实现一个有难度的串行prommise 
+
+
+要求：不管resolve还是reject都不可以终止串行的执行，要从头执行到尾。
+
+
+
+```javascript
+const p1 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('111');
+    }, 1000)
+  });
+}
+const p2 = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('222');
+      }
+      , 2000)
+  });
+}
+const p3 = () => {
+  return new Promise((resolve, reject) => {
+    reject("333");
+  });
+}
+const p4 = () => {
+  return new Promise((resolve, reject) => {
+    resolve("444");
+  });
+}
+const p5 = () => {
+  return new Promise((resolve, reject) => {
+    resolve("555");
+  });
+}
+
+
+async function f(...args) {
+  const arr = args.slice()
+  if (arr.length) {
+    try {
+      const fn = arr.shift()
+      const res = await fn()
+      console.log("res", res)
+    } catch (e) {
+      console.log("err", e)
+      // ....
+    } finally {
+      f(...arr)
+    }
+  }
+}
+
+
+f(p1, p2, p3, p4, p5)
+
+```
 
 
 
@@ -3429,9 +3362,12 @@ Scavenge 算法非常快适合少量内存的垃圾回收，但是它有很大�
 
 
 
+* 
 
 
+## ECMAScript 和 JavaScript的关系
 
+JavaScript是在浏览器执行的语言， 是因为它有BOM和DOM，前者提供了一些诸如window.open的函数， 后者提供了一些如document.querySelector的函数。 如果想让它在其他非浏览器平台运行的话， 肯定是不能有这两个的， 而JavaScript - BOM - DOM = ECMAScript。 比如Node平台， 内部的语言就是ECMAScript。 当然因为习惯， 即使我们在用Node的时候， 很多时候也是直接叫JavaScript而不是ES。
 
 
 ## typeof 运算符
@@ -3706,6 +3642,97 @@ Child5.prototype.constructor = Child5
 
 
 
+
+## 异步串行题
+
+
+
+[https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension](https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension)
+
+
+
+先看题目：
+
+```js
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const subFlow = createFlow([() => delay(1000).then(() => log("c"))]);
+
+createFlow([
+  () => log("a"),
+  () => log("b"),
+  subFlow,
+  [() => delay(1000).then(() => log("d")), () => log("e")],
+]).run(() => {
+  console.log("done");
+});
+
+// 需要按照 a,b,延迟1秒,c,延迟1秒,d,e, done 的顺序打印
+
+```
+
+答案：
+
+
+
+```js
+
+function createFlow(effects = []) {
+  // 拍平数组
+  let sources = effects.slice().flat();
+
+  function run(cb) {
+    while (sources.length) {
+      const task = sources.shift();
+      //  next 把 cb 放到下一个flow的run中执行
+      const next = () => createFlow(sources).run(cb);
+      if (typeof task == "function") {
+        const res = task();
+        if ( res?.then) {
+          // task 函数返回一个promise
+          res.then(next);
+          return;
+        }
+      } else if (task.isFlow) {
+        task.run(next);
+        return;
+      }
+    }
+   cb?.()
+    
+  }
+
+  return {
+    run,
+    isFlow: true,
+  };
+}
+```
+
+
+
+await解决方案：
+
+```js
+function createFlow(effects = []) {
+  // 拍平数组
+  let sources = effects.slice().flat();
+
+  async function run(cb) {
+    while (sources.length) {
+      const task = sources.shift();
+      typeof task == "function" 
+      ? await task() // 是函数
+      : await task.run() // 是createFlow
+    }
+   cb?.()
+  }
+  return {
+    run,
+  };
+}
+
+```
 
 
 
