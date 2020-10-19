@@ -1,12 +1,12 @@
 ---
 layout:     post
-title:      "ESLint相关"
+title:      "EsLint相关"
 date:       2017-09-25 11:00:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - ESLint
+    - EsLint
 ---
 
 > “Yeah It's on. ”
