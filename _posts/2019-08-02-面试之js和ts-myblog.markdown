@@ -13,6 +13,10 @@ tags:
 
 
 
+[2 年前端 7～9 月面试经历总结](https://mp.weixin.qq.com/s/AR7MfTwYCK6V4YuN6xnSsA)
+
+
+
 # ES5相关
 
 
@@ -3032,7 +3036,7 @@ machine('ygy').waitFirst(5).do('eat').execute();
 
 # ts相关
 
-
+> 对于大小厂而言，他们对 ts 的掌握程度要求是不一样的，对于小厂而言，他们希望来面试的人能够熟练使用 ts 进行业务开发，所以 ts 的概念的熟练程度对他们来说最重要。而对于大厂而言，他们可能更加希望来面试的人能利用 ts 开发一些 ts 的周边工具，所以比较少会直接问 ts 的一些概念，一般都会让你手写一个 ts 的工具函数。
 
 
 
@@ -3051,19 +3055,11 @@ ts是js的超集。ts一方面是对js加上了很多条条框框的限制，另
 
 ### ts的泛型
 
-
-
 泛型决定了一个类型在不同的场景下能够在每个场景下从始至终的保持类型一致
 
 
 
-
-
 对于泛型，我是这样理解的，编写一个方法，让方法可以传入任意的参数，但是参数与参数，参数与结果之间存在一定的约束，以保证传入某个类型的参数就能得到确定类型的返回值，或者保证了我们传入值的正确性
-
-
-
-
 
 
 
@@ -3084,14 +3080,155 @@ const result = find(items, (item, index) => item.a === 2)
 
 ```
 首先<T>是给函数声明了一个类型变量T，后面要求items是一个T类型的数组，然后后面的callback函数的参数item是一个T类型的变量，index为数字，然后callback返回boolean类型结果，整个find函数返回T类型结果或者undefined
+```
+
+**如上，我们就能准确定义函数的每一个参数了，参数与参数，参数与返回结果之间就形成了约束关系**
+
+
+
+
+
+### **type 和 interface 的区别**
+
+
+
+**type 只是一个类型别名，并不会产生类型**。
+
+
+
+> - An interface can be named in an extends or implements clause, but a type alias for an object type literal cannot.
+> - An interface can have multiple merged declarations, but a type alias for an object type literal cannot.
+
+
+
+**type 关键字的产生的东西官方有一个名字 type aliases ，就是类型别名，重点是它是别名不是真正的类型**
+
+
+
+**interface是接口，type是类型，本身就是两个概念。只是碰巧表现上比较相似。**
+**希望定义一个变量类型，就用type，如果希望是能够继承并约束的，就用interface。**
+
+
+
+相同点：
+
+*  都可以描述一个对象或者函数 
+*  都允许拓展（extends） 
+   *  interface extends interface (接口继承接口)  
+   *  type extends type (类型继承类型) 
+   *  interface extends type (接口继承类型)  
+   *  type extends interface (类型继承接口) 
+
+
+
+
+
+interface
+
+```tsx
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface SetPoint {
+  (x: number, y: number): void;
+}
 
 ```
 
 
 
-**如上，我们就能准确定义函数的每一个参数了，参数与参数，参数与返回结果之间就形成了约束关系**
+type 
+
+```tsx
+type Point = {
+  x: number;
+  y: number;
+};
+
+type SetPoint = (x: number, y: number) => void;
+
+```
 
 
+
+**与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
+
+```tsx
+// primitive
+type Name = string;
+
+// object！
+type PartialPointX = { x: number; };
+type PartialPointY = { y: number; };
+
+// union
+type PartialPoint = PartialPointX | PartialPointY;
+
+// tuple
+type Data = [number, string];
+
+```
+
+
+
+
+
+作者：七月流萤
+链接：https://juejin.im/post/6844903749501059085
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+### **ts 中如何实现一个函数的重载**
+
+[https://www.zhihu.com/question/63751258](https://www.zhihu.com/question/63751258)
+
+
+
+首先我们要区分override（重写）和overload（重载）的区别：
+
+
+
+override（重写）：
+
+1. 方法名、参数、返回值不同。
+
+2. 子类方法不能缩小父类方法的访问权限。
+
+3. 子类方法不能抛出比父类方法更多的异常（但子类方法可以不抛异常）
+
+4. 存在于父类和子类之间。
+
+5. 方法被定义为final时不能被重写。
+
+overload（重载）：
+
+1. 参数类型、个数、顺序至少一种不相同。
+
+2. 不能重载只有返回值不同的方法名。
+
+3. 存在于父类和子类、同类中。
+
+
+
+举个例子：
+
+```ts
+function pickCark(x: any): any {
+  let pickCard = null
+  if (typeof x == 'object') {
+    pickCard = Math.floor(Math.random() * x.length);
+  } else if (typeof x == 'number') {
+    pickCard = Math.floor(x / 13);
+  }
+  return pickCard
+}
+```
 
 
 

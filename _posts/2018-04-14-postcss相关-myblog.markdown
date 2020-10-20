@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "PostCSS相关学习"
+title:      "PostCSS相关"
 date:       2018-04-14 15:45:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -80,6 +80,12 @@ module.exports = {
   }
 }
 ```
+
+
+
+
+
+## 插件
 
 
 
@@ -184,6 +190,35 @@ This is a postcss plugin of px2rem.
 
 
  **"autoprefixer": {remUnit: 75}**
+
+
+
+#### postcss-pxtorem-exclude
+
+[https://www.npmjs.com/package/postcss-pxtorem-exclude](https://www.npmjs.com/package/postcss-pxtorem-exclude)
+
+A plugin for [PostCSS](https://github.com/ai/postcss) that generates rem units from pixel units.
+
+
+
+A message about ignoring properties
+
+Currently, the easiest way to have a single property ignored is to use a capital in the pixel unit declaration.
+
+```scss
+// `px` is converted to `rem`
+.convert {
+    font-size: 16px; // converted to 1rem
+}
+ 
+// `Px` or `PX` is ignored by `postcss-pxtorem-exclude` but still accepted by browsers
+.ignore {
+    border: 1Px solid; // ignored
+    border-width: 2PX; // ignored
+}
+```
+
+
 
 
 

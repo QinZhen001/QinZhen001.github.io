@@ -256,7 +256,7 @@ let unusable: void = undefined;
 
 ## Never
 
-
+[https://www.zhihu.com/question/354601204/answer/888668879](https://www.zhihu.com/question/354601204/answer/888668879)
 
 `never` 类型表示的是那些永不存在的值的类型。 例如，`never` 类型是那些总是会抛出异常或根本就不会有返回值的函数表达式或箭头函数表达式的返回值类型。
 
@@ -273,6 +273,54 @@ function infiniteLoop(): never {
 }
 
 ```
+
+
+
+1. 不相交类型的inteserction结果为never:
+
+```tsx
+type result = 1 & 2 // 结果为never
+```
+
+
+
+2. 是任何类型的subtype
+
+```tsx
+type Check<T> = never extends T ? true : false
+type result = check<xxx> // 结果始终为true
+```
+
+3. 除了never，没有其他类型是never的subtype
+
+```tsx
+type Check = never extends never ? true : false // true 类型
+let aaa:Check = true
+```
+
+
+
+```tsx
+type Check<T> = never extends never ? false : T extends never ? true : false
+type result = check<xxx> // 结果始终为false
+```
+
+4. 布尔运算
+
+union运算的幺元，intersection运算的零元
+
+```tsx
+T | never // 结果为T
+T & never // 结果为never
+```
+
+
+
+
+
+
+
+
 
 
 
@@ -313,6 +361,56 @@ type Foo = string | number | boolean;
 `controlFlowAnalysisWithNever` 方法总是穷尽了 Foo 的所有可能类型。 通过这个示例，我们可以得出一个结论：**使用 never 避免出现新增了联合类型没有对应的实现，目的就是写出类型绝对安全的代码。**
 
 
+
+### 实现switch中的穷尽枚举
+
+作者：尤雨溪
+链接：https://www.zhihu.com/question/354601204/answer/888551021
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+举个具体点的例子，当你有一个 union type:
+
+```ts
+interface Foo {
+  type: 'foo'
+}
+
+interface Bar {
+  type: 'bar'
+}
+
+type All = Foo | Bar
+```
+
+在 switch 当中判断 type，TS 是可以收窄类型的 (discriminated union)：
+
+```ts
+function handleValue(val: All) {
+  switch (val.type) {
+    case 'foo':
+      // 这里 val 被收窄为 Foo
+      break
+    case 'bar':
+      // val 在这里是 Bar
+      break
+    default:
+      // val 在这里是 never
+      const exhaustiveCheck: never = val
+      break
+  }
+}
+```
+
+注意在 default 里面我们把被收窄为 never 的 val 赋值给一个显式声明为 never 的变量。如果一切逻辑正确，那么这里应该能够编译通过。但是假如后来有一天你的同事改了 All 的类型：
+
+```ts
+type All = Foo | Bar | Baz
+```
+
+然而他忘记了在 handleValue 里面加上针对 Baz 的处理逻辑，这个时候在 default branch 里面 val 会被收窄为 Baz，导致无法赋值给 never，产生一个编译错误。所以通过这个办法，你可以确保 handleValue 总是穷尽 (exhaust) 了所有 All 的可能类型。
 
 
 
@@ -1115,6 +1213,16 @@ function printEmployeeInformation(emp: UnknownEmployee) {
 
 ## 交叉类型
 
+```
+  // tab-bar__wrapper 适配PC端 展示540PX
+  @include screen-pad-only {
+    .tab-bar__wrapper {
+      left: calc(50% - 270PX);
+      width: 540PX;
+    }
+  }
+```
+
 
 
 
@@ -1182,7 +1290,15 @@ The difference is that in the first case the return type will be `T[K]` while in
 
 ## typeof
 
-在 TypeScript 中，`typeof` 操作符可以用来获取一个变量或对象的类型。
+在 TypeScript 中，`typeof` 操作符可以用来获取**一个变量或对象**的类型。
+
+
+
+**注意typeof操作的是一个变量或对象**
+
+**注意typeof操作的是一个变量或对象**
+
+**注意typeof操作的是一个变量或对象**
 
 
 
@@ -1194,6 +1310,9 @@ interface Person {
 
 const sem: Person = { name: "semlinker", age: 30 };
 type Sem = typeof sem; // type Sem = Person
+
+注意下面这种写法是错误的：
+const Sem = typeof sem;
 ```
 
 此外，`typeof` 操作符除了可以获取对象的结构类型之外，它也可以用来获取函数对象的类型，比如：
@@ -1206,6 +1325,29 @@ function toArray(x: number): Array<number> {
 type Func = typeof toArray; // -> (x: number) => number[]
 
 ```
+
+
+
+####  keyof 结合 typeof 一起使用
+
+```tsx
+const cats = {
+  "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+  "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
+  "Testing Cat": "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+};
+
+function f(a: keyof typeof cats) {
+  console.log(a);
+}
+
+// f("x"); // error
+f("Coding Cat"); // ok
+```
+
+
+
+
 
 
 
@@ -2089,114 +2231,6 @@ if (isAxiosError(err)) {
   code = `Axios-${err.code}`
 }
 ```
-
-
-
-
-
-
-
-# 面试
-
-
-
-
-
-### type 和 interface 的区别
-
-
-
-**type 只是一个类型别名，并不会产生类型**。
-
-
-
-> - An interface can be named in an extends or implements clause, but a type alias for an object type literal cannot.
-> - An interface can have multiple merged declarations, but a type alias for an object type literal cannot.
-
-
-
-**type 关键字的产生的东西官方有一个名字 type aliases ，就是类型别名，重点是它是别名不是真正的类型**
-
-
-
-**interface是接口，type是类型，本身就是两个概念。只是碰巧表现上比较相似。**
-**希望定义一个变量类型，就用type，如果希望是能够继承并约束的，就用interface。**
-
-
-
-
-
-相同点：
-
-
-
-*  都可以描述一个对象或者函数 
-*  都允许拓展（extends） 
-   *  interface extends interface (接口继承接口)  
-   *  type extends type (类型继承类型) 
-   *  interface extends type (接口继承类型)  
-   *  type extends interface (类型继承接口) 
-
-
-
-
-
-interface
-
-```tsx
-interface Point {
-  x: number;
-  y: number;
-}
-
-interface SetPoint {
-  (x: number, y: number): void;
-}
-
-```
-
-
-
-type 
-
-```tsx
-type Point = {
-  x: number;
-  y: number;
-};
-
-type SetPoint = (x: number, y: number) => void;
-
-```
-
-
-
-**与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
-
-```tsx
-// primitive
-type Name = string;
-
-// object！
-type PartialPointX = { x: number; };
-type PartialPointY = { y: number; };
-
-// union
-type PartialPoint = PartialPointX | PartialPointY;
-
-// tuple
-type Data = [number, string];
-
-```
-
-
-
-
-
-作者：七月流萤
-链接：https://juejin.im/post/6844903749501059085
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
 

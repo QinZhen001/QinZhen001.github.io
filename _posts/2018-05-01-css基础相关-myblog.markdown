@@ -76,11 +76,50 @@ p.text  意思是选择p标签的类名为text的元素
 
 
 
+### 伪类相关
+
+
+
+#### :scope
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/:scope](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:scope)
+
+**`:scope`** 属于 [CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS) [伪类](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Pseudo-classes)，它表示作为选择器要匹配的参考点的元素。
+
+
+
+**当需要获取已检索到的的直接后代元素时，`:scope` 伪类很有用。**
+
+
+
+例子：
+
+```html
+  <div id="context">
+    <div id="element-1">
+      <div id="element-1.1"></div>
+      <div id="element-1.2"></div>
+    </div>
+    <div id="element-2">
+      <div id="element-2.1"></div>
+    </div>
+  </div>
+```
+
+
+
+```js
+  let context = document.getElementById('context')
+  let selected = context.querySelectorAll(':scope > div'); // context下的直接div
+  console.log(selected) // element-1 element-2
+```
+
+
+
 
 
 
 ### 浮动 
-
 
 [网页链接](http://www.w3school.com.cn/css/css_positioning_floating.asp)
 浮动的框可以向左或向右移动，直到它的外边缘碰到包含框或另一个浮动框的边框为止。

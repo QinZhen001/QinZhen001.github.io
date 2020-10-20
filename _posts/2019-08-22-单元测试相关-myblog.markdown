@@ -77,9 +77,14 @@ test('object assignment', () => {
 
 ```
 
-
-
 toEqual recursively checks every field of an object or array.
+
+
+
+#### toEqual 和 toBe 的区别
+
+* toBe just checks that a value is what you expect. It uses === to check strict equality.
+* Use .toEqual when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity—this is also known as “deep equal”. For example, toEqual and toBe behave differently in this test suite, so all the tests pass.
 
 
 
@@ -462,6 +467,46 @@ const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
 #### FAQ
 
 [https://testing-library.com/docs/react-testing-library/faq](https://testing-library.com/docs/react-testing-library/faq)
+
+
+
+
+
+#### 补充
+
+
+
+##### 插入css样式
+
+一般我们写单元测试都是只判断className，无需使用css做测试
+
+但是，在某些情况下，为了更好地测试,我们需要覆盖原来的css样式
+
+```tsx
+import { render } from '@testing-library/react'
+
+
+const createStyleFile = () => {
+  const cssFile: string = `
+    .viking-submenu {
+      display: none;
+    }
+    .viking-submenu.menu-opened {
+      display:block;
+    }
+  `
+  const style = document.createElement('style')
+  style.type = 'text/css'
+  style.innerHTML = cssFile
+  return style
+}
+
+let wrapper: RenderResult
+wrapper = render(generateMenu(testProps))
+wrapper.container.append(createStyleFile())  // 样式生效
+```
+
+
 
 
 
