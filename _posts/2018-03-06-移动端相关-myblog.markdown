@@ -15,6 +15,74 @@ tags:
 # 正文
 
 
+
+## 识别横屏
+
+js识别
+
+```js
+window.addEventListener("resize", ()=>{
+    if (window.orientation === 180 || window.orientation === 0) { 
+      // 正常方向或屏幕旋转180度
+        console.log('竖屏');
+    };
+    if (window.orientation === 90 || window.orientation === -90 ){ 
+       // 屏幕顺时钟旋转90度或屏幕逆时针旋转90度
+        console.log('横屏');
+    }  
+});
+
+```
+
+css识别
+
+```css
+@media screen and (orientation: portrait) {
+  /*竖屏...*/
+} 
+@media screen and (orientation: landscape) {
+  /*横屏...*/
+}
+```
+
+
+
+
+
+## 针对不同dpr屏幕采用不同分辨率图片
+
+如：在`dpr=2`的屏幕上展示两倍图`(@2x)`，在`dpr=3`的屏幕上展示三倍图`(@3x)`。
+
+使用`media`查询判断不同的设备像素比来显示不同精度的图片：
+
+```scss
+.avatar{
+            background-image: url(conardLi_1x.png);
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio:2){
+            .avatar{
+                background-image: url(conardLi_2x.png);
+            }
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio:3){
+            .avatar{
+                background-image: url(conardLi_3x.png);
+            }
+        }
+```
+
+> 一般用于大图如背景图，小图标没必要用这种方式，不值得
+
+
+
+
+
+
+
+
+
+
+
 ## 触摸事件
 
 
@@ -343,8 +411,6 @@ ev.target.appendChild(document.getElementById(data));
 
 设置滚动条隐藏：
 
-
-
 ```css
 .container ::-webkit-scrollbar {
     display: none;
@@ -502,7 +568,11 @@ if(e._isScroller) return;
 
 **为什么会产生 click 延时？**
 
+iOS 中的 safari，为了实现双击缩放操作，在单击 300ms 之后，如果未进行第二次点击，则执行 `click` 单击操作。也就是说来判断用户行为是否为双击产生的。但是，在 App 中，无论是否需要双击缩放这种行为，`click` 单击都会产生 300ms 延迟。
 
+##### 
+
+**为什么会产生 click 点击穿透？**
 
 双层元素叠加时，在上层元素上绑定 `touch` 事件，下层元素绑定 `click` 事件。由于 `click` 发生在 `touch` 之后，点击上层元素，元素消失，下层元素会触发 `click` 事件，由此产生了点击穿透的效果。
 

@@ -2707,5 +2707,119 @@ let DecoratedCat = DecorateAnimal(Cat);
 
 
 
-## 
+## 存在valuof吗
+
+[Is there a `valueof` similar to `keyof` in TypeScript?](https://stackoverflow.com/questions/49285864/is-there-a-valueof-similar-to-keyof-in-typescript)
+
+
+
+you can make a `ValueOf` analogous to `keyof`, by using [lookup types](https://github.com/Microsoft/TypeScript/wiki/What's-new-in-TypeScript#keyof-and-lookup-types) with `keyof T` as the key, like so:
+
+```tsx
+type ValueOf<T> = T[keyof T];
+```
+
+Usage:
+
+```tsx
+type actions = {
+  a: {
+    type: 'Reset'
+    data: number
+  }
+  b: {
+    type: 'Apply'
+    data: string
+  }
+}
+type actionValues = valueof<actions>
+```
+
+
+
+## must be parenthesized when used in a union type
+
+[https://stackoverflow.com/questions/47748830/typescript-union-type-with-a-function](https://stackoverflow.com/questions/47748830/typescript-union-type-with-a-function)
+
+出现一个报错
+
+```
+Function type notation must be parenthesized when used in a union type.ts(1385)
+```
+
+
+
+
+
+I'm trying to have a property with a union type of a lambda function or a string.
+
+```tsx
+class TestClass {
+    name: string | () => string;
+}
+```
+
+
+
+解决：
+
+You just need an extra set of parenthesis.
+
+```tsx
+class TestClass {
+    name: string | (() => string);
+}
+```
+
+The compiler is trying to do `(string | ()) => string` if you don't use them, because of precedence.
+
+
+
+
+
+
+
+
+
+### Is there a type for “Class” 
+
+[Is there a type for “Class” in Typescript? And does “any” include it?](https://stackoverflow.com/questions/39392853/is-there-a-type-for-class-in-typescript-and-does-any-include-it)
+
+
+
+The equivalent for what you're asking in typescript is the type `{ new(): Class }`, for example:
+
+```tsx
+class A {}
+
+function create(ctor: { new(): A }): A {
+    return new ctor();
+}
+
+let a = create(A); // a is instanceof A
+```
+
+The code above will allow only classes whose constructor has no argument. If you want any class, use `new (...args: any[]) => Class`
+
+
+
+Note that `{ new(): Class }` can also be written as `new () => Class`.
+
+
+
+利用 typeof 实现
+
+```tsx
+class A {
+  public static attribute = "ABC";
+}
+
+// typeof
+function f(Param: typeof A) {
+  Param.attribute;
+   new Param();
+}
+```
+
+
 

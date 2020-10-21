@@ -689,9 +689,36 @@ function getDisplayName(WrappedComponent) {
 }
 ```
 
-## 
 
 
+### style
+
+[https://zh-hans.reactjs.org/docs/dom-elements.html#style](https://zh-hans.reactjs.org/docs/dom-elements.html#style)
+
+**在react中style是在{{}}中的**
+
+```tsx
+ <div  style={{ height: `${strokeHeight}px`}}></div>
+```
+
+**`style` 接受一个采用小驼峰命名属性的 JavaScript 对象，而不是 CSS 字符串**
+
+这与 DOM 中 `style` 的 JavaScript 属性是一致的，同时会更高效的，且能预防跨站脚本（XSS）的安全漏洞。
+
+
+
+例子：
+
+```jsx
+const divStyle = {
+  color: 'blue',
+  backgroundImage: 'url(' + imgUrl + ')',
+};
+
+function HelloWorldComponent() {
+  return <div style={divStyle}>Hello World!</div>;
+}
+```
 
 
 
