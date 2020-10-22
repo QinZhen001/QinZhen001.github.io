@@ -697,7 +697,7 @@ function getDisplayName(WrappedComponent) {
 
 **在react中style是在{{}}中的**
 
-```tsx
+```html
  <div  style={{ height: `${strokeHeight}px`}}></div>
 ```
 
@@ -724,7 +724,7 @@ function HelloWorldComponent() {
 
 
 
-## 补充
+## 补充 新版react
 
 
 
@@ -1148,6 +1148,19 @@ constructor(props) {
 ```
 
 >这也是性能优化中要做到的，因为render()可能会调用多次，所以要把把绑定this操作移到render()外面
+
+
+
+### `useState` 不会自动合并更新对象
+
+与 class 组件中的 `setState` 方法不同，`useState` 不会自动合并更新对象。你可以用函数式的 `setState` 结合展开运算符来达到合并更新对象的效果。
+
+```tsx
+setState(prevState => {
+  // 也可以使用 Object.assign
+  return {...prevState, ...updatedValues};
+});
+```
 
 
 

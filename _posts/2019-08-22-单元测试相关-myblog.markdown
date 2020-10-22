@@ -395,7 +395,7 @@ foo();
 
 
 
-#### debug
+### debug
 
 [https://testing-library.com/docs/react-testing-library/api](https://testing-library.com/docs/react-testing-library/api)
 
@@ -423,7 +423,7 @@ debug()
 
 
 
-#### `cleanup`
+### `cleanup`
 
 
 
@@ -449,7 +449,7 @@ test('renders into document', () => {
 
 
 
-#### 使用querySelector
+### 使用querySelector
 
 ```tsx
 const wrapper = render(
@@ -464,7 +464,7 @@ const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
 
 
 
-#### FAQ
+### FAQ
 
 [https://testing-library.com/docs/react-testing-library/faq](https://testing-library.com/docs/react-testing-library/faq)
 
@@ -472,11 +472,11 @@ const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
 
 
 
-#### 补充
+### 补充
 
 
 
-##### 插入css样式
+#### 插入css样式
 
 一般我们写单元测试都是只判断className，无需使用css做测试
 
@@ -510,6 +510,36 @@ wrapper.container.append(createStyleFile())  // 样式生效
 
 
 
+#### mock axios同时提供代码提示
+
+[https://medium.com/wesionary-team/mocking-axios-in-jest-c68933a1a4fb](https://medium.com/wesionary-team/mocking-axios-in-jest-c68933a1a4fb)
+
+```tsx
+jest.mock('axios')
+// mock axios 之后 有代码提示
+const mockedAxios = axios as jest.Mocked<typeof axios>
+```
+
+
+
+另外一种解决方案：
+
+Now, let’s mock this Axios request in our test. Create a folder named `__mocks__` under your src directory. Since we are mocking axios, create a file named axios.js inside the `__mocks__` folder.It is a convention to write all the mock related files inside this `__mocks__` folder. And since we have named the file axios.js, Jest identifies it automatically that it has to mock the package axios. Basically, we name the mock file same as the package we are intending to mock.
+
+
+
+Moving on, we are here mocking the get method of axios. So, add this code snippet in the axios.js file.
+
+```tsx
+export default {
+   get: jest.fn().mockResolvedValue()
+};
+```
+
+
+
+
+
 
 
 
@@ -517,6 +547,10 @@ wrapper.container.append(createStyleFile())  // 样式生效
 ## testing-library/react
 
 [https://testing-library.com/docs/react-testing-library/api](https://testing-library.com/docs/react-testing-library/api)
+
+
+
+
 
 
 
@@ -650,3 +684,20 @@ const { rerender } = render(<NumberDisplay number={1} />)
 rerender(<NumberDisplay number={2} />)
 ```
 
+
+
+### 问题
+
+
+
+#### 如何使用querySelector
+
+```tsx
+let wrapper:RenderResult
+wrapper = render(
+   <Upload {...testProps}>Click to upload</Upload>
+ )
+fileInput = wrapper.container.querySelector('.viking-file-input')
+```
+
+如果我们想通过className查询元素，可以利用wrapper.container调用querySelector

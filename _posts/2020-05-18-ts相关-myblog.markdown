@@ -414,6 +414,35 @@ type All = Foo | Bar | Baz
 
 
 
+## reference 
+
+[https://www.tslang.cn/docs/handbook/triple-slash-directives.html](https://www.tslang.cn/docs/handbook/triple-slash-directives.html)
+
+
+
+### types 和 path 的区别
+
+```
+/// <reference path="..." />  对指定路径的文件引入
+/// <reference types="..." /> 指定声明了对某个包的依赖
+```
+
+
+
+对这些包的名字的解析与在 `import`语句里对模块名的解析类似。 可以简单地把三斜线类型引用指令当做 `import`声明的包。
+
+
+
+例如，把 `/// <reference types="node" />`引入到声明文件，表明这个文件使用了 `@types/node/index.d.ts`里面声明的名字； 并且，这个包需要在编译阶段与声明文件一起被包含进来。
+
+
+
+**仅当在你需要写一个`d.ts`文件时才使用这个指令。**
+
+
+
+
+
 ## unknown
 
 `unknown` 类型只能被赋值给 `any` 类型和 `unknown` 类型本身
@@ -2781,7 +2810,7 @@ The compiler is trying to do `(string | ()) => string` if you don't use them, be
 
 
 
-### Is there a type for “Class” 
+## Is there a type for “Class” 
 
 [Is there a type for “Class” in Typescript? And does “any” include it?](https://stackoverflow.com/questions/39392853/is-there-a-type-for-class-in-typescript-and-does-any-include-it)
 
@@ -2820,6 +2849,44 @@ function f(Param: typeof A) {
    new Param();
 }
 ```
+
+
+
+
+
+## type 'null' is not assignable to parameter of type 'HTMLInputElement'
+
+[https://stackoverflow.com/questions/48488701/type-null-is-not-assignable-to-type-htmlinputelement-reactjs](https://stackoverflow.com/questions/48488701/type-null-is-not-assignable-to-type-htmlinputelement-reactjs) 
+
+在react中，我们使用useRef初始化时
+
+```tsx
+const fileInput = useRef<HTMLInputElement>(null)
+```
+
+出现报错
+
+```
+Argument of type 'null' is not assignable to parameter of type 'HTMLInputElement'.ts(2345)
+```
+
+解决：
+
+The error is produced becase the types definitions says input can be `null` or a `HTMLInputElement`
+
+You can set `"strict": false` in your `tsconfig.json`
+
+
+
+如果你不想改变strict这个配置
+
+this is a quirk of how the typings are written:
+
+```js
+const fileInput = useRef<HTMLInputElement | null>(null)
+```
+
+
 
 
 
