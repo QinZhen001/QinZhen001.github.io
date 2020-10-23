@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Git操作学习"
+title:      "git相关"
 date:       2018-09-23 23:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -860,6 +860,10 @@ ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
 我哭了吗，记录到这里了
 
 
+
+
+
+### [commitlint](https://github.com/conventional-changelog/commitlint)
 
 
 
