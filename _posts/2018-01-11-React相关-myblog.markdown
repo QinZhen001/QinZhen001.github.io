@@ -697,8 +697,8 @@ function getDisplayName(WrappedComponent) {
 
 **在react中style是在{{}}中的**
 
-```html
- <div  style={{ height: `${strokeHeight}px`}}></div>
+```jsx
+ <div  style={{ height: 12px}}></div>
 ```
 
 **`style` 接受一个采用小驼峰命名属性的 JavaScript 对象，而不是 CSS 字符串**
