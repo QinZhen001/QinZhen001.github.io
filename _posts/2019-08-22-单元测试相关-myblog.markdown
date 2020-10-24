@@ -104,6 +104,28 @@ test('adding floating point numbers', () => {
 
 
 
+### objectContaining 对象包含某些属性
+
+例子：
+
+```tsx
+expect(testProps.onRemove).toHaveBeenCalledWith(expect.objectContaining({
+     raw: testFile,
+     status: 'success',
+     name: 'test.png'
+}))
+```
+
+
+
+
+
+
+
+
+
+
+
 
 ### describe(name, fn)
 
@@ -683,6 +705,24 @@ const { rerender } = render(<NumberDisplay number={1} />)
 // re-render the same component with different props
 rerender(<NumberDisplay number={2} />)
 ```
+
+
+
+#### createEvent
+
+```tsx
+import { createEvent } from '@testing-library/react'
+
+const mockDropEvent = createEvent.drop(uploadArea)
+Object.defineProperty(mockDropEvent,'dataTransfer',{
+      value:{
+        files: [testFile]
+      }
+  })
+  fireEvent(uploadArea, mockDropEvent)
+```
+
+
 
 
 
