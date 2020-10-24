@@ -711,7 +711,7 @@ rerender(<NumberDisplay number={2} />)
 #### createEvent
 
 ```tsx
-import { createEvent } from '@testing-library/react'
+import { fireEvent,createEvent } from '@testing-library/react'
 
 const mockDropEvent = createEvent.drop(uploadArea)
 Object.defineProperty(mockDropEvent,'dataTransfer',{
@@ -719,7 +719,7 @@ Object.defineProperty(mockDropEvent,'dataTransfer',{
         files: [testFile]
       }
   })
-  fireEvent(uploadArea, mockDropEvent)
+fireEvent(uploadArea, mockDropEvent)
 ```
 
 

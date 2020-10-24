@@ -1293,5 +1293,43 @@ ReactDOM.render(
 
 
 
+
+
+
+## react-scripts
+
+
+
+### test nowatch
+
+[https://github.com/facebook/create-react-app/issues/1137](https://github.com/facebook/create-react-app/issues/1137)
+
+Allow `npm test` to not run in watch mode for better cross-platform / tooling CI.
+
+
+
+最后解决方案：
+
+在package.json中的scripts增加
+
+```
+
+  "scripts": {
+    "test:nowatch": "cross-env CI=true react-scripts test",
+  },
+```
+
+
+
+
+
+
+
+
+
+
+
+
 [1]: http://www.ruanyifeng.com/blogimg/asset/2015/bg2015033110.png
 [2]: https://pic1.zhimg.com/80/v2-a32cb02859ea4ac0f8f50f1ec885d85c_hd.jpg
+
