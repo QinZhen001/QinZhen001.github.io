@@ -1,12 +1,12 @@
 ---
 layout:     post
-title:      "ESLint相关"
+title:      "EsLint相关"
 date:       2017-09-25 11:00:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - ESLint
+    - EsLint
 ---
 
 > “Yeah It's on. ”
@@ -16,6 +16,9 @@ tags:
 [网页链接](http://www.jianshu.com/p/2bcdce1dc8d4)
 
 [自己配置的eslint规则](https://github.com/QinZhen001/eslint-config-qzconfig)
+
+[ESLint - 守住优雅的护城河](https://juejin.im/post/6886265504378388487?utm_source=gold_browser_extension)
+
 
 
 **ESLint是一个用来识别 ECMAScript 并且按照规则给出报告的代码检测工具，使用它可以避免低级错误和统一代码的风格。**
@@ -258,8 +261,35 @@ new Vue({
 
 
 
+## 补充
+
+
+
+### 自动修复
+
+```
+eslint src/** --fix
+```
 
 
 
 
+
+那对于老的项目，可能已经存在很多遗留的风格问题，导致 ESLint 检查通不过，此时又不可能把所有问题都一一修复掉，全盘阻止提交势必会造成影响。**另外对于单次提交而言，如果每次都检查 src 下的所有文件，也是没有必要的。所以我们需要使用[lint-staged](https://github.com/okonet/lint-staged)工具只针对当前修改的部分进行检测。**
+
+```
+// package.json
+{
+    "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
+```
 

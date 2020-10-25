@@ -77,9 +77,14 @@ test('object assignment', () => {
 
 ```
 
-
-
 toEqual recursively checks every field of an object or array.
+
+
+
+#### toEqual 和 toBe 的区别
+
+* toBe just checks that a value is what you expect. It uses === to check strict equality.
+* Use .toEqual when you want to check that two objects have the same value. This matcher recursively checks the equality of all fields, rather than checking for object identity—this is also known as “deep equal”. For example, toEqual and toBe behave differently in this test suite, so all the tests pass.
 
 
 
@@ -96,6 +101,28 @@ test('adding floating point numbers', () => {
   expect(value).toBeCloseTo(0.3); // This works.
 });
 ```
+
+
+
+### objectContaining 对象包含某些属性
+
+例子：
+
+```tsx
+expect(testProps.onRemove).toHaveBeenCalledWith(expect.objectContaining({
+     raw: testFile,
+     status: 'success',
+     name: 'test.png'
+}))
+```
+
+
+
+
+
+
+
+
 
 
 
@@ -390,7 +417,7 @@ foo();
 
 
 
-#### debug
+### debug
 
 [https://testing-library.com/docs/react-testing-library/api](https://testing-library.com/docs/react-testing-library/api)
 
@@ -418,7 +445,7 @@ debug()
 
 
 
-#### `cleanup`
+### `cleanup`
 
 
 
@@ -444,7 +471,7 @@ test('renders into document', () => {
 
 
 
-#### 使用querySelector
+### 使用querySelector
 
 ```tsx
 const wrapper = render(
@@ -459,9 +486,79 @@ const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
 
 
 
-#### FAQ
+### FAQ
 
 [https://testing-library.com/docs/react-testing-library/faq](https://testing-library.com/docs/react-testing-library/faq)
+
+
+
+
+
+### 补充
+
+
+
+#### 插入css样式
+
+一般我们写单元测试都是只判断className，无需使用css做测试
+
+但是，在某些情况下，为了更好地测试,我们需要覆盖原来的css样式
+
+```tsx
+import { render } from '@testing-library/react'
+
+
+const createStyleFile = () => {
+  const cssFile: string = `
+    .viking-submenu {
+      display: none;
+    }
+    .viking-submenu.menu-opened {
+      display:block;
+    }
+  `
+  const style = document.createElement('style')
+  style.type = 'text/css'
+  style.innerHTML = cssFile
+  return style
+}
+
+let wrapper: RenderResult
+wrapper = render(generateMenu(testProps))
+wrapper.container.append(createStyleFile())  // 样式生效
+```
+
+
+
+
+
+#### mock axios同时提供代码提示
+
+[https://medium.com/wesionary-team/mocking-axios-in-jest-c68933a1a4fb](https://medium.com/wesionary-team/mocking-axios-in-jest-c68933a1a4fb)
+
+```tsx
+jest.mock('axios')
+// mock axios 之后 有代码提示
+const mockedAxios = axios as jest.Mocked<typeof axios>
+```
+
+
+
+另外一种解决方案：
+
+Now, let’s mock this Axios request in our test. Create a folder named `__mocks__` under your src directory. Since we are mocking axios, create a file named axios.js inside the `__mocks__` folder.It is a convention to write all the mock related files inside this `__mocks__` folder. And since we have named the file axios.js, Jest identifies it automatically that it has to mock the package axios. Basically, we name the mock file same as the package we are intending to mock.
+
+
+
+Moving on, we are here mocking the get method of axios. So, add this code snippet in the axios.js file.
+
+```tsx
+export default {
+   get: jest.fn().mockResolvedValue()
+};
+```
+
+
 
 
 
@@ -472,6 +569,10 @@ const testnNode = wrapper.container.querySelector('.viking-input-wrapper')
 ## testing-library/react
 
 [https://testing-library.com/docs/react-testing-library/api](https://testing-library.com/docs/react-testing-library/api)
+
+
+
+
 
 
 
@@ -605,3 +706,38 @@ const { rerender } = render(<NumberDisplay number={1} />)
 rerender(<NumberDisplay number={2} />)
 ```
 
+
+
+#### createEvent
+
+```tsx
+import { fireEvent,createEvent } from '@testing-library/react'
+
+const mockDropEvent = createEvent.drop(uploadArea)
+Object.defineProperty(mockDropEvent,'dataTransfer',{
+      value:{
+        files: [testFile]
+      }
+  })
+fireEvent(uploadArea, mockDropEvent)
+```
+
+
+
+
+
+### 问题
+
+
+
+#### 如何使用querySelector
+
+```tsx
+let wrapper:RenderResult
+wrapper = render(
+   <Upload {...testProps}>Click to upload</Upload>
+ )
+fileInput = wrapper.container.querySelector('.viking-file-input')
+```
+
+如果我们想通过className查询元素，可以利用wrapper.container调用querySelector

@@ -76,11 +76,50 @@ p.text  意思是选择p标签的类名为text的元素
 
 
 
+### 伪类相关
+
+
+
+#### :scope
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/:scope](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:scope)
+
+**`:scope`** 属于 [CSS](https://developer.mozilla.org/zh-CN/docs/Web/CSS) [伪类](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Pseudo-classes)，它表示作为选择器要匹配的参考点的元素。
+
+
+
+**当需要获取已检索到的的直接后代元素时，`:scope` 伪类很有用。**
+
+
+
+例子：
+
+```html
+  <div id="context">
+    <div id="element-1">
+      <div id="element-1.1"></div>
+      <div id="element-1.2"></div>
+    </div>
+    <div id="element-2">
+      <div id="element-2.1"></div>
+    </div>
+  </div>
+```
+
+
+
+```js
+  let context = document.getElementById('context')
+  let selected = context.querySelectorAll(':scope > div'); // context下的直接div
+  console.log(selected) // element-1 element-2
+```
+
+
+
 
 
 
 ### 浮动 
-
 
 [网页链接](http://www.w3school.com.cn/css/css_positioning_floating.asp)
 浮动的框可以向左或向右移动，直到它的外边缘碰到包含框或另一个浮动框的边框为止。
@@ -1415,6 +1454,119 @@ display属性
 
 * table-cell不感知margin
 * 设置float或某些position(如:absolute)会对table-cell布局造成破坏，可以考虑为之增加一个父div定义float等属性
+
+
+
+### 相对绝对定位
+
+[网页链接](https://segmentfault.com/a/1190000000680773)
+
+#### 相对定位的规律
+
+1.  使用相对定位的盒子，会相对于它原本的位置，通过偏移指定的距离，到达新的位置
+2.  使用相对定位的盒子仍在标准流中（会占据原来的位置），它对父亲和兄弟盒子都没有任何影响
+3.  如果设定TRBL，并且父级没有设定position属性，仍旧以父级的左上角为原点进行定位(和absolute不同)
+
+
+#### 绝对定位
+
+若想把一个定位属性为absolute的元素定位于其父级元素内
+必须满足两个条件：
+
+* 设 定TRBL
+* 父 级设定Position属性
+
+1. **使用绝对定位的盒子以它的“最近”的一个“已经定位”的“祖先元素”为基准进行定位。**如果没有已经定位的祖先元素，那么会以浏览器窗口为基准进行定位
+
+2. 绝对定位的框从标准流中脱离，这意味着他们对其后的兄弟盒子的定位没有影响，其他的盒子好像就好像这个盒子不存在一样
+
+3. 所谓“已经定位”元素的含义是，position属性被设置。
+
+## 
+
+如果设定TRBL，并且父级设定position属性(无论是absolute还是relative)，则以父级的左上角为原点进行定位，位置由TRBL决 定。**如果父级有Padding属性，那么就以内容区域的左上角为原点，进行定位。（也就是说父级Padding会影响子元素定位）**
+
+
+
+#### absolute具有的属性
+
+如果设定TRBL，并且父级没有设定position属性，那么当前的absolute则以浏览器左上角为原始点进行定位，位置将由TRBL决定。
+<strong>父级的padding对其根本没有影响。</strong>
+
+
+
+
+
+
+
+
+
+### 移动端border-1px
+
+
+
+#### 伪类实现
+
+[网页链接](https://blog.csdn.net/qq_34543438/article/details/73839086)
+
+即通过伪类+子绝父相 实现1px的下边框
+
+
+**stylus写法**
+在 stylus文件夹中创建mixin.styl文件
+
+```
+border-1px($color)
+  position: relative
+  &:after
+    display: block
+    position: absolute
+    left: 0
+    bottom: 0
+    width: 100%
+    border-top: 1px solid $color
+    content: ' '
+```
+
+在 stylus文件夹中创建base.styl文件，内容如下：（根据设备的dpr确定y轴的缩放比例）
+
+```
+@media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)  
+   .border-1px  
+       &::after  
+          -webkit-transform: scaleY(0.7)  
+          transform: scaleY(0.7)  
+  
+@media (-webkit-min-device-pixel-ratio: 2),(min-device-pixel-ratio: 2)  
+   .border-1px  
+       &::after  
+          -webkit-transform: scaleY(0.5)  
+          transform: scaleY(0.5)  
+```
+
+调用
+
+```
+ .food
+          position relative
+          padding 12px 0
+          box-sizing border-box
+          border-1px(rgba(7, 17, 27, 0.1))
+```
+
+
+
+
+
+
+#### border-img 实现
+
+[https://www.w3cplus.com/css/fix-1px-for-retina.html](https://www.w3cplus.com/css/fix-1px-for-retina.html)
+
+
+#### postcss-write-svg 实现
+
+使用border-image每次都要去调整图片，总是需要成本的。基于上述的原因，我们可以借助于PostCSS的插件postcss-write-svg来帮助我们。如果你的项目中已经有使用PostCSS，那么只需要在项目中安装这个插件
 
 
 

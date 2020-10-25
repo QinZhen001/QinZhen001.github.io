@@ -6,7 +6,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - 性能优化
+    - 网络
 ---
 
 > “Yeah It's on. ”
@@ -57,5 +57,5 @@ off：关闭DNS预解析。这个属性在页面上的链接并不是由你控�
 ![enter description here][2]
 
 
-  [1]: http://cdn.xuanfengge.com/wp-content/uploads/2017/05/sdfgbf.jpg
-  [2]: http://cdn.xuanfengge.com/wp-content/uploads/2017/05/sdfdsf.png
+[1]: http://cdn.xuanfengge.com/wp-content/uploads/2017/05/sdfgbf.jpg
+[2]: http://cdn.xuanfengge.com/wp-content/uploads/2017/05/sdfdsf.png

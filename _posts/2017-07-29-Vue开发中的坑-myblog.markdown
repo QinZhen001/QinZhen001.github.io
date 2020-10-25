@@ -291,3 +291,39 @@ vue中监听滚动条滚动事件，清一色的使用`document.addEventListener
 }
 ```
 
+
+
+
+
+
+
+
+
+## vue-cli3
+
+
+
+### CSS minification error
+
+[https://blog.csdn.net/zzaixiao/article/details/107485269](https://blog.csdn.net/zzaixiao/article/details/107485269)
+
+在开发时没有报错
+
+开打包时出现：
+
+```
+Error: CSS minification error: Lexical error on line 1: Unrecognized text.
+```
+
+
+
+定位到错误代码：
+
+```
+calc(50% - 270PX)
+```
+
+
+
+
+

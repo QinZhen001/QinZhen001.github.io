@@ -689,15 +689,42 @@ function getDisplayName(WrappedComponent) {
 }
 ```
 
-## 
+
+
+### style
+
+[https://zh-hans.reactjs.org/docs/dom-elements.html#style](https://zh-hans.reactjs.org/docs/dom-elements.html#style)
+
+**在react中style是在{{}}中的**
+
+```jsx
+ <div  style={{ height: 12px}}></div>
+```
+
+**`style` 接受一个采用小驼峰命名属性的 JavaScript 对象，而不是 CSS 字符串**
+
+这与 DOM 中 `style` 的 JavaScript 属性是一致的，同时会更高效的，且能预防跨站脚本（XSS）的安全漏洞。
+
+
+
+例子：
+
+```jsx
+const divStyle = {
+  color: 'blue',
+  backgroundImage: 'url(' + imgUrl + ')',
+};
+
+function HelloWorldComponent() {
+  return <div style={divStyle}>Hello World!</div>;
+}
+```
 
 
 
 
 
-
-
-## 补充
+## 补充 新版react
 
 
 
@@ -1045,7 +1072,6 @@ React.cloneElement(
 
 ```
 <element.type {...element.props} {...props}>{children}</element.type>
-
 ```
 
 
@@ -1122,6 +1148,19 @@ constructor(props) {
 ```
 
 >这也是性能优化中要做到的，因为render()可能会调用多次，所以要把把绑定this操作移到render()外面
+
+
+
+### `useState` 不会自动合并更新对象
+
+与 class 组件中的 `setState` 方法不同，`useState` 不会自动合并更新对象。你可以用函数式的 `setState` 结合展开运算符来达到合并更新对象的效果。
+
+```tsx
+setState(prevState => {
+  // 也可以使用 Object.assign
+  return {...prevState, ...updatedValues};
+});
+```
 
 
 
@@ -1254,5 +1293,43 @@ ReactDOM.render(
 
 
 
+
+
+
+## react-scripts
+
+
+
+### test nowatch
+
+[https://github.com/facebook/create-react-app/issues/1137](https://github.com/facebook/create-react-app/issues/1137)
+
+Allow `npm test` to not run in watch mode for better cross-platform / tooling CI.
+
+
+
+最后解决方案：
+
+在package.json中的scripts增加
+
+```
+
+  "scripts": {
+    "test:nowatch": "cross-env CI=true react-scripts test",
+  },
+```
+
+
+
+
+
+
+
+
+
+
+
+
 [1]: http://www.ruanyifeng.com/blogimg/asset/2015/bg2015033110.png
 [2]: https://pic1.zhimg.com/80/v2-a32cb02859ea4ac0f8f50f1ec885d85c_hd.jpg
+
