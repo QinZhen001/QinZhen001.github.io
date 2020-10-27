@@ -940,13 +940,31 @@ export const createRemoveTodo = (id: number) => ({
 
 
 
+举个例子：
+
 ```tsx
-type ReturnType<T> = T extends (
-  ...args: any[]
-) => infer R ? R : any;
+type ParamType<T> = T extends (param: infer P) => any ? P : T;
 ```
 
-以上代码中 infer R 就是声明一个变量来承载传入函数签名的返回值类型，简单说就是用它取到函数返回值的类型方便之后使用。
+在这个条件语句 `T extends (param: infer P) => any ? P : T` 中，`infer P` 表示待推断的函数参数。
+
+
+
+整句表示为：如果 `T` 能赋值给 `(param: infer P) => any`，则结果是 `(param: infer P) => any` 类型中的参数 `P`，否则返回为 `T`。
+
+```tsx
+interface User {
+  name: string;
+  age: number;
+}
+
+type Func = (user: User) => void
+
+type Param = ParamType<Func>;   // Param = User
+type AA = ParamType<string>;    // string
+```
+
+
 
 
 
@@ -1887,6 +1905,25 @@ function logMe(x: any) {
 # 补充
 
 
+
+### 把对象里的所有值类型展开
+
+```tsx
+type Values<Modules> = {
+  [K in keyof Modules]: Modules[K]
+}[keyof Modules]
+```
+
+使用：
+
+```ts
+type Obj = {
+  a: 'foo'
+  b: 'bar'
+}
+
+type T = Values<Obj> // 'foo' | 'bar'
+```
 
 
 
