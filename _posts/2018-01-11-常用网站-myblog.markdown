@@ -354,18 +354,6 @@ You can generate the required JSON file for this tool by running
 
 
 
-### github_token
-
-> https://travis-ci.com/github/QinZhen001/react-test-ui/settings
-
-1a165bf3532896e9fd241fe73490051d19102a8f
-
-
-
-这个是我自己在github上设置的，用于持续集成，懂的都懂。
-
-
-
 
 
 
