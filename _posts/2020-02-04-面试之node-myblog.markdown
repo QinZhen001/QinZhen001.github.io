@@ -15,7 +15,7 @@ tags:
 
 # 面试之Node
 
-
+[https://mp.weixin.qq.com/s?__biz=MzUxOTEzNjEwMQ==&mid=2247483676&idx=1&sn=10d2a069b52833eb324d4adbdab27a05&chksm=f9ff7716ce88fe00871f96dc55936a9b6c00a4ac5c727c687dc6cbc0b06bb83db5101fb97051&scene=21#wechat_redirect](https://mp.weixin.qq.com/s?__biz=MzUxOTEzNjEwMQ==&mid=2247483676&idx=1&sn=10d2a069b52833eb324d4adbdab27a05&chksm=f9ff7716ce88fe00871f96dc55936a9b6c00a4ac5c727c687dc6cbc0b06bb83db5101fb97051&scene=21#wechat_redirect)
 
 
 
@@ -23,6 +23,105 @@ tags:
 
 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 
 Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。 
+
+
+
+
+
+## nodejs 的单线程架构模型
+
+
+
+优势：
+
+- 单线程就一个线程在玩，省去了线程间切换的开销
+- 还有线程同步的问题，线程冲突的问题的也不需要担心
+
+劣势：
+
+- 劣势也很明显，现在起步都是 4 核，单线程没法充分利用 cpu 的资源
+- 单线程，一旦崩溃，应用就挂掉了，大家调试脚本也知道一旦执行过程报错了，本次调试就直接结束了
+- 因为只能利用一个 cpu ，一旦 cpu 被某个计算一直占用， cpu 得不到释放，后续的请求就会一直被挂起，直接无响应了
+
+> 当然这些劣势都已经有成熟的解决方案了，使用 PM2 管理进程，或者上 K8S 也可以
+
+
+
+###  **nodejs 的事件循环（重要）**
+
+![](https://mmbiz.qpic.cn/mmbiz_png/68e53Trxt1gCoLYibhDAZ5wOAadwAsxzevKW0Wlco5QwzKxJeyGq8z3bAcmbRmdiaaepajdibdBlwNUn7PyC3rJbg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+
+
+如上图，事件循环中细分为这六个阶段，依次如下：
+
+1. `Timers`: 定时器 Interval Timoout 回调事件，将依次执行定时器回调函数
+2. `Pending`: 一些系统级回调将会在此阶段执行
+3. `Idle,prepare`: 此阶段"仅供内部使用"
+4. `Poll`: IO回调函数，这个阶段较为重要也复杂些，
+5. `Check`: 执行 setImmediate() 的回调
+6. `Close`: 执行 socket 的 close 事件回调
+
+
+
+与我们开发相关的三个阶段分别是 `Timers Poll Check`
+
+
+
+* **`Timers` ：执行定时器的回调，但注意，在 node 11 前，连续的几个定时器回调会连续的执行，而不是像浏览器那样，执行完一个宏任务立即执行微任务。**
+
+* `Check` ：这个阶段执行 setImmediate() 的回调，这个事件只在 nodejs 中存在。
+
+* `Poll` ：上面两个阶段的触发，其实是在 poll 阶段触发的。
+
+  
+
+
+
+## node微任务的执行时机
+
+那么微任务是在什么时候执行呢？
+
+在上图，黄色的几个阶段的旁边挨着个小块 `microtask`，每个阶段执行后就立即执行微任务队列里的事件。
+
+
+
+举个例子：
+
+```js
+setTimeout(() => {
+  console.log('timer1')
+  Promise.resolve().then(function() {
+    console.log('promise1')
+  })
+}, 0)
+setTimeout(() => {
+  console.log('timer2')
+  Promise.resolve().then(function() {
+    console.log('promise2')
+  })
+}, 0)
+```
+
+对浏览器事件队列熟悉的朋友很快就可得出 `浏览器中 timer1->promise1->timer2->promise2`，在浏览器中微任务队列是在每个宏任务执行完成后立即执行的。
+
+
+
+那么在 nodejs 中呢？
+
+结果是这样的：`timer1->timer2->promise1->promise2` ，因为微任务队列是在每个阶段完成后立即执行，所以 Timer 阶段有两个回调事件，将事件依次执行后，在进入下一阶段的之前，先执行微队列中的事件。
+
+
+
+**注意：这个结果是在 `node 10` 及以下的版本测试出来的，在 11 及以上的版本做了修改，执行的结果与浏览器的执行结果是一致的**
+
+```
+timer1->promise1->timer2->promise2
+```
+
+
+
+
 
 
 
@@ -36,17 +135,11 @@ https://juejin.im/post/5a5f5a126fb9a01cb0495b4c)
 
 
 
-## node多线程
 
-查了很多资料，都是说 Node.js 只支持单线程。但是可以开启多进程充分利用多核 CPU。
-
-
->线程是cpu调度的一个基本单位，一个cpu同时只能执行一个线程的任务
 
 
 
 ## Node.js 中的进程与线程
-
 
 [https://juejin.im/post/5d43017be51d4561f40adcf9?utm_source=gold_browser_extension](https://juejin.im/post/5d43017be51d4561f40adcf9?utm_source=gold_browser_extension)
 
@@ -129,9 +222,18 @@ Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步
 
 
 
+### node多进程
+
+查了很多资料，都是说 Node.js 只支持单线程。但是可以开启多进程充分利用多核 CPU。
 
 
-## child_process
+>线程是cpu调度的一个基本单位，一个cpu同时只能执行一个线程的任务
+
+
+
+
+
+### child_process
 
 在Node.js中，提供了一个child_process模块,通过它可以开启多个子进程，在多个子进程之间可以共享内存空间，可以通过子进程的互相通信来实现信息的交换。
 
@@ -142,6 +244,21 @@ Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步
 
 
 每个方法都返回一个 ChildProcess 实例。 这些对象实现了 Node.js 的 EventEmitter API，允许父进程注册监听器函数，在子进程的生命周期中当发生某些事件时会被调用。
+
+
+
+
+
+### 开启多个子进程
+
+单线程的一个缺点是不能充分利用多核，所以官方推出了 `cluster` 模块， **cluster 模块可以创建共享服务器端口的子进程**
+
+```js
+const cluster = require('cluster');
+for (let i = 0; i < numCPUs; i++) {
+    cluster.fork(); // 生成新的工作进程，可以使用 IPC 和父进程通信
+}
+```
 
 
 
@@ -214,6 +331,29 @@ https://juejin.im/post/5a5f5a126fb9a01cb0495b4c
 
 
 
+# 补充
+
+
+
+
+
+## 同步和异步
+
+同步和异步关注的是消息通信机制。
+
+- 同步：在发起一个调用后，在没有得到结果前，该调用不返回，知道调用返回，才往下执行，也就是说调用者等待被调用方返回结果。
+- 异步：在发起一个调用后，调用就直接返回，不等待结果，继续往下执行，而执行的结果是由被调用方通过状态、通知等方式告知调用方，典型的异步编程模型比如 Node.js
+
+## 阻塞和非阻塞
+
+阻塞和非阻塞，关注的是在等待结果时，线程的状态。
+
+- 阻塞：在等待调用结果时，线程挂起了，不往下执行
+- 非阻塞：与上面相反，当前线程继续往下执行
+
+
+
+> 什么时候会出现请求阻塞呢？涉及到大量计算的时候，因为计算是在 js 引擎上执行的，执行栈一直卡着，别的函数就没法执行，举个栗子，构建一个层级非常深的大对象，反复对这个这个对象 `JSON.parse(JSON.stringify(bigObj))`
 
 
 
@@ -221,8 +361,13 @@ https://juejin.im/post/5a5f5a126fb9a01cb0495b4c
 
 
 
+## 进程间通信IPC
 
+InterProcess Communication
 
+[https://www.jianshu.com/p/c1015f5ffa74](https://www.jianshu.com/p/c1015f5ffa74)
+
+每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以进程之间要交换数据必须通过内核，在内核中开辟一块缓冲区，进程1把数据从用户空间拷到内核缓冲区，进程2再从内核缓冲区把数据读走，内核提供的这种机制称为**进程间通信（IPC，InterProcess Communication）**
 
 
 

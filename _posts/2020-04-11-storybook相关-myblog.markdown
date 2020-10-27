@@ -277,4 +277,47 @@ import { action } from "@storybook/addon-actions";
 
 
 
+###  Unexpected character '@'   （scss）
+
+遇到一个问题:
+
+```
+ERROR in ./src/styles/index.scss 2:0
+Module parse failed: Unexpected character '@' (2:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+| // config
+> @import 'variables';
+| 
+| //layout
+ @ ./.storybook/config.tsx 7:0-34
+ @ multi ./node_modules/@storybook/core/dist/server/common/polyfills.js ./node_modules/@storybook/core/dist/server/preview/globals.js ./.storybook/config.tsx (webpack)-hot-middleware/client.js?reload=true&quiet=true
+```
+
+用了非常多的时间，定位到scss文件中@import问题
+
+那怎么解决呢？
+
+
+
+**在.storybook文件夹下的webpack.config.js增加**
+
+```js
+module.exports = ({ config }) => {
+
+  // 增加scss后缀
+  config.resolve.extensions.push('.ts', '.tsx', '.scss', '.css')
+
+  // 处理scss文件
+  config.module.rules.push({
+    test: /\.(sa|sc)ss$/,
+    use: ['style-loader', 'css-loader', 'sass-loader'],
+  })
+
+  return config
+}
+```
+
+最后完美解决问题，其实也就是配置了处理scss文件
+
+
 
