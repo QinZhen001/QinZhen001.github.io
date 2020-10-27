@@ -12,7 +12,7 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+## 基础
 
 
 [网页链接](http://www.jianshu.com/p/42e11515c10f)
@@ -269,6 +269,47 @@ module.exports = {
     },
    ...
 ```
+
+
+
+### Scope-Hoisting
+
+[https://segmentfault.com/a/1190000017953060](https://segmentfault.com/a/1190000017953060)
+
+作用域提升，尽可能的把打散的模块合并到一个函数中，前提是不能造成代码冗余。因此只有那些被引用了一次的模块才能被合并。
+
+
+
+可能不好理解，下面demo对比一下有无Scope-Hoisting的编译结果。
+
+首先定义一个util.js文件
+
+```js
+export default 'Hello,Webpack';
+```
+
+然后定义入口文件main.js
+
+```js
+import str from './util.js'
+console.log(str);
+```
+
+下面是无Scope-Hoisting结果：
+
+![](https://segmentfault.com/img/bVbnuzC?w=1324&h=368)
+
+然后是Scope-Hoisting后的结果：
+
+![](https://segmentfault.com/img/bVbnuzD?w=1214&h=244)
+
+
+
+
+
+
+
+
 
 ### Splitting
 
@@ -1455,6 +1496,85 @@ vendors: {
 链接：https://juejin.im/post/6844903846993461256
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+## 优化
+
+
+
+
+
+### hard-source-wepack-plugin用于性能优化
+
+[https://www.npmjs.com/package/hard-source-webpack-plugin](https://www.npmjs.com/package/hard-source-webpack-plugin)
+
+**性能有90%的提升**
+
+**性能有90%的提升**
+
+**性能有90%的提升**
+
+
+
+在webpack4.0的时代，optimization下的splitchunk配置较多，尤其是cacheControls的权重配置，在4.0到5.0之间有一种过渡的使用缓存的方式，打包很快，借助`hard-source-webpack-plugin`
+
+
+
+**其原理是为模块提供中间缓存步骤**
+
+
+
+`HardSourceWebpackPlugin` is a plugin for webpack to provide an intermediate caching step for modules. In order to see results, you'll need to run webpack twice with this plugin: the first build will take the normal amount of time. The second build will be signficantly faster.
+
+>  为了查看结果，需要使用此插件运行webpack两次：第一次构建将花费正常的时间。第二次构建将显着加快（大概提升90%的构建速度）。
+
+
+
+```js
+// webpack.config.js
+var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+ 
+module.exports = {
+  context: // ...
+  entry: // ...
+  output: // ...
+  plugins: [
+    new HardSourceWebpackPlugin()
+  ]
+}
+```
+
+展望未来 
+
+`webpack 5` 已经发布，其中有一个很吸引人的功能——**持久缓存**（据说思想跟 `HardSourceWebpackPlugin` 是一致的）
+
+
+
+通过 `cache`  缓存生成的 `webpack` 模块和` chunk`，来改善构建速度。`cache` 会在开发模式被设置成 `type: 'memory'` 而且在生产模式中被禁用
+
+```js
+module.exports = {
+  cache: {
+    // 1. 将缓存类型设置为文件系统
+    type: 'filesystem',
+    buildDependencies: {
+      // 2. 将你的 config 添加为 buildDependency，以便在改变 config 时获得缓存无效
+      config: [__filename],
+      // 3. 如果你有其他的东西被构建依赖，你可以在这里添加它们
+      // 注意，webpack、加载器和所有从你的配置中引用的模块都会被自动添加
+    },
+  },
+};
+```
+
+
+
+
+
+
+
+
 
 
 
