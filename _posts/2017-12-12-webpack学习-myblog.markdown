@@ -297,11 +297,11 @@ console.log(str);
 
 下面是无Scope-Hoisting结果：
 
-![](https://segmentfault.com/img/bVbnuzC?w=1324&h=368)
+![](https://s1.ax1x.com/2020/10/27/BQ5JzR.png)
 
 然后是Scope-Hoisting后的结果：
 
-![](https://segmentfault.com/img/bVbnuzD?w=1214&h=244)
+![](https://s1.ax1x.com/2020/10/27/BQ5GW9.png)
 
 
 
