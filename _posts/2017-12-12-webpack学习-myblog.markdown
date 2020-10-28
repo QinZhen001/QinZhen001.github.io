@@ -1570,6 +1570,74 @@ module.exports = {
 
 
 
+---
+
+实战公司营业管理系统 
+
+run dev
+
+优化前:
+
+```
+Time: 63690ms
+Built at: 2020-10-28 10:04:42
+```
+
+优化后：
+
+一次 run dev
+
+```
+Time: 65575ms
+Built at: 2020-10-28 10:09:04
+```
+
+第二次 run dev
+
+```
+[hardsource:51f54b55] Using 145 MB of disk space.
+[hardsource:51f54b55] Tracking node dependencies with: package-lock.json, yarn.lock.
+[hardsource:51f54b55] Reading from cache 51f54b55...
+Happy[babel]: Version: 5.0.1. Threads: 3
+Happy[babel]: All set; signaling webpack to proceed.
+10% building 1/2 modules 1 active ...ebpack\hot\dev-server.js D:\代码模板\oto-operation-1\src\maini ｢wdm｣: Hash: 4537205bd7
+
+
+Version: webpack 4.41.2
+Time: 19890ms
+Built at: 2020-10-28 10:09:54
+```
+
+可以看到Time大幅度减少
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
