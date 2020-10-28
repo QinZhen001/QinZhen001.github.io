@@ -237,6 +237,88 @@ p {
 >这个方法可以用来实现两列自适应布局，效果不错，这时候左边的宽度固定，右边的内容自适应宽度(去掉上面右边内容的宽度)。
 
 
+
+### 根据样式判断颜色
+
+```css
+  <style type="text/css">
+    .c1 .c2 div{  
+      color: blue;
+    }
+    div #box3 {  
+      color:green;
+    }
+    #box1 div { 
+      color:red;
+    }
+  </style>
+```
+
+
+
+```html
+  <div id="box1" class="c1">
+    <div id="box2" class="c2">
+      <div id="box3" class="c3">
+        文字
+      </div>
+    </div>
+  </div>
+```
+
+文字是什么颜色？
+
+```
+ red 上面两选择器的层级都是一样的, 后者覆盖前者 
+```
+
+
+
+---
+
+
+
+```css
+<style type="text/css">
+  #father #son{ 
+    color:blue;
+  }
+  #father p.c2{ 
+    color:black;
+  }
+  div.c1 p.c2{  
+    color:red;
+  }
+  #father{
+    color:green !important;
+  }
+</style>
+```
+
+
+
+```html
+<div id="father" class="c1">
+  <p id="son" class="c2">
+    试问这行字体是什么颜色的？
+  </p>
+</div>
+```
+
+答案：blue 
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 用纯CSS创建一个三角形
 
 ```
@@ -529,7 +611,7 @@ float、clear 和 vertical-align
 **渲染用的是GUI线程、js执行用的是js引擎线程就是v8，GUI线程与V8之间是互斥的。又因为浏览器会维持html中css和js的顺序，所以css渲染会阻塞js执行。**
 
 
- 
+
 
 
 
@@ -554,7 +636,38 @@ float、clear 和 vertical-align
 
 
 
+## 硬件加速的原理
 
+
+
+浏览器接收到页面文档后，会将文档中的标记语言解析为DOM树。DOM树和CSS结合后形成浏览器构建页面的渲染树。渲染树中包含大量的渲染元素，每个渲染元素会被分到一个图层中，每个图层又会被加载到GPU形成渲染纹理，**而图层在GPU中transform是不会触发repaint的**，最终这些使用transform的图层都会由独立的合成器进程进行处理, CSS transform会**创建了一个新的复合图层，可以被GPU直接用来执行transform操作**。
+
+
+
+**浏览器什么时候会创建一个独立的复合图层呢？事实上一般是在以下几种情况下：**
+
+- 3D或者CSS transform
+- `<video>`和`<canvas>`标签
+- `css filters(滤镜效果)`
+- 元素覆盖时，比如使用了z-index属性
+
+
+
+**所以得出一个结论：当我们做css动画时多使用transform**
+
+
+
+
+
+### 为什么硬件加速会使页面流畅
+
+因为transform属性不会触发浏览器的repaint（重绘），而绝对定位absolute中的left和top则会一直触发repaint（重绘）。
+
+
+
+### 为什么transform没有触发repaint呢？
+
+简而言之，transform动画由GPU控制，支持硬件加载，并不需要软件方面的渲染。**并不是所有的CSS属性都能触发GPU的硬件加载，事实上只有少数的属性可以，比如transform、opacity、filter**
 
 
 
