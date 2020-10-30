@@ -309,6 +309,56 @@ Vuex 全局维护着一个对象，使用到了单例设计模式。在这个全
 
 
 
+
+### Vue **不能检测**数组和对象的变化
+
+[https://cn.vuejs.org/v2/guide/reactivity.html#ad](https://cn.vuejs.org/v2/guide/reactivity.html#ad)
+
+
+
+![](https://s1.ax1x.com/2020/10/30/Btrfln.png)
+
+
+
+答案：1
+
+
+
+解释：
+
+* a.b 是没有经过Object.defineproperty() 所有更改a.b 不会触发render() 不会更新视图
+* created是在视图未渲染的时候直接对对象a的属性b赋值data里面的初值会改变，但是在mounted里面更新b是非响应式的，所以视图不会渲染 (created 和 mounted 的区别)
+
+
+
+
+
+
+
+---
+
+
+
+```js
+var vm = new Vue({
+  data:{
+    a:1
+  }
+})
+
+// `vm.a` 是响应式的
+
+vm.b = 2
+// `vm.b` 是非响应式的
+```
+
+
+
+
+
+
+
+
 ## React
 
 

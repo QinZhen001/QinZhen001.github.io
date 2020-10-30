@@ -168,11 +168,33 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 
 
 
-### 操作符
+### interface直接定义函数体
+
+一个完整的`.d.ts`类型声明
+
+```tsx
+export type Color = string | RgbArray | RGB
+
+export interface InvertColor {
+  (color: Color, bw?: boolean | BlackWhite): string // interface 可以直接定义函数体
+  asRGB(color: Color, bw?: boolean | BlackWhite): RGB
+  asRgbArray(color: Color, bw?: boolean | BlackWhite): RgbArray
+}
+
+export const invert: InvertColor;
+```
 
 
 
-#### !操作符
+
+
+
+
+## 操作符
+
+
+
+### !操作符
 
 **x! 将从 x 值域中排除 null 和 undefined 。**
 
@@ -581,6 +603,37 @@ type Required<T> = {
 
 
 
+#### 指定某个类型为非可选的键
+
+也就说我们将类型中的部分key由可选变为必选
+
+```tsx
+type RequireKeys<T, TNames extends keyof T> = T &
+  { [P in keyof T]-?: P extends TNames ? T[P] : never };
+```
+
+举个例子:
+
+```tsx
+type ButtonProps2 = RequireKeys<ButtonProps, "onClick">;  // onClick 变为必须的key
+
+const Button2 = (props: ButtonProps2) => {
+  const handleClick: React.MouseEventHandler<
+    HTMLButtonElement | HTMLAnchorElement
+  > = e => {
+    props.onClick(e); // works
+  };
+};
+```
+
+
+
+
+
+
+
+
+
 
 
 ### Pick
@@ -634,6 +687,23 @@ type Record<K extends keyof any, T> = {
     [P in K]: T;
 };
 ```
+
+
+
+举个例子 在WechatMiniprogram中的data
+
+
+
+```tsx
+type DataOption = Record<string, any>
+
+
+interface Data<D extends DataOption> {
+    
+}
+```
+
+
 
 
 
@@ -1274,13 +1344,47 @@ function printEmployeeInformation(emp: UnknownEmployee) {
 
 
 
+## namespace
+
+[https://www.tslang.cn/docs/handbook/namespaces.html](https://www.tslang.cn/docs/handbook/namespaces.html)
+
+[快速编写第三方包 .d.ts 类型声明指南](https://zhuanlan.zhihu.com/p/58123993)
+
+
+
+##### Validation.ts
+
+```tsx
+namespace Validation {
+    export interface StringValidator {
+        isAcceptable(s: string): boolean;
+    }
+}
+```
+
+##### LettersOnlyValidator.ts
+
+```tsx
+/// <reference path="Validation.ts" />
+namespace Validation {
+    const lettersRegexp = /^[A-Za-z]+$/;
+    export class LettersOnlyValidator implements StringValidator {
+        isAcceptable(s: string) {
+            return lettersRegexp.test(s);
+        }
+    }
+}
+```
+
+
+
 
 
 ##  **declare**  
 
 [ https://juejin.im/entry/5907f5020ce46300617bfb44 ]( https://juejin.im/entry/5907f5020ce46300617bfb44 )
 
-
+[https://ts.xcatliu.com/basics/declaration-files.html](https://ts.xcatliu.com/basics/declaration-files.html)
 
 ```tsx
 // 作为全局变量使用：
@@ -2178,56 +2282,36 @@ script:{
 
 
 
-## 遇到的问题
+# 补充
 
 
 
 
 
-### All files must be modules when the '--isolatedModules' flag is provided
+### 动态设置请求返回值类型
 
+```ts
+export function request<T>(): Promise<T>
 
-
-[ https://roblox-ts.com/docs/usage/workflow-issues ]( https://roblox-ts.com/docs/usage/workflow-issues )
-
-
-
-This error is encountered when a file in your project is not considered a module (referring to “modules” in JavaScript, not ModuleScripts). As per the ECMAScript specification, files are considered modules in TypeScript when they contain at least one import or export. If a file is *not* a module, then it will share its top-most scope with every other file in your project.
-
-
-
-当您的项目中的一个文件不被认为是一个模块时(引用JavaScript中的模块，而不是ModuleScripts)，就会遇到这个错误。**根据ECMAScript规范，当文件包含至少一个导入或导出时，文件被认为是TypeScript中的模块**。如果文件不是模块，那么它将与项目中的所有其他文件共享其最顶层的作用域。
-
-
-
-
-Therefore, the solution here is to ensure that every file in your project has at least one `import` or `export` statement. If you don’t need either, then you can provide an empty export statement:
-
-
- 因此，这里的解决方案是确保项目中的每个文件至少有一个导入或导出语句。如果您不需要这两个语句，那么您可以提供一个空的export语句
-
-
-
-``` js
-export {}
+// 如 const result = request<{a: string}>(); result.a
 ```
 
 
 
 
 
-Unfortunately, there is no other workaround for this problem. Please do not remove the isolatedModules flag from your tsconfig file, as this does not fix the problem, it only suppresses the error.
+### class 实例
+
+```tsx
+class A {}
+
+// 这里表示参数是 class A 这个类，如果没有 `typeof` 则参数是 class A 的实例
+export const callClassA(classA: typeof A)
+
+export const callClassA(a: A)
+```
 
 
-
-
-
-不幸的是，对于这个问题没有其他的解决方法。请不要从tsconfig文件中删除isolatedModules标志，因为这并不能解决问题，它只会抑制错误。
-
-
-
-
- >tsconfig中isolatedModules选项默认为true，这个选项无法更改！！！
 
 
 
@@ -2921,6 +3005,294 @@ this is a quirk of how the typings are written:
 
 ```js
 const fileInput = useRef<HTMLInputElement | null>(null)
+```
+
+
+
+
+
+
+
+## An index signature parameter type cannot be a union type
+
+[https://blog.csdn.net/weixin_43720095/article/details/106805276](https://blog.csdn.net/weixin_43720095/article/details/106805276)
+
+
+
+写接口类型时，希望一个类型的键值是联合类型中固定的几个
+
+```tsx
+const enum MSGTYPE{
+    TEXT = 'text',
+    IMAGE = 'image',
+}
+// or
+// type MSGTYPE = 'text' | 'image';
+
+export interface QywxSendMessage = {
+    msg_id: number;
+    msg_name: string;
+    [key: MSGTYPE]: number;
+}
+```
+
+显然会报错An index signature parameter type cannot be a union type. Consider using a mapped object type instead. ts(1337)
+
+
+
+解决：
+
+```tsx
+export interface QywxSendMessage = {
+    msg_id: number;
+    msg_name: string;
+    [key in MSGTYPE]: number;
+}
+```
+
+
+
+---
+
+
+
+写接口类型时，希望一个类型的键值是联合类型中固定的几个中的一个
+
+```tsx
+type MSGTYPE = 'text' | 'image';
+
+export interface QywxSendMessage = {
+    msg_id: number;
+    msg_name: string;
+    [key: MSGTYPE]: number;
+    // [key: 'text' | 'image']: number;
+}
+```
+
+显然也会报错An index signature parameter type cannot be a union type. Consider using a mapped object type instead. ts(1337)
+
+
+
+那该如何表示呢？如果用？那显然是有问题的
+
+```tsx
+type MSGTYPE<T> = {'text': T } | {'image':T };
+
+export interface QywxSendMessageParams = {
+    msg_id: number;
+    msg_name: string;
+}
+
+export type QywxSendMessage = QywxSendMessageParams & MSGTYPE<number>;
+```
+
+
+
+
+
+## Cannot redeclare block-scoped variable
+
+https://www.jianshu.com/p/78268bd9af0a?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
+
+
+
+```tsx
+const name = 'youthcity';
+
+function greeter(name:string) {
+  return `Hello ${name}`;
+}
+
+console.log(greeter(name));
+
+```
+
+
+
+在默认状态下，`typescript` 将 `DOM typings` 作为全局的运行环境，所以当我们声明 `name`时， 与 `DOM` 中的全局 `window` 对象下的 `name` 属性出现了重名。因此，报了 `error TS2451: Cannot redeclare block-scoped variable 'name'.` 错误。
+
+
+
+---
+
+
+
+方法一：
+
+我们可以在 `tsconfig.json` 中做一下声明：
+
+```json
+{
+    "compilerOptions": {
+        "lib": [
+            "es2015"
+        ]
+    }
+}
+```
+
+
+
+---
+
+
+
+方法二：
+
+既然与全局的变量出现重名，那我们将脚本封装到模块（[module](https://www.jianshu.com/p/78268bd9af0a?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)）内。`module` 有自己的作用域，自然不会与全局作用域的变量产生冲突。
+
+
+
+> 在 Typescript 中，只要文件存在 import 或 export 关键字，都被视为 module
+
+
+
+```tsx
+const name = 'youthcity';
+
+function greeter(name:string) {
+  return `Hello ${name}`;
+}
+
+
+console.log(greeter(name));
+
+export {};
+```
+
+
+
+## All files must be modules when the '--isolatedModules' flag is provided
+
+
+
+[ https://roblox-ts.com/docs/usage/workflow-issues ]( https://roblox-ts.com/docs/usage/workflow-issues )
+
+
+
+This error is encountered when a file in your project is not considered a module (referring to “modules” in JavaScript, not ModuleScripts). As per the ECMAScript specification, files are considered modules in TypeScript when they contain at least one import or export. If a file is *not* a module, then it will share its top-most scope with every other file in your project.
+
+
+
+当您的项目中的一个文件不被认为是一个模块时(引用JavaScript中的模块，而不是ModuleScripts)，就会遇到这个错误。**根据ECMAScript规范，当文件包含至少一个导入或导出时，文件被认为是TypeScript中的模块**。如果文件不是模块，那么它将与项目中的所有其他文件共享其最顶层的作用域。
+
+
+
+
+Therefore, the solution here is to ensure that every file in your project has at least one `import` or `export` statement. If you don’t need either, then you can provide an empty export statement:
+
+
+ 因此，这里的解决方案是确保项目中的每个文件至少有一个导入或导出语句。如果您不需要这两个语句，那么您可以提供一个空的export语句
+
+
+
+``` js
+export {}
+```
+
+
+
+
+
+Unfortunately, there is no other workaround for this problem. Please do not remove the isolatedModules flag from your tsconfig file, as this does not fix the problem, it only suppresses the error.
+
+
+
+
+
+不幸的是，对于这个问题没有其他的解决方法。请不要从tsconfig文件中删除isolatedModules标志，因为这并不能解决问题，它只会抑制错误。
+
+
+
+
+ >tsconfig中isolatedModules选项默认为true，这个选项无法更改！！！
+
+
+
+
+
+## [How to extend two classes?](https://stackoverflow.com/questions/26948400/typescript-how-to-extend-two-classes)
+
+[How to extend two classes?](https://stackoverflow.com/questions/26948400/typescript-how-to-extend-two-classes)
+
+
+
+```tsx
+abstract class B {
+  aaa:()=>{}
+}
+
+abstract class C {
+  bbb:()=>{}
+}
+
+class A extends B,C{
+
+}
+```
+
+出现报错：
+
+```tsx
+Classes can only extend a single class.ts(1174)
+```
+
+
+
+
+
+解决方案：
+
+TypeScript Mixins Part One
+
+[https://www.stevefenton.co.uk/2014/02/typescript-mixins-part-one/](https://www.stevefenton.co.uk/2014/02/typescript-mixins-part-one/)
+
+
+
+```tsx
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+             if (name !== 'constructor') {
+                derivedCtor.prototype[name] = baseCtor.prototype[name];
+            }
+        });
+    });
+}
+
+class Flies {
+        fly() {
+                alert('Is it a bird? Is it a plane?');
+        }
+}
+
+class Climbs {
+        climb() {
+                alert('My spider-sense is tingling.');
+        }
+}
+
+class Bulletproof {
+        deflect() {
+                alert('My wings are a shield of steel.');
+        }
+}
+
+class BeetleGuy implements Climbs, Bulletproof {
+        climb: () => void;
+        deflect: () => void;
+}
+applyMixins (BeetleGuy, [Climbs, Bulletproof]);
+
+class HorseflyWoman implements Climbs, Flies {
+        climb: () => void;
+        fly: () => void;
+}
+applyMixins (HorseflyWoman, [Climbs, Flies]);
+
+var superHero = new HorseflyWoman();
+superHero.climb();
+superHero.fly();
 ```
 
 

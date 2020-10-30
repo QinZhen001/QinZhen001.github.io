@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "面试之JS"
+title:      "面试之js和ts"
 date:       2019-08-02 11:22:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
