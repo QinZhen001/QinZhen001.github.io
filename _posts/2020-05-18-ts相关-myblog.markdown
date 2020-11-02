@@ -2010,6 +2010,12 @@ function logMe(x: any) {
 
 
 
+
+
+## 高级用法
+
+
+
 ### 把对象里的所有值类型展开
 
 ```tsx
@@ -2031,11 +2037,52 @@ type T = Values<Obj> // 'foo' | 'bar'
 
 
 
+### & string
+
+
+
+> Above, a keyof T & string intersection is required because keyof T could contain symbol types that cannot be transformed using template string types.
+
+
+
+```tsx
+type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
+```
+
+
+
+这里会自动把联合类型展开并分配，`${'cart'}/${'add' | 'remove'}` 会被推断成 `'cart/add' | 'cart/remove'`，不过由于我们传入的是 `keyof GetMutations<Module>` 它还有可能是 `symbol | number` 类型，所以用 `Keys & string` 来取其中的 `string` 类型
+
+
+
+### 获取类型里面子值的类型
+
+```tsx
+cart: {
+   mutations: {
+      add() { },
+      remove() { }
+   }
+},
+```
+
+例子：我们获取cart里面mutations的类型
+
+```tsx
+type GetMutations<Module> = Module extends { mutations: infer M } ? M : never
+```
 
 
 
 
-### 函数重载
+
+
+
+
+
+
+
+## 函数重载
 
 *不要*把一般的重载放在精确的重载前面：
 
@@ -2068,7 +2115,7 @@ var x = fn(myElem); // x: string, :)
 
 
 
-### **尽量使用使用联合类型**
+## **尽量使用使用联合类型**
 
 *不要*为仅在某个位置上的参数类型不同的情况下定义重载：
 
@@ -2099,7 +2146,7 @@ interface Moment {
 
 
 
-### `readonly` vs `const`
+## `readonly` vs `const`
 
 最简单判断该用`readonly`还是`const`的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用`const`，若做为属性则使用`readonly`。
 
@@ -2107,7 +2154,7 @@ interface Moment {
 
 
 
-### 额外的属性检查
+## 额外的属性检查
 
 ```js
 interface SquareConfig {
@@ -2179,7 +2226,7 @@ let mySquare = createSquare(squareOptions);
 
 
 
-### 集成在Webpack
+## 集成在Webpack
 
 ```javascript
 npm install ts-loader --save-dev
@@ -2226,6 +2273,22 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 1. atl与Babel有一流的集成，可以实现缓存。这对于使用带有Babel的Typescript的人来说非常有用。当启用useBabel和useCache标志时，typescript的emit将使用Babel进行转换并缓存。所以下次如果源文件（+环境）具有相同的校验和，我们可以完全跳过typescript和babel的转换。这大大减少了此方案中的构建时间。
 2. atl能够将类型检查器和发射器分叉到一个单独的进程，这也加快了一些开发方案（例如与react-hot-loader的反应）所以你的webpack编译将提前结束，你可以在浏览器中探索编译版本你的文件是typechecked
+
+
+
+
+
+
+
+## ts 4.1 新特性：字符串模板类型
+
+[https://mp.weixin.qq.com/s/MeGj7bD8m3VvXDMrMXNUHw](https://mp.weixin.qq.com/s/MeGj7bD8m3VvXDMrMXNUHw)
+
+
+
+
+
+
 
 
 
