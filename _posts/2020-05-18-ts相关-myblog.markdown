@@ -280,6 +280,12 @@ let unusable: void = undefined;
 
 [https://www.zhihu.com/question/354601204/answer/888668879](https://www.zhihu.com/question/354601204/answer/888668879)
 
+
+
+> never的主要作用就是充当Typescript类型系统里的[Bottom Type](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Bottom_type) (Typescript还有个top type unknown和即是top也是bottom的any)
+
+
+
 `never` 类型表示的是那些永不存在的值的类型。 例如，`never` 类型是那些总是会抛出异常或根本就不会有返回值的函数表达式或箭头函数表达式的返回值类型。
 
 
@@ -2345,13 +2351,13 @@ script:{
 
 
 
-# 补充
 
 
 
 
 
-### 动态设置请求返回值类型
+
+## 动态设置请求返回值类型
 
 ```ts
 export function request<T>(): Promise<T>
@@ -2363,7 +2369,7 @@ export function request<T>(): Promise<T>
 
 
 
-### class 实例
+## class 实例
 
 ```tsx
 class A {}
