@@ -844,6 +844,52 @@ bar(10);
 
 
 
+### Range
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Range](https://developer.mozilla.org/zh-CN/docs/Web/API/Range)
+
+**`Range`** 接口表示一个包含节点与文本节点的一部分的文档片段。
+
+
+
+可以用 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 对象的 [`Document.createRange`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createRange) 方法创建 Range，也可以用 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象的 [`getRangeAt`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection/getRangeAt) 方法获取 Range。另外，还可以通过 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 对象的构造函数 [`Range()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/Range) 来得到 Range。
+
+
+
+#### 关于 setStart 和 setEnd
+
+[https://stackoverflow.com/questions/27435485/dom-range-setstart-setend](https://stackoverflow.com/questions/27435485/dom-range-setstart-setend)
+
+我们来看一个例子：
+
+```html
+  <div id="test">
+    <p>h</p>ello
+  </div>
+```
+
+```js
+  // 实现加粗hel 这三个字母
+  var range = document.createRange();
+  var root_node = document.getElementById("test");
+  // Start at the `<p>` element.
+  range.setStart(root_node, 1);
+  // End in the `ello` text node, between the two `l`s.
+  range.setEnd(root_node.childNodes[2], 2);
+  var newNode = document.createElement("b");
+  range.surroundContents(newNode);
+```
+
+
+
+[surroundContents](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/surroundContents)
+
+> 这个方法与 `newNode.appendChild(range.extractContents()); range.insertNode(newNode)` 等价。应用以后， `newNode` 包含在 `range` 的边界点中。
+
+
+
+
+
 
 
 
