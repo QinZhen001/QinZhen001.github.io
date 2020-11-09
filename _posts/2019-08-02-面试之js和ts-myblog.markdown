@@ -4190,20 +4190,6 @@ console.log(true + false)
 
 
 
-## 对象引用输出题
-
-```js
-  const a = { b: 3 }
-
-  function foo(obj) {
-    obj.b = 5
-    return obj
-  }
-
-  const aa = foo(a)
-  console.log(a.b) // 5 
-  console.log(aa.b) // 5
-```
 
 
 
@@ -4213,7 +4199,8 @@ console.log(true + false)
 
 
 
-### for..in,for..of 和 Object.keys的区别
+
+## for..in,for..of 和 Object.keys的区别
 
 for..in
 
@@ -4222,8 +4209,6 @@ for..in
 * 遍历对象返回的属性名和遍历数组返回的索引都是string类型
 
 > 不推荐在数组中使用for in遍历
-
-
 
 ```js
   Array.prototype.getLength = function () {
@@ -4317,3 +4302,30 @@ Object.keys
 
 
 
+## [javascript函数自执行里的this为什么指向window](https://segmentfault.com/q/1010000004648772)
+
+[javascript函数自执行里的this为什么指向window](https://segmentfault.com/q/1010000004648772)
+
+
+
+当你要确定“函数中的this是什么”的时候，永远不要到函数**定义的地方**去找答案！而是要到**函数被调用**的地方找答案！
+
+
+
+具体说：函数里面的`this`的含义，是由它被调用的方式决定的。
+
+
+
+换句话说，当你看到下面的代码时：
+
+```
+a.f();
+```
+
+你就可以确定f里面的`this`就是指`a`，而不管`f`是个什么玩意。当你看到下面的代码时：
+
+```
+f();
+```
+
+你就可以确定(不考虑`bind`，以及严格模式时情况下)，`f`里面的`this`就是指全局对象`window`。
