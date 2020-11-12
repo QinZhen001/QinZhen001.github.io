@@ -366,7 +366,11 @@ runtime，以及伴随的 manifest 数据，主要是指：在浏览器运行时
 
 
 
-### libraryTarget
+### output
+
+
+
+#### libraryTarget
 
 [https://webpack.js.org/configuration/output/#expose-via-object-assignment](https://webpack.js.org/configuration/output/#expose-via-object-assignment)
 
@@ -441,6 +445,65 @@ define('MyLibrary', [], function() {
 ```
 
 ---
+
+
+
+
+
+#### libraryExport
+
+[https://www.webpackjs.com/configuration/output/#output-libraryexport](https://www.webpackjs.com/configuration/output/#output-libraryexport)
+
+`string` or `string[]` (since webpack 3.0.0)
+
+> Default: `_entry_return_`
+
+
+
+上面的默认值会导致一个小问题
+
+[https://mp.weixin.qq.com/s/uAhqYgfFTrTfkiCicPmHpg](https://mp.weixin.qq.com/s/uAhqYgfFTrTfkiCicPmHpg)
+
+
+
+
+
+Configure which module or modules will be exposed via the libraryTarget. The default entry return value is the namespace or default module returned by your entry file. The examples below demonstrate the effect of this config when using libraryTarget: "var", but any target may be used.
+
+配置哪些或哪些模块将通过libraryTarget公开。默认条目返回值是条目文件返回的名称空间或默认模块。下面的例子演示了这个配置在使用libraryTarget: "var"时的效果，但是任何目标都可以使用。
+
+
+
+---
+
+
+
+例子：
+
+`libraryExport: "default"` - The **default export of your entry point** will be assigned to the library target:
+
+```js
+// if your entry has a default export of `MyDefaultModule`
+var MyDefaultModule = _entry_return_.default;
+```
+
+
+
+
+
+`libraryExport: "MyModule"` - The **specified module** will be assigned to the library target:
+
+```js
+var MyModule = _entry_return_.MyModule;
+```
+
+
+
+
+
+
+
+
 
 
 
