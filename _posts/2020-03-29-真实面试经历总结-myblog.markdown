@@ -6,12 +6,12 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - 面试
 ---
 
 > “Yeah It's on. ”
 
-## 前序
+# 前序
 
 2020是非常艰难的一年，受疫情影响，很多中小型公司倒闭，很多人二月份只有几天的工资。
 
@@ -25,11 +25,15 @@ tags:
 
 
 
-## 面试
+# 面试
 
 
 
-### 斗游一面
+## 斗游
+
+
+
+### 一面
 
 
 
@@ -130,7 +134,7 @@ function  lottery(whiteList,  participant){
 
 
 
-### 斗游二面
+### 二面
 
 
 
@@ -164,9 +168,11 @@ function  lottery(whiteList,  participant){
 
 
 
+## 深信服
 
 
-### 深信服一面
+
+### 一面
 
 
 
@@ -213,7 +219,9 @@ vue
 
 
 
-### 字节跳动一面
+## 字节跳动
+
+### 一面
 
 
 
@@ -292,15 +300,11 @@ async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但a
 
 
 
+## 追一科技
 
+一家c轮做人工智能的公司，前端对node要求高，问框架原理问的很细很深
 
-### 追一科技一面
-
-
-
-> 一家c轮做人工智能的公司，前端对node要求高，问框架原理问的很细很深
-
-
+### 一面
 
 * 链表和数组区别？真实应用场景 （偏后端）（卧槽）
 * diff细节？dom树更新怎么比较的？比较顺序？（是否component是否普通标签是否相同标签）同层对比？如果只是属性变了怎么更新？patchChildren？key的作用？
@@ -329,11 +333,11 @@ async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但a
 
 
 
+## 晓教育
 
 
 
-
-### 晓教育一面
+### 一面
 
 
 
@@ -376,7 +380,7 @@ gulp
 
 
 
-### 晓教育二面
+### 二面
 
 
 
@@ -423,7 +427,428 @@ gulp
 
 
 
-## 总结
+
+
+## 阿里
+
+
+
+### 国际化一面(笔试)
+
+两道笔试题，一小时内完成
+
+
+
+**经典dfs搜索的题目，忘记记录已经走过的路径导致死循环**
+
+```js
+// 给定一个包含了一些 0 和 1 的非空二维数组 grid
+//
+// 一个 岛屿 是由一些相邻的 1（代表土地）构成的组合，这里的「相邻」要求两个 1 必须在水平或者竖直方向上相邻。你可以假设 grid 的四个边缘都被 0（代表水）包围着
+//
+// 给定两个位置，判断这两个位置否在同一个岛屿上
+
+const direction = [
+  [0, 1],
+  [1, 0],
+  [-1, 0],
+  [0, -1],
+]
+
+let flag = false
+
+function isSameIsland(grid, row1, col1, row2, col2) {
+  if (!grid[row1][col1] || !grid[row2][col2]) {
+    return false
+  }
+  let target = [row2, col2]
+  // 记录已经找过的路径 不然会死循环
+  let marked = new Array(grid.length)
+  for (let i = 0; i < grid.length; i++) {
+    marked[i] = new Array(grid[0].length).fill(false)
+  }
+  marked[row1][col1] = true
+  for (let i = 0; i < direction.length; i++) {
+    // 四个方向出发 深度搜索
+    let next = [row1 + direction[i][0], col1 + direction[i][1]]
+    if (isInGrid(grid, next)) {
+      dfs(grid, next, target, marked)
+    }
+  }
+  let result = flag
+  flag = false
+  return result
+}
+
+function dfs(grid, cur, target, marked) {
+  // console.log(cur, marked)
+  // debugger
+  if (!grid[cur[0]][cur[1]]) {
+    // 不是岛屿
+    return false
+  }
+  if (marked[cur[0]][cur[1]]) {
+    // 该点已经走过
+    return false
+  }
+  marked[cur[0]][cur[1]] = true
+  let [x, y] = cur
+  let [targetX, targetY] = target
+  if (x == targetX && y == targetY) {
+    flag = true
+    return true
+  }
+  for (let i = 0; i < direction.length; i++) {
+    let next = [x + direction[i][0], y + direction[i][1]]
+    if (isInGrid(grid, next)) {
+      dfs(grid, next, target, marked)
+    }
+  }
+}
+
+function isInGrid(grid, cur) {
+  let [x, y] = cur
+  if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
+    return false
+  }
+  return true
+}
+
+const grid1 = [
+  [0, 0, 1, 0, 0, 0, 0, 1, 0], // row=0
+  [0, 0, 1, 0, 0, 1, 0, 1, 1], // row=1
+  [1, 1, 1, 1, 1, 1, 1, 0, 1], // row=2
+]
+
+let res1 = isSameIsland(grid1, 0, 2, 1, 5) // 返回 true
+
+let res2 = isSameIsland(grid1, 0, 7, 2, 5) // 返回 false （注意 grid1 中 (1,7) 和 (2,6) 不算相邻）
+
+console.log(res1)
+console.log(res2)
+
+```
+
+
+
+
+----
+
+
+
+这道题可以变形为查找地图中一共有多少个岛屿
+
+```js
+// 给定一个包含了一些 0 和 1 的非空二维数组 grid
+// 一个 岛屿 是由一些相邻的 1（代表土地）构成的组合，这里的「相邻」要求两个 1 必须在水平或者竖直方向上相邻。你可以假设 grid 的四个边缘都被 0（代表水）包围着
+// 判断有多少个岛屿
+
+const direction = [
+  [0, 1],
+  [1, 0],
+  [-1, 0],
+  [0, -1],
+]
+
+function getIsland(grid) {
+  if (!grid || !grid.length || !grid[0].length) {
+    return 0
+  }
+  let total = 0
+  let marked = new Array(grid.length)
+  for (let i = 0; i < marked.length; i++) {
+    marked[i] = new Array(grid[0].length).fill(false)
+  }
+
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid[0].length; y++) {
+      if (isInIsland(grid, x, y)) {
+        dfs(grid, x, y, marked)
+        total++
+      }
+    }
+  }
+  return total
+}
+
+function dfs(grid, x, y,marked) {
+  if (!isInGrid(grid, x, y)) {
+    // 不在地图中
+    return
+  }
+  if (marked[x][y]) {
+    // 已经来过了
+    return
+  }
+  if (!grid[x][y]) {
+    // 不是岛屿
+    return
+  }
+  // 标记来过
+  marked[x][y] = true  // marked 其实不是必须的
+  // 标记为水
+  grid[x][y] = 0
+  for (let i = 0; i < direction.length; i++) {
+    dfs(grid, x + direction[i][0], y + direction[i][1],marked)
+  }
+}
+
+// 在岛屿中
+function isInIsland(grid, x, y) {
+  return !!grid[x][y]
+}
+
+// 在地图中
+function isInGrid(grid, x, y) {
+  if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
+    return false
+  }
+  return true
+}
+
+const grid1 = [
+  [1, 0, 1, 0, 0, 0, 0, 1, 0], // row=0
+  [0, 0, 1, 0, 0, 1, 0, 1, 1], // row=1
+  [1, 1, 1, 1, 1, 1, 1, 0, 1], // row=2
+]
+
+let res1 = getIsland(grid1) // 3
+
+console.log(res1)
+
+```
+
+
+
+---
+
+
+
+实现对函数执行的流程控制  
+
+```js
+// 请实现以下的 LazyArray ，使下列的代码调用正确
+
+function promiseFy(fn, num = 500) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let res = fn()
+      resolve(resizeBy)
+    }, num)
+  })
+}
+
+class LazyArray {
+  // YOUR CODE HERE
+  // 你需要实现以下方法： map / filter / delay / forEach
+
+  constructor(arr) {
+    this.arr = arr
+    this.taskList = []
+    this.num = null
+  }
+
+  filter(fn) {
+    let finalFn = () => {
+      this.arr = this.arr.filter(fn)
+      return null
+    }
+    this.taskList.push(finalFn)
+    return this
+  }
+  map(fn) {
+    for (let i = 0; i < this.arr.length; i++) {
+      let finalFn = () => {
+        let item = this.arr[i]
+        if (item !== null && item !== undefined && !isNaN(item)) {
+          this.arr[i] = fn(item)
+          return this.arr[i]
+        }
+      }
+      this.taskList.push(finalFn)
+    }
+    return this
+  }
+
+  async forEach(fn) {
+    while (this.taskList.length) {
+      let task = this.taskList.shift()
+      let res = task()
+      if (res !== null && res !== undefined && !isNaN(res)) {
+        if (this.num) {
+          // 存在延时
+          await promiseFy(() => fn(res), this.num)
+        } else {
+          fn(res)
+        }
+      }
+    }
+    return this
+  }
+  delay(num) {
+    this.num = num
+    return this
+  }
+}
+
+const lazy1 = new LazyArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+const lazy2 = lazy1
+  .filter((v) => v % 2 === 0)
+  .map((v) => {
+    console.log(`map ${v} to ${v * 5}`)
+    return v * 5
+  })
+// 上一条语句执行时，不进行任何输出
+
+// lazy2.forEach((v) => {
+//   console.log('consume lazy2', v)
+// })
+
+// 上一条语句执行时，输出以下内容:
+//  map 0 to 0
+//  consume lazy2 0
+//  map 2 to 10
+//  consume lazy2 10
+//  ......
+
+// 进阶题目：
+
+const lazy3 = lazy2.delay(500)
+lazy3.forEach((v) => {
+  console.log('consume lazy3', v)
+})
+
+// 上一条语句执行时，不会立刻产生「consume lazy3 ...」这样的输出
+// 所有「consume lazy3 ...」这样的输出将在 500 毫秒之后产生
+```
+
+这里可以关注一下this的指向
+
+
+
+举个例子：
+
+```js
+  await promiseFy.call(this,()=>{
+      // 我们使用某种手段使得
+      // 此处的this是指向LazyArray实例
+      fn.call(this,res)
+  }, this.num)
+```
+
+结果：
+
+```js
+const lazy3 = lazy2.delay(500)
+lazy3.forEach((v) => {
+  // 这里的this仍然是指向window 因为箭头函数本身并没有this
+  // 不可以用bind call apply改变this  
+  console.log('consume lazy3', v)
+})
+```
+
+
+
+
+
+
+
+###  国际化二面(电话)
+
+半小时左右
+
+
+
+介绍 项目 和 做过最难的东西等
+
+
+
+
+
+* git rebase  和 git merge 
+* npm包每个数字代表什么意思 (xx.xxx.xx)  （如何发包）
+* 你项目的依赖库是写死的还是动态版本？(写死的版本号真的是固定的吗？)如何保证依赖库不出错？  （npm的知识）
+* 实现一个深拷贝 （对date Regex的处理 map解决循环引用）
+* JSON.parse(JSON.stringify(obj))实现深拷贝的问题？如让 JSON.parse(JSON.stringify(obj))深拷贝循环引用不报错？
+* 判断一个函数是不是async函数
+* 判断一个对象是不是数组
+* 判断一个对象是不是函数
+* node stream的特点 最大的优势
+* node 是单线程 如何利用多核cpu的优势？(cluster fork 主进程  和 工作进程)
+* 主进程和子进程会共享一个端口，这是怎么做到的？（追问？IPC？父子通信？）
+* 工程化做过哪些东西？对webpack的理解。
+* promise.then(res=>{},rej=>{}).catch(err=>{})  这里catch方式捕获错误和 rej捕获错误的区别是？
+
+
+
+
+
+考察的问题都比较有代表性，下面探究一些没有答出来的问题。
+
+
+
+**让 JSON.parse(JSON.stringify(obj))深拷贝循环引用不报错**
+
+```js
+const obj = {
+  foo: {
+    name: 'foo',
+    bar: {
+      name: 'bar',
+      baz: {
+        name: 'baz',
+        aChild: null, //待会让它指向obj.foo
+      },
+    },
+  },
+}
+obj.foo.bar.baz.aChild = obj.foo
+// foo->bar->baz->aChild->foo 形成环
+
+
+// TypeError: cyclic object value
+// let res =  JSON.parse(JSON.stringify(obj))
+
+// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+// 解决：
+
+const seen = [] 
+let res = JSON.parse(
+  JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'object' && value !== null) {
+      if (seen.indexOf(value) !== -1) {
+        // 已存在 变为空指针
+        return null
+      }
+      seen.push(value);
+    }
+    return value
+  })
+)
+console.log(res)
+```
+
+利用JSON.stringify函数的第二个参数replacer
+
+
+
+`replacer` 可选
+
+如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为 null 或者未提供，则对象所有的属性都会被序列化。
+
+
+
+---
+
+
+
+// TODO:athletic_shoe:
+
+
+
+# 总结
 
 
 
