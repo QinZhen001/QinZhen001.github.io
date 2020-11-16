@@ -404,14 +404,39 @@ $ git status
 
 
 
+为什么需要Rebase？
+
+* 删除多次无用的 `commit` 
+* 利于代码 `review`
+
+[http://jartto.wang/2018/12/11/git-rebase/](http://jartto.wang/2018/12/11/git-rebase/)
+
+
+
+
+
 rebase在git中是一个非常有魅力的命令，使用得当会极大提高自己的工作效率；相反，如果乱用，会给团队中其他人带来麻烦。它的作用简要概括为：可以对某一段线性提交历史进行编辑、删除、复制、粘贴；因此，合理使用rebase命令可以使我们的提交历史干净、简洁！
+
 
 
 **前提：不要通过rebase对任何已经提交到公共仓库中的commit进行修改（你自己一个人玩的分支除外）**
 
 
 
------
+> git-rebase 存在的价值是：对一个分支做「变基」操作。
+
+
+
+1.当我们在一个过时的分支上面开发的时候，执行 `rebase` 以此同步 `master` 分支最新变动；
+2.假如我们要启动一个放置了很久的并行工作，现在有时间来继续这件事情，很显然这个分支已经落后了。这时候需要在最新的基准上面开始工作，所以 `rebase` 是最合适的选择。
+
+
+
+`git rebase` 是一个危险命令，因为它改变了历史，我们应该谨慎使用**（最好只在自己一人上分支使用）**。
+
+
+
+#### 合并多个commit
 
 
 
@@ -479,6 +504,38 @@ git rebase -i HEAD~3
       git checkout master
       git reset --hard  0c72e64
 ```
+
+
+
+
+
+#### 遇到的问题
+
+
+
+#####  up to date
+
+分支上执行rebase操作时候提示：Current branch xxx is up to date.
+
+out of date  过时了
+
+up to date  最新
+
+
+
+**出现这个是因为命令无效，也就是指定的commit不对**
+
+
+
+
+
+##### 退出（master|REBASE-i)
+
+使用git rebase --abort 代码回退
+
+ 回到git rebase之前的状态
+
+
 
 
 
