@@ -1431,7 +1431,29 @@ setTimeout 里面报错，实际上是 100ms 之后执行的代码报错，此�
 
 
 
+## 补充
 
+
+
+
+
+# CORS blocked when type=“module”
+
+[https://forum.freecodecamp.org/t/cors-blocked-when-i-use-type-module/340229](https://forum.freecodecamp.org/t/cors-blocked-when-i-use-type-module/340229)
+
+
+
+```html
+<script  type="module" src="../toy-react/day2/toy-react.js"></script>
+```
+
+当我们使用 type="module"引入一个es6模块的本地js，会发生跨域问题
+
+
+
+解决：
+
+开一个本地服务器。
 
 
 

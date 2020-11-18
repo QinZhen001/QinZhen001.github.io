@@ -930,11 +930,113 @@ package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 
 
 
 
+**与其他数据处理方法相比，流有两个主要优势：**
+
+1. **内存效率：** 不需要加载大量的数据到内存就可以处理
+2. **时间效率：** 一旦有了数据就开始处理，而不必等待传输完所有数据
+
+
+
+
+
+
+
+流是一种处理读写文件、网络通信或任何端到端信息交换的有效方式。
+
 [可写流](http://nodejs.cn/s/9JUnJ8)和[可读流](http://nodejs.cn/s/YuDKX1)都会在内部的缓冲器中存储数据
 
 
 
+
+
 `stream` API 的主要目标，特别是 [`stream.pipe()`](http://nodejs.cn/s/Ea2ZNW)，是为了限制数据的缓冲到可接受的程度，也就是读写速度不一致的源头与目的地不会压垮内存。
+
+----
+
+
+
+举个例子：
+
+```js
+const server = http.createServer(function (req, res) {
+    const fileName = path.resolve(__dirname, 'data.txt');
+    fs.readFile(fileName, function (err, data) {
+        res.end(data);
+    });
+});
+server.listen(8000);
+
+```
+
+使用文件读取这段代码语法上并没有什么问题，但是如果data.txt文件非常大的话，到了几百M，在响应大量用户并发请求的时候，程序可能会消耗大量的内存，这样可能造成用户连接缓慢的问题。而且并发请求过大的话，服务器内存开销也会很大。这时候我们来看一下用`stream`实现。
+
+```js
+
+const server = http.createServer(function (req, res) {
+    const fileName = path.resolve(__dirname, 'data.txt');
+    let stream = fs.createReadStream(fileName);  // 这一行有改动
+    stream.pipe(res); // 这一行有改动
+});
+server.listen(8000);
+
+```
+
+使用stream就可以不需要把文件全部读取了再返回，而是一边读取一边返回，数据通过管道流动给客户端，真的减轻了服务器的压力。
+
+
+
+
+
+#### node如何做到主进程和子进程共享一个端口
+
+[https://zhuanlan.zhihu.com/p/112597848](https://zhuanlan.zhihu.com/p/112597848)
+
+
+
+
+
+Master 通过 cluster.fork() 这个方法创建的，本质上还是使用的 child_process.fork() 这个方法
+
+
+
+**Nodejs 的 Cluster 模块采用了哪种集群模式？**
+
+- 方案一：1 个 Node 实例开启多个端口，通过反向代理服务器向各端口服务进行转发
+- 方案二：1 个 Node 实例开启多个进程监听同一个端口，通过负载均衡技术分配请求（Master->Worker）
+
+首先第一种方案存在的一个问题是占用多个端口，造成资源浪费，由于多个实例是独立运行的，进程间通信不太好做，好处是稳定性高，各实例之间无影响。
+
+第二个方案多个 Node 进程去监听同一个端口，好处是进程间通信相对简单、减少了端口的资源浪费，但是这个时候就要保证服务进程的稳定性了，特别是对 Master 进程稳定性要求会更高，编码也会复杂。
+
+在 Nodejs 中自带的 Cluster 模块正是采用的第二种方案。
+
+
+
+
+
+
+
+#### Socket是什么
+
+[https://www.jianshu.com/p/01b9a454de5a](https://www.jianshu.com/p/01b9a454de5a)
+
+socket原意是“插座”或“插孔”，在网络中每台服务器相当于一间房子，房子中有着不同的插口，每个插口都有一个编号，且负责某个功能。插口就是socket服务，插口的编号就是端口号，而插头也是一个socket服务。
+
+
+
+**socket的含义就是两个应用程序通过一个双向的通信连接实现数据的交换，连接的一段就是一个socket**
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
