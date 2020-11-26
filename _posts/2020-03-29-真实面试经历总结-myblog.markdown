@@ -1012,6 +1012,67 @@ Master 通过 cluster.fork() 这个方法创建的，本质上还是使用的 ch
 
 
 
+---
+
+如何多个进程监听同一个端口
+
+
+
+fork()
+
+
+
+其实我们只要在绑定端口号（bind函数）之后，监听端口号之前（listen函数），用fork（）函数生成子进程，这样子进程就可以克隆父进程，达到监听同一个端口的目的。
+
+
+
+---
+
+
+
+[https://programtip.com/zh/art-28719](https://programtip.com/zh/art-28719)
+
+
+
+```js
+const cluster = require('cluster');
+const http = require('http');
+const numCPUs = require('os').cpus().length;
+
+if (cluster.isMaster) {
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`工作进程 ${worker.process.pid} 已退出`);
+  });
+} else {
+  http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('hello world\n');
+  }).listen(8000);
+}
+```
+
+上面的代码就简单的将cluster模块加入到了node.js项目中。但是仔细分析一下这段代码你可能会产生这些疑问：主进程仅仅fork出了子进程，并没有创建httpserver，说好的主进程接收请求分发给子进程呢？每一个子进程都创建了一个httpserver，并侦听同一个端口
+
+
+
+对于cluster的分析，得出以下结论：
+
+1. cluster在创建子进程时，会在环境变量中增加标识，以此来区分主进程和子进程
+
+2. listen函数在实现时对主进程和子进程进行了区分，在不同的进程中会执行不同操作
+
+3. nodeJS封装了进程间通信的方法，支持在进程间发送句柄的功能，句柄可以是一个socket对象，一个管道等等
+
+4. 一个端口只能被一个进程监听，但是该端口可以建立多个连接(accpet是产生的套接字)，不同进程间可以共享这些套接字
+
+5. **子进程的listen函数并没有监听端口，它在listen时将端口和地址等信息发送给主进程，由主进程进行监听**。主进程在收到accept事件时，产生连接socket，并把它发送给子进程。子进程直接通过该socket跟client端进行通信
+
+
+
 
 
 
@@ -1028,11 +1089,13 @@ socket原意是“插座”或“插孔”，在网络中每台服务器相当�
 
 
 
+socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调用的接口规范（API）。通过套接字Socket，才能使用TCP/IP协议。
 
 
 
 
 
+应用层通过传输层进行TCP通信时，有时TCP需要为多个应用程序进程提供并发服务。多个TCP连接或多个应用程序进程可能需要通过同一个TCP协议端口传输数据。**为了区别不同的应用程序进程和连接，许多计算机操作系统为应用程序与TCP协议交互提供了称为套接字 (Socket)的接口，区分不同应用程序进程间的网络通信和连接。**
 
 
 

@@ -255,6 +255,26 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 
 
 
+### HTTPS 绝对安全吗
+
+[https://www.zhihu.com/question/20900055](https://www.zhihu.com/question/20900055)
+
+尽管是https工作在TLS/SSL上的数据是安全的，但是工作在TLS/SSL层之下的数据是不安全的，参考SSL/TLS所在位置，例如抓包软件能够轻松截获你与哪些服务器进行了通信，换句话说，API地址暴露了。
+
+
+
+例子：
+
+
+
+**中间人攻击**，参见[iOS抓包利器Charles](https://link.zhihu.com/?target=http%3A//wonderffee.github.io/blog/2013/07/13/best-packet-capture-tool-charles-in-ios/)
+
+
+
+首先charles伪装成服务端和客户端通信，并同时伪装成客户端与服务器通信，充当中间角色，从而截获数据
+
+
+
 # DNS协议
 
 DNS 协议提供的是一种主机名到 IP 地址的转换服务，就是我们常说的域名系统。它是一个由分层的 DNS 服务器组成的分 布式数据库，是定义了主机如何查询这个分布式数据库的方式的应用层协议。DNS 协议运行在 UDP 协议之上，使用 53 号 端口。

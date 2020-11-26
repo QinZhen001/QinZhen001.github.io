@@ -32,6 +32,14 @@ tags:
 
 
 
+## 从Chrome源码看JS Object的实现 （选看）
+
+[https://zhuanlan.zhihu.com/p/26169639](https://zhuanlan.zhihu.com/p/26169639)
+
+
+
+
+
 ## 执行上下文和执行栈
 
 
@@ -102,8 +110,9 @@ This Binding
 
 
 
-
 ### VO和AO
+
+https://blog.csdn.net/Ancecis/article/details/104382441
 
 **在函数上下文中，用活动对象(activation object, AO)来表示变量对象。**
 
@@ -205,6 +214,51 @@ function A() {
 还有一种特殊情况是，在子函数执行的过程中，父函数已经return了，这种情况下，JS引擎会将父函数的上下文从执行栈中移除，与此同时，JS引擎会为还在执行的子函数上下文创建一个闭包，这个闭包里保存了父函数内声明的变量及其赋值，子函数仍然能够在其上下文中访问并使用这边变量/常量。当子函数执行完毕，JS引擎才会将子函数的上下文及闭包一并从执行栈中移除。
 
 最后，JS引擎是单线程的，那么它是如何处理高并发的呢？即当代码中存在异步调用时JS是如何执行的。比如setTimeout或fetch请求都是non-blocking的，当异步调用代码触发时，JS引擎会将需要异步执行的代码移出调用栈，直到等待到返回结果，JS引擎会立即将与之对应的回调函数push进任务队列中等待被调用，当调用(执行)栈中已经没有需要被执行的代码时，JS引擎会立刻将任务队列中的回调函数逐个push进调用栈并执行。这个过程我们也称之为事件循环。
+
+
+
+
+
+## requestAnimationFrame 和 requestIdleCallback
+
+[https://www.jianshu.com/p/2771cb695c81](https://www.jianshu.com/p/2771cb695c81)
+
+* requestAnimationFrame 每一帧必定会执行不同  （一般用于执行动画）
+* requestIdleCallback 是捡浏览器空闲来执行任务。
+
+
+
+**`requestAnimationFrame` 的时间间隔都会紧跟屏幕刷新一次所需要的时间**；例如某一设备的刷新率是 75 Hz，那这时的时间间隔就是 13.3 ms（1 秒 / 75 次）。需要注意的是这个方法虽然能够**保证回调函数在每一帧内只渲染一次**，但是**如果这一帧有太多任务执行，还是会造成卡顿的；因此它只能保证重新渲染的时间间隔最短是屏幕的刷新时间。**
+
+
+
+**`setTimeout` 或 `setInterval` 是使用定时器来触发回调函数的，而定时器并无法保证能够准确无误的执行，有许多因素会影响它的运行时机，比如说：当有同步代码执行时，会先等同步代码执行完毕，异步队列中没有其他任务，才会轮到自己执行**。
+
+
+
+举个例子：
+
+```js
+		const frame = ()=>{
+		    count++
+		    count % 10 == 0 && stars.blink()
+		    moon.draw()
+		    stars.draw()
+
+		    meteors.forEach((meteor, index, arr)=> {
+		        //如果流星离开视野之内，销毁流星实例，回收内存
+		        if (meteor.flow()) {
+		            meteor.draw()
+		        } else {
+		            arr.splice(index, 1)
+		        }
+		    })
+		    requestAnimationFrame(frame)
+		}
+		frame() //调用函数
+```
+
+
 
 
 
@@ -2675,7 +2729,7 @@ Function.__proto__ === Function.prototype					// true
 
 ## 事件循环相关
 
-
+https://zhuanlan.zhihu.com/p/33058983
 
 ### Event loop介绍
 
@@ -2763,6 +2817,30 @@ arrayLike.push('4') // arrayLike.push is not a function
 ```
 
 
+
+
+
+
+
+
+
+## service worker
+
+[https://juejin.im/post/6844903781306482695](https://juejin.im/post/6844903781306482695)
+
+pwa渐进式web应用
+
+
+
+sw便是在web worker的基础上增加了离线缓存的能力
+
+
+
+sw是由事件驱动的,具有生命周期
+
+
+
+可以拦截处理页面的所有网络请求(fetch)，可以访问cache和indexDB，支持推送，并且可以让开发者自己控制管理缓存的内容以及版本，为离线弱网环境下的 web 的运行提供了可能，让 web 在体验上更加贴近 native。
 
 
 
@@ -2928,6 +3006,21 @@ esm 对于 import/export 存在提升的特性，具体表现是规范规定 imp
 
 
 esm 的 import/export 提升在正常情况下，使用起来跟 commonjs 没有区别，因为一般情况下，我们在引入模块的时候，都会在模块的同步代码执行完才获取到输出值。所以即使存在提升，也无法感知。
+
+
+
+
+
+## commonjs vs commonjs2
+
+https://blog.csdn.net/qq8427003/article/details/64921642
+
+
+
+* commonjs 规范只定义了exports
+* commonjs2 规范存在 exports 和 module.exports
+
+module.exports 是nodejs对commonjs的具体实现。exports 只是它的一个别名。
 
 
 

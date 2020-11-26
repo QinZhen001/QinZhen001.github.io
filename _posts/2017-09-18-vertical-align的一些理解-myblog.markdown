@@ -27,7 +27,7 @@ vertical-align “垂直的”+“对齐”的意思
 * super	升高元素的基线到父元素合适的上标位置。
 * top	把对齐的子元素的顶端与line box顶端对齐。
 * text-top	把元素的顶端与父元素内容区域的顶端对齐。
-* middle	元素的中垂点与 父元素的基线加1/2父元素中字母x的高度 对齐。
+* **middle	元素的中垂点与 父元素的基线加1/2父元素中字母x的高度 对齐。**  (一般使用这个作为垂直居中)
 * bottom	把对齐的子元素的底端与line box底端对齐。
 * text-bottom	把元素的底端与父元素内容区域的底端对齐。
 * inherit	采用父元素相关属性的相同的指定值。
@@ -35,8 +35,12 @@ vertical-align “垂直的”+“对齐”的意思
 
 ----------
 
+
+
 .test{vertical-align:-2px;}
 元素相对于基线向下偏移两像素，这个常常用来修复单选框/复选框与12像素文字大小不对齐的问题
+
+
 
 
 **vertical- align属性的百分比值是相对于line-height的计算值计算的**
@@ -131,7 +135,7 @@ div{vertical-align:middle;}
 
 但是，如果 vertical-align:middle 是设置在 table-cell 元素上，CSS 代码 如下： 
 
-```
+```css
 .cell {
       height: 128px;
       display: table-cell;
@@ -147,7 +151,7 @@ div{vertical-align:middle;}
 
 
 
-虽然就效果而言，table-cell元素设置vertical-align垂 直对齐的是子元素，但是其作用的并不是子元素，而是table-cell元素自 身。就算table-cell元素的子元素是一个块级元素，也一样可以让其有各 种垂直对齐表现。
+**虽然就效果而言，table-cell元素设置vertical-align垂 直对齐的是子元素，但是其作用的并不是子元素，而是table-cell元素自 身。**就算table-cell元素的子元素是一个块级元素，也一样可以让其有各 种垂直对齐表现。
 
 
 
