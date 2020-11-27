@@ -1,5 +1,5 @@
 ---
-大多数 Node.js 核心 API 构建于惯用的异步事件驱动架构，其中某些类型的对象（又称触发器，Emitter）会触发命名事件来调用函数（又称监听器，Listener）。layout:     post
+layout:     post
 title:      "前端之node"
 date:       2020-02-04 17:50:00
 author:     "Qz"
