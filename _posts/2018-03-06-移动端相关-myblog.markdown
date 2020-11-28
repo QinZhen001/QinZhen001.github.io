@@ -77,6 +77,31 @@ css识别
 
 
 
+## 端滚动属性
+
+页面需要获取和修改页面的滚动高度，进行窗口移动的定位操作。这里有个安卓手机和 iOS 的兼容性问题。
+
+对于 `document.documentElement.scrollTop` ，iOS 可以正常读取和设置值，安卓不可以（读到的值为 0，修改值不会真正改变窗口滚动高度）；
+
+对于 `document.body.scrollTop` ，安卓可以正常读取和设置值，iOS 不可以；
+
+对于 `window.scrollY` ，貌似两者都可以。
+
+
+
+获取窗口滚动高度的兼容写法：
+
+```js
+const scrollTop = Math.max(window.scrollY, document.documentElement.scrollTop, document.body.scrollTop)
+```
+
+修改窗口滚动高度的兼容写法：
+
+```js
+document.body.scrollTop = 100 // 安卓有效
+document.documentElement.scrollTop = 100 // iOS有效
+```
+
 
 
 
