@@ -169,6 +169,8 @@ runAsync1()
 
 ### Promise.prototype.then() VS Promise.prototype.catch()
 
+[https://www.zhihu.com/question/48765053](https://www.zhihu.com/question/48765053)
+
 .then()方法使Promise原型链上的方法，它包含两个参数方法，分别是已成功resolved的回调和已失败rejected的回调
 
 ```
@@ -189,7 +191,46 @@ promise.then(
 ```
 
 
+
+Promise.prototype.catch()实际上等于 [`Promise.prototype.then(undefined, onRejected)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)
+
+
+
+Promise.prototype.catch()返回的也是一个Promise
+
+
+
+举个例子：
+
+```js
+function test(res) {
+    return Promise.resolve(res)
+        .then(res => {
+            console.log(res += '!');
+            return res;
+        })
+        .then(res => {
+            console.log(res += '!');
+            return Promise.reject("end"); //此处返回了一个新的promise
+        })
+        .catch(res => {
+            console.log(res);
+            return res;  //此处也返回了一个新的resolved的promise
+        })
+        .then(res => {
+            console.log(res += '!');  //肯定会执行了
+        });
+}
+
+test('hello');
+```
+
+
+
+
+
 ### Promise.resolve()  
+
 >Promise这里是大写的P
 
 [https://segmentfault.com/q/1010000005330351](https://segmentfault.com/q/1010000005330351)
@@ -1182,4 +1223,4 @@ p.then(function(x){console.log(x)}).then(function(){console.log("链式调用1")
 
 
 
-  [1]: https://mdn.mozillademos.org/files/8633/promises.png
+[1]: https://mdn.mozillademos.org/files/8633/promises.png

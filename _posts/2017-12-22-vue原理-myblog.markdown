@@ -11,6 +11,12 @@ tags:
 
 > “Yeah It's on. ”
 
+# 正文
+
+这里存放vue全家桶相关的原理分析
+
+
+
 
 ## 响应式原理
 
@@ -360,235 +366,39 @@ export default Watcher
 
 
 
+## vue-loader
 
+> webpack loader for Vue Single-File Components. 用于 Vue 单文件组件的 webpack 加载器。
 
-## 面试题
+处理 SFC 中的每个语言块，然后组装成最终模块。
 
+ 
 
-
-### 什么是虚拟 DOM
-
-**虚拟 DOM本质上是 JavaScript 对象，这个对象就是更加轻量级的对 DOM 的描述。**
-
-
-
-对于 DOM 这么多属性，其实大部分属性对于做 Diff 是没有任何用处的，所以如果用更轻量级的 JS 对象来代替复杂的 DOM 节点，然后把对 DOM 的 diff 操作转移到 JS 对象，就可以避免大量对 DOM 的查询操作。这个更轻量级的 JS 对象就称为 Virtual DOM 。
-
-
-
-1. 维护一个使用 JS 对象表示的 Virtual DOM，与真实 DOM 一一对应
-2. 对前后两个 Virtual DOM 做 diff ，生成**变更**（Mutation）
-3. 把变更应用于真实 DOM，生成最新的真实 DOM
-
-
-
-传统前端的编程方式是命令式的，直接操纵 DOM，告诉浏览器该怎么干。这样的问题就是，大量的代码被用于操作 DOM 元素，且代码可读性差，可维护性低。
-
-
-
-将命令式变成了声明式，摒弃了直接操作 DOM 的细节，只关注数据的变动，DOM 操作由框架来完成，**从而大幅度提升了代码的可读性和可维护性，意义在于为你掩盖底层的 DOM 操作，可以渲染到 DOM 以外的端，使得框架跨平台，比如 ReactNative，React VR 等。**
-
-
-
-
-
-在初期我们可以看到，数据的变动导致整个页面的刷新，这种效率很低，因为可能是局部的数据变化，但是要刷新整个页面，造成了不必要的开销。
-
-所以就有了 Diff 过程，将数据变动前后的 DOM 结构先进行比较，找出两者的不同处，然后再对不同之处进行更新渲染。
-
-但是由于整个 DOM 结构又太大，所以采用了更轻量级的对 DOM 的描述—虚拟 DOM。
-
-
-
-不过需要注意的是，虚拟 DOM 和 Diff 算法的出现是为了解决由命令式编程转变为声明式编程、数据驱动后所带来的性能问题的。换句话说，**直接操作 DOM 的性能并不会低于虚拟 DOM 和 Diff 算法，甚至还会优于。**
-
-
-
->这么说的原因是因为 Diff 算法的比较过程，比较是为了找出不同从而有的放矢的更新页面。但是比较也是要消耗性能的。而直接操作 DOM 就是有的放矢，我们知道该更新什么不该更新什么，所以不需要有比较的过程。所以直接操作 DOM 效率可能更高。
-
-
-
-**Virtual DOM的优势不在于单次的操作，而是在大量、频繁的数据更新下，能够对视图进行合理、高效的更新。**这一点是原生操作远远无法替代的。
-
-
-
-----
-
-
-
-#### 虚拟 DOM 的缺点
-
-
-
-- 首次渲染大量 DOM 时，由于多了一层虚拟 DOM 的计算，会比 innerHTML 插入慢。
-- 虚拟 DOM 需要在内存中的维护一份 DOM 的副本(更上面一条其实也差不多，上面一条是从速度上，这条是空间上)。
-- 如果虚拟 DOM 大量更改，这是合适的。但是单一的，频繁的更新的话，虚拟 DOM 将会花费更多的时间处理计算的工作。所以，如果你有一个 DOM 节点相对较少页面，用虚拟 DOM，它实际上有可能会更慢。但对于大多数单页面应用，这应该都会更快。
-
-
-
-
-
-###  父子组件的执行顺序是什么 
-
-
-
-在组件开始生成到结束生成的过程中，如果该组件还包含子组件，则自己开始生成后，要让所有的子组件也开始生成，然后自己就等着，直到所有的子组件生成完毕，自己再结束。“父亲”先开始自己的created，然后“儿子”开始自己的created和mounted，最后“父亲”再执行自己的mounted。
-
-
-
- 为什么会这样，到这里我们就应该发现了，new Vue的时候是先执行initData，也就是初始化数据，然后执行$mounted,也就是new Watcher。而初始化数据的时候，也要处理components里的数据。处理component里的数据的时候，每处理一个子组件就会new Vue，生成一个子组件。因此是顺序是这样的。也就对应了上面的答案。 
-
-
-
-1.  初始化父组件数据
-2.  初始化 子组件数据 
-3.  new 子组件Wacther 
-4.  new 父组件Watcher
-
-
-
-
-
-### 为什么需要虚拟dom diff
-
-既然vue通过数据劫持可以精确探测数据在具体dom上的变化，为什么还需要虚拟dom diff？
-
-
-
-答案：
-
-
-
-现代前端框架有两种方式侦测变化，一种是pull，一种是push
-
-
-
-* pull其代表为react，我们可以回忆一下react是如何侦测到变化的，我们通常会用setState Api显式更新，然后 React会进行一层层的 Virtual dom diff操作找出差异，然后 Patch到DOM上， React从一开始就不知道到是哪发生了变化，只是知道「有变化了」，然后再进行比较暴力的Diff操作查找「哪发生变化了」，另外一个代表就是 Angular的脏检查操作
-* push：vue的响应式系统则是push的代表，当vue程序初始化的时候就会对数据data进行依赖的收集，一但数据发生变化，响应式系统就会立刻得知。因此vue是一开始就知道是「在哪发生变化了」，但是这又会产生一个问题，如果你熟悉ue的响应式系统就知道，通常一个绑定一个数据就需要一个 Watcher。一但我们的绑定细粒度过高就会产生大量的 Watcher，这会芾来內存以及依赖追踪的开销，而细粒度过低会无法精准侦测变化因此vue的设计是选择中等细粒度的方案在组件级别进行push侦测的方式也就是那套响应式系统通常我们会第一时间侦测到发生变化的组件然后在组件内部进行Virtual dom diff获取更加具体的差异，而 Virtual dom diff则是pukl操作，vue是push+pull结合的方式进行变化侦测的。
-
-![](https://s1.ax1x.com/2020/07/09/UegPQx.png)
-
-
-
-
-
-
-
-
-
-
-
-### react为什么要整虚拟dom
-
-* react的架构根本感知不到数据变化，也无法得知数据变化会影响到哪些dom，他只能通过diff vdom来找出差异点。
-* 而vue的架构和react是完全不一样的，vue是可以知道精准的知道数据变化的，也可以知道这个数据变化会影响到哪些dom。
-
-
-
-
-
-### v-show 与 v-if 区别
-
-1.  v-hsow和v-if的区别： v-show是css切换，v-if是完整的销毁和重新创建。
-2.  使用 频繁切换时用v-show，运行时较少改变时用v-if
-3.  v-if=‘false’ v-if是条件渲染，当false的时候不会渲染
-
-
-
-
-
-### 绑定 class 的数组用法
-
-* 对象方法 `v-bind:class="{'orange': isRipe, 'green': isNotRipe}"`
-
-* 数组方法  `v-bind:class="[class1, class2]"`
-
-* 行内 `v-bind:style="{color: color, fontSize: fontSize+'px' }"`
-
-
-
-
-
-### 组件中 data 为什么是函数
-
-> 为什么组件中的 data 必须是一个函数，然后 return 一个对象，而 new Vue 实例里，data 可以直接是一个对象？
-
-
-
-因为组件是用来复用的，JS 里对象是引用关系，这样作用域没有隔离，而 new Vue 的实例，是不会被复用的，因此不存在引用对象的问题。
-
-
-
-
-
-### vnode 有什么优势
-
-首先是抽象，引入 vnode，可以把渲染过程抽象化，从而使得组件的抽象能力也得到提升。
-
-其次是跨平台，因为 patch vnode 的过程不同平台可以有自己的实现，基于 vnode 再做服务端渲染、Weex 平台、小程序平台的渲染都变得容易了很多。
-
-
-
-每个DOM上的属性多达 228 个，而这些属性有 90% 多对我们来说都是无用的。VNode 就是简化版的真实 DOM 元素，保留了我们要的属性，并新增了一些在 diff 过程中需要使用的属性，例如 isStatic。
-
-
-
-**使用 vnode 并不意味着不用操作 DOM 了，很多同学会误以为 vnode 的性能一定比手动操作原生 DOM 好，这个其实是不一定的。**
-
-
-
-**性能并不是 vnode 的优势**
-
-
-
-
-
-###  vm.$set 原理
-
-
-
-
-
-查看源码
+使用 `@vue/component-compiler-utils` 解析 SFC 为每个语言块生成一个导入
 
 ```js
-Vue.prototype.$set = set;
+// import the <template> block
+import render from 'source.vue?vue&type=template'
+// import the <script> block
+import script from 'source.vue?vue&type=script'
+export * from 'source.vue?vue&type=script'
+// import <style> blocks
+import 'source.vue?vue&type=style&index=1'
 
-/**
- * Set a property on an object. Adds the new property and
- * triggers change notification if the property doesn't
- * already exist.
- */
-function set (target, key, val) {
-  if (process.env.NODE_ENV !== 'production' &&
-    (isUndef(target) || isPrimitive(target))
-  ) {
-    warn(("Cannot set reactive property on undefined, null, or primitive value: " + ((target))));
-  }
-  if (Array.isArray(target) && isValidArrayIndex(key)) {
-    // 是数组 有有效的index  
-    target.length = Math.max(target.length, key);
-    // splice 已经是 被修改过的splice方法
-    target.splice(key, 1, val);
-    return val
-  }
-  if (key in target && !(key in Object.prototype)) {
-    target[key] = val;
-    return val
-  }
-  // 拿到observer  
-  var ob = (target).__ob__;
-  // 不是响应式数据  
-  if (!ob) {
-    target[key] = val;
-    return val
-  }
-  defineReactive$$1(ob.value, key, val);
-  ob.dep.notify();
-  return val
-}
+script.render = render
+export default script
 ```
 
+对相应语言块，增加其他处理规则
+
+```js
+import script from 'babel-loader!vue-loader!source.vue?vue&type=script'
+import 'source.vue?vue&type=style&index=1&scoped&lang=scss'
+```
+
+处理扩展请求时，再次调用 vue-loader，但这次会明确将其传递给匹配的目标加载器
+
+对于 scoped 等进行处理（VueLoaderPlugin 会注入一个全局的Pitching Loader（`src/pitcher.ts`），它会拦截Vue的 `<template>`和`<style>`请求并注入必要的加载器）
 
 
 
@@ -602,7 +412,14 @@ function set (target, key, val) {
 
 
 
+## vue-template-compiler
+
+[https://zhuanlan.zhihu.com/p/114239056](https://zhuanlan.zhihu.com/p/114239056)
+
+该模块可用于将 Vue 2.0 **模板预编译为渲染函数（template => ast => render）**，以避免运行时编译开销和 CSP 限制。**大都数场景下，与 `vue-loader`一起使用，只有在编写具有非常特定需求的构建工具时，才需要单独使用它**
 
 
 
-[1]: https://cn.vuejs.org/images/data.png
+可得知，`vue-template-compiler` 的代码是**从 vue 源码中抽离的**！接着，我们对比一下 `vue-template-compiler` 和 vue 关于编译的 API。发现对于 compile 等函数是一致，只是 `vue-template-compiler` 开放的参数和方法更多。因此，**`vue` 和 `vue-template-compiler` 的版本必须一致（同一份源码）！**
+
+

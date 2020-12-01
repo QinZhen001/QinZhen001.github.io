@@ -266,6 +266,87 @@ vue中监听滚动条滚动事件，清一色的使用`document.addEventListener
 
 
 
+### warn：runtime-only build 
+
+[https://juejin.cn/post/6844903920020488200](https://juejin.cn/post/6844903920020488200)
+
+```js
+[Vue warn]: You are using the runtime-only build of Vue where the template compiler 
+is not available. Either pre-compile the templates into render functions, or use 
+the compiler-included build.
+```
+
+main.js代码如下：
+
+```js
+import Vue from 'vue';import App from './App.vue';
+new Vue({    
+    el: "#app",    
+    template: '<App/>',    
+    component: {App}
+});
+```
+
+vue有两种形式的代码 `compiler`（模板）模式和 `runtime `模式（运行时），vue模块的package.json的main字段默认为runtime模式， 指向了"dist/vue.runtime.common.js"位置。
+
+#### 解决办法一
+
+将main.js初始化vue使用runtime模式，如下：
+
+```js
+new Vue({
+  router,
+  store,
+  render: h => h(App)
+}).$mount("#app")
+```
+
+#### 解决办法二
+
+webpack配置文件里有个别名配置，如下：
+
+```js
+resolve: {
+    alias: {
+        'vue$': 'vue/dist/vue.esm.js' //内部为正则表达式  vue结尾的
+    }
+}
+```
+
+#### 解决办法三
+
+那就是在引用vue时，直接写成如下即可：
+
+```js
+import Vue from 'vue/dist/vue.esm.js'
+```
+
+
+
+
+
+## jsx
+
+
+
+### jsx中有动态class和静态class该怎么写
+
+```html
+  <div class='tabbar'>
+         {this.listData.map((item,index) => <li  class={[{active: item.active},'item']}>
+         <span>{item.text}</span>
+       </li>)}
+  </div> 
+```
+
+
+
+
+
+
+
+
+
 ## 补充
 
 

@@ -844,6 +844,18 @@ console.log(res)
 
 
 
+### Promise.catch的优势
+
+.catch()的作用是捕获Promise的错误，与then()的rejected回调作用几乎一致。
+
+
+
+但是由于Promise的抛错具有冒泡性质，能够不断传递，这样就能够在下一个catch()中统一处理这些错误。同时catch()也能够捕获then()中抛出的错误，**所以建议不要使用then()的rejected回调，而是统一使用catch()来处理错误**
+
+
+
+
+
 #### npm pacakge的版本控制规范
 
 以当前版本为1.0.0为例子，遵循以下规范：
@@ -996,6 +1008,16 @@ server.listen(8000);
 
 
 Master 通过 cluster.fork() 这个方法创建的，本质上还是使用的 child_process.fork() 这个方法
+
+
+
+**cluster其实就是对child_process的一层封装**
+
+**cluster其实就是对child_process的一层封装**
+
+**cluster其实就是对child_process的一层封装**
+
+
 
 
 

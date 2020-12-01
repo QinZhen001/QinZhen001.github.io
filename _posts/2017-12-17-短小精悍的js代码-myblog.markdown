@@ -1806,6 +1806,56 @@ function find(str,cha,num){
 
 
 
+### 判断元素是否在视窗之内
+
+首先，我们监听滚动事件
+
+```js
+ window.addEventListener('scroll', xxx)
+ 
+ // 在xxx函数中判断元素是否在视窗之中
+```
+
+
+
+```js
+function isInViewPort(element) {
+  const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+  const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+  const {
+    top,
+    right,
+    bottom,
+    left,
+  } = element.getBoundingClientRect();
+
+  return (
+    top >= 0 &&
+    left >= 0 &&
+    right <= viewWidth &&
+    bottom <= viewHeight
+  );
+}
+```
+
+> getBoundingClientRect
+>
+> https://developer.mozilla.org/zh-CN/search?q=getBoundingClientRect
+
+
+
+getBoundingClientRect是会**返回元素的大小和它相对于视窗的位置**，即，除了大小（width和height）其余的属性都是相**对于视窗的左上角位置而言的**，所以当存在滚动时，位置有可能是*负值*，还有一点，这些都是**只读属性**。
+
+
+
+
+
+
+
+
+
+
+
 
 
 
