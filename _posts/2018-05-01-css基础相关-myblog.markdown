@@ -1470,13 +1470,7 @@ display属性
 
 
 
-
-
 这里我们只需要将容器设为display:table然他成为一个块级表格元素，子元素display:table-cell使子元素成为表格单元格，然后就像在表格里一样，给子元素加个vertical-align: middle就行了,多行文字垂直居中啦。
-
-
-
-
 
 
 
@@ -1484,6 +1478,105 @@ display属性
 
 * table-cell不感知margin
 * 设置float或某些position(如:absolute)会对table-cell布局造成破坏，可以考虑为之增加一个父div定义float等属性
+
+
+
+### 文字溢出显示省略号
+
+[https://www.daqianduan.com/6179.html](https://www.daqianduan.com/6179.html)
+
+#### 单行文字
+
+如果实现单行文本的溢出显示省略号同学们应该都知道用text-overflow:ellipsis属性来，当然还需要加宽度width属来兼容部分浏览。
+
+```css
+overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
+```
+
+#### 多行文字
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+```
+
+因使用了WebKit的CSS扩展属性，该方法适用于WebKit浏览器及移动端；
+
+
+
+* -webkit-line-clamp用来限制在一个块元素显示的文本的行数。 为了实现该效果，它需要组合其他的WebKit属性。常见结合属性：
+* display: -webkit-box; 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+* -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。
+
+
+
+---
+
+
+
+after伪类元素实现
+
+```html
+  <div class="wrapper">
+    <div class="overflow">行溢出多行溢行溢出多行溢多行溢出多行溢出多行溢出多行溢出多行多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出</div>
+  </div>
+```
+
+```css
+    /* 最多两行 */
+    .overflow{
+      position: relative;
+      line-height: 20px;
+      max-height: 40px;
+      overflow: hidden;
+    }
+    .overflow::after{
+      content:'...';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      /* 下面这两行可加可不加 */
+      /* padding-left: 10px;
+      background: linear-gradient(to right, transparent, red 55%); */
+    }
+```
+
+* 将height设置为line-height的整数倍，防止超出的文字露出。
+* 给p::after添加渐变背景可避免文字只显示一半。
+
+
+
+
+
+### pointer-events
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events](https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events)
+
+#### none
+
+[https://www.zhangxinxu.com/wordpress/2011/12/css3-pointer-events-none-javascript/](https://www.zhangxinxu.com/wordpress/2011/12/css3-pointer-events-none-javascript/)
+
+pointer-events:none
+
+元素永远不会成为鼠标事件的[target](https://developer.mozilla.org/en-US/docs/Web/API/event.target)。但是，当其后代元素的`pointer-events`属性指定其他值时，鼠标事件可以指向后代元素，在这种情况下，鼠标事件将在捕获或冒泡阶段触发父元素的事件侦听器。
+
+
+
+举个真实使用例子：
+
+禁用a标签链接或按钮的完美组合是：`pointer-events:none & without href`
+
+[https://www.zhangxinxu.com/study/201112/pointer-events-none-tab-no-href.html](https://www.zhangxinxu.com/study/201112/pointer-events-none-tab-no-href.html)
+
+
+
+
+
+
 
 
 
