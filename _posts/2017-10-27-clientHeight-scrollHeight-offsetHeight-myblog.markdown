@@ -13,7 +13,7 @@ tags:
 
 
 ## 正文
- 
+
 [网页链接](http://www.cnblogs.com/nanshanlaoyao/p/5964730.html)
 
 
@@ -133,6 +133,7 @@ element.offsetWidth 获取的是整个元素的宽度**包括边框和内边距*
      
      
      
+
 ### jquery中的offset()
 
 offset() 方法返回或设置匹配元素相**对于文档的偏移**（位置）。
@@ -155,3 +156,79 @@ getBoundingClientRect()
 
 
 
+
+
+### 获取滚动高度 
+
+一般滚动条都是覆盖在在body上的，所以我们采用兼用写法
+
+```js
+document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset
+```
+
+
+
+
+
+## 问题 
+
+
+
+### scrollTop一直为0 
+
+[https://blog.csdn.net/kouryoushine/article/details/99745904](https://blog.csdn.net/kouryoushine/article/details/99745904)
+
+> 如果想设置滚动条属性，一定要知道滚动条是哪个div产生的。
+
+**什么时候存在滚动条？**
+
+页面布局我们可以简单理解为 div盒子套div盒子。当内侧div盒子的高度大于外部时，外部的div就会出现滚动条。此时外部的div才具备scrollTop属性，否则你无论如何设置都为0.
+
+这里隐藏了一些条件：
+
+1. 外部的div一定有高度，否则外部div将和内部div高度一致，不满足大于条件，所以不会出现滚动条。
+2. 外部div的 overflow：auto。hidden的情况下超出的部分被隐藏，无法出现滚动条。
+
+```css
+   #outer {
+      margin: 100px 50px;
+      background: url(http://images.cnblogs.com/cnblogs_com/wenruo/873448/o_esdese.jpg);
+      height: 100px;
+      width: 50px;
+      padding: 10px 50px;
+      overflow: scroll;
+    }
+
+    #inner {
+      height: 200px;
+      width: 50px;
+      background-color: #d0ffe3;
+    }
+```
+
+```html
+<body>
+  <div id="outer">
+    <div id="inner"></div>
+  </div>
+</body>
+```
+
+```js
+  const outer = document.getElementById('outer')
+  const inner = document.getElementById('inner')
+  
+  setInterval(() => {
+    console.log(outer.scrollTop)  // 一直为0
+  }, 2000);
+```
+
+为什么输出的scrollTop一直为0呢？
+
+因为此处的滚动条覆盖到了body上了，而不是outer
+
+```css
+ body{overflow:hidden;}
+```
+
+当我们加上这一个时，可以正确获取outer.scrollTop
