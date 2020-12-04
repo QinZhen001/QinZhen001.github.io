@@ -163,8 +163,18 @@ getBoundingClientRect()
 一般滚动条都是覆盖在在body上的，所以我们采用兼用写法
 
 ```js
-document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset
+document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset || 0
 ```
+
+
+
+### 获取滚动元素距离顶部的距离
+
+```js
+element.offsetTop
+```
+
+
 
 
 
@@ -232,3 +242,26 @@ document.documentElement.scrollTop || document.body.scrollTop || window.pageYOff
 ```
 
 当我们加上这一个时，可以正确获取outer.scrollTop
+
+
+
+
+
+
+
+### 监听滚动结束
+
+[https://www.coder.work/article/5348914](https://www.coder.work/article/5348914)
+
+当[`ScrollToOptions.behavior`](https://developer.mozilla.org/en-US/docs/Web/API/ScrollToOptions/behavior)设置为“平滑”时，[supporting browser](https://caniuse.com/#feat=css-scroll-behavior)将为您平滑地滚动页面，但是我不确定动画的时间是多少。我需要在动画之后移动焦点（因为这样做会跳过滚动并取消动画）。如果始终是一个固定的持续时间，我可以使用它，但是如果它取决于滚动的距离或浏览器之间的变化，则我可能不得不想一想。
+
+
+
+解决：
+
+由于`window.scrollTo()`会像用户滚动时一样发出`scroll`事件，您是否可以通过跟踪常规滚动事件何时停止发出来创建自定义`scrollend`事件？
+
+
+
+
+
