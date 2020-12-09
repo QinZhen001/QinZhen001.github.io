@@ -1852,6 +1852,23 @@ getBoundingClientRect是会**返回元素的大小和它相对于视窗的位置
 
 
 
+### 暂停一会再执行
+
+```js
+const start = performance.now()
+// 暂停 8ms
+while (performance.now() - start < 8) {
+  console.log(performance.now(), start)
+}
+console.log('继续执行')
+```
+
+
+
+
+
+
+
 
 
 

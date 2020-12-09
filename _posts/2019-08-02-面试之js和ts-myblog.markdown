@@ -3255,110 +3255,6 @@ Promise.all中任何一个Promise出现错误的时候都会执行reject，导�
 
 
 
->
-
-
-
-## 一道关于异步任务队列的面试题
-
-
-实现下面这道题中的machine函数
-
-```javascript
-function machine() {
-    
-}
-
-
-machine('ygy').execute() 
-// start ygy
-machine('ygy').do('eat').execute(); 
-// start ygy
-// ygy eat
-machine('ygy').wait(5).do('eat').execute();
-// start ygy
-// wait 5s（这里等待了5s）
-// ygy eat
-machine('ygy').waitFirst(5).do('eat').execute();
-// wait 5s
-// start ygy
-// ygy eat
-```
-
-
-分析：链式调用，返回this，wait异步任务，需要维护一个任务队列，waitFirst可以插入到任务队列头部，execute依次执行所有任务
-
-
-
-```javascript
-    class Action {
-        constructor(name) {
-            this.queue = []
-            this.name = name
-            this.queue.push(new QueueItem(0, () => console.log(`start ${name}`)))
-        }
-
-        do(action) {
-            this.queue.push(new QueueItem(0, () => console.log(`${this.name} ${action}`)))
-            return this
-        }
-
-        wait(time) {
-            this.queue.push(new QueueItem(time, () => console.log(`wait ${time}s`)))
-            return this
-        }
-
-        waitFirst(time) {
-            this.queue.unshift(new QueueItem(time, () => console.log(`wait ${time}s`)))
-            return this
-        }
-
-
-        async execute() {
-            while (this.queue.length > 0) {
-                const curItem = this.queue.shift()
-                if (!curItem.defer) {
-                    curItem.callback()
-                    continue
-                }
-                await this.defer(curItem.defer, curItem.callback)
-            }
-        }
-
-        defer(time, callback) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    callback()
-                    resolve(true)
-                }, time * 1000)
-            })
-        }
-    }
-
-
-    class QueueItem {
-        constructor(defer, callback) {
-            this.defer = defer
-            this.callback = callback
-        }
-    }
-
-
-    function machine(name) {
-        return new Action(name)
-    }
-
-```
-
-
-作者：尹光耀
-链接：https://juejin.im/post/5c8f30606fb9a070ef60996d
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
-
-
-
 
 
 
@@ -3573,6 +3469,128 @@ function pickCark(x: any): any {
 
 
 # 其它
+
+
+
+## 一道关于异步任务队列的面试题
+
+
+实现下面这道题中的machine函数
+
+```javascript
+function machine() {
+    
+}
+
+
+machine('ygy').execute() 
+// start ygy
+machine('ygy').do('eat').execute(); 
+// start ygy
+// ygy eat
+machine('ygy').wait(5).do('eat').execute();
+// start ygy
+// wait 5s（这里等待了5s）
+// ygy eat
+machine('ygy').waitFirst(5).do('eat').execute();
+// wait 5s
+// start ygy
+// ygy eat
+```
+
+
+分析：链式调用，返回this，wait异步任务，需要维护一个任务队列，waitFirst可以插入到任务队列头部，execute依次执行所有任务
+
+
+
+```javascript
+    class Action {
+        constructor(name) {
+            this.queue = []
+            this.name = name
+            this.queue.push(new QueueItem(0, () => console.log(`start ${name}`)))
+        }
+
+        do(action) {
+            this.queue.push(new QueueItem(0, () => console.log(`${this.name} ${action}`)))
+            return this
+        }
+
+        wait(time) {
+            this.queue.push(new QueueItem(time, () => console.log(`wait ${time}s`)))
+            return this
+        }
+
+        waitFirst(time) {
+            this.queue.unshift(new QueueItem(time, () => console.log(`wait ${time}s`)))
+            return this
+        }
+
+
+        async execute() {
+            while (this.queue.length > 0) {
+                const curItem = this.queue.shift()
+                if (!curItem.defer) {
+                    curItem.callback()
+                    continue
+                }
+                await this.defer(curItem.defer, curItem.callback)
+            }
+        }
+
+        defer(time, callback) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    callback()
+                    resolve(true)
+                }, time * 1000)
+            })
+        }
+    }
+
+
+    class QueueItem {
+        constructor(defer, callback) {
+            this.defer = defer
+            this.callback = callback
+        }
+    }
+
+
+    function machine(name) {
+        return new Action(name)
+    }
+
+```
+
+作者：尹光耀
+链接：https://juejin.im/post/5c8f30606fb9a070ef60996d
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+## 一道异步输出的题目
+
+```js
+  setTimeout(function () {
+    console.log(1)
+  }, 0);
+
+  new Promise(function executor(resolve) {
+    console.log(2);
+    for (var i = 0; i < 10000; i++) {
+      i == 9999 && resolve();
+    }
+    console.log(3);
+  }).then(function () {
+    console.log(4);
+  });
+
+  console.log(5);
+  
+  // 2 3 5 4 1 
+```
 
 
 

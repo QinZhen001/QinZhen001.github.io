@@ -276,7 +276,7 @@ module.exports = {
 
 [https://segmentfault.com/a/1190000017953060](https://segmentfault.com/a/1190000017953060)
 
-作用域提升，尽可能的把打散的模块合并到一个函数中，前提是不能造成代码冗余。因此只有那些被引用了一次的模块才能被合并。
+作用域提升，尽可能的把打散的模块合并到一个函数中，前提是不能造成代码冗余。**因此只有那些被引用了一次的模块才能被合并。**
 
 
 
@@ -303,9 +303,11 @@ console.log(str);
 
 ![](https://s1.ax1x.com/2020/10/27/BQ5GW9.png)
 
+>由于 Scope Hoisting 需要分析出模块之间的依赖关系，因此源码**「必须采用 ES6 模块化语句」**，不然它将无法生效。
 
 
 
+在 webpack 的 `mode` 设置为 `production` 时，会默认自动启用 Scope Hoisting
 
 
 

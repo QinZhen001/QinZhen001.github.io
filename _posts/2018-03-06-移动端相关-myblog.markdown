@@ -377,12 +377,43 @@ ev.target.appendChild(document.getElementById(data));
 ```
 
 
-### 代码解释：
+### 代码解释
 
 * 调用 preventDefault() 来避免浏览器对数据的默认处理（drop 事件的默认行为是以链接形式打开）
 * 通过 dataTransfer.getData("Text") 方法获得被拖的数据。该方法将返回在 setData() 方法中设置为相同类型的任何数据。
 * 被拖数据是被拖元素的 id ("drag1")
 * 把被拖元素追加到放置元素（目标元素）中
+
+
+
+
+
+## 移动端100vh问题
+
+在移动端使用 100vh 时，发现在 Chrome、Safari 浏览器中，因为浏览器栏和一些导航栏、链接栏导致不一样的呈现：
+
+* 你以为的 100vh === 视口高度
+* 实际上 100vh === 视口高度 + 浏览器工具栏（地址栏等等）的高度
+
+**解决方案**
+
+安装 vh-check `npm install vh-check --save`
+
+```js
+import vhCheck from 'vh-check';
+vhCheck('browser-address-bar');
+```
+
+定义一个 CSS Mixin
+
+```scss
+@mixin vh($height: 100vh) {
+  height: $height;
+  height: calc(#{$height} - var(--browser-address-bar, 0px));
+}
+```
+
+
 
 
 
@@ -891,7 +922,7 @@ setTimeout(function(){
 
 
 
-## 苹果异形屏适配方案
+### 苹果异形屏适配方案
 
 
 

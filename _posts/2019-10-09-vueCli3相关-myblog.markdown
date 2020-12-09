@@ -12,13 +12,13 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+# 正文
 
 
 在这里记录一下，使用vue-cli3过程中一些重要的知识点
 
 
-### 环境变量和模式
+## 环境变量和模式
 
 [https://cli.vuejs.org/zh/guide/mode-and-env.html#%E6%A8%A1%E5%BC%8F](https://cli.vuejs.org/zh/guide/mode-and-env.html#%E6%A8%A1%E5%BC%8F)
 
@@ -28,7 +28,7 @@ tags:
 
 
 
-### 处理静态资源
+## 处理静态资源
 
 
 [https://cli.vuejs.org/zh/guide/html-and-static-assets.html#%E5%A4%84%E7%90%86%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90](https://cli.vuejs.org/zh/guide/html-and-static-assets.html#%E5%A4%84%E7%90%86%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90)
@@ -42,7 +42,7 @@ tags:
 
 
 
-#### 从相对路径导入
+### 从相对路径导入
 
 当你在 JavaScript、CSS 或 `*.vue` 文件中使用相对路径 (必须以 . 开头) 引用一个静态资源时，该资源将会被包含进入 webpack 的依赖图中。在其编译过程中，所有诸如 `<img src="...">`、background: url(...) 和 CSS @import 的资源 URL **都会被解析为一个模块依赖**
 
@@ -69,7 +69,7 @@ h('img', { attrs: { src: require('./image.png') }})
 **在其内部，我们通过 file-loader 用版本哈希值和正确的公共基础路径来决定最终的文件路径，再用 url-loader 将小于 4kb 的资源内联，以减少 HTTP 请求的数量。**
 
 
-#### URL 转换规则
+### URL 转换规则
 
 * 如果 URL 是一个绝对路径 (例如 /images/foo.png)，它将会被保留不变。
 * 如果 URL 以 . 开头，它会作为一个相对模块请求被解释且基于你的文件系统中的目录结构进行解析。
@@ -87,7 +87,7 @@ h('img', { attrs: { src: require('./image.png') }})
 
 
 
-### serve本地预览
+## serve本地预览
 
 [ https://cli.vuejs.org/zh/guide/deployment.html ]( https://cli.vuejs.org/zh/guide/deployment.html )
 
@@ -97,7 +97,7 @@ h('img', { attrs: { src: require('./image.png') }})
 
 如果你独立于后端部署前端应用——也就是说后端暴露一个前端可访问的 API，然后前端实际上是纯静态应用。那么你可以将 `dist` 目录里构建的内容部署到任何静态文件服务器中，但要确保正确的 [publicPath](https://cli.vuejs.org/zh/config/#publicpath)。
 
-### 
+
 
 ----
 
@@ -175,8 +175,10 @@ module.exports = {
 
 
 
+## css
 
-### **css.loaderOptions**
+
+### **loaderOptions**
 
 * Type: Object
 * Default: {}
@@ -216,11 +218,85 @@ module.exports = {
 
 
 
+#### scss配置全局变量
+
+[https://github.com/webpack-contrib/sass-loader#additionaldata](https://github.com/webpack-contrib/sass-loader#additionaldata)
+
+我们利用`additionalData`
+
+
+
+Type: `String|Function` Default: `undefined`
+
+Prepends `Sass`/`SCSS` code before the actual entry file. In this case, the `sass-loader` will not override the `data` option but just **prepend** the entry's content.
+
+This is especially useful when some of your Sass variables depend on the environment:
+
+```js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          "style-loader",
+          "css-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              additionalData: "$env: " + process.env.NODE_ENV + ";",
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
+```
+
+#### **scss配置全局变量报错**
+
+[https://blog.csdn.net/qq_43471802/article/details/108979593](https://blog.csdn.net/qq_43471802/article/details/108979593)
+
+**由于sass-loader版本不同，loaderOptions 中 additionalData的键名也不同**
+
+
+
+```js
+sass-loader v8-，这个选项名是 "data"
+sass-loader v8 中，这个选项名是 "prependData"
+sass-loader v10+，这个选项名是 "additionalData"
+```
+
+---
+
+
+
+variable.scss 和 mixins.scss 会优先于 global.css 加载，并且可以不通过 import 的方式在项目中任何位置使用这些变量和 mixins。
+
+
+
+```js
+// vue.config.js
+module.exports = {
+  css: {
+    loaderOptions: {
+      sass: {
+        prependData: `
+        @import '@/styles/variable.scss';
+        @import '@/styles/mixins.scss';
+        `,
+      },
+    },
+  },
+}
+```
 
 
 
 
-### Generator 类
+
+## Generator 类
 
 [ https://meixg.cn/2019/03/03/vue-cli-create/ ]( https://meixg.cn/2019/03/03/vue-cli-create/ )
 
@@ -253,12 +329,13 @@ plugins.forEach(({ id, apply, options }) => {
 
 
 
-### webpack 相关
+## webpack 相关
 
 [https://cli.vuejs.org/zh/guide/webpack.html#webpack-%E7%9B%B8%E5%85%B3](https://cli.vuejs.org/zh/guide/webpack.html#webpack-%E7%9B%B8%E5%85%B3)
 
 
-#### configureWebpack
+
+### configureWebpack
 
 Type: Object | Function
 
@@ -269,9 +346,7 @@ Type: Object | Function
 
 
 
-
-
-#### chainWebpack
+### chainWebpack
 
 Type: Function
 
@@ -283,9 +358,7 @@ Type: Function
 
 
 
-
-
-#### 简单的配置方式
+### 简单的配置方式
 
 
 调整 webpack 配置最简单的方式就是在 vue.config.js 中的 configureWebpack 选项提供一个对象：
@@ -328,7 +401,7 @@ module.exports = {
 ```
 
 
-#### 链式操作 (高级)
+### 链式操作 (高级)
 
 Vue CLI 内部的 webpack 配置是通过 webpack-chain 维护的。这个库提供了一个 webpack 原始配置的上层抽象，使其可以定义具名的 loader 规则和具名插件，并有机会在后期进入这些规则并对它们的选项进行修改。
 
@@ -382,7 +455,7 @@ module.exports = {
 
 
 
-#### 审查项目的 webpack 配置
+### 审查项目的 webpack 配置
 
 因为 @vue/cli-service 对 webpack 配置进行了抽象，所以理解配置中包含的东西会比较困难，尤其是当你打算自行对其调整的时候。
 
@@ -420,7 +493,7 @@ vue inspect > output.js
 
 
 
-### Babel
+## Babel
 
 
 Babel 可以通过 babel.config.js 进行配置。
@@ -434,7 +507,7 @@ Babel 可以通过 babel.config.js 进行配置。
 
 
 
-#### @vue/babel-preset-app
+### @vue/babel-preset-app
 
 [https://www.npmjs.com/package/@vue/babel-preset-app](https://www.npmjs.com/package/@vue/babel-preset-app)
 

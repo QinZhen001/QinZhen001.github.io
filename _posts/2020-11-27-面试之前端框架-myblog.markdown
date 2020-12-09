@@ -252,11 +252,241 @@ function set (target, key, val) {
 
 
 
+### VueRouter 源码深度解析
+
+* hash 模式   (可以通过 `hashchange` 事件来监听到 URL 的变化，从而进行跳转页面。)
+* history 模式 (History 模式是 HTML5 新推出的功能)
+
+
+
+对于路由注册来说，核心就是调用 `Vue.use(VueRouter)`，使得 VueRouter 可以使用 Vue。然后通过 Vue 来调用 VueRouter 的 `install` 函数。在该函数中，核心就是给组件混入钩子函数和全局注册两个路由组件。
+
+在实例化 VueRouter 的过程中，核心是创建一个路由匹配对象，并且根据 mode 来采取不同的路由方式。
+
+`createMatcher` 函数的作用就是创建路由映射表，然后通过闭包的方式让 `addRoutes` 和 `match` 函数能够使用路由映射表的几个对象，最后返回一个 `Matcher` 对象。
+
+
+
+#### 路由初始化
+
+当根组件调用 `beforeCreate` 钩子函数时，会执行以下代码
+
+```javascript
+beforeCreate () {
+// 只有根组件有 router 属性，所以根组件初始化时会初始化路由
+  if (isDef(this.$options.router)) {
+    this._routerRoot = this
+    this._router = this.$options.router
+    this._router.init(this)
+    Vue.util.defineReactive(this, '_route', this._router.history.current)
+  } else {
+    this._routerRoot = (this.$parent && this.$parent._routerRoot) || this
+  }
+  registerInstance(this, this)
+}
+```
+
+在路由初始化时，核心就是进行路由的跳转，改变 URL 然后渲染对应的组件。接下来来看一下路由是如何进行跳转的。
 
 
 
 
 
+### vue中在哪个阶段进行异步请求比较合适
+
+
+
+### vue中vuex的mapSetter是怎么实现的
+
+
+
+
+### 前端页面路由的权限实现
+
+
+### Vue.extend 是什么
+
+在平时的代码中该方法我们主动调用的不多，但是在我们注册组件的时候，比如，Vue.component('my-component', options)，这个时候会自动调用 Vue.extend
+
+
+**一言以蔽之， Vue.extend 接受参数并返回一个构造器，new 该构造器可以返回一个组件实例。**
+
+
+
+### Vue template 编译的理解
+
+Vue 中 template 就是先转化成 AST 树，再得到 render 函数返回 VNode（Vue 的虚拟 DOM 节点）。
+
+1. 通过 compile 编译器把 template 编译成 AST 语法树（abstract syntax tree - 源代码的抽象语法结构的树状表现形式），compile 是 createCompiler 的返回值，createCompiler 是用以创建编译器的。另外 compile 还负责合并 option。
+2. AST 会经过 generate（将 AST 语法树转换成 render function 字符串的过程）得到 render 函数，render 的返回值是 VNode，VNode 是 Vue 的虚拟 DOM 节点，里面有标签名、子节点、文本等待。
+
+
+### vue的key
+
+key 的作用就是在更新组件时判断两个节点是否相同。相同就复用，不相同就删除旧的创建新的。
+
+>对于 diff 过程来说 key 是起不到提速作用的
+
+[key的作用](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/1#issuecomment-465894196)
+
+
+
+
+
+
+### Vue 响应式原理
+
+在 Vue 的初始化中，会先对 props 和 data 进行初始化
+在 `Object.defineProperty` 中自定义 `get` 和 `set` 函数，并在 `get` 中进行依赖收集，在 `set` 中派发更新。
+
+---
+
+依赖收集
+
+**依赖收集是通过 `Dep` 来实现的，但是也与 Watcher 息息相关**
+
+对于 Watcher 来说，分为两种 Watcher，分别为渲染 Watcher 和用户写的 Watcher。渲染 Watcher 是在初始化中实例化的。
+
+
+
+---
+
+派发更新
+
+改变对象的数据时，会触发派发更新，调用 `Dep` 的 `notify` 函数
+
+
+
+---
+
+`Object.defineProperty` 中的缺陷
+
+如果通过下标方式修改数组数据或者给对象新增属性并不会触发组件的重新渲染，因为 `Object.defineProperty` 不能拦截到这些操作，更精确的来说，对于数组而言，大部分操作都是拦截不到的，只是 Vue 内部通过重写函数的方式解决了这个问题。
+
+
+
+
+
+### Vue **不能检测**数组和对象的变化
+
+[https://cn.vuejs.org/v2/guide/reactivity.html#ad](https://cn.vuejs.org/v2/guide/reactivity.html#ad)
+
+
+
+![](https://s1.ax1x.com/2020/10/30/Btrfln.png)
+
+
+
+答案：1
+
+
+
+解释：
+
+* a.b 是没有经过Object.defineproperty() 所有更改a.b 不会触发render() 不会更新视图
+* created是在视图未渲染的时候直接对对象a的属性b赋值data里面的初值会改变，但是在mounted里面更新b是非响应式的，所以视图不会渲染 (created 和 mounted 的区别)
+
+
+
+```js
+var vm = new Vue({
+  data:{
+    a:1
+  }
+})
+
+// `vm.a` 是响应式的
+
+vm.b = 2
+// `vm.b` 是非响应式的
+```
+
+
+
+
+
+# VueRouter 
+
+
+
+
+
+
+
+
+
+
+
+# Vuex 
+
+Vuex 全局维护着一个对象，使用到了单例设计模式。在这个全局对象中，所有属性都是响应式的，任意属性进行了改变，都会造成使用到该属性的组件进行更新。并且只能通过 `commit` 的方式改变状态，实现了**单向数据流模式**。
+
+
+
+在使用 Vuex 之前，我们都需要调用 `Vue.use(Vuex)` 。在调用 `use` 的过程中，Vue 会调用到 Vuex 的 `install` 函数
+
+
+
+`install` 函数作用很简单
+
+
+* 确保 Vuex 只安装一次
+* 混入 `beforeCreate` 钩子函数，可以在组件中使用 `this.$store`
+
+
+
+
+
+
+
+
+
+# vue3
+
+
+
+
+
+## 为什么 Vue 3.0 中使用 Proxy
+
+
+1. Vue 中使用 Object.defineProperty 进行双向数据绑定时，告知使用者是可以监听数组的，但是只是监听了数组的 push()、pop()、shift()、unshift()、splice()、sort()、reverse() 这八种方法，其他数组的属性检测不到。
+2. Object.defineProperty 只能劫持对象的属性，因此对每个对象的属性进行遍历时，如果属性值也是对象需要深度遍历，那么就比较麻烦了，所以在比较 Proxy 能完整劫持对象的对比下，选择 Proxy。
+3. 为什么 Proxy 在 Vue 2.0 编写的时候出来了，尤大却没有用上去？因为当时 es6 环境不够成熟，兼容性不好，尤其是这个属性无法用 polyfill 来兼容。（polyfill 是一个 js 库，专门用来处理 js 的兼容性问题-js 修补器）
+
+
+
+
+
+
+
+## PatchFlag
+
+[https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension](https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension)
+
+Vue 2.x 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开始，新增了静态标记（PatchFlag）。
+
+
+
+
+
+## hoistStatic(静态提升)
+
+[https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension#heading-1](https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension#heading-1)
+
+
+
+## cacheHandler(事件监听缓存)
+
+[https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension#heading-2](https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension#heading-2)
+
+
+
+## SSR 服务端渲染
+
+[https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension#heading-3](https://juejin.cn/post/6903171037211557895?utm_source=gold_browser_extension#heading-3)
+
+当你在开发中使用 SSR 开发时，Vue 3.0 会将静态标签直接转化为文本，相比 React 先将 jsx 转化为虚拟 DOM，再将虚拟 DOM 转化为 HTML，Vue 3.0 已经赢了。
 
 
 
@@ -266,7 +496,7 @@ function set (target, key, val) {
 
 
 
-## setState 是同步还是异步
+
 
 
 
@@ -275,12 +505,6 @@ function set (target, key, val) {
 （mixin、render props、hoc、hook）
 
 
-
-## React 的 Fiber 架构
-
-
-
-为什么要实现fiber
 
 
 
@@ -306,6 +530,16 @@ function set (target, key, val) {
 
 
 
+## react16废弃了哪几个生命周期api
+
+
+
+
+## diff算法是怎么比较新旧节点并更新的
+
+
+
+## key有什么作用
 
 
 
@@ -313,6 +547,590 @@ function set (target, key, val) {
 
 
 
+
+
+
+
+
+
+# 新版react
+
+
+
+## setState 是同步还是异步
+
+https://blog.shenfq.com/2020/react-%E6%9E%B6%E6%9E%84%E7%9A%84%E6%BC%94%E5%8F%98-%E4%BB%8E%E5%90%8C%E6%AD%A5%E5%88%B0%E5%BC%82%E6%AD%A5/
+
+https://zh-hans.reactjs.org/docs/faq-state.html#when-is-setstate-asynchronous
+
+
+
+网上有很多文章称 setState 是『异步操作』，所以导致 setState 之后并不能获取到最新值，其实这个观点是错误的**。setState 是一次同步操作，只是每次操作之后并没有立即执行，而是将 setState 进行了缓存，mount 流程结束或事件操作结束，才会拿出所有的 state 进行一次计算**。
+
+
+
+**如果 setState 脱离了 `React 的生命周期` 或者 `React 提供的事件流`，setState 之后就能立即拿到结果。(例如：在setTimeout中)**
+
+```js
+class App extends React.Component {
+  state = { val: 0 }
+  componentDidMount() {
+    setTimeout(() => {
+      // 第一次调用 
+      this.setState({ val: this.state.val + 1 });
+      console.log('first setState', this.state);  // 1 
+  
+      // 第二次调用 
+      this.setState({ val: this.state.val + 1 });
+      console.log('second setState', this.state); // 2
+    });
+  }
+  render() {
+    return <div> val: { this.state.val } </div>
+  }
+}
+
+// setState 之后就能立即看到 state.val 的值发生了变化
+```
+
+
+
+
+
+
+
+
+
+#### setState 合并原因
+
+setState 的时候，`batchingStrategy.isBatchingUpdates` 为 `false` 会开启一个事务，将组件放入脏组件队列，最后进行更新操作，而且这里都是同步操作。讲道理，setState 之后，我们可以立即拿到最新的 state。
+
+
+
+然而，事实并非如此，在 React 的生命周期及其事件流中，`batchingStrategy.isBatchingUpdates` 的值早就被修改成了 `true`。
+
+
+
+在组件 mount 和事件调用的时候，都会调用 `batchedUpdates`，这个时候已经开始了事务，所以只要不脱离 React，不管多少次 setState 都会把其组件放入脏组件队列等待更新。一旦脱离 React 的管理，比如在 setTimeout 中，setState 立马变成单打独斗。
+
+
+
+```js
+var batchingStrategy = {
+  // 判断是否在更新流程中 
+  isBatchingUpdates: false,
+  // 开始进行批量更新 
+  batchedUpdates: function (callback, component) {
+    // 获取之前的更新状态 
+    var alreadyBatchingUpdates = ReactDefaultBatchingStrategy.isBatchingUpdates;
+	// 将更新状态修改为 true （注意这里）
+    ReactDefaultBatchingStrategy.isBatchingUpdates = true;
+    if (alreadyBatchingUpdates) {
+      // 如果已经在更新状态中，等待之前的更新结束 
+      return callback(callback, component);
+    } else {
+      // 进行更新 
+      return transaction.perform(callback, null, component);
+    }
+  }
+};
+```
+
+
+
+
+
+#### setState实现
+
+在 React 15 里，多次 setState 会被放到一个队列中，等待一次更新。
+
+```js
+//setState 方法挂载到原型链上 
+ReactComponent.prototype.setState = function (partialState, callback) {
+  // 调用 setState 后，会调用内部的 updater.enqueueSetState
+  this.updater.enqueueSetState(this, partialState)
+};
+
+var ReactUpdateQueue = {
+  enqueueSetState(component, partialState) {
+    // 在组件的 _pendingStateQueue 上暂存新的 state
+    if (!component._pendingStateQueue) {
+      component._pendingStateQueue = []
+    }
+    // 将 setState 的值放入队列中 
+    var queue = component._pendingStateQueue
+    queue.push(partialState)
+    enqueueUpdate(component)
+  }
+}
+```
+
+同样在 Fiber 架构中，也会有一个队列用来存放 setState 的值。每个 Fiber 节点都有一个 `updateQueue` 属性，这个属性就是用来缓存 setState 值的，**只是结构从 React 15 的数组变成了链表结构。**
+
+
+
+无论是首次 Render 的 Mount 阶段，还是 setState 的 Update 阶段，内部都会调用 `enqueueUpdate` 方法。
+
+
+
+```js
+//--- Render 阶段 ---
+function initializeUpdateQueue(fiber) {
+  var queue = {
+    baseState: fiber.memoizedState,
+    firstBaseUpdate: null,
+    lastBaseUpdate: null,
+    shared: {
+      pending: null
+    },
+    effects: null
+  }
+  fiber.updateQueue = queue
+}
+ReactDOMRoot.prototype.render = function render(children) {
+  var root = this._internalRoot
+  var update = createUpdate()
+  update.payload = { element: children }
+  const rootFiber = root.current
+  // 初始化 rootFiber 的 updateQueue
+  initializeUpdateQueue(rootFiber)
+  //update 对象放到 rootFiber 的 updateQueue 中 
+  enqueueUpdate(rootFiber, update)
+  // 开始更新流程 
+  scheduleUpdateOnFiber(rootFiber)
+}
+
+//--- Update 阶段 ---
+Component.prototype.setState = function (partialState, callback) {
+  this.updater.enqueueSetState(this, partialState)
+}
+var classComponentUpdater = {
+  enqueueSetState: function (inst, payload) {
+    // 获取实例对应的 fiber
+    var fiber = get(inst)
+    var update = createUpdate()
+    update.payload = payload
+
+    //update 对象放到 rootFiber 的 updateQueue 中 
+    enqueueUpdate(fiber, update)
+    scheduleUpdateOnFiber(fiber)
+  }
+}
+```
+
+`enqueueUpdate` 方法的主要作用就是将 setState 的值挂载到 Fiber 节点上。
+
+```js
+function enqueueUpdate(fiber, update) {
+  var updateQueue = fiber.updateQueue;
+
+  if (updateQueue === null) {
+    //updateQueue 为空则跳过 
+    return;
+  }
+  var sharedQueue = updateQueue.shared;
+  var pending = sharedQueue.pending;
+
+  if (pending === null) {
+    update.next = update;
+  } else {
+    // 链表连接  
+    update.next = pending.next;
+    pending.next = update;
+  }
+
+  sharedQueue.pending = update;
+}
+```
+
+多次 setState 会在 `sharedQueue.pending` 上形成一个单向循环链表，具体例子更形象的展示下这个链表结构。
+
+---
+
+
+
+我们来看一个例子:
+
+```js
+class App extends React.Component {
+  state = { val: 0 }
+  click () {
+    for (let i = 0; i < 3; i++) {
+      this.setState({ val: this.state.val + 1 })
+    }
+  }
+  render() {
+    return <div onClick={() => {
+      this.click()
+    }}>val: { this.state.val }</div>
+  }
+}
+```
+
+点击 div 之后，会连续进行三次 setState，每次 setState 都会更新 updateQueue。
+
+![](https://file.shenfq.com/pic/20201009234826.png)
+
+
+
+
+
+
+
+
+
+## Fiber 架构
+
+> https://blog.shenfq.com/2020/react-%E6%9E%B6%E6%9E%84%E7%9A%84%E6%BC%94%E5%8F%98-%E4%BB%8E%E9%80%92%E5%BD%92%E5%88%B0%E5%BE%AA%E7%8E%AF/
+
+**fiber是链表结构**
+
+
+
+### 为什么要实现fiber
+
+> 架构的演变-从递归到循环
+
+react15递归更新组件有明显的缺点，不能暂停更新，一旦开始必须从头到尾，这与 React 16 拆分时间片，给浏览器喘口气的理念明显不符，所以 React 必须要切换架构，将虚拟 DOM 从树形结构修改为链表结构。
+
+
+
+> 链表结构最大的优势就是可以通过循环的方式来遍历，只要记住当前遍历的位置，即使中断后也能快速还原，重新开始遍历。
+
+
+
+### 循环更新的实现
+
+那么，在 setState 的时候，React 是如何进行一次 Fiber 的遍历的呢？
+
+```js
+let workInProgress = FiberRoot
+
+// 遍历 Fiber 节点，如果时间片时间用完就停止遍历 
+function workLoopConcurrent() {
+  while (
+    workInProgress !== null &&
+    !shouldYield() // 用于判断当前时间片是否到期 
+  ) {
+    performUnitOfWork(workInProgress)
+  }
+}
+
+function performUnitOfWork() {
+  const next = beginWork(workInProgress) // 返回当前 Fiber 的 child
+  if (next) { //child 存在 
+    // 重置 workInProgress 为 child
+    workInProgress = next
+  } else { //child 不存在 
+    // 向上回溯节点 
+    let completedWork = workInProgress
+    while (completedWork !== null) {
+      // 收集副作用，主要是用于标记节点是否需要操作 DOM
+      completeWork(completedWork)
+
+      // 获取 Fiber.sibling
+      let siblingFiber = workInProgress.sibling
+      if (siblingFiber) {
+        //sibling 存在，则跳出 complete 流程，继续 beginWork
+        workInProgress = siblingFiber
+        return;
+      }
+
+      completedWork = completedWork.return
+      workInProgress = completedWork
+    }
+  }
+}
+
+function beginWork(workInProgress) {
+  // 调用 render 方法，创建子 Fiber，进行 diff
+  // 操作完毕后，返回当前 Fiber 的 child
+  return workInProgress.child
+}
+function completeWork(workInProgress) {
+  // 收集节点副作用 
+}
+```
+
+Fiber 的遍历本质上就是一个循环，全局有一个 `workInProgress` 变量，用来存储当前正在 diff 的节点，先通过 `beginWork` 方法对当前节点然后进行 diff 操作（diff 之前会调用 render，重新计算 state、prop），并返回当前节点的第一个子节点 ( `fiber.child`) 作为新的工作节点，直到不存在子节点。然后，对当前节点调用 `completedWork` 方法，存储 `beginWork` 过程中产生的副作用，如果当前节点存在兄弟节点 ( `fiber.sibling`)，则将工作节点修改为兄弟节点，重新进入 `beginWork` 流程。直到 `completedWork` 重新返回到根节点，**执行 `commitRoot` 将所有的副作用反应到真实 DOM 中**。
+
+
+
+![](https://file.shenfq.com/pic/20200929115604.gif)
+
+**在一次遍历过程中，每个节点都会经历 `beginWork`、`completeWork` ，直到返回到根节点，最后通过 `commitRoot` 将所有的更新提交**
+
+
+
+---
+
+Fiber 架构下每个节点都会经历 `递（beginWork）` 和 `归（completeWork）` 两个过程：
+
+- beginWork：生成新的 state，调用 render 创建子节点，连接当前节点与子节点；
+- completeWork：依据 EffectTag 收集 Effect，构造 Effect List；
+
+
+
+
+
+
+
+
+
+#### shouldYield
+
+`shouldYield` 方法决定了当前时间片是否已经用完，这也是决定 React 是同步渲染还是异步渲染的关键。如果去除任务优先级的概念，`shouldYield` 方法可以说很简单，就是判断了当前的时间，是否已经超过了预设的 `deadline`。
+
+```js
+function getCurrentTime() {
+  return performance.now()
+}
+function shouldYield() {
+  // 获取当前时间 
+  var currentTime = getCurrentTime()
+  return currentTime >= deadline
+}
+```
+
+`deadline` 又是如何得的呢？
+
+```js
+deadline = currentTime + yieldInterval
+```
+
+更新开始的时候会通过 `requestHostCallback`（即：`port2.send`）发送异步消息，在 `performWorkUntilDeadline` （即：`port1.onmessage`）中接收消息。`performWorkUntilDeadline` 每次接收到消息时，表示已经进入了下一个任务队列，这个时候就会更新 `deadline`。
+
+![](https://file.shenfq.com/pic/20200927105705.png)
+
+
+
+
+
+
+
+
+
+
+
+## Concurrent 模式
+
+> Concurrent 模式是 React 的新功能，可帮助应用保持响应，并根据用户的设备性能和网速进行适当的调整。
+
+
+
+Concurrent 模式说白就是让组件更新异步化，切分时间片，渲染之前的调度、diff、更新都只在指定时间片进行，如果超时就暂停放到下个时间片进行，中途给浏览器一个喘息的时间。
+
+
+
+浏览器的运作流程: `渲染 -> tasks -> 渲染 -> tasks -> 渲染 -> ....`
+
+这些 tasks 中有些我们可控，有些不可控，比如 setTimeout 什么时候执行不好说，它总是不准时；资源加载时间不可控。但一些 JS 我们可以控制，让它们分派执行，tasks 的时长不宜过长，这样浏览器就有时间优化 JS 代码与修正 reflow ！
+
+总结一句， **就是让浏览器休息好，浏览器就能跑得更快** 。
+
+
+
+![](https://file.shenfq.com/ipic/2020-09-23-020125.png)
+
+
+
+```js
+Component.setState() => enquueState() => scheduleUpdate() => scheduleCallback()
+=> requestHostCallback(flushWork) => postMessage()
+```
+
+真正的异步化逻辑就在 `requestHostCallback`、`postMessage` 里面，这是 React 内部自己实现的一个调度器
+
+> https://github.com/facebook/react/blob/v16.13.1/packages/scheduler/index.js
+
+```js
+function unstable_scheduleCallback(priorityLevel, calback) {
+  var currentTime = getCurrentTime();
+  var startTime = currentTime + delay;
+  var newTask = {
+    id: taskIdCounter++,
+    startTime: startTime,           // 任务开始时间 
+    expirationTime: expirationTime, // 任务终止时间 
+    priorityLevel: priorityLevel,   // 调度优先级 
+    callback: callback,             // 回调函数 
+  };
+  if (startTime > currentTime) {
+    // 超时处理，将任务放到 taskQueue，下一个时间片执行 
+    // 源码中其实是 timerQueue，后续会有个操作将 timerQueue 的 task 转移到 taskQueue
+  	push(taskQueue, newTask)
+  } else {
+    requestHostCallback(flushWork);
+  }
+  return newTask;
+}
+
+```
+
+requestHostCallback 的实现依赖于 [MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/MessageChannel)，但是 MessageChannel 在这里并不是做消息通信用的，而是利用它的异步能力，给浏览器一个喘息的机会。
+
+```js
+var isMessageLoopRunning = false; // 更新状态 
+var scheduledHostCallback = null; // 全局的回调 
+var channel = new MessageChannel();
+var port = channel.port2;
+
+channel.port1.onmessage = function () {
+  if (scheduledHostCallback !== null) {
+    var currentTime = getCurrentTime();
+    // 重置超时时间 
+    deadline = currentTime + yieldInterval;
+    var hasTimeRemaining = true;
+
+    // 执行 callback
+    var hasMoreWork = scheduledHostCallback(hasTimeRemaining, currentTime);
+
+    if (!hasMoreWork) {
+      // 已经没有任务了，修改状态 
+      isMessageLoopRunning = false;
+      scheduledHostCallback = null;
+    } else {
+      // 还有任务，放到下个任务队列执行，给浏览器喘息的机会 
+      port.postMessage(null);
+    }
+  } else {
+    isMessageLoopRunning = false;
+  }
+};
+
+requestHostCallback = function (callback) {
+  //callback 挂载到 scheduledHostCallback
+  scheduledHostCallback = callback;
+
+  if (!isMessageLoopRunning) {
+    isMessageLoopRunning = true;
+    // 推送消息，下个队列队列调用 callback
+    port.postMessage(null);
+  }
+};
+```
+
+再看看之前传入的 callback（`flushWork`），调用 `workLoop`，取出 taskQueue 中的任务执行。
+
+```js
+// 精简了相当多的代码 
+function flushWork(hasTimeRemaining, initialTime) {
+  return workLoop(hasTimeRemaining, initialTime);
+}
+
+function workLoop(hasTimeRemaining, initialTime) {
+  var currentTime = initialTime;
+  //scheduleCallback 进行了 taskQueue 的 push 操作 
+  // 这里是获取之前时间片未执行的操作 
+  currentTask = peek(taskQueue);
+
+  while (currentTask !== null) {
+    if (currentTask.expirationTime > currentTime) {
+      // 超时需要中断任务 
+      break;
+    }
+
+    currentTask.callback();         // 执行任务回调 
+    currentTime = getCurrentTime(); // 重置当前时间 
+    currentTask = peek(taskQueue);  // 获取新的任务 
+  }
+	// 如果当前任务不为空，表明是超时中断，返回 true
+  if (currentTask !== null) {
+    return true;
+  } else {
+    return false;
+  }
+}
+```
+
+可以看出，React 通过 expirationTime 来判断是否超时，如果超时就把任务放到后面来执行。所以，异步模型中 setTimeout 里面进行 setState，只要当前时间片没有结束（currentTime 小于 expirationTime），依旧可以将多个 setState 合并成一个。
+
+
+
+将异步逻辑、循环更新、时间分片串联起来。先回顾一下之前的文章讲过，Concurrent 模式下，setState 后的调用顺序：
+
+```js
+Component.setState()
+  => enqueueSetState()
+  => scheduleUpdate()
+  => scheduleCallback(performConcurrentWorkOnRoot)
+  => requestHostCallback()
+  => postMessage()
+  => performWorkUntilDeadline()
+
+```
+
+`scheduleCallback` 方法会将传入的回调（`performConcurrentWorkOnRoot`）组装成一个任务放入 `taskQueue` 中，然后调用 `requestHostCallback` 发送一个消息，进入异步任务。`performWorkUntilDeadline` 接收到异步消息，从 `taskQueue` 取出任务开始执行，这里的任务就是之前传入的 `performConcurrentWorkOnRoot` 方法，这个方法最后会调用 `workLoopConcurrent`（`workLoopConcurrent` 前面已经介绍过了，这个不再重复）。如果 `workLoopConcurrent` 是由于超时中断的，`hasMoreWork` 返回为 true，通过 `postMessage` 发送消息，将操作延迟到下一个任务队列。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# redux
+
+
+
+## Redux 源码深度解析
+
+
+首先把多个 reducer 通过 combineReducers 组合在一起
+
+```javascript
+const appReducer = combineReducers({
+  user: UserReducer,
+  goods: GoodsReducer,
+  order: OrdersReducer,
+  chat: ChatReducer
+});
+```
+
+
+`combineReducers` 函数总的来说很简单，总结来说就是接收一个对象，将参数过滤后返回一个函数。该函数里有一个过滤参数后的对象 finalReducers，遍历该对象，然后执行对象中的每一个 reducer 函数，最后将新的 state 返回
+
+
+接下来让我们先来看看 `compose` 函数
+
+
+这个函数设计的很巧妙，通过传入函数引用的方式让我们完成多个函数的嵌套使用，术语叫做高阶函数
+
+通过使用 reduce 函数做到从右至左调用函数
+
+
+
+
+## Redux解决了什么问题
+
+
+**单一数据源特性**
+
+Redux应用中的状态是只读的，即Redux状态不可变。例如，React组件不能直接写入Redux状态，而是发出action来更新状态。
+
+
+**只读状态**
+
+唯一可以修改状态的方式，就是发送（dispatch）一个动作（Action），通俗来讲，就是说只有getter，没有setter。
+
+
+**使用纯函数去修改状态**
+
+
+
+**单向数据流**
+
+
+
+>Redux 是 JavaScript 状态容器，提供可预测化的状态管理。 Redux 是由 Flux 演变而来。
+
+>对于 Redux 来说，就是把数据当成状态来处理，reducer 就是根据行为（action） 将当前数据（状态）转成新的状态，新的数据状态可以继续被 reducer 处理。
 
 
 
