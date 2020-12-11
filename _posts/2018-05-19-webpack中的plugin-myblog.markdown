@@ -275,6 +275,30 @@ Compared to the extract-text-webpack-plugin:
 * Easier to use  更容易使用
 * Specific to CSS  特定于CSS
 
+它与`extract-text-webpack-plugin`最大的区别是：它在`code spliting`的时候会将原先内联写在每一个 js `chunk bundle`的 css，单独拆成了一个个 css 文件。
+
+
+
+原先 css 是这样内联在 js 文件里的：
+
+![https://user-gold-cdn.xitu.io/2018/7/24/164cb85b234d224a?w=2534&h=98&f=jpeg&s=50714](https://user-gold-cdn.xitu.io/2018/7/24/164cb85b234d224a?w=2534&h=98&f=jpeg&s=50714)
+
+
+
+将 css 独立拆包最大的好处就是 js 和 css 的改动，不会影响对方。比如我改了 js 文件并不会导致 css 文件的缓存失效。而且现在它自动会配合`optimization.splitChunks`的配置，可以自定义拆分 css 文件，比如我单独配置了`element-ui`作为单独一个`bundle`,它会自动也将它的样式单独打包成一个 css 文件，不会像以前默认将第三方的 css 全部打包成一个几十甚至上百 KB 的`app.xxx.css`文件了。
+
+
+
+
+
+
+
+
+
+----
+
+
+
 
 ```javascript
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -395,7 +419,24 @@ options.publicPath	{String}
 ----------
 
 
+
+
+### OptimizeCSSAssetsPlugin
+
+![](https://user-gold-cdn.xitu.io/2018/7/30/164e93dc299d7062?w=1778&h=764&f=jpeg&s=198182)
+
+由于`optimize-css-assets-webpack-plugin`这个插件默认使用了 [cssnano](https://github.com/cssnano/cssnano) 来作 css 优化，
+
+
+
+所以它不仅压缩了代码、删掉了代码中无用的注释、还去除了冗余的 css、优化了 css 的书写顺序，优化了你的代码 `margin: 10px 20px 10px 20px;` =>`margin:10px 20px;`。同时大大减小了你 css 的文件大小。更多优化的细节见[文档](https://cssnano.co/guides/optimisations)。
+
+
+
+
+
 ### html-webpack-plugin
+
 Plugin that simplifies creation of HTML files to serve your bundles(简化创建HTML文件)
 
 这是一个webpack插件，它可以简化创建HTML文件来为你的webpack包提供服务。这对于webpack在文件名中包含散列的bundle 来说尤其有用，它可以改变每个编译。您可以让插件为您生成一个HTML文件，使用lodash模板提供您自己的模板或使用您自己的加载器。
@@ -695,6 +736,127 @@ vue 开发过程中，保存一次就会编译一次，如果能够减少编译�
 
 
 
+### hard-source-wepack-plugin
+
+[https://www.npmjs.com/package/hard-source-webpack-plugin](https://www.npmjs.com/package/hard-source-webpack-plugin)
+
+**性能有90%的提升**
+
+**性能有90%的提升**
+
+**性能有90%的提升**
+
+
+
+
+
+在webpack4.0的时代，optimization下的splitchunk配置较多，尤其是cacheControls的权重配置，在4.0到5.0之间有一种过渡的使用缓存的方式，打包很快，借助`hard-source-webpack-plugin`
+
+
+
+**其原理是为模块提供中间缓存步骤**
+
+
+
+`HardSourceWebpackPlugin` is a plugin for webpack to provide an intermediate caching step for modules. In order to see results, you'll need to run webpack twice with this plugin: the first build will take the normal amount of time. The second build will be signficantly faster.
+
+>  为了查看结果，需要使用此插件运行webpack两次：第一次构建将花费正常的时间。第二次构建将显着加快（大概提升90%的构建速度）。
+
+
+
+```js
+// webpack.config.js
+var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+ 
+module.exports = {
+  context: // ...
+  entry: // ...
+  output: // ...
+  plugins: [
+    new HardSourceWebpackPlugin()
+  ]
+}
+```
+
+展望未来 
+
+`webpack 5` 已经发布，其中有一个很吸引人的功能——**持久缓存**（据说思想跟 `HardSourceWebpackPlugin` 是一致的）
+
+
+
+通过 `cache`  缓存生成的 `webpack` 模块和` chunk`，来改善构建速度。`cache` 会在开发模式被设置成 `type: 'memory'` 而且在生产模式中被禁用
+
+```js
+module.exports = {
+  cache: {
+    // 1. 将缓存类型设置为文件系统
+    type: 'filesystem',
+    buildDependencies: {
+      // 2. 将你的 config 添加为 buildDependency，以便在改变 config 时获得缓存无效
+      config: [__filename],
+      // 3. 如果你有其他的东西被构建依赖，你可以在这里添加它们
+      // 注意，webpack、加载器和所有从你的配置中引用的模块都会被自动添加
+    },
+  },
+};
+```
+
+
+
+---
+
+实战公司营业管理系统 
+
+run dev
+
+优化前:
+
+```
+Time: 63690ms
+Built at: 2020-10-28 10:04:42
+```
+
+优化后：
+
+一次 run dev
+
+```js
+Time: 65575ms
+Built at: 2020-10-28 10:09:04
+```
+
+第二次 run dev
+
+```js
+[hardsource:51f54b55] Using 145 MB of disk space.
+[hardsource:51f54b55] Tracking node dependencies with: package-lock.json, yarn.lock.
+[hardsource:51f54b55] Reading from cache 51f54b55...
+Happy[babel]: Version: 5.0.1. Threads: 3
+Happy[babel]: All set; signaling webpack to proceed.
+10% building 1/2 modules 1 active ...ebpack\hot\dev-server.js D:\代码模板\oto-operation-1\src\maini ｢wdm｣: Hash: 4537205bd7
+
+
+Version: webpack 4.41.2
+Time: 19890ms
+Built at: 2020-10-28 10:09:54
+```
+
+可以看到Time大幅度减少
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###  add-asset-html-webpack-plugin
 
 [https://www.npmjs.com/package/add-asset-html-webpack-plugin](https://www.npmjs.com/package/add-asset-html-webpack-plugin)
@@ -724,21 +886,35 @@ new AddAssetHtmlPlugin({
 
 
 
+### NamedChunksPlugin
+
+[https://segmentfault.com/a/1190000015919928](https://segmentfault.com/a/1190000015919928)
+
+```js
+ new webpack.NamedChunksPlugin()
+```
+
+```
+触发时机：compilation.hooks.beforeChunkIds
+功能：以名称固化 chunk id
+对应配置项：optimization.chunkIds
+```
+
+我们在固定了 module id 之后同理也需要固定一下 chunk id，不然我们增加 chunk 或者减少 chunk 的时候会和 module id 一样，都可能会导致 chunk 的顺序发生错乱，从而让 chunk 的缓存都失效。
+
+![](https://user-gold-cdn.xitu.io/2018/8/6/1650fa11fadb581f?w=1426&h=306&f=jpeg&s=179459)
+
+
+
+
+
 
 
 ### ProvidePlugin
 
-
-
 [https://webpack.docschina.org/plugins/provide-plugin/](https://webpack.docschina.org/plugins/provide-plugin/)
 
-
-
 自动加载模块，而不必到处 `import` 或 `require` 。
-
-
-
-
 
 ```js
 new webpack.ProvidePlugin({
@@ -762,17 +938,13 @@ new webpack.ProvidePlugin({
 
 
 
-### terser-webpack-plugin
+### TerserPlugin
+
+[https://webpack.docschina.org/plugins/terser-webpack-plugin/](https://webpack.docschina.org/plugins/terser-webpack-plugin/)
 
 https://www.npmjs.com/package/terser-webpack-plugin
 
-
-
 This plugin uses [terser](https://github.com/terser-js/terser) to minify your JavaScript.
-
-
-
-
 
 ```js
 const TerserPlugin = require('terser-webpack-plugin');
@@ -780,10 +952,33 @@ const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin()],
+    minimizer: [
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: false,
+          terserOptions: {
+            compress: {
+              drop_console: false
+            }
+          }
+        })
+    ],
   },
 };
 ```
+
+
+
+
+
+### speed-measure-webpack-plugin
+
+[https://github.com/stephencookdev/speed-measure-webpack-plugin#readme](https://github.com/stephencookdev/speed-measure-webpack-plugin#readme)
+
+[https://segmentfault.com/a/1190000015919863](https://segmentfault.com/a/1190000015919863)
+
+它能监控 webpack 每一步操作的耗时
 
 
 

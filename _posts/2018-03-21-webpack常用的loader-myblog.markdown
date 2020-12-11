@@ -308,6 +308,37 @@ vue-loader 是一个 webpack 的 loader，可以将用下面这个格式编写�
 
 
 
+### vue-style-loader
+
+[https://www.npmjs.com/package/vue-style-loader](https://www.npmjs.com/package/vue-style-loader)
+
+This is a fork based on [style-loader](https://github.com/webpack/style-loader). Similar to `style-loader`, you can chain it after `css-loader` to dynamically inject CSS into the document as style tags. However, since this is included as a dependency and used by default in `vue-loader`, in most cases you don't need to configure this loader yourself.
+
+```js
+ use: [
+          'vue-style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[local]_[hash:base64:5]'
+            }
+          },
+     ]
+```
+
+
+
+**Differences from `style-loader`**
+
+Server-Side Rendering Support
+
+When bundling with `target: 'node'`, the styles in all rendered components are collected and exposed on the Vue render context object as `context.styles`, which you can simply inline into your markup's `<head>`. If you are building a Vue SSR app, you probably should use this loader for CSS imported from JavaScript files too.
+
+### 
+
+
+
 ### postcss-loader
 [网页链接](https://www.npmjs.com/package/postcss-loader)
 
