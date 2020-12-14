@@ -628,33 +628,80 @@ And the best thing is it supports minified bundles! It parses them to get real s
 
 
 
-### HashedModuleIdsPlugin
+### HashedModuleIdsPlugin VS NamedModulesPlugin
 
-
+HashedModuleIdsPlugin  **（正式环境使用）**
 
 ```javascript
  // keep module.id stable when vendor modules does not change
     new webpack.HashedModuleIdsPlugin(),
 ```
 
-
 增加、删除一些模块，可能会导致不相关文件的 hash 发生变化，这是因为 webpack 打包时，按照导入模块的顺序，module.id 自增，会导致某些模块的 module.id 发生变化，进而导致文件的 hash 变化。
+
+
 
 
 解决方式： 使用 webpack 内置的 HashedModuleIdsPlugin，该插件基于导入模块的相对路径生成相应的 module.id，这样如果内容没有变化加上 module.id 也没变化，则生成的 hash 也就不会变化了。
 
 
 
+----
 
-### NamedModulesPlugin
+
+
+NamedModulesPlugin  **(开发环境使用)**
 
 [https://www.jianshu.com/p/8499842defbe](https://www.jianshu.com/p/8499842defbe)
 
-当开启 HMR 的时候使用该插件会显示模块的相对路径，建议用于开发环境。
+> NamedModulesPlugin 和 HashedModuleIdsPlugin 原理是相同的，将文件路径作为 id，只不过没有把路径 hash 而已，适用于开发环境方便调试。不建议在生产环境配置，因为这样不仅会增加文件的大小（路径一般偶读比较长），更重要的是为暴露你的文件路径。
 
 ```javascript
 new webpack.NamedModulesPlugin()
 ```
+
+
+
+
+
+### NamedChunkPlugin
+
+我们在固定了 module id 之后同理也需要固定一下 chunk id，不然我们增加 chunk 或者减少 chunk 的时候会和 module id 一样，都可能会导致 chunk 的顺序发生错乱，从而让 chunk 的缓存都失效。
+
+
+
+![](https://user-gold-cdn.xitu.io/2018/8/6/1650fa11fadb581f?w=1426&h=306&f=jpeg&s=179459)
+
+
+
+[https://medium.com/webpack/predictable-long-term-caching-with-webpack-d3eee1d3fa31](https://medium.com/webpack/predictable-long-term-caching-with-webpack-d3eee1d3fa31)
+
+Well turns out that the `NamedChunkPlugin` only handles chunks that have a name.
+
+NamedChunkPlugin只处理有名称的块。。。
+
+
+
+#### 自定义 nameResolver
+
+`NamedChunksPlugin`支持自己写 nameResolver 的规则的。
+
+
+
+适配 webpack4 和 vue 的新实现方案：
+
+```js
+new webpack.NamedChunksPlugin(chunk => {
+  if (chunk.name) {
+    return chunk.name;
+  }
+  return Array.from(chunk.modulesIterable, m => m.id).join("_");
+});
+```
+
+这样纸就可以解决chunk的缓存失效的问题了
+
+
 
 
 
