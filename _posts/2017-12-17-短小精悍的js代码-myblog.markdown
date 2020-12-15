@@ -370,13 +370,25 @@ function toggleClass(obj, cls) {
 
 ### isObject
 **注意此方法没有仔细区分是数组还是对象**
+
 ```javascript
 function isObject (obj) {
   return obj !== null && typeof obj === 'object'
 }
 ```
 
+Check for plain object  （这个仔细区分数组还是对象）
+
+```js
+function isObject(val) {
+  return Object == val.constructor;
+}
+```
+
+
+
 ### isFunction 
+
 ```javascript
 function isFunction(source) {
      return '[object Function]' === Object.prototype.toString.call(source);

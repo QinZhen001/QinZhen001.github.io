@@ -500,6 +500,41 @@ Vue 2.x 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开始，�
 
 
 
+## Reconciler（协调器）
+
+每当有更新发生时，**Reconciler**会做如下工作：
+
+- 调用函数组件、或class组件的`render`方法，将返回的JSX转化为虚拟DOM
+- 将虚拟DOM和上次更新时的虚拟DOM对比
+- 通过对比找出本次更新中变化的虚拟DOM
+- 通知**Renderer**将变化的虚拟DOM渲染到页面上
+
+
+
+----
+
+* react 15 => Stack reconciler
+* react 16 => Fiber reconciler
+
+
+
+在React16中，**Reconciler**与**Renderer**不再是交替工作。当**Scheduler**将任务交给**Reconciler**后，**Reconciler**会为变化的虚拟DOM打上代表增/删/更新的标记，类似这样：
+
+```js
+export const Placement = /*             */ 0b0000000000010;
+export const Update = /*                */ 0b0000000000100;
+export const PlacementAndUpdate = /*    */ 0b0000000000110;
+export const Deletion = /*              */ 0b0000000001000;
+```
+
+整个**Scheduler**与**Reconciler**的工作都在内存中进行。只有当所有组件都完成**Reconciler**的工作，才会统一交给**Renderer**。
+
+
+
+
+
+
+
 ## React 中各种组件复用的优劣势
 
 （mixin、render props、hoc、hook）
@@ -554,6 +589,12 @@ Vue 2.x 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开始，�
 
 
 # 新版react
+
+- `Reconciler`工作的阶段被称为`render`阶段。因为在该阶段会调用组件的`render`方法。
+- `Renderer`工作的阶段被称为`commit`阶段。就像你完成一个需求的编码后执行`git commit`提交代码。`commit`阶段会把`render`阶段提交的信息渲染在页面上。
+- `render`与`commit`阶段统称为`work`，即`React`在工作中。相对应的，如果任务正在`Scheduler`内调度，就不属于`work`。
+
+
 
 
 
@@ -781,9 +822,42 @@ class App extends React.Component {
 
 ## Fiber 架构
 
+
+
+### 什么是fiber
+
 > https://blog.shenfq.com/2020/react-%E6%9E%B6%E6%9E%84%E7%9A%84%E6%BC%94%E5%8F%98-%E4%BB%8E%E9%80%92%E5%BD%92%E5%88%B0%E5%BE%AA%E7%8E%AF/
 
 **fiber是链表结构**
+
+
+
+> `Fiber`并不是计算机术语中的新名词，他的中文翻译叫做`纤程`，与进程（Process）、线程（Thread）、协程（Coroutine）同为程序执行过程。
+
+在很多文章中将`纤程`理解为`协程`的一种实现。在`JS`中，`协程`的实现便是`Generator`。
+
+所以，我们可以将`纤程`(Fiber)、`协程`(Generator)理解为`代数效应`思想在`JS`中的体现。
+
+
+
+`React`内部实现的一套状态更新机制。支持任务不同`优先级`，可中断与恢复，并且恢复后可以复用之前的`中间状态`。其中每个任务更新单元为`React Element`对应的`Fiber节点`。
+
+
+
+**任务更新单元就是Fiber节点**
+
+**任务更新单元就是Fiber节点**
+
+**任务更新单元就是Fiber节点**
+
+
+
+* 作为静态的数据结构来说，每个`Fiber节点`对应一个`React element`，保存了该组件的类型（函数组件/类组件/原生组件...）、对应的DOM节点等信息。
+* 作为动态的工作单元来说，每个`Fiber节点`保存了本次更新中该组件改变的状态、要执行的工作（需要被删除/被插入页面中/被更新...）。
+
+
+
+
 
 
 
@@ -791,7 +865,7 @@ class App extends React.Component {
 
 > 架构的演变-从递归到循环
 
-react15递归更新组件有明显的缺点，不能暂停更新，一旦开始必须从头到尾，这与 React 16 拆分时间片，给浏览器喘口气的理念明显不符，所以 React 必须要切换架构，将虚拟 DOM 从树形结构修改为链表结构。
+react15递归更新组件有明显的缺点，不能暂停更新，一旦开始必须从头到尾，这与 React 16 拆分时间片，给浏览器喘口气的理念明显不符，所以 React 必须要切换架构，**将虚拟 DOM 从树形结构修改为链表结构**。
 
 
 
@@ -908,6 +982,45 @@ deadline = currentTime + yieldInterval
 
 
 
+### 双缓存Fiber树
+
+在`React`中最多会同时存在两棵`Fiber树`。当前屏幕上显示内容对应的`Fiber树`称为`current Fiber树`，正在内存中构建的`Fiber树`称为`workInProgress Fiber树`。
+
+`current Fiber树`中的`Fiber节点`被称为`current fiber`，`workInProgress Fiber树`中的`Fiber节点`被称为`workInProgress fiber`，他们通过`alternate`属性连接。
+
+```js
+currentFiber.alternate === workInProgressFiber;
+workInProgressFiber.alternate === currentFiber;
+```
+
+`React`应用的根节点通过`current`指针在不同`Fiber树`的`rootFiber`间切换来实现`Fiber树`的切换。
+
+
+
+当`workInProgress Fiber树`构建完成交给`Renderer`渲染在页面上后，应用根节点的`current`指针指向`workInProgress Fiber树`，此时`workInProgress Fiber树`就变为`current Fiber树`。
+
+
+
+每次状态更新都会产生新的`workInProgress Fiber树`，通过`current`与`workInProgress`的替换，完成`DOM`更新。
+
+
+
+#### 什么是“双缓存”
+
+https://react.iamkasong.com/process/doubleBuffer.html#%E4%BB%80%E4%B9%88%E6%98%AF-%E5%8F%8C%E7%BC%93%E5%AD%98
+
+
+
+当我们用`canvas`绘制动画，每一帧绘制前都会调用`ctx.clearRect`清除上一帧的画面。
+
+如果当前帧画面计算量比较大，导致清除上一帧画面到绘制当前帧画面之间有较长间隙，就会出现白屏。
+
+为了解决这个问题，我们可以在内存中绘制当前帧动画，绘制完毕后直接用当前帧替换上一帧画面，由于省去了两帧替换间的计算时间，不会出现从白屏到出现画面的闪烁情况。
+
+这种**在内存中构建并直接替换**的技术叫做[双缓存 (opens new window)](https://baike.baidu.com/item/双缓冲)。
+
+`React`使用“双缓存”来完成`Fiber树`的构建与替换——对应着`DOM树`的创建与更新。
+
 
 
 
@@ -935,8 +1048,12 @@ Concurrent 模式说白就是让组件更新异步化，切分时间片，渲染
 
 
 ```js
-Component.setState() => enquueState() => scheduleUpdate() => scheduleCallback()
-=> requestHostCallback(flushWork) => postMessage()
+ Component.setState() 
+    => enquueState() 
+    => scheduleUpdate() 
+    => scheduleCallback()
+    => requestHostCallback(flushWork)
+    => postMessage()
 ```
 
 真正的异步化逻辑就在 `requestHostCallback`、`postMessage` 里面，这是 React 内部自己实现的一个调度器
@@ -1065,9 +1182,24 @@ Component.setState()
 
 
 
+## Hooks
+
+`代数效应`是`函数式编程`中的一个概念，用于将`副作用`从`函数`调用中分离。
+
+那么`代数效应`与`React`有什么关系呢？最明显的例子就是`Hooks`。
 
 
 
+对于类似`useState`、`useReducer`、`useRef`这样的`Hook`，我们不需要关注`FunctionComponent`的`state`在`Hook`中是如何保存的，`React`会为我们处理。
+
+>  `代数效应`在浏览器原生就支持类似的实现就是`Generator`
+
+
+
+但是`Generator`的一些缺陷使`React`团队放弃了他：
+
+- 类似`async`，`Generator`也是`传染性`的，使用了`Generator`则上下文的其他函数也需要作出改变。这样心智负担比较重。
+- `Generator`执行的`中间状态`是上下文关联的。
 
 
 
