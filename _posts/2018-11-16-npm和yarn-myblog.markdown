@@ -1,18 +1,18 @@
 ---
 layout:     post
-title:      "npm相关命令"
+title:      "npm和yarn"
 date:       2018-11-16 20:19:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - npm
+    - Other
 ---
 
 > “Yeah It's on. ”
 
 
-## 正文
+## npm
 
 [https://www.cnblogs.com/penghuwan/p/6973702.html#_label4](https://www.cnblogs.com/penghuwan/p/6973702.html#_label4)
 
@@ -174,4 +174,76 @@ npm xmas
 
 
 
+
+
+
+## yarn 
+
+
+
+### yarn的优势
+
+* **并行执行**
+
+npm会等一个包完全安装完才跳到下一个包，但yarn会并行执行包，因此速度会快很多
+
+* **离线模式**
+
+离线的原理比较简单，安装过的包会被保存进缓存目录，以后安装就直接从缓存中复制过来，这样做的本质还是会提高安装下载的速度，避免不必要的网络请求。
+
+* **版本控制**
+
+npm用下来比较强的一个痛点就是：当包的依赖层次比较深时，版本控制不够精确。会出现相同package.json，但不同人的电脑上安装出不同版本的依赖包，出现类似 “我电脑上是好的，没问题呀”的bug很难查找。你可以使用[npm-shrinkwrap](https://link.jianshu.com/?t=https://docs.npmjs.com/cli/shrinkwrap)来实现版本固化，版本信息会写入npm-shrinkwrap.json文件中，但它毕竟不是npm的标准配置。
+
+而yarn天生就能实现版本固化。会生成一个类似npm-shrinkwrap.json的yarn.lock文件，文件内会描述包自身的版本号，还会锁定所有它依赖的包的版本号：yarn.lock存储这你的每个包的确切依赖版本，能确保从本地开发到生产环境，所有机器上都有精确相同的依赖版本。
+
+
+
+
+
+
+
+### workspace
+
+**workspace是除缓存外yarn区别于npm最大的优势**
+
+ 
+
+* 能帮助你更好地管理多个子project的repo，这样你可以在每个子project里使用独立的package.json管理你的依赖，又不用分别进到每一个子project里去yarn
+* install/upfrade安装/升级依赖，而是使用一条yarn命令去处理所有依赖就像只有一个package.json一样
+* yarn会根据就依赖关系帮助你分析所有子project的共用依赖，保证所有的project公用的依赖只会被下载和安装一次。
+
+
+
+使用：
+
+yarn workspace并不需要安装什么其他的包，只需要简单的更改package.json便可以工作。 首先我们需要确定workspace root，一般来说workspace root都会是repo的根目录
+
+
+
+yarn workspace目录结构树:
+
+![](https://upload-images.jianshu.io/upload_images/12564775-6eb7783e32e44b13.png?imageMogr2/auto-orient/strip|imageView2/2/w/921/format/webp)
+
+package.json:
+
+```js
+{
+    //当private为true时workspace才会被启用
+    "private": true，
+    "workspace": ["workspace-a","workspace-b"]
+}
+
+// workspaces属性的值为一个字符串数组，每一项指代一个workspace路径，支持全局匹配，这里的路径指向指的是package.json所在文件夹文件夹名。
+```
+
+你会发现整个repo只生成了一份yarn.lock，绝大多数的依赖包都被提升到了根目录下的node_modules之内。各个子project的node_modules里面不会重复存在依赖，只会有针对根目录下依赖的引用
+
+
+
+#### workspace的不足
+
+* yarn workspace并没有像lerna那样封装大量的高层API，整个workspace整体上还是依赖于整个yarn命令体系。
+* workspace不能嵌套（只能有一个根workspace）
+* workspace采用的是向上遍历，所以workspace并不能识别根workspace之外的依赖。
 
