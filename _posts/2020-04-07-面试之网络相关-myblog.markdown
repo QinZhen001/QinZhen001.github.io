@@ -194,6 +194,18 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 
 [一个故事讲完https](https://mp.weixin.qq.com/s/StqqafHePlBkWAPQZg3NrA)
 
+HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用 SSL(Secure Socket Layer)和 TLS(Transport Layer Security)协议代替而已。
+
+通常，HTTP 直接和 TCP 通信。当使用 SSL 时，则演变成先和 SSL 通信，再由 SSL 和 TCP 通信了。简言之，所谓 HTTPS，其实就是身披 SSL 协议这层外壳的 HTTP。
+
+
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/dy9CXeZLlCXSia2SiaCZVwd0340ZsUC898XdJU9jGe9yyQ2PRibY2uJAzsomT5dpdowgT0VD67WInTaSYb5E1Q4Sg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/dy9CXeZLlCXSia2SiaCZVwd0340ZsUC898TicYD5icSoketyVyuNxz510l4GvK96Dw6XSCyciaOMhcWgWShpM9hxHrA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+
+
 
 
 
@@ -203,10 +215,21 @@ http/1.x 是一个超文本协议，而 http2 是一个二进制协议，被称�
 **HTTPS 采用共享密钥加密和公开密钥加密两者并用的混合加密 机制。**若密钥能够实现安全交换，那么有可能会考虑仅使用公开 密钥加密来通信。但是公开密钥加密与共享密钥加密相比，其处 理速度要慢。
 
 
+
 所以应充分利用两者各自的优势，将多种方法组合起来用于通 信。**在交换密钥环节使用公开密钥加密方式，之后的建立通信交 换报文阶段则使用共享密钥加密方式。**
 
 
->公开密钥加密处理起来比共享密钥加密方式更为复杂，因此若在通信时使用公开密钥加密方式，效率就很低
+
+**TLS/SSL 的功能实现主要依赖于三类基本算法：散列函数 、对称加密和非对称加密，其利用非对称加密实现身份认证和密钥协商，对称加密算法采用协商的密钥对数据加密，基于散列函数验证信息的完整性**
+
+
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/dy9CXeZLlCXSia2SiaCZVwd0340ZsUC89837YsiaGcXBxHPiayg9vymT0cD0cD82oJwBbBpd7Vj6zoFh1GtRF7zXJw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+
+
+
+>公开密钥加密处理起来比共享密钥加密方式更为复杂，因此若在通信时使用公开密钥加密方式，效率就很低。
 
 
 

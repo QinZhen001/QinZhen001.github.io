@@ -498,6 +498,44 @@ Vue 2.x 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开始，�
 
 
 
+## componentWillRecieveProps
+
+[https://juejin.cn/post/6847902224287285255#comment](https://juejin.cn/post/6847902224287285255#comment)
+
+我们经常在`componentWillRecieveProps`内处理`props`改变带来的影响。有些同学认为这个钩子会在每次`props`变化后触发。
+
+真的是这样么？让我们看看源码。
+
+这段代码出自`updateClassInstance`方法：
+
+```js
+if (
+  unresolvedOldProps !== unresolvedNewProps ||
+  oldContext !== nextContext
+) {
+  callComponentWillReceiveProps(
+    workInProgress,
+    instance,
+    newProps,
+    nextContext,
+  );
+}
+```
+
+其中`callComponentWillReceiveProps`方法会调用`componentWillRecieveProps`。
+
+
+
+可以看到，是否调用的关键是比较`unresolvedOldProps`与 `unresolvedNewProps`是否全等，以及`context`是否变化。
+
+其中`unresolvedOldProps`为组件上次更新时的`props`，而`unresolvedNewProps`则来自`ClassComponent`调用`this.render`返回的`JSX`中的`props`参数。
+
+可见他们的`引用`是不同的。所以他们`全等比较`为`false`。
+
+基于此原因，**每次父组件更新都会触发当前组件的`componentWillRecieveProps`**。
+
+
+
 
 
 ## Reconciler（协调器）
@@ -551,45 +589,6 @@ export const Deletion = /*              */ 0b0000000001000;
 
 
 
-## 为什么要实现hook
-
-
-
-
-
-## 老版本的 React 的某些生命周期被废弃的理由
-
-
-
-
-
-## React 性能优化
-
-
-
-
-
-## react16废弃了哪几个生命周期api
-
-
-
-
-## diff算法是怎么比较新旧节点并更新的
-
-
-
-## key有什么作用
-
-
-
-
-
-
-
-
-
-
-
 
 
 # 新版react
@@ -599,6 +598,16 @@ export const Deletion = /*              */ 0b0000000001000;
 - `render`与`commit`阶段统称为`work`，即`React`在工作中。相对应的，如果任务正在`Scheduler`内调度，就不属于`work`。
 
 
+
+
+
+## react16废弃了哪几个生命周期api
+
+从`v16.3.0`开始如下三个生命周期钩子被标记为`UNSAFE`。
+
+- componentWillMount
+- componentWillRecieveProps
+- componentWillUpdate
 
 
 
@@ -822,6 +831,39 @@ class App extends React.Component {
 
 
 
+## Update
+
+首先，我们将可以触发更新的方法所隶属的组件分类：
+
+- ReactDOM.render —— HostRoot
+- this.setState —— ClassComponent
+- this.forceUpdate —— ClassComponent
+- useState —— FunctionComponent
+- useReducer —— FunctionComponent
+
+由于不同类型组件工作方式不同，所以存在两种不同结构的`Update`，其中`ClassComponent`与`HostRoot`共用一套`Update`结构，`FunctionComponent`单独使用一种`Update`结构。
+
+
+
+`ClassComponent`与`HostRoot`（即`rootFiber.tag`对应类型）对应的结构如下：
+
+```js
+const update: Update<*> = {
+  eventTime,
+  lane,
+  suspenseConfig,
+  tag: UpdateState,
+  payload: null,
+  callback: null,
+
+  next: null,
+};
+```
+
+
+
+
+
 
 
 ## Fiber 架构
@@ -1027,6 +1069,399 @@ https://react.iamkasong.com/process/doubleBuffer.html#%E4%BB%80%E4%B9%88%E6%98%A
 
 
 
+## Diff
+
+https://react.iamkasong.com/diff/prepare.html#diff%E7%9A%84%E7%93%B6%E9%A2%88%E4%BB%A5%E5%8F%8Areact%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9
+
+[https://zh-hans.reactjs.org/docs/reconciliation.html#the-diffing-algorithm](https://zh-hans.reactjs.org/docs/reconciliation.html#the-diffing-algorithm)
+
+为了防止概念混淆，这里再强调下
+
+一个`DOM节点`在某一时刻最多会有4个节点和他相关。
+
+1. `current Fiber`。如果该`DOM节点`已在页面中，`current Fiber`代表该`DOM节点`对应的`Fiber节点`。
+2. `workInProgress Fiber`。如果该`DOM节点`将在本次更新中渲染到页面中，`workInProgress Fiber`代表该`DOM节点`对应的`Fiber节点`。
+3. `DOM节点`本身。
+4. `JSX对象`。即`ClassComponent`的`render`方法的返回结果，或`FunctionComponent`的调用结果。`JSX对象`中包含描述`DOM节点`的信息。
+
+`Diff算法`的本质是对比1和4，生成2。
+
+
+
+为了降低算法复杂度，`React`的`diff`会预设三个限制：
+
+1. 只对同级元素进行`Diff`。如果一个`DOM节点`在前后两次更新中跨越了层级，那么`React`不会尝试复用他。
+2. **两个不同类型的元素会产生出不同的树。如果元素由`div`变为`p`，React会销毁`div`及其子孙节点，并新建`p`及其子孙节点。**
+3. 开发者可以通过 `key prop`来暗示哪些子元素在不同的渲染下能保持稳定
+
+
+
+我们从`Diff`的入口函数`reconcileChildFibers`出发，该函数会根据`newChild`（即`JSX对象`）类型调用不同的处理函数。
+
+
+
+```js
+// 根据newChild类型选择不同diff函数处理
+function reconcileChildFibers(
+  returnFiber: Fiber,
+  currentFirstChild: Fiber | null,
+  newChild: any,
+): Fiber | null {
+
+  const isObject = typeof newChild === 'object' && newChild !== null;
+
+  if (isObject) {
+    // object类型，可能是 REACT_ELEMENT_TYPE 或 REACT_PORTAL_TYPE
+    switch (newChild.$$typeof) {
+      case REACT_ELEMENT_TYPE:
+        // 调用 reconcileSingleElement 处理
+      // // ...省略其他case
+    }
+  }
+
+  if (typeof newChild === 'string' || typeof newChild === 'number') {
+    // 调用 reconcileSingleTextNode 处理
+    // ...省略
+  }
+
+  if (isArray(newChild)) {
+    // 调用 reconcileChildrenArray 处理
+    // ...省略
+  }
+
+  // 一些其他情况调用处理函数
+  // ...省略
+
+  // 以上都没有命中，删除节点
+  return deleteRemainingChildren(returnFiber, currentFirstChild);
+}
+```
+
+我们可以从同级的节点数量将Diff分为两类：
+
+1. 当`newChild`类型为`object`、`number`、`string`，代表同级只有一个节点
+2. 当`newChild`类型为`Array`，同级有多个节点
+
+
+
+
+
+### 单节点Diff
+
+![diff](https://react.iamkasong.com/img/diff.png)
+
+让我们看看第二步**判断DOM节点是否可以复用**是如何实现的。
+
+```js
+function reconcileSingleElement(
+  returnFiber: Fiber,
+  currentFirstChild: Fiber | null,
+  element: ReactElement
+): Fiber {
+  const key = element.key;
+  let child = currentFirstChild;
+  
+  // 首先判断是否存在对应DOM节点
+  while (child !== null) {
+    // 上一次更新存在DOM节点，接下来判断是否可复用
+
+    // 首先比较key是否相同
+    if (child.key === key) {
+
+      // key相同，接下来比较type是否相同
+
+      switch (child.tag) {
+        // ...省略case
+        
+        default: {
+          if (child.elementType === element.type) {
+            // type相同则表示可以复用
+            // 返回复用的fiber
+            return existing;
+          }
+          
+          // type不同则跳出循环
+          break;
+        }
+      }
+      // 代码执行到这里代表：key相同但是type不同
+      // 将该fiber及其兄弟fiber标记为删除
+      deleteRemainingChildren(returnFiber, child);
+      break;
+    } else {
+      // key不同，将该fiber标记为删除
+      deleteChild(returnFiber, child);
+    }
+    child = child.sibling;
+  }
+
+  // 创建新Fiber，并返回 ...省略
+}
+```
+
+从代码可以看出，React通过先判断`key`是否相同，如果`key`相同则判断`type`是否相同，只有都相同时一个`DOM节点`才能复用。
+
+这里有个细节需要关注下：
+
+- 当`child !== null`且`key相同`且`type不同`时执行`deleteRemainingChildren`将`child`及其兄弟`fiber`都标记删除。
+- 当`child !== null`且`key不同`时仅将`child`标记删除。
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 多节点Diff
+
+`reconcileChildFibers`的`newChild`参数类型为`Array`，在`reconcileChildFibers`函数内部对应如下情况：
+
+```js
+  if (isArray(newChild)) {
+    // 调用 reconcileChildrenArray 处理
+    // ...省略
+  }
+```
+
+但是`React团队`发现，在日常开发中，相较于`新增`和`删除`，`更新`组件发生的频率更高。所以`Diff`会优先判断当前节点是否属于`更新`。
+
+> 注意
+>
+> 在我们做数组相关的算法题时，经常使用**双指针**从数组头和尾同时遍历以提高效率，但是这里却不行。
+>
+> 虽然本次更新的`JSX对象` `newChildren`为数组形式，但是和`newChildren`中每个组件进行比较的是`current fiber`，同级的`Fiber节点`是由`sibling`指针链接形成的单链表，即不支持双指针遍历。
+>
+> 
+>
+> 即 `newChildren[0]`与`fiber`比较，`newChildren[1]`与`fiber.sibling`比较。
+>
+> 
+>
+> 所以无法使用**双指针**优化。
+
+
+
+**react的diff，不像vue，无法使用双指针优化。**
+
+**react的diff，不像vue，无法使用双指针优化。**
+
+**react的diff，不像vue，无法使用双指针优化。**
+
+
+
+[reconcileChildrenArray源码](https://github.com/facebook/react/blob/1fb18e22ae66fdb1dc127347e169e73948778e5a/packages/react-reconciler/src/ReactChildFiber.new.js#L818)
+
+基于以上原因，`Diff算法`的整体逻辑会经历两轮遍历：
+
+* 第一轮遍历：处理`更新`的节点。
+* 第二轮遍历：处理剩下的不属于`更新`的节点。
+
+
+
+第一轮遍历的结果：
+
+* `newChildren`与`oldFiber`同时遍历完
+* `newChildren`没遍历完，`oldFiber`遍历完
+* `newChildren`遍历完，`oldFiber`没遍历完
+* `newChildren`与`oldFiber`都没遍历完    **（这是最难的部分）**
+
+
+
+#### 标记节点是否移动
+
+既然我们的目标是寻找移动的节点，那么我们需要明确：节点是否移动是以什么为参照物？
+
+我们的参照物是：**最后一个可复用的节点在`oldFiber`中的位置索引（用变量`lastPlacedIndex`表示）。**
+
+
+
+
+
+
+
+## Renderer
+
+Renderer 有两个阶段： render阶段 和 commit阶段
+
+
+
+* `render阶段`开始于`performSyncWorkOnRoot`或`performConcurrentWorkOnRoot`方法的调用。这取决于本次更新是同步更新还是异步更新
+* `commit阶段`开始于`commitRoot`方法的调用。其中`rootFiber`会作为传参。
+
+
+
+---
+
+
+
+render阶段 ：
+
+* beginWork
+* completeWork
+
+
+
+`Renderer`工作的阶段被称为`commit`阶段，`commit`阶段可以分为三个子阶段：
+
+- before mutation阶段（执行`DOM`操作前）
+- mutation阶段（执行`DOM`操作）
+- layout阶段（执行`DOM`操作后）
+
+
+
+---
+
+
+
+`state`的变化在`render阶段`产生与上次更新不同的`JSX`对象，通过`Diff算法`产生`effectTag`，在`commit阶段`渲染在页面上。渲染完成后`workInProgress Fiber树`变为`current Fiber树`，整个更新流程结束。
+
+
+
+
+
+### beginWork
+
+
+
+`beginWork`流程图
+
+![beginWork流程图](https://react.iamkasong.com/img/beginWork.png)
+
+
+
+在`React`中，有如下方法可以触发状态更新（排除`SSR`相关）：
+
+- ReactDOM.render
+- this.setState
+- this.forceUpdate
+- useState
+- useReducer
+
+这些方法调用的场景各不相同，他们是如何接入同一套**状态更新机制**呢？
+
+答案是：每次`状态更新`都会创建一个保存**更新状态相关内容**的对象，我们叫他`Update`。在`render阶段`的`beginWork`中会根据`Update`计算新的`state`。
+
+
+
+### completeWork
+
+类似`beginWork`，`completeWork`也是针对不同`fiber.tag`调用不同的处理逻辑。
+
+和`beginWork`一样，我们根据`current === null ?`判断是`mount`还是`update`。
+
+
+
+`completeWork`流程图
+
+![completeWork流程图](https://react.iamkasong.com/img/completeWork.png)
+
+
+
+#### update
+
+当`update`时，`Fiber节点`已经存在对应`DOM节点`，所以不需要生成`DOM节点`。需要做的主要是处理`props`
+
+ 
+
+在`updateHostComponent`内部，被处理完的`props`会被赋值给`workInProgress.updateQueue`，并最终会在`commit阶段`被渲染在页面上。
+
+```ts
+workInProgress.updateQueue = (updatePayload: any);
+```
+
+其中`updatePayload`为数组形式，他的奇数索引的值为变化的`prop key`，偶数索引的值为变化的`prop value`。
+
+
+
+
+
+#### mount
+
+同样，我们省略了不相关的逻辑。可以看到，`mount`时的主要逻辑包括三个：
+
+- 为`Fiber节点`生成对应的`DOM节点`
+- 将子孙`DOM节点`插入刚生成的`DOM节点`中
+- 与`update`逻辑中的`updateHostComponent`类似的处理`props`的过程
+
+
+
+
+
+### mutation阶段
+
+`mutation阶段`会遍历`effectList`，依次执行`commitMutationEffects`。该方法的主要工作为“根据`effectTag`调用不同的处理函数处理`Fiber`。
+
+#### FunctionComponent mutation
+
+当`fiber.tag`为`FunctionComponent`，会调用`commitHookEffectListUnmount`。该方法会遍历`effectList`，执行所有`useLayoutEffect hook`的销毁函数。
+
+
+
+所谓“销毁函数”，见如下例子：
+
+```js
+useLayoutEffect(() => {
+  // ...一些副作用逻辑
+
+  return () => {
+    // ...这就是销毁函数
+  }
+})
+```
+
+
+
+
+
+### effectList
+
+还有一个问题：作为`DOM`操作的依据，`commit阶段`需要找到所有有`effectTag`的`Fiber节点`并依次执行`effectTag`对应操作。难道需要在`commit阶段`再遍历一次`Fiber树`寻找`effectTag !== null`的`Fiber节点`么？
+
+这显然是很低效的。
+
+
+
+为了解决这个问题，在`completeWork`的上层函数`completeUnitOfWork`中，每个执行完`completeWork`且存在`effectTag`的`Fiber节点`会被保存在一条被称为`effectList`的单向链表中。
+
+`effectList`中第一个`Fiber节点`保存在`fiber.firstEffect`，最后一个元素保存在`fiber.lastEffect`。
+
+类似`appendAllChildren`，在“归”阶段，所有有`effectTag`的`Fiber节点`都会被追加在`effectList`中，最终形成一条以`rootFiber.firstEffect`为起点的单向链表。
+
+```js
+                       nextEffect         nextEffect
+rootFiber.firstEffect -----------> fiber -----------> fiber
+```
+
+这样，在`commit阶段`只需要遍历`effectList`就能执行所有`effect`了。
+
+
+
+**`effectList`相较于`Fiber树`，就像圣诞树上挂的那一串彩灯。**
+
+
+
+
+
+### mountChildFibers打effectTag？
+
+mountChildFibers的时候会不会打effectTag？
+
+假设`mountChildFibers`也会赋值`effectTag`，那么可以预见`mount`时整棵`Fiber树`所有节点都会有`Placement effectTag`。那么`commit阶段`在执行`DOM`操作时每个节点都会执行一次插入操作，这样大量的`DOM`操作是极低效的。
+
+为了解决这个问题，在`mount`时只有`rootFiber`会赋值`Placement effectTag`，在`commit阶段`只会执行一次插入操作。
+
+
+
+
+
+
+
 
 
 ## Concurrent 模式
@@ -1184,6 +1619,24 @@ Component.setState()
 
 
 
+## 为什么react 15生命周期钩子标记为UNSAFE
+
+[https://juejin.cn/post/6847902224287285255#comment](https://juejin.cn/post/6847902224287285255#comment)
+
+从`React`v16开始，`componentWillXXX`钩子前增加了`UNSAFE_`前缀。
+
+究其原因，是因为`Stack Reconciler`重构为`Fiber Reconciler`后，`render阶段`的任务可能中断/重新开始，对应的组件在`render阶段`的生命周期钩子（即`componentWillXXX`）可能触发多次。
+
+这种行为和`React`v15不一致，所以标记为`UNSAFE_`。
+
+
+
+为此，`React`提供了替代的生命周期钩子`getSnapshotBeforeUpdate`。
+
+我们可以看见，`getSnapshotBeforeUpdate`是在`commit阶段`内的`before mutation阶段`调用的，由于`commit阶段`是同步的，所以不会遇到多次调用的问题。
+
+
+
 
 
 ## Hooks
@@ -1206,6 +1659,82 @@ Component.setState()
 - `Generator`执行的`中间状态`是上下文关联的。
 
 
+
+### Hooks规则
+
+[https://zh-hans.reactjs.org/docs/hooks-rules.html](https://zh-hans.reactjs.org/docs/hooks-rules.html)
+
+* 只在最顶层使用 Hook
+
+**不要在循环，条件或嵌套函数中调用 Hook，** 确保总是在你的 React 函数的最顶层调用他们。遵守这条规则，你就能确保 Hook 在每一次渲染中都按照同样的顺序被调用。这让 React 能够在多次的 `useState` 和 `useEffect` 调用之间保持 hook 状态的正确。
+
+
+
+
+
+
+
+### useEffect
+
+```js
+// 调度useEffect （在commit阶段 的before mutation阶段）
+if ((effectTag & Passive) !== NoEffect) {
+  if (!rootDoesHavePassiveEffects) {
+    rootDoesHavePassiveEffects = true;
+    scheduleCallback(NormalSchedulerPriority, () => {
+      // 触发useEffect
+      flushPassiveEffects();
+      return null;
+    });
+  }
+}
+```
+
+在这几行代码内，`scheduleCallback`方法由`Scheduler`模块提供，用于以某个优先级异步调度一个回调函数。
+
+
+
+在此处，被异步调度的回调函数就是触发`useEffect`的方法`flushPassiveEffects`。
+
+我们接下来讨论`useEffect`如何被异步调度，以及为什么要异步（而不是同步）调度。
+
+
+
+#### useLayoutEffect`与`useEffect
+
+`mutation阶段`会执行`useLayoutEffect hook`的`销毁函数`。
+
+`useLayoutEffect hook`从上一次更新的`销毁函数`调用到本次更新的`回调函数`调用是同步执行的。
+
+而`useEffect`则需要先调度，在`Layout阶段`完成后再异步执行。
+
+
+
+这就是`useLayoutEffect`与`useEffect`的区别。
+
+ 
+
+
+
+### effect为什么需要异步调用
+
+[https://zh-hans.reactjs.org/docs/hooks-reference.html#timing-of-effects](https://zh-hans.reactjs.org/docs/hooks-reference.html#timing-of-effects)
+
+
+
+与 `componentDidMount`、`componentDidUpdate` 不同的是，在浏览器完成布局与绘制**之后**，传给 `useEffect` 的函数会延迟调用。这使得它适用于许多常见的副作用场景，比如设置订阅和事件处理等情况，因此不应在函数中执行阻塞浏览器更新屏幕的操作。
+
+
+
+**可见，`useEffect`异步执行的原因主要是防止同步执行时阻塞浏览器渲染。**
+
+
+
+然而，并非所有 effect 都可以被延迟执行。例如，在浏览器执行下一次绘制前，用户可见的 DOM 变更就必须同步执行，这样用户才不会感觉到视觉上的不一致。（概念上类似于被动监听事件和主动监听事件的区别。）React 为此提供了一个额外的 [`useLayoutEffect`](https://zh-hans.reactjs.org/docs/hooks-reference.html#uselayouteffect) Hook 来处理这类 effect。它和 `useEffect` 的结构相同，区别只是调用时机不同。
+
+
+
+虽然 `useEffect` 会在浏览器绘制后延迟执行，但会保证在任何新的渲染前执行。React 将在组件更新前刷新上一轮渲染的 effect。
 
 
 
