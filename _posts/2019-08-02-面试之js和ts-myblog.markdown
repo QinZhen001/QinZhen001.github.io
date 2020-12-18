@@ -944,6 +944,38 @@ checkScope()() // 'local scope'
 
 
 
+### 关于prototype的输出问题
+
+```js
+  var foo = {},
+    F = function () { };
+  Object.prototype.a = 'value a';
+  Function.prototype.b = 'value b';
+
+
+  console.log(foo.a) // value a
+  console.log(foo.b) // undefined 
+  console.log(F.a) // value a
+  console.log(F.b) // value b
+```
+
+这里考察了一个知识点：
+
+```js
+  F.__proto__ === Function.prototype
+  Function.prototype.__proto__ === Object.prototype
+```
+
+
+
+
+
+
+
+
+
+
+
 
 ## this全面解析
 
@@ -2861,7 +2893,25 @@ arrayLike.push('4') // arrayLike.push is not a function
 
 
 
+## sort实现
 
+[https://github.com/v8/v8/blob/ad82a40509c5b5b4680d4299c8f08d6c6d31af3c/src/js/array.js#L710](https://github.com/v8/v8/blob/ad82a40509c5b5b4680d4299c8f08d6c6d31af3c/src/js/array.js#L710)
+
+```
+function InnerArraySort(array, length, comparefn) {
+  // In-place QuickSort algorithm.
+  // For short (length <= 10) arrays, insertion sort is used for efficiency.
+  
+     if (to - from <= 10) {
+        InsertionSort(a, from, to);
+        return;
+      }
+  
+  	....
+  }
+```
+
+翻译一下 当length <= 10是插入排序，当length >22是快速排序
 
 
 
@@ -2901,7 +2951,7 @@ sw是由事件驱动的,具有生命周期
 
 
 
-* 箭头函数体内的`this`对象，就是定义时所在的对象，而不是使用时所在的对象。
+* **箭头函数体内的`this`对象，就是定义时所在的对象，而不是使用时所在的对象。**
 
 * 不可以当作构造函数，也就是说，不可以使用`new`命令，否则会抛出一个错误。
 
@@ -4024,6 +4074,20 @@ nstanceof 可以在继承关系中用来判断一个实例是否属于它的父�
 
 **o3.\_\_proto__.constructor === M  //true
 o3.\_\_proto__.constructor === Object //false**
+
+
+
+### **typeof 和 instanceof**
+
+* typeof 是一个一元运算，放在一个运算数之前，运算数可以是任意类型。
+* typeof 不能区分array和object
+* **instanceof 运算符用来测试一个对象在其原型链中是否存在一个构造函数的 `prototype` 属性。**
+
+
+
+
+
+
 
 
 ### 借助构造函数实现继承

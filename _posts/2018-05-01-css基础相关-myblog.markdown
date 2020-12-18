@@ -1638,7 +1638,7 @@ pointer-events:none
 **stylus写法**
 在 stylus文件夹中创建mixin.styl文件
 
-```
+```stylus
 border-1px($color)
   position: relative
   &:after
@@ -1653,7 +1653,7 @@ border-1px($color)
 
 在 stylus文件夹中创建base.styl文件，内容如下：（根据设备的dpr确定y轴的缩放比例）
 
-```
+```stylus
 @media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)  
    .border-1px  
        &::after  
@@ -1669,17 +1669,13 @@ border-1px($color)
 
 调用
 
-```
+```stylus
  .food
           position relative
           padding 12px 0
           box-sizing border-box
           border-1px(rgba(7, 17, 27, 0.1))
 ```
-
-
-
-
 
 
 #### border-img 实现
@@ -1690,6 +1686,36 @@ border-1px($color)
 #### postcss-write-svg 实现
 
 使用border-image每次都要去调整图片，总是需要成本的。基于上述的原因，我们可以借助于PostCSS的插件postcss-write-svg来帮助我们。如果你的项目中已经有使用PostCSS，那么只需要在项目中安装这个插件
+
+#### 检测浏览器是否支持0.5px实现
+
+ 下面的代码存在于flexible.js中
+
+```js
+if (dpr >= 2) {
+    var fakeBody = document.createElement('body')
+    var testElement = document.createElement('div')
+    testElement.style.border = '.5px solid transparent'
+    fakeBody.appendChild(testElement)
+    docEl.appendChild(fakeBody)
+    if (testElement.offsetHeight === 1) {
+      docEl.classList.add('hairlines')
+    }
+    docEl.removeChild(fakeBody)
+}
+```
+
+上面的代码用于检测分辨率大于等于 2 的设备中的浏览器是否支持 0.5 px，如果支持则在 html 标签在添加 `hairlines` 类。其思路是通过设置一个 div 元素的 border 为 0.5px,然后获取这个 div 元素的高度，如果高度为 1 则表示当前浏览器支持 0.5px 写法。这段代码的是为了编写 1px 的兼容代码：
+
+```css
+.hairlines .bb{
+  border-bottom:0.5px !important;
+}
+```
+
+
+
+
 
 
 

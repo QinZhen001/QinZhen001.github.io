@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "移动端适配(阿里解决方案)"
+title:      "移动端适配"
 date:       2018-02-03 15:31:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -20,7 +20,21 @@ tags:
 * 各终端下的适配问题
 * Retina屏的细节处理
 
-不同的终端，我们面对的屏幕分辨率、DPR、1px、2x图等一系列的问题。那么这个布局方案也是针对性的解决这些问题，只不过解决这些问题不再是使用Hack手段来处理，而是直接使用原生的CSS技术来处理的。
+
+
+
+
+### flexible 实现
+
+[https://www.toyou.xyz/posts/flexible.js.html](https://www.toyou.xyz/posts/flexible.js.html)
+
+让网页在各终端上的展示效果就像缩放设计稿图片一样，在不同屏幕上等比缩放，每一个元素与整体比例保持不变，真实还原设计稿。
+
+
+
+
+
+### vw 实现
 
 
 首要解决的是适配终端。回想一下，以前的Flexible方案是通过JavaScript来模拟vw的特性，那么到今天为止，vw已经得到了众多浏览器的支持，也就是说，可以直接考虑将vw单位运用于我们的适配布局中。
@@ -99,10 +113,6 @@ PostCSS编译之后就是我们所需要的带vw代码：
 }
 ```
 
-
-
-
-
 假设你的设计稿不是750px而是1125px，那么你就可以修改vewportWidth的值。有关于该插件的详细介绍，可以阅读其官方使用文档。
 
 上面解决了px到vw的转换计算。那么在哪些地方可以使用vw来适配我们的页面。根据相关的测试：
@@ -113,7 +123,9 @@ PostCSS编译之后就是我们所需要的带vw代码：
 
 
 
-## 如何判断自己的应用是否支持
+
+
+
 
 
 
@@ -132,7 +144,9 @@ PostCSS编译之后就是我们所需要的带vw代码：
 
 
 
-## 简单一点的办法
+
+
+## 简单的办法
 [https://aotu.io/notes/2017/04/28/2017-4-28-CSS-viewport-units/](https://aotu.io/notes/2017/04/28/2017-4-28-CSS-viewport-units/)
 
 ### 做法一：仅使用vw作为CSS单位
@@ -247,6 +261,35 @@ body {
 
 
 
+
+
+
+## 补充 
+
+
+
+### viewport
+
+手机浏览器是把页面放在一个虚拟的“窗口”（viewport）中，通常这个虚拟的“窗口”（viewport）比屏幕宽，这样就不用把每个网页挤到很小的窗口中（这样会破坏没有针对手机浏览器优化的网页的布局），用户可以通过平移和缩放来看网页的不同部分。移动版的 Safari 浏览器最新引进了 viewport 这个 meta tag，让网页开发者来控制 viewport 的大小和缩放，其他手机浏览器也基本支持。
+
+
+
+一个常用的针对移动网页优化过的页面的 viewport meta 标签大致如下：
+
+```html
+<meta name=”viewport” content=”width=device-width, initial-scale=1, maximum-scale=1″>
+```
+
+* width：控制 viewport 的大小，可以指定的一个值，如果 600，或者特殊的值，如 device-width 为设备的宽度（单位为缩放为 100% 时的 CSS 的像素）。
+* height：和 width 相对应，指定高度。
+* initial-scale：初始缩放比例，也即是当页面第一次 load 的时候缩放比例。
+* maximum-scale：允许用户缩放到的最大比例。
+* minimum-scale：允许用户缩放到的最小比例。
+* user-scalable：用户是否可以手动缩放
+
+
+
+viewport并非只是ios上的独有属性，在android、winphone上同样也有viewport。它们要解决的问题是相同的，即无视设备的真实分辨率，直接通过dpi，在物理尺寸和浏览器之间重设分辨率，这个分辨率和设备的分辨率无关。比如，你拿个3.5寸-320 * 480的iphone3 gs、3.5寸-640 *960的iphone4或者9.7寸-1024*768的ipad2，虽然设备的分辨率不同,物理尺寸也不同，但你可以通过设置viewport让它们在浏览器里有相同的分辨率。比如说，你的网站是800px宽，你可以通过设置viewport的width=800，来让你的网站在这三个不同的设备上都刚好满屏显示你的网站。
 
 
 

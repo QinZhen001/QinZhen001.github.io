@@ -15,6 +15,15 @@ tags:
 
 # Http相关
 
+**超文本传输协议**（英语：**H**yper**T**ext **T**ransfer **P**rotocol，缩写：**HTTP**）是一种用于分布式、协作式和[超媒体](https://zh.wikipedia.org/wiki/超媒體)信息系统的[应用层](https://zh.wikipedia.org/wiki/应用层)[协议](https://zh.wikipedia.org/wiki/网络传输协议)[[1\]](https://zh.wikipedia.org/wiki/超文本传输协议#cite_note-ietf2616-1)。HTTP是[万维网](https://zh.wikipedia.org/wiki/全球資訊網)的数据通信的基础。
+
+
+
+* 支持客户端/服务器模型。
+* 灵活
+* 无连接
+* 无状态
+
 
 
 
@@ -168,6 +177,16 @@ tags:
 * 无法证明报文的完整性，所以有可能已遭篡改
 
 由于 HTTP 本身不具备加密的功能，所以也无法做到对通信整体（使 用 HTTP 协议通信的请求和响应的内容）进行加密。即，HTTP 报文 使用明文（指未经过加密的报文）方式发送。
+
+
+
+
+
+## HTTP与TCP
+
+TCP协议对应于传输层，而HTTP协议对应于应用层
+
+Http协议是建立在TCP协议基础之上的
 
 
 
@@ -357,6 +376,8 @@ Cache-Control: private, max-age=0, no-cache
 
 [https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#"no-cache"和"no-store")
 
+[https://juejin.cn/post/6844903737538920462](https://juejin.cn/post/6844903737538920462)
+
 
 
 * 强缓存 (直接拿来用）
@@ -394,10 +415,6 @@ Cache-Control: private, max-age=0, no-cache
 
 
 -----
-
-
-
-
 
 
 
