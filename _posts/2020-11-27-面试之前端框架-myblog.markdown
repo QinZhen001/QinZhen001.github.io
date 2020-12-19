@@ -591,7 +591,7 @@ export const Deletion = /*              */ 0b0000000001000;
 
 
 
-# 新版react
+# 新版React
 
 - `Reconciler`工作的阶段被称为`render`阶段。因为在该阶段会调用组件的`render`方法。
 - `Renderer`工作的阶段被称为`commit`阶段。就像你完成一个需求的编码后执行`git commit`提交代码。`commit`阶段会把`render`阶段提交的信息渲染在页面上。
@@ -608,6 +608,50 @@ export const Deletion = /*              */ 0b0000000001000;
 - componentWillMount
 - componentWillRecieveProps
 - componentWillUpdate
+
+
+
+目前React 16.8 +的生命周期分为三个阶段,分别是挂载阶段、更新阶段、卸载阶段。
+
+挂载阶段:
+
+- constructor: 构造函数，最先被执行,我们通常在构造函数里初始化state对象或者给自定义方法绑定this
+
+- **getDerivedStateFromProps**: static getDerivedStateFromProps(nextProps, prevState),这是个静态方法,当我们接收到新的属性想去修改我们state，可以使用getDerivedStateFromProps
+
+- render: render函数是纯函数，只返回需要渲染的东西，不应该包含其它的业务逻辑,可以返回原生的DOM、React组件、Fragment、Portals、字符串和数字、Boolean和null等内容
+
+- componentDidMount: 组件装载之后调用，此时我们可以获取到DOM节点并操作，比如对canvas，svg的操作，服务器请求，订阅都可以写在这个里面，但是记得在componentWillUnmount中取消订阅
+
+  
+
+  更新阶段:
+
+  * getDerivedStateFromProps: 此方法在更新个挂载阶段都可能调用;
+  * shouldComponentUpdate: shouldComponentUpdate(nextProps,nextState),有两个参数nextProps和nextState，表示新的属性和变化之后的state，返回一个布尔值，true表示会触发重新渲染，false表示不会触发重新渲染，默认返回true,我们通常利用此生命周期来优化React程序性能; 
+  * render: 更新阶段也会触发此生命周
+  * **getSnapshotBeforeUpdate**(prevProps, prevState)，这个方法在render之后，componentDidUpdate之前调用；
+  * componentDidUpdate:componentDidUpdate`(prevProps, prevState, snapshot)`,该方法在getSnapshotBeforeUpdate方法之后被调用，有三个参数prevProps，prevState，snapshot，表示之前的props，之前的state，和snapshot。第三个参数是getSnapshotBeforeUpdate返回的,如果触发某些回调函数时需要用到 DOM 元素的状态，则将对比或计算的过程迁移至 getSnapshotBeforeUpdate，然后在 componentDidUpdate 中统一触发回调或更新状态。
+
+  
+
+  卸载阶段:
+
+  * componentWillUnmount: 当我们的组件被卸载或者销毁了就会调用，我们可以在这个函数里去清除一些定时器，取消网络请求，清理无效的DOM元素等垃圾清理工作
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1672,6 +1716,53 @@ Component.setState()
 
 
 
+### Hooks原理
+
+[https://react.iamkasong.com/hooks/create.html#%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98](https://react.iamkasong.com/hooks/create.html#%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98)
+
+我们知道，`更新`产生的`update`对象会保存在`queue`中。
+
+不同于`ClassComponent`的实例可以存储数据，对于`FunctionComponent`，`queue`存储在哪里呢？
+
+答案是：`FunctionComponent`对应的`fiber`中。
+
+我们使用如下精简的`fiber`结构：
+
+```js
+// App组件对应的fiber对象
+const fiber = {
+  // 保存该FunctionComponent对应的Hooks链表
+  memoizedState: null,
+  // 指向App函数
+  stateNode: App
+};
+```
+
+可以看到，`Hook`与`update`类似，都通过`链表`连接。不过`Hook`是`无环`的`单向链表`。
+
+```js
+hook = {
+  // 保存update的queue，即上文介绍的queue
+  queue: {
+    pending: null
+  },
+  // 保存hook对应的state
+  memoizedState: initialState,
+  // 与下一个Hook连接形成单向无环链表
+  next: null
+}
+```
+
+> 注意
+>
+> 注意区分`update`与`hook`的所属关系：
+>
+> 每个`useState`对应一个`hook`对象。
+>
+> 调用`const [num, updateNum] = useState(0);`时`updateNum`（即上文介绍的`dispatchAction`）产生的`update`保存在`useState`对应的`hook.queue`中。
+
+
+
 
 
 ### useEffect
@@ -1879,7 +1970,6 @@ Redux应用中的状态是只读的，即Redux状态不可变。例如，React�
 
 唯一可以修改状态的方式，就是发送（dispatch）一个动作（Action），通俗来讲，就是说只有getter，没有setter。
 
-
 **使用纯函数去修改状态**
 
 
@@ -1899,6 +1989,84 @@ Redux应用中的状态是只读的，即Redux状态不可变。例如，React�
 
 
 
+
+# 补充
+
+
+
+
+
+## vue和react的区别
+
+[https://zhuanlan.zhihu.com/p/100228073](https://zhuanlan.zhihu.com/p/100228073)
+
+* **监听数据变化的实现原理不同**
+
+Vue通过 getter/setter以及一些函数的劫持，能精确知道数据变化。
+
+React默认是通过比较引用的方式（diff）进行的，如果不优化可能导致大量不必要的VDOM的重新渲染。为什么React不精确监听数据变化呢？这是因为Vue和React设计理念上的区别，**Vue使用的是可变数据，而React更强调数据的不可变**，两者没有好坏之分，Vue更加简单，而React构建大型应用的时候更加鲁棒。
+
+* **HoC和mixins**
+
+* **组件通信的区别**
+
+  ![img](https://pic4.zhimg.com/80/v2-a82e1eafc7a220062812b6402e1546a3_720w.jpg)
+
+Vue中有三种方式可以实现组件通信：父组件通过props向子组件传递数据或者回调，虽然可以传递回调，但是我们一般只传数据；子组件通过事件向父组件发送消息；**通过V2.2.0中新增的provide/inject来实现父组件向子组件注入数据，可以跨越多个层级。**
+
+React中也有对应的三种方式：父组件通过props可以向子组件传递数据或者回调；**可以通过 context 进行跨层级的通信**
+
+* **模板渲染方式的不同**
+
+在表层上，模板的语法不同，React是通过JSX渲染模板。而Vue是通过一种拓展的HTML语法进行渲染，但其实这只是表面现象，毕竟React并不必须依赖JSX。
+
+
+
+在深层上，模板的原理不同，这才是他们的本质区别：**React是在组件JS代码中，通过原生JS实现模板中的常见语法，比如插值，条件，循环等，都是通过JS语法实现的，更加纯粹更加原生。而Vue是在和组件JS代码分离的单独的模板中，通过指令来实现的，比如条件语句就需要 v-if 来实现**
+
+
+
+react中render函数是支持闭包特性的，所以我们import的组件在render中可以直接调用。但是在Vue中，由于模板中使用的数据都必须挂在 this 上进行一次中转，所以我们import 一个组件完了之后，还需要在 components 中再声明下，这样显然是很奇怪但又不得不这样的做法。
+
+
+
+* **渲染过程不同**
+
+Vue可以更快地计算出Virtual DOM的差异，这是由于它在渲染过程中，会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。
+
+React在应用的状态被改变时，全部子组件都会重新渲染。通过shouldComponentUpdate这个生命周期方法可以进行控制，但Vue将此视为默认的优化。
+
+
+
+
+
+## vuex 和 redux 的区别
+
+在 Vuex 中，$store 被直接注入到了组件实例中，因此可以比较灵活的使用：
+
+- 使用 dispatch 和 commit 提交更新
+- 通过 mapState 或者直接通过 this.$store 来读取数据
+
+在 Redux 中，我们每一个组件都需要显示的用 connect 把需要的 props 和 dispatch 连接起来。
+
+
+
+---
+
+
+
+- Redux 使用的是不可变数据，而Vuex的数据是可变的。Redux每次都是用新的state替换旧的state，而Vuex是直接修改
+- Redux 在检测数据变化的时候，是通过 diff 的方式比较差异的，而Vuex其实和Vue的原理一样，是通过 getter/setter来比较的（如果看Vuex源码会知道，其实他内部直接创建一个Vue实例用来跟踪数据变化）
+
+
+
+
+
+
+
+## MVC，MVP 和 MVVM
+
+[https://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html](https://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html)
 
 
 
