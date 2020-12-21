@@ -3217,6 +3217,59 @@ return chunkedTasks.reduce((prevPromise, curChunkedTask) => {
 
 
 
+### try/catch为何捕获不到异步错误
+
+**1.try-catch通常（注意在这里是“通常”）高级语言才有，由脚本解释器（或者运行时环境）层实现。**
+
+**2.在try block 内才跳转到对应的catch block 块。**
 
 
 
+js 的异步跟事件循环有莫大关系，事件循环伪代码如下
+
+```js
+var event;
+while (event = getNextEvent()) { // 一直循环是否有事件
+    getListeners(event).forEach(function(listener){ 
+        //一个事件可以绑定多个listener，所以是循环这里！
+        listener(event);
+    });
+}
+```
+
+js中执行一个异步代码块，实际会经历多次事件循环。我们把先前的异步代码切分成两份，**蓝色**部分和**红色**部分。
+
+
+
+![img](https://www.css3.io/assets/try-catch-splite-2.png)
+
+伪代码分两次事件循环执行如下：
+
+```js
+// 第一次循环时执行蓝色部分
+var event;
+while (event = getNextEvent()) { 
+    getListeners(event).forEach(function(listener){ 
+       try {
+            setTimeout(..., 1000)
+        }
+        catch(e){
+            console.log(e);
+        }
+    });
+}
+
+// 第二次循环时执行红色部分
+var event;
+while (event = getNextEvent()) { 
+    getListeners(event).forEach(function(listener){ 
+       throw "exception"
+    });
+}
+```
+
+当第一次进入事件循环时，try block 里的指令`setTimeout`表示此次不执行函数参数里的指令，延长1000毫秒执行。基于事件循环机制，这将会把函数参数里的指令块`throw "exception"`放到下一次循环，或者下下一次循环（这主要看延迟多少时间执行了）。当执行完`setTimeout`时，意味着try block 内所有指令执行完毕（这里try block 块里只有一条指令），此时是没有抛出任何异常。所以没有执行catch block里的指令。
+
+
+
+假设当第二次进入事件循环时，执行到throw指令，此时发现并没有一个try..catch为它“服务”了。此时程序也不会再往下执行，整个事件循环终止，程序异常退出。这就是try..catch 捕获不到异步执行抛出的异常的原因。

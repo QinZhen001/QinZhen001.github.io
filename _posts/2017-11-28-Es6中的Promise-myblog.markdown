@@ -323,8 +323,9 @@ p2
 
 ## 补充
 
-
 ### try/catch无法捕获promise.reject的问题
+
+> try/catch 只能捕获同步的错误
 
 [https://segmentfault.com/q/1010000014905440](https://segmentfault.com/q/1010000014905440)
 
@@ -381,6 +382,36 @@ function f2() {
 
 
 **try..catch 结构，它只能是同步的，无法用于异步代码模式**
+
+
+
+### Promise含有隐式 try…catch
+
+[https://zh.javascript.info/promise-error-handling#yin-shi-trycatch](https://zh.javascript.info/promise-error-handling#yin-shi-trycatch)
+
+Promise 的执行者（executor）和 promise 的处理程序（handler）周围有一个“隐式的 `try..catch`”。如果发生异常，它（译注：指异常）就会被捕获，并被视为 rejection 进行处理。
+
+
+
+例如，下面这段代码：
+
+```javascript
+new Promise((resolve, reject) => {
+  throw new Error("Whoops!");
+}).catch(alert); // Error: Whoops!
+```
+
+……与下面这段代码工作上完全相同：
+
+```js
+new Promise((resolve, reject) => {
+  reject(new Error("Whoops!"));
+}).catch(alert); // Error: Whoops!
+```
+
+
+
+
 
 
 

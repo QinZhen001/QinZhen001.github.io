@@ -844,13 +844,105 @@ console.log(res)
 
 
 
-### Promise.catch的优势
+#### Promise.catch的优势
+
+[https://www.css3.io/promise-catch-vs-reject.html](https://www.css3.io/promise-catch-vs-reject.html)
 
 .catch()的作用是捕获Promise的错误，与then()的rejected回调作用几乎一致。
 
 
 
 但是由于Promise的抛错具有冒泡性质，能够不断传递，这样就能够在下一个catch()中统一处理这些错误。同时catch()也能够捕获then()中抛出的错误，**所以建议不要使用then()的rejected回调，而是统一使用catch()来处理错误**
+
+
+
+----
+
+
+
+还有一个区别：**throw不能用于异步调用中**
+
+
+
+如下代码所示，catch回调是**不执行的**
+
+```js
+var p1 = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    throw 'Uncaught Exception!';
+  }, 1000);
+});
+
+p1.catch(function(e) {
+  console.log(e); // This is never called
+});
+```
+
+而reject回调是执行的
+
+```
+var p2 = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    reject('oh, no!');
+  }, 1000);
+
+});
+
+p2.catch(function(e) {
+  console.log(e); // "oh, no!"
+})
+
+```
+
+
+
+
+
+----
+
+
+
+举个例子: Promise.catch then中的错误
+
+```js
+  var p2 = new Promise(function (resolve, reject) {
+    resolve(111)
+  });
+
+  p2.then(res => {
+    console.log("res", res)
+    throw 'oh, no!'
+  }, rej => {
+    console.log("rej", rej)
+    throw 'oh, no!'
+  }).catch(function (e) {
+    console.log('11111',e); // "oh, no!"   // 成功捕获
+  })
+```
+
+如果throw不跟在then后面，无法捕获then中抛出的错误
+
+```js
+  var p2 = new Promise(function (resolve, reject) {
+    resolve(111)
+  });
+
+  p2.then(res => {
+    console.log("res", res)
+    throw 'oh, no!'
+  }, rej => {
+    console.log("rej", rej)
+    throw 'oh, no!'
+  })
+  
+  p2.catch(function (e) {
+    console.log('11111',e); // 无法捕获
+  })
+```
+
+`.catch` 不必是立即的。它可能在一个或多个 `.then` 之后出现。
+
+
 
 
 
