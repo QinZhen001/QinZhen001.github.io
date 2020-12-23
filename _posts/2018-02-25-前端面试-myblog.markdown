@@ -160,13 +160,14 @@ window -> document -> html -> body -> ... -> 目标元素
 * event.currentTarget //返回绑定事件的元素(和this 的作用是差不多的)
 * event.target //当前被触发的元素
 
-#### event.stopImmediatePropagation() 
+#### event.stopImmediatePropagation()
+
 如果某个元素有多个相同类型事件的事件监听函数,则当该类型的事件触发时,多个事件监听函数将按照顺序依次执行.如果某个监听函数执行了 event.stopImmediatePropagation()方法,则除了该事件的冒泡行为被阻止之外(event.stopPropagation方法的作用),该元素绑定的后序相同类型事件的监听函数的执行也将被阻止.
 
 #### event.currentTarget用来事件委托(事件代理)
 target事件委托的定义：本来该自己干的事，但是自己不干，交给别人来干。一般用到for循环遍历节点添加事件的时候都可以用事件委托来做，可以提高性能。
 
-```
+```html
 <input type="text" id="text">
     <input type="button" value="添加" id="button">
     <ul>
@@ -208,7 +209,7 @@ target事件委托的定义：本来该自己干的事，但是自己不干，�
 
 为什么在button.onclick里面也需要一个for循环，给每个删除按钮添加事件呢？因为外面的for循环，在文档刷新时给页面中存在的三个删除按钮添加了点击事件，而后来添加的删除按钮并没有绑定事件，导致页面中存在的三个li标签可以删除，而后来新添加的li不能删除这个问题。我们使用事件委托来做就不用这么麻烦了
 
-```
+```html
 <script>
             var button = document.getElementById("button");
             var text = document.getElementById("text");
@@ -246,7 +247,7 @@ target事件委托的定义：本来该自己干的事，但是自己不干，�
 
 
 ### 自定义事件
-```
+```js
 var eve = new Event('custome')
 
 element.addEventListener('custome',function(){
@@ -254,7 +255,6 @@ element.addEventListener('custome',function(){
 })
 element.dispatchEvent(eve)
 ```
-
 
 ## 面向对象类
 
@@ -271,9 +271,14 @@ var a = new A()
 显而易见， 对象a是继承于A.prototype的， 那么A.prototype这个自动生成的对象，又是从哪出来的呢？
 
 答案是： A.prototype 这个对象是Object和Object.prototype的产物， 当我们
+
+```js
 function A() {
     
 }
+```
+
+
 的时候， 系统后台调用new Object()这样生成了对象A.prototype， 另外A.prototype这个函数会自带一个属性construcor，这个属性的值是函数A
 
 
@@ -374,7 +379,7 @@ o3本身自己是空对象，并没有name属性**
 Object.create 创建的对象是用原型链来连接的
 
 Object.create的实现方式：
-```
+```js
 Object.create =  function (o) {
     var F = function () {};
     F.prototype = o;
@@ -387,7 +392,7 @@ Object.create =  function (o) {
 可以看出来。Object.create是内部定义一个对象，并且让F.prototype对象 赋值为引进的对象/函数 o，并return出一个新的对象。
 
 简单实现new:
-```
+```js
 var new2 = function(func){
     var o = Object.create(func.prototype)
     var k = func.call(o) //转移上下文 this指向o实例
@@ -442,7 +447,6 @@ DOM 和 CSSOM通常是并行构建的，所以**「CSS 加载不会阻塞 DOM �
 由于 JavaScript 是可操纵 DOM 和 css 样式 的,如果在修改这些元素属性同时渲染界面（即 JavaScript 线程和 UI 线程同时运行）,那么渲染线程前后获得的元素数据就可能不一致了。
 
 因此为了防止渲染出现不可预期的结果,浏览器设置 **「GUI 渲染线程与 JavaScript 引擎为互斥」**的关系。
-
 
 
 
