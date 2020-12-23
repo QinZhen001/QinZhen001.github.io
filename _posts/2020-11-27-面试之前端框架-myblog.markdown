@@ -496,6 +496,27 @@ Vue 2.x 中的虚拟 DOM 是全量对比的模式，而到了 Vue 3.0 开始，�
 
 
 
+## 父组件setState触发子组件更新
+
+[https://segmentfault.com/q/1010000011289209/a-1020000011289904](https://segmentfault.com/q/1010000011289209/a-1020000011289904)
+
+`react`的数据驱动，依赖于 `state` 和 `props` 的改变，改变`state `必然会对组件 `render` 函数调用，如果父组件中的子组件过于复杂，一个父组件的 `state` 改变，就会牵一发动全身，必然影响性能，所以如果把很多依赖请求的组件抽离出来，可以直接减少渲染次数。
+
+
+
+你可能会觉得这样不是很傻吗，我又没有传递属性给子组件，那父组件更新会触发所有后代组件的重渲染过程不是很低效且没有意义吗？但是React不能检测到你是否给子组件传了属性，所以它必须进行这个重渲染过程（术语叫做reconciliation）。但是这不会使得react有多低效，因为reconciliation过程是执行的JavaScript，而重渲染的性能开销主要是更新DOM导致的，最后diff算法会介入，决定是否要真正更新DOM，JavaScript的执行速度很快的，所以即使父组件render会触发所有后代组件的render过程(reconciliation过程)，这个效率也不会有太大影响。
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## componentWillRecieveProps
@@ -711,8 +732,6 @@ setState 的时候，`batchingStrategy.isBatchingUpdates` 为 `false` 会开启�
 
 在组件 mount 和事件调用的时候，都会调用 `batchedUpdates`，这个时候已经开始了事务，所以只要不脱离 React，不管多少次 setState 都会把其组件放入脏组件队列等待更新。一旦脱离 React 的管理，比如在 setTimeout 中，setState 立马变成单打独斗。
 
-
-
 ```js
 var batchingStrategy = {
   // 判断是否在更新流程中 
@@ -733,6 +752,28 @@ var batchingStrategy = {
   }
 };
 ```
+
+
+
+
+
+#### 举个例子
+
+[https://github.com/facebook/react/issues/11527](https://github.com/facebook/react/issues/11527)
+
+For example, if we’re inside a browser `click` handler, and both `Child` and `Parent` call `setState`, we don’t want to re-render the `Child` twice, and instead prefer to mark them as dirty, and re-render them together before exiting the browser event.
+
+例如，如果我们在浏览器的单击处理程序中，并且子程序和父程序都调用setState，我们不想重新呈现子程序两次，而宁愿将它们标记为dirty，并在退出浏览器事件之前一起重新呈现它们。
+
+
+
+**Guaranteeing Internal Consistency**
+
+Even if `state` is updated synchronously, `props` are not. (You can’t know `props` until you re-render the parent component, and if you do this synchronously, batching goes out of the window.)
+
+
+
+Right now the objects provided by React (`state`, `props`, `refs`) are *internally consistent* with each other(相互一致). This means that if you only use those objects, they are guaranteed to refer to a fully reconciled tree (even if it’s an older version of that tree). Why does this matter?
 
 
 
@@ -868,6 +909,8 @@ class App extends React.Component {
 点击 div 之后，会连续进行三次 setState，每次 setState 都会更新 updateQueue。
 
 ![](https://file.shenfq.com/pic/20201009234826.png)
+
+
 
 
 
