@@ -760,7 +760,7 @@ function HelloWorldComponent() {
 
 
 
-## 补充 新版react
+## 新版react
 
 
 
@@ -893,7 +893,15 @@ class PotentialError extends React.Component {
 
 
 
-### React.memo
+### Hooks
+
+
+
+
+
+#### React.memo 和 useMemo
+
+[http://www.ptbird.cn/react-hook-useMemo-purerender.html](http://www.ptbird.cn/react-hook-useMemo-purerender.html)
 
 ```js
 const MyComponent = React.memo(function MyComponent(props) {
@@ -917,7 +925,7 @@ const MyComponent = React.memo(function MyComponent(props) {
 
 
 
-```
+```js
 function MyComponent(props) {
   /* 使用 props 渲染 */
 }
@@ -935,7 +943,151 @@ export default React.memo(MyComponent, areEqual);
 
 
 
-### createRef,forwardRef和useRef
+#### useCallback
+
+[https://zhuanlan.zhihu.com/p/56975681](https://zhuanlan.zhihu.com/p/56975681)
+
+乍一看使用了 Hooks 的 React 代码，可能会疑惑创建了这么多的 inline 函数会不会很影响性能？React 之前不是一直建议避免在 callback 里新建函数吗？首先可以看一下[官方的解释](https://link.zhihu.com/?target=https%3A//reactjs.org/docs/hooks-faq.html%23are-hooks-slow-because-of-creating-functions-in-render)，里面提到在 JavaScript 中闭包函数的性能是非常快的，并且得益于相对于 class 更轻量的函数组件，以及避免了 HOC，renderProps 等等额外层级，性能差不到那里去。
+
+
+
+**有些人可能会误以为 `useCallback` 可以用来解决创建函数造成的性能问题，其实恰恰相反，单从这个组件看的话 `useCallback` 只会更慢，因为 inline 函数是无论如何都会创建的，还增加了 `useCallback` 内部对 inputs 变化的检测。**
+
+
+
+```js
+function A() {
+  // ...
+  const cb = () => {}/* 创建了 */;
+}
+
+function B() {
+  // ...
+  const cb = React.useCallback(() => {}/* 还是创建了 */, [a, b]);
+}
+```
+
+`useCallback` 的真正目的还是在于缓存了每次渲染时 inline callback 的实例，这样方便配合上子组件的 `shouldComponentUpdate` 或者 `React.memo` 起到减少不必要的渲染的作用。需要不断提醒自己注意的是，在大部分 `callback` 都会是 `inline callback` 的未来，`React.memo` 和 `React.useCallback` 一定记得需要配对使用，缺了一个都可能导致性能不升反“降”，毕竟无意义的浅比较也是要消耗那么一点点点的性能。
+
+
+
+回到 Hooks 总结一下，**`useCallback` 的作用在于利用 `memoize` 减少无效的 `re-render`，来达到性能优化的作用。**还是那句老生常谈的话，“不要过早的性能优化”。从实际开发的经验来看，在做这类性能优化时，一定得观察比较优化的结果，因为某个小角落的 `callback` 就可能导致优化前功尽弃，甚至是适得其反。
+
+
+
+----
+
+
+
+看完上面的疑问，你可能觉得 `useCallback` 也挺清晰的，那其实是你忘了第二个参数 `inputs` 而产生的错觉。有一个比较复杂的问题是，在当前的实现下，如果一个 `callback` 依赖于一个经常变化的 `state`，这个 `callback` 的引用是无法缓存的。React 文档的 FAQ 里也提到了这个[问题](https://link.zhihu.com/?target=https%3A//reactjs.org/docs/hooks-faq.html%23how-to-read-an-often-changing-value-from-usecallback)，还原一下问题的场景：
+
+```jsx
+function Form() {
+  const [text, updateText] = useState('');
+
+  const handleSubmit = useCallback(() => {
+    console.log(text);
+  }, [text]); // 每次 text 变化时 handleSubmit 都会变
+
+  return (
+    <>
+      <input value={text} onChange={(e) => updateText(e.target.value)} />
+      <ExpensiveTree onSubmit={handleSubmit} /> // 很重的组件，不优化会死的那种
+    </>
+  );
+}
+```
+
+这个问题无解的原因在于，`callback` 内部对 `state` 的访问依赖于 JavaScript 函数的闭包。如果希望 `callback` 不变，那么访问的之前那个 `callback` 函数闭包中的 `state` 会永远是当时的值。那让我们看一下 React 文档里的答案吧：
+
+```jsx
+function Form() {
+  const [text, updateText] = useState('');
+  const textRef = useRef();
+
+  useLayoutEffect(() => {
+    textRef.current = text; // 将 text 写入到 ref
+  });
+
+  const handleSubmit = useCallback(() => {
+    const currentText = textRef.current; // 从 ref 中读取 text
+    alert(currentText);
+  }, [textRef]); // handleSubmit 只会依赖 textRef 的变化。不会在 text 改变时更新
+
+  return (
+    <>
+      <input value={text} onChange={e => updateText(e.target.value)} />
+      <ExpensiveTree onSubmit={handleSubmit} />
+    </>
+  );
+}
+
+```
+
+文档里给出的解法乍一看可能不太好理解，我们一步步慢慢来。首先，因为在函数式组件里没有了 `this` 来存放一些实例的变量，所以 React 建议使用 `useRef` 来存放一些会发生变化的值，`useRef` 并不再单单是为了 DOM 的 ref 准备的，同时也会[用来存放组件实例的属性](https://link.zhihu.com/?target=https%3A//reactjs.org/docs/hooks-faq.html%23is-there-something-like-instance-variables)。在 `updateText` 完成对 `text` 的更新后，再在 `useLayoutEffect` (等效于 `didMount` 和 `didUpdate`) 里写入 `textRef.current` 中。这样，在 `handleSubmit` 里取出的 `textRef` 中存放的值就永远是新值了。
+
+
+
+是不是有一种恍然大悟的感觉。本质上我们想要达成的目标是以下几点：
+
+1. 能充分利用一个函数式组件多次 `render` 时产生的相同功能的 `callback`
+2. `callback` 能不受闭包限制，访问到这个函数式组件内部最新的状态
+
+
+
+
+
+#### useReducer
+
+[https://zh-hans.reactjs.org/docs/hooks-reference.html#usereducer](https://zh-hans.reactjs.org/docs/hooks-reference.html#usereducer)
+
+[`useState`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usestate) 的替代方案。它接收一个形如 `(state, action) => newState` 的 reducer，并返回当前的 state 以及与其配套的 `dispatch` 方法。（如果你熟悉 Redux 的话，就已经知道它如何工作了。）
+
+
+
+在某些场景下，`useReducer` 会比 `useState` 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等。并且，使用 `useReducer` 还能给那些会触发深更新的组件做性能优化，因为[你可以向子组件传递 `dispatch` 而不是回调函数](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-to-avoid-passing-callbacks-down) 。
+
+
+
+```jsx
+const initialState = {count: 0};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return {count: state.count + 1};
+    case 'decrement':
+      return {count: state.count - 1};
+    default:
+      throw new Error();
+  }
+}
+
+function Counter() {
+  // Tip: `dispatch` 不会在多次渲染时改变
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+      <button onClick={() => dispatch({type: 'increment'})}>+</button>
+    </>
+  );
+}
+
+```
+
+因为 `reducer` 其实是在下次 `render` 时才执行的，所以在 `reducer` 里，访问到的永远是新的 `props` 和 `state`。
+
+> `useReducer` 返回的 `dispatch` 函数是自带了 `memoize` 的，不会在多次渲染时改变。所以如果你想同时把 `state` 作为 context 传递下去，请分成两个 context 来声明。
+
+
+
+
+
+
+
+#### createRef,forwardRef和useRef
 
 [https://zh-hans.reactjs.org/docs/react-api.html#reactcreateref](https://zh-hans.reactjs.org/docs/react-api.html#reactcreateref)
 

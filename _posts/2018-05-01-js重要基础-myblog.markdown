@@ -11,7 +11,13 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+# 正文
+
+
+
+
+
+## 基础
 
 
 
@@ -31,6 +37,7 @@ with语句的作用是将代码的作用域设置到一个特定的作用域中
 
 
 使用with关键字的目的是为了简化多次编写访问同一对象的工作，比如下面的例子：
+
 ```javascript
 var qs = location.search.substring(1);
 var hostName = location.hostname;
@@ -56,6 +63,7 @@ with (location){
 
 
 #### with关键字的弊端
+
 1. 性能问题
 2. 语义不明，调试困难
 
@@ -82,7 +90,9 @@ with (location){
         }  
     }  
 ```
+
 输出
+
 ```
 1 未被删除
 2 未被删除
@@ -103,6 +113,7 @@ splice 是直接操作并修改数组的，所以当找到数字3时在循环中
         i = i-1;    //解决方案  
     }  
 ```
+
 或者
 
 **采用逆循环的方式**
@@ -119,66 +130,154 @@ splice 是直接操作并修改数组的，所以当找到数字3时在循环中
     }
 ```
 
-### toFixed和fixed
 
-[网页链接](http://www.w3school.com.cn/jsref/jsref_tofixed.asp)
 
-toFixed() 方法可把 Number 四舍五入为指定小数位数的数字。
 
-#### 语法
-NumberObject.toFixed(num)
 
-num	必需。规定小数的位数，是 0 ~ 20 之间的值，包括 0 和 20，有些实现可以支持更大的数值范围。如果省略了该参数，将用 0 代替。
+### for-of 和 for-in
+
+
+[网页链接](http://www.infoq.com/cn/articles/es6-in-depth-iterators-and-the-for-of-loop)
+
+
+自ES5正式发布后，你可以使用内建的forEach方法来遍历数组：
 
 ```javascript
-Show the number 13.37 with one decimal:
-<script type="text/javascript">
-var num = new Number(13.37);
-document.write (num.toFixed(1))
-</script>
-输出：
-Show the number 13.37 with one decimal:
-13.4
+myArray.forEach(function (value) {
+console.log(value);
+});
 ```
----
-fixed() 方法用于把字符串显示为打字机字体。
-stringObject.fixed()
+
+这段代码看起来更加简洁，但这种方法也有一个小缺陷：你不能使用break语句中断循环，也不能使用return语句返回到外层函数。
+
+#### for-in循环
+
+```
+for (var index in myArray) { // 千万别这样做
+  console.log(myArray[index]);
+}
+```
+
+这绝对是一个糟糕的选择，为什么呢？
+
+* 在这段代码中，赋给index的值不是实际的数字，而是字符串“0”、“1”、“2”，此时很可能在无意之间进行字符串算数计算，例如：“2” + 1 == “21”，这给编码过程带来极大的不便。
+* 作用于数组的for-in循环体除了遍历数组元素外，还会遍历自定义属性。举个例子，如果你的数组中有一个可枚举属性`myArray.name`，循环将额外执行一次，遍历到名为“name”的索引。就连数组原型链上的属性都能被访问到。
+* 最让人震惊的是，在某些情况下，这段代码可能按照随机顺序遍历数组元素。
+* **简而言之，for-in是为普通对象设计的，你可以遍历得到字符串类型的键，因此不适用于数组遍历。**
+
+#### 强大的for-of循环
+
+```javascript
+for (var value of myArray) {
+  console.log(value);
+}
+```
+
+是的，与之前的内建方法相比，这种循环方式看起来是否有些眼熟？那好，我们将要探究一下for-of循环的外表下隐藏着哪些强大的功能。现在，只需记住：
+
+* 这是最简洁、最直接的遍历数组元素的语法
+* 这个方法避开了for-in循环的所有缺陷
+* 与forEach()不同的是，它可以正确响应break、continue和return语句
+
+
+**for-in循环用来遍历对象属性。
+for-of循环用来遍历数据 — 例如数组中的值。**
+
+#### for-of循环也可以遍历其它的集合
+
+for-of循环不仅支持数组，还支持大多数类数组对象，例如DOM NodeList对象。
+
+for-of循环也支持字符串遍历，它将字符串视为一系列的Unicode字符来进行遍历：
+
+```
+for (var chr of "") {
+  alert(chr);
+}
+```
+
+它同样支持Map和Set对象遍历
+
+举个例子，Set对象可以自动排除重复项：
+
+```
+// 基于单词数组创建一个set对象
+var uniqueWords = new Set(words);
+生成Set对象后，你可以轻松遍历它所包含的内容：
+for (var word of uniqueWords) {
+   console.log(word);
+}
+```
+
+Map对象稍有不同：内含的数据由键值对组成，所以你需要使用解构（destructuring）来将键值对拆解为两个独立的变量：
+
+```
+for (var [key, value] of phoneBookMap) {
+   console.log(key + "'s phone number is: " + value);
+}
+```
+
+for-of就是为遍历所有这些集合特别设计的循环语句。
+
+**但是for-of循环不支持普通对象**
+
+如果你想迭代一个对象的属性，你可以用for-in循环（这也是它的本职工作）或内建的Object.keys()方法：
+
+```
+// 向控制台输出对象的可枚举属性
+for (var key of Object.keys(someObject)) {
+  console.log(key + ": " + someObject[key]);
+}
+```
 
 
 
-### JS中的“use strict” 严格模式
 
-[网页链接](https://www.cnblogs.com/liaojie970/p/7154144.html)
+那么我们只想循环对应的对象该怎么做呢，这里引入hasOwnProperty()方法，hasOwnProperty()函数用于指示一个对象自身(不包括原型链)是否具有指定名称的属性。如果有，返回true，否则返回false。
 
-ECMAScript 5 引入严格模式('strict mode')概念。通过严格模式，在函数内部选择进行较为严格的全局或局部的错误条件检测，使用严格模式的好处是可以提早知道代码中的存在的错误，
-
-**及时捕获一些可能导致编程错误的ECMAScript行为**，在开发中使用严格模式能帮助我们早发现错误。
-
-
-#### 严格模式影响范围
-* 变量：  var、delete、变量关键字
-* 对象： 只读属性、 对象字面量属性重复申明
-* 函数：参数重名、arguments对象、申明
-* 其他：this、eval、关键字...
-
-----------
-
-
-设立"严格模式"的目的，主要有以下几个：错误检测、规范、效率、安全、面向未来
-* 消除Javascript语法的一些不合理、不严谨之处，减少一些怪异行为;
-* 消除代码运行的一些不安全之处，保证代码运行的安全；
-* 提高编译器效率，增加运行速度；
-* 为未来新版本的Javascript做好铺垫。
+```javascript
+var obj = {
+    name:"echolun",
+    age:"24",
+    sex:"male"
+},
+objName=[], //用来装对象属性名
+objVal=[];  //用来装对象属性值
+Object.prototype.game="lastgame";
+for(var i in obj){
+    if(obj.hasOwnProperty(i)) {
+        objName.push(i);
+        objVal.push(obj[i]);
+    }
+}
+console.log(objName,objVal);
+}
+```
 
 
-进入"严格模式"的编译指示（pragma），是下面这行语句：　　
-`"use strict";`
 
-将"use strict"放在脚本文件的第一行，则整个脚本都将以"严格模式"运行。
 
-如果这行语句不在第一行，则无效，整个脚本以"正常模式"运行。
 
-如果不同模式的代码文件合并成一个文件，这一点需要特别注意。
+
+例如：
+
+```javascript
+let arr = ["a","b"];
+for (let a in arr) {
+    console.log(a);//0,1
+}
+
+for (let a of arr) {
+    console.log(a);//a,b
+}
+```
+
+由于for of的这个特性，他还可以实现对iterator对象的遍历，而for in就是简单的遍历了。
+
+
+
+>for in是ES5标准,for of是ES6标准
+
+
 
 
 
@@ -366,210 +465,6 @@ rect.move(1, 1); // Outputs, 'Shape moved.'
 
 
 
-###  Object.is()
-
-[ https://juejin.im/post/5d560c0cf265da03c61e4d33 ]( https://juejin.im/post/5d560c0cf265da03c61e4d33 )
-
-
-
- `Object.is()`，其行为与`===`基本一致
-
-
-
- 不过有两处不同： 
-
-
-
-1. **+0**不等于**-0**。
-2. **NaN**等于自身。
-
-
-
-
-
-```js
-+0 === -0 //true
-NaN === NaN // false
-
-Object.is(+0, -0) // false
-Object.is(NaN, NaN) // true
-```
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-### Es6新增字符串方法 includes startsWith endsWith padStart padEnd
-ES6 引入了字符串补全长度的功能，如果某个字符串不够指定长度，会在头部活尾部补全。
-
-* includes() 返回布尔值，表示是否找到了参数字符串
-* startsWith() : 返回布尔值，表示参数字符串是否在原字符串的头部
-* endsWith() : 返回布尔值，表示参数字符串是否在原字符串的头部
-
-
-* padStart() 用于头部补全；
-* padEnd() 用于尾部补全。
-
-```javascript
-// 第一个参数表示最终生成字符串的长度
-
-
-'x'.padStart(5, 'ab') // 'ababx'
-'x'.padStart(4, 'ab') // 'abax'
- 
-'x'.padEnd(5, 'ab') // 'xabab'
-'x'.padEnd(4, 'ab') // 'xaba'
-```
-
-
-### for-of 和 for-in
-
-
-[网页链接](http://www.infoq.com/cn/articles/es6-in-depth-iterators-and-the-for-of-loop)
-
-
-自ES5正式发布后，你可以使用内建的forEach方法来遍历数组：
-```javascript
-myArray.forEach(function (value) {
-console.log(value);
-});
-```
-这段代码看起来更加简洁，但这种方法也有一个小缺陷：你不能使用break语句中断循环，也不能使用return语句返回到外层函数。
-
-#### for-in循环
-```
-for (var index in myArray) { // 千万别这样做
-  console.log(myArray[index]);
-}
-```
-这绝对是一个糟糕的选择，为什么呢？
-
-* 在这段代码中，赋给index的值不是实际的数字，而是字符串“0”、“1”、“2”，此时很可能在无意之间进行字符串算数计算，例如：“2” + 1 == “21”，这给编码过程带来极大的不便。
-* 作用于数组的for-in循环体除了遍历数组元素外，还会遍历自定义属性。举个例子，如果你的数组中有一个可枚举属性`myArray.name`，循环将额外执行一次，遍历到名为“name”的索引。就连数组原型链上的属性都能被访问到。
-* 最让人震惊的是，在某些情况下，这段代码可能按照随机顺序遍历数组元素。
-* **简而言之，for-in是为普通对象设计的，你可以遍历得到字符串类型的键，因此不适用于数组遍历。**
-
-#### 强大的for-of循环
-```javascript
-for (var value of myArray) {
-  console.log(value);
-}
-```
-
-是的，与之前的内建方法相比，这种循环方式看起来是否有些眼熟？那好，我们将要探究一下for-of循环的外表下隐藏着哪些强大的功能。现在，只需记住：
-
-* 这是最简洁、最直接的遍历数组元素的语法
-* 这个方法避开了for-in循环的所有缺陷
-* 与forEach()不同的是，它可以正确响应break、continue和return语句
-
-
-**for-in循环用来遍历对象属性。
-for-of循环用来遍历数据 — 例如数组中的值。**
-
-#### for-of循环也可以遍历其它的集合
-
-for-of循环不仅支持数组，还支持大多数类数组对象，例如DOM NodeList对象。
-
-for-of循环也支持字符串遍历，它将字符串视为一系列的Unicode字符来进行遍历：
-```
-for (var chr of "") {
-  alert(chr);
-}
-```
-
-它同样支持Map和Set对象遍历
-
-举个例子，Set对象可以自动排除重复项：
-```
-// 基于单词数组创建一个set对象
-var uniqueWords = new Set(words);
-生成Set对象后，你可以轻松遍历它所包含的内容：
-for (var word of uniqueWords) {
-   console.log(word);
-}
-```
-
-Map对象稍有不同：内含的数据由键值对组成，所以你需要使用解构（destructuring）来将键值对拆解为两个独立的变量：
-
-```
-for (var [key, value] of phoneBookMap) {
-   console.log(key + "'s phone number is: " + value);
-}
-```
-for-of就是为遍历所有这些集合特别设计的循环语句。
-
-**但是for-of循环不支持普通对象**
-
-如果你想迭代一个对象的属性，你可以用for-in循环（这也是它的本职工作）或内建的Object.keys()方法：
-
-```
-// 向控制台输出对象的可枚举属性
-for (var key of Object.keys(someObject)) {
-  console.log(key + ": " + someObject[key]);
-}
-```
-
-
-
-
-那么我们只想循环对应的对象该怎么做呢，这里引入hasOwnProperty()方法，hasOwnProperty()函数用于指示一个对象自身(不包括原型链)是否具有指定名称的属性。如果有，返回true，否则返回false。
-
-```javascript
-var obj = {
-    name:"echolun",
-    age:"24",
-    sex:"male"
-},
-objName=[], //用来装对象属性名
-objVal=[];  //用来装对象属性值
-Object.prototype.game="lastgame";
-for(var i in obj){
-    if(obj.hasOwnProperty(i)) {
-        objName.push(i);
-        objVal.push(obj[i]);
-    }
-}
-console.log(objName,objVal);
-}
-```
-
-
-
-
-
-
-例如：
-```javascript
-let arr = ["a","b"];
-for (let a in arr) {
-    console.log(a);//0,1
-}
-
-for (let a of arr) {
-    console.log(a);//a,b
-}
-```
-
-由于for of的这个特性，他还可以实现对iterator对象的遍历，而for in就是简单的遍历了。
-
-
-
->for in是ES5标准,for of是ES6标准
-
- 
-
-
-
 ### ||和&&的高级用法
 
 
@@ -580,6 +475,7 @@ for (let a of arr) {
 
 
 #### 用于赋值
+
 * &&:从左往右依次判断，当当前值为true则继续，为false则返回此值。是返回未转换为布尔值时的原值
 * ||:从左往右依次判断，当当前值为false则继续，为true则返回此值。是返回未转换为布尔值时的原值
 
@@ -688,6 +584,172 @@ false && false || alert(1)
 
 
 **当同时存在多个||时，从左到右，一一执行上述规则。**
+
+
+
+## ES6
+
+
+
+
+
+## 原理
+
+
+
+
+
+## 题目 
+
+
+
+
+
+## 补充
+
+
+
+
+
+
+
+
+
+### toFixed和fixed
+
+[网页链接](http://www.w3school.com.cn/jsref/jsref_tofixed.asp)
+
+toFixed() 方法可把 Number 四舍五入为指定小数位数的数字。
+
+#### 语法
+NumberObject.toFixed(num)
+
+num	必需。规定小数的位数，是 0 ~ 20 之间的值，包括 0 和 20，有些实现可以支持更大的数值范围。如果省略了该参数，将用 0 代替。
+
+```javascript
+Show the number 13.37 with one decimal:
+<script type="text/javascript">
+var num = new Number(13.37);
+document.write (num.toFixed(1))
+</script>
+输出：
+Show the number 13.37 with one decimal:
+13.4
+```
+---
+fixed() 方法用于把字符串显示为打字机字体。
+stringObject.fixed()
+
+
+
+### JS中的“use strict” 严格模式
+
+[网页链接](https://www.cnblogs.com/liaojie970/p/7154144.html)
+
+ECMAScript 5 引入严格模式('strict mode')概念。通过严格模式，在函数内部选择进行较为严格的全局或局部的错误条件检测，使用严格模式的好处是可以提早知道代码中的存在的错误，
+
+**及时捕获一些可能导致编程错误的ECMAScript行为**，在开发中使用严格模式能帮助我们早发现错误。
+
+
+#### 严格模式影响范围
+* 变量：  var、delete、变量关键字
+* 对象： 只读属性、 对象字面量属性重复申明
+* 函数：参数重名、arguments对象、申明
+* 其他：this、eval、关键字...
+
+----------
+
+
+设立"严格模式"的目的，主要有以下几个：错误检测、规范、效率、安全、面向未来
+* 消除Javascript语法的一些不合理、不严谨之处，减少一些怪异行为;
+* 消除代码运行的一些不安全之处，保证代码运行的安全；
+* 提高编译器效率，增加运行速度；
+* 为未来新版本的Javascript做好铺垫。
+
+
+进入"严格模式"的编译指示（pragma），是下面这行语句：　　
+`"use strict";`
+
+将"use strict"放在脚本文件的第一行，则整个脚本都将以"严格模式"运行。
+
+如果这行语句不在第一行，则无效，整个脚本以"正常模式"运行。
+
+如果不同模式的代码文件合并成一个文件，这一点需要特别注意。
+
+
+
+
+
+###  Object.is()
+
+[ https://juejin.im/post/5d560c0cf265da03c61e4d33 ]( https://juejin.im/post/5d560c0cf265da03c61e4d33 )
+
+
+
+ `Object.is()`，其行为与`===`基本一致
+
+
+
+ 不过有两处不同： 
+
+
+
+1. **+0**不等于**-0**。
+2. **NaN**等于自身。
+
+
+
+
+
+```js
++0 === -0 //true
+NaN === NaN // false
+
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+###  includes startsWith endsWith padStart padEnd
+ES6 引入了字符串补全长度的功能，如果某个字符串不够指定长度，会在头部活尾部补全。
+
+* includes() 返回布尔值，表示是否找到了参数字符串
+* startsWith() : 返回布尔值，表示参数字符串是否在原字符串的头部
+* endsWith() : 返回布尔值，表示参数字符串是否在原字符串的头部
+
+
+* padStart() 用于头部补全；
+* padEnd() 用于尾部补全。
+
+```javascript
+// 第一个参数表示最终生成字符串的长度
+
+
+'x'.padStart(5, 'ab') // 'ababx'
+'x'.padStart(4, 'ab') // 'abax'
+ 
+'x'.padEnd(5, 'ab') // 'xabab'
+'x'.padEnd(4, 'ab') // 'xaba'
+```
+
+>
+
+ 
+
+
 
 
 
@@ -3273,3 +3335,12 @@ while (event = getNextEvent()) {
 
 
 假设当第二次进入事件循环时，执行到throw指令，此时发现并没有一个try..catch为它“服务”了。此时程序也不会再往下执行，整个事件循环终止，程序异常退出。这就是try..catch 捕获不到异步执行抛出的异常的原因。
+
+
+
+
+
+## V8引擎
+
+[https://juejin.cn/post/6844904186165870606](https://juejin.cn/post/6844904186165870606)
+

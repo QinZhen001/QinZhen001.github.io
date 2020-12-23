@@ -75,6 +75,7 @@ var f2 = function() {}
 
 那么为什么两者会有这样的区别呢？
 因为在函数作用域内，变量声明有一个提升hoisting的过程。
+
 ```javascript
     (function () {
         console.log(b)
@@ -86,7 +87,9 @@ var f2 = function() {}
 
  let定义的变量具有块级作用域，待会讲。
 
-如果var定义的变量跟let定义的变量一样没有hoisting的过程，那么两者应该都是ReferenceError，但是结果发现b是undefined，说明b发生了提升
+如果var定义的变量跟let定义的变量一样没有hoisting的过
+
+程，那么两者应该都是ReferenceError，但是结果发现b是undefined，说明b发生了提升
 
 
 ----------
