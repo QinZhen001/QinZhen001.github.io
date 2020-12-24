@@ -2928,6 +2928,94 @@ sw是由事件驱动的,具有生命周期
 
 
 
+## 函数声明和函数表达式 (函数提升)
+
+[https://blog.csdn.net/sky1679/article/details/88897205](https://blog.csdn.net/sky1679/article/details/88897205)
+
+
+* function max(){}表示函数声明，可以放在代码的任何位置，也可以在任何地方成功调用；
+* var max  = function(){};表示函数表达式，即将一个匿名函数赋值给一个变量，实现通过变量来调用这个匿名函数，但它需要在声明过后才能进行调用，如果调用在声明之前就会报如上红色字体的错误。而这在函数声明中不会出现这样的错误。
+
+---
+
+
+
+```js
+a();
+function a() {
+	console.log(1);
+}
+```
+
+**函数a是函数声明**，执行的是**函数提升**，实际效果是
+
+```js
+function a() {
+	console.log(1);
+}
+a();
+```
+
+
+
+
+
+```js
+b();
+var b = function() {}
+```
+
+**而函数b是函数表达式**，执行的是**变量提升**，实际效果是
+
+```js
+var b;
+b();
+b = function() {}
+```
+
+**由于b已经声明了，所以不会报错ReferenceError，而是TypeError。**
+
+
+
+----
+
+**函数会首先被提升，其次才是变量**。
+
+```js
+foo();
+var foo;
+function foo() {
+    console.log(1);
+}    
+var foo = function() {
+    console.log(2);
+};
+
+// 输出 1
+```
+
+var foo尽管出现在function foo() {}的声明之前，但是函数声明会被提升到普通变量之前。重复的var声明被忽略。
+
+----
+
+**但是出现在后面函数声明却可以覆盖前面的函数声明**
+
+```js
+foo();  //2
+function foo() {
+    console.log(1);
+}
+function foo() {
+    console.log(2);
+}    
+```
+
+
+
+
+
+
+
 
 
 
@@ -3291,6 +3379,49 @@ Promise.all中任何一个Promise出现错误的时候都会执行reject，导�
 
 
 
+## symbol实现原理
+
+```js
+  var mySymbol = function () { }
+  var Symbol1 = Object.create(mySymbol.prototype)
+  var Symbol2 = Object.create(mySymbol.prototype)
+
+  console.log(Symbol1 == Symbol2) // false 
+```
+
+![](https://s3.ax1x.com/2020/12/24/rcqbi8.jpg)
+
+
+
+```js
+第二种方法实现：
+
+(function () {
+    var root = this
+    var SymbolPolyfill = function Symbol(description) {
+
+      if (this instanceof SymbolPloyfill) {
+        throw new TypeError('Symbol is not a constructor');
+      }
+
+      var descString = description === undefined ? undefined : String(description)
+      var symbol = Object.create(null)
+      Object.defineProperties(symbol, {
+        '__Description__': {
+          value: descString,
+          writable: false,
+          enumerable: false,
+          configurable: false
+        }
+
+      })
+
+      return symbol
+    }
+
+    root.SymbolPolyfill = SymbolPolyfill;
+  })()
+```
 
 
 
@@ -3298,12 +3429,38 @@ Promise.all中任何一个Promise出现错误的时候都会执行reject，导�
 
 
 
+补充知识：
 
-## 函数声明和函数表达式的区别
+ **Symbol 函数前不能使用 new 命令，否则会报错。这是因为生成的 Symbol 是一个原始类型的值，不是对象。**
+
+**instanceof 的结果为 false**
+
+```js
+var s = Symbol('foo');
+console.log(s instanceof Symbol); // false
+```
+
+**Symbol 函数的参数只是表示对当前 Symbol 值的描述，相同参数的 Symbol 函数的返回值是不相等的。**
+
+```js
+// 没有参数的情况
+var s1 = Symbol();
+var s2 = Symbol();
+
+console.log(s1 === s2); // false
+
+// 有参数的情况
+var s1 = Symbol('foo');
+var s2 = Symbol('foo');
+
+console.log(s1 === s2); // false
+```
 
 
-* function max(){}表示函数声明，可以放在代码的任何位置，也可以在任何地方成功调用；
-* var max  = function(){};表示函数表达式，即将一个匿名函数赋值给一个变量，实现通过变量来调用这个匿名函数，但它需要在声明过后才能进行调用，如果调用在声明之前就会报如上红色字体的错误。而这在函数声明中不会出现这样的错误。
+
+
+
+
 
 
 
