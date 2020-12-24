@@ -44,13 +44,7 @@ tags:
 
 　**根据内容的结构化（内容语义化），选择合适的标签（代码语义化）便于开发者阅读和写出更优雅的代码的同时让浏览器的爬虫和机器很好地解析。**
 
-
-
  
-
-
-
-
 
 ## 其他
 
@@ -58,11 +52,18 @@ tags:
 
 ###  并发和并行的区别 
 
- **并发：concurrent** 
+**并发：concurrent** 
 
 **并行：parallel** 
 
  并发在微观时间层面不是同时进行的，而并行是平行的意思，就是一直同时推进的。 
+
+
+
+你吃饭吃到一半，电话来了，你一直到吃完了以后才去接，这就说明你不支持并发也不支持并行。
+你吃饭吃到一半，电话来了，你停了下来接了电话，接完后继续吃饭，这说明你支持并发。
+你吃饭吃到一半，电话来了，你一边打电话一边吃饭，这说明你支持并行。并发的关键是你有处理多个任务的能力，不一定要同时。
+并行的关键是你有同时处理多个任务的能力。所以我认为它们最关键的点就是：**是否是『同时』。**
 
 
 
@@ -122,16 +123,10 @@ will-change也有副作用，虽然并不直接可见，毕竟它只是在背后
 
 meta标签：提供给页面的一些元信息（名称/值对）， 比如针对搜索引擎和更新频度的描述和关键词。
 
-
-
 * name：名称/值对中的名称。常用的有author、description、keywords、generator、revised、others。 把 content 属性关联到一个名称。
 * http-equiv：没有name时，会采用这个属性的值。常用的有content-type、expires、refresh、set-cookie。把content属性关联到http头部。
 * content： 名称/值对中的值， 可以是任何有效的字符串。 始终要和 name 属性或 http-equiv 属性一起使用。
 * scheme： 用于指定要用来翻译属性值的方案。
-
-
-
-
 
 
 
@@ -192,7 +187,6 @@ console.log(b);
 
 ### webpack 的 loader 和 plugin 区别
 
-
 loader 用于对模块的源代码进行转换。loader 可以使你在 import 或"加载"模块时预处理文件。因此，loader 类似于其他构建工具中“任务(task)”，并提供了处理前端构建步骤的强大方法。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript，或将内联图像转换为 data URL。loader 甚至允许你直接在 JavaScript 模块中 import CSS文件！
 因为 webpack 本身只能处理 JavaScript，如果要处理其他类型的文件，就需要使用 loader 进行转换，loader 本身就是一个函数，接受源文件为参数，返回转换的结果。
 
@@ -231,13 +225,6 @@ Plugin 是用来扩展 Webpack 功能的，通过在构建流程里注入钩子�
 
 
 
-
-
-
-### style-loader和css-loader
-
-* css-loader: 加载.css文件
-* style-loader:使用`<style>`将css-loader内部样式注入到我们的HTML页面
 
 
 
