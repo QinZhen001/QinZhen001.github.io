@@ -21,7 +21,7 @@ tags:
 
 
 
-### 什么是虚拟 DOM
+## 什么是虚拟 DOM
 
 **虚拟 DOM本质上是 JavaScript 对象，这个对象就是更加轻量级的对 DOM 的描述。**
 
@@ -71,7 +71,7 @@ tags:
 
 
 
-#### 虚拟 DOM 的缺点
+### 虚拟 DOM 的缺点
 
 
 
@@ -83,7 +83,7 @@ tags:
 
 
 
-###  父子组件的执行顺序是什么 
+##  父子组件的执行顺序是什么 
 
 
 
@@ -104,7 +104,7 @@ tags:
 
 
 
-### 为什么需要虚拟dom diff
+## 为什么需要虚拟dom diff
 
 既然vue通过数据劫持可以精确探测数据在具体dom上的变化，为什么还需要虚拟dom diff？
 
@@ -133,16 +133,7 @@ tags:
 
 
 
-### react为什么要整虚拟dom
-
-* react的架构根本感知不到数据变化，也无法得知数据变化会影响到哪些dom，他只能通过diff vdom来找出差异点。
-* 而vue的架构和react是完全不一样的，vue是可以知道精准的知道数据变化的，也可以知道这个数据变化会影响到哪些dom。
-
-
-
-
-
-### v-show 与 v-if 区别
+## v-show 与 v-if 区别
 
 1.  v-hsow和v-if的区别： v-show是css切换，v-if是完整的销毁和重新创建。
 2.  使用 频繁切换时用v-show，运行时较少改变时用v-if
@@ -152,7 +143,7 @@ tags:
 
 
 
-### 绑定 class 的数组用法
+## 绑定 class 的数组用法
 
 * 对象方法 `v-bind:class="{'orange': isRipe, 'green': isNotRipe}"`
 
@@ -164,7 +155,7 @@ tags:
 
 
 
-### 组件中 data 为什么是函数
+## 组件中 data 为什么是函数
 
 > 为什么组件中的 data 必须是一个函数，然后 return 一个对象，而 new Vue 实例里，data 可以直接是一个对象？
 
@@ -176,33 +167,11 @@ tags:
 
 
 
-### vnode 有什么优势
-
-首先是抽象，引入 vnode，可以把渲染过程抽象化，从而使得组件的抽象能力也得到提升。
-
-其次是跨平台，因为 patch vnode 的过程不同平台可以有自己的实现，基于 vnode 再做服务端渲染、Weex 平台、小程序平台的渲染都变得容易了很多。
-
-
-
-每个DOM上的属性多达 228 个，而这些属性有 90% 多对我们来说都是无用的。VNode 就是简化版的真实 DOM 元素，保留了我们要的属性，并新增了一些在 diff 过程中需要使用的属性，例如 isStatic。
-
-
-
-**使用 vnode 并不意味着不用操作 DOM 了，很多同学会误以为 vnode 的性能一定比手动操作原生 DOM 好，这个其实是不一定的。**
-
-
-
-**性能并不是 vnode 的优势**
 
 
 
 
-
-###  vm.$set 原理
-
-
-
-
+##  vm.$set 原理
 
 查看源码
 
@@ -252,59 +221,24 @@ function set (target, key, val) {
 
 
 
-### VueRouter 源码深度解析
-
-* hash 模式   (可以通过 `hashchange` 事件来监听到 URL 的变化，从而进行跳转页面。)
-* history 模式 (History 模式是 HTML5 新推出的功能)
 
 
-
-对于路由注册来说，核心就是调用 `Vue.use(VueRouter)`，使得 VueRouter 可以使用 Vue。然后通过 Vue 来调用 VueRouter 的 `install` 函数。在该函数中，核心就是给组件混入钩子函数和全局注册两个路由组件。
-
-在实例化 VueRouter 的过程中，核心是创建一个路由匹配对象，并且根据 mode 来采取不同的路由方式。
-
-`createMatcher` 函数的作用就是创建路由映射表，然后通过闭包的方式让 `addRoutes` 和 `match` 函数能够使用路由映射表的几个对象，最后返回一个 `Matcher` 对象。
+## vue中在哪个阶段进行异步请求比较合适
 
 
 
-#### 路由初始化
+### 
 
-当根组件调用 `beforeCreate` 钩子函数时，会执行以下代码
 
-```javascript
-beforeCreate () {
-// 只有根组件有 router 属性，所以根组件初始化时会初始化路由
-  if (isDef(this.$options.router)) {
-    this._routerRoot = this
-    this._router = this.$options.router
-    this._router.init(this)
-    Vue.util.defineReactive(this, '_route', this._router.history.current)
-  } else {
-    this._routerRoot = (this.$parent && this.$parent._routerRoot) || this
-  }
-  registerInstance(this, this)
-}
-```
 
-在路由初始化时，核心就是进行路由的跳转，改变 URL 然后渲染对应的组件。接下来来看一下路由是如何进行跳转的。
+## 前端页面路由的权限实现
 
 
 
 
 
-### vue中在哪个阶段进行异步请求比较合适
 
-
-
-### vue中vuex的mapSetter是怎么实现的
-
-
-
-
-### 前端页面路由的权限实现
-
-
-### Vue.extend 是什么
+## Vue.extend 是什么
 
 在平时的代码中该方法我们主动调用的不多，但是在我们注册组件的时候，比如，Vue.component('my-component', options)，这个时候会自动调用 Vue.extend
 
@@ -313,7 +247,7 @@ beforeCreate () {
 
 
 
-### Vue template 编译的理解
+## Vue template 编译的理解
 
 Vue 中 template 就是先转化成 AST 树，再得到 render 函数返回 VNode（Vue 的虚拟 DOM 节点）。
 
@@ -321,7 +255,7 @@ Vue 中 template 就是先转化成 AST 树，再得到 render 函数返回 VNod
 2. AST 会经过 generate（将 AST 语法树转换成 render function 字符串的过程）得到 render 函数，render 的返回值是 VNode，VNode 是 Vue 的虚拟 DOM 节点，里面有标签名、子节点、文本等待。
 
 
-### vue的key
+## vue的key
 
 key 的作用就是在更新组件时判断两个节点是否相同。相同就复用，不相同就删除旧的创建新的。
 
@@ -334,7 +268,7 @@ key 的作用就是在更新组件时判断两个节点是否相同。相同就�
 
 
 
-### Vue 响应式原理
+## Vue 响应式原理
 
 在 Vue 的初始化中，会先对 props 和 data 进行初始化
 在 `Object.defineProperty` 中自定义 `get` 和 `set` 函数，并在 `get` 中进行依赖收集，在 `set` 中派发更新。
@@ -367,7 +301,7 @@ key 的作用就是在更新组件时判断两个节点是否相同。相同就�
 
 
 
-### Vue **不能检测**数组和对象的变化
+## Vue **不能检测**数组和对象的变化
 
 [https://cn.vuejs.org/v2/guide/reactivity.html#ad](https://cn.vuejs.org/v2/guide/reactivity.html#ad)
 
@@ -403,11 +337,124 @@ vm.b = 2
 
 
 
+## 为什么Vue使用异步更新队列？
+
+[https://github.com/berwin/Blog/issues/22](https://github.com/berwin/Blog/issues/22)
+
+**异步更新队列指的是当状态发生变化时，Vue异步执行DOM更新。**
+
+我们在项目开发中会遇到这样一种场景：当我们将状态改变之后想获取更新后的DOM，往往我们获取到的DOM是更新前的旧DOM，我们需要使用`vm.$nextTick`方法异步获取DOM，例如：
+
+```js
+Vue.component('example', {
+  template: '<span>{{ message }}</span>',
+  data: function () {
+    return {
+      message: '没有更新'
+    }
+  },
+  methods: {
+    updateMessage: function () {
+      this.message = '更新完成'
+      console.log(this.$el.textContent) // => '没有更新'
+      this.$nextTick(function () {
+        console.log(this.$el.textContent) // => '更新完成'
+      })
+    }
+  }
+})
+```
+
+我们都知道这样做很麻烦，但为什么Vue还要这样做呢？
+
+首先我们假设Vue是同步执行DOM更新，会有什么问题？
+
+如果同步更新DOM将会有这样一个问题，我们在代码中同步更新数据N次，DOM也会更新N次，伪代码如下：
+
+```js
+this.message = '更新完成' // DOM更新一次
+this.message = '更新完成2' // DOM更新两次
+this.message = '更新完成3' // DOM更新三次
+this.message = '更新完成4' // DOM更新四次
+```
+
+但事实上，我们真正想要的其实只是最后一次更新而已，也就是说前三次DOM更新都是可以省略的，我们只需要等所有状态都修改好了之后再进行渲染就可以减少一些无用功。
+
+而这种无用功在Vue2.0开始变得更为重要，Vue2.0开始引入了Virtualdom，每一次状态发生变化后，状态变化的信号会发送给组件，组件内部使用VirtualDOM进行计算得出需要更新的具体的DOM节点，然后对DOM进行更新操作，每次更新状态后的渲染过程需要更多的计算，而这种无用功也将浪费更多的性能，所以异步渲染变得更加至关重要。
+
+
+
+那如何才能将渲染操作推迟到所有状态都修改完毕呢？**很简单，只需要将渲染操作推迟到本轮事件循环的最后或者下一轮事件循环。也就是说，只需要在本轮事件循环的最后，等前面更新状态的语句都执行完之后，执行一次渲染操作，它就可以无视前面各种更新状态的语法，无论前面写了多少条更新状态的语句，只在最后渲染一次就可以了。**
+
+
+
+将渲染推迟到本轮事件循环的最后执行渲染的时机会比推迟到下一轮快很多，所以Vue优先将渲染操作推迟到本轮事件循环的最后，如果执行环境不支持会降级到下一轮。
+
+
+
+当然，Vue的变化侦测机制决定了它必然会在每次状态发生变化时都会发出渲染的信号，但Vue会在收到信号之后检查队列中是否已经存在这个任务，保证队列中不会有重复。如果队列中不存在则将渲染操作添加到队列中。
+
+
+
+## Vue2引入VirtualDOM的真实原因
+
+一个状态对应某个组件，而不再是具体标签，这样做有一个好处是可以大大降低依赖的数量，毕竟组件的数量与DOM中的具体标签比，数量要少的多。但是这样就需要多一个操作，当状态发生变化只通知到组件，那么组件内部如何知道具体更新哪个DOM标签？
+
+**答案是VirtualDOM。**
+
+也就是说，当粒度调整为中等之后，需要多一个操作就是在组件内部使用VirtualDOM去重新渲染。
+
+Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框架运行的性能问题。
+
+**所以说，Vue2.0引入VirtualDOM并不是因为VirtualDOM有多好，而是恰好VirtualDOM结合变化侦测可以将绑定调整成中等粒度来解决依赖追踪的开销问题。**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # VueRouter 
 
+* hash 模式   (可以通过 `hashchange` 事件来监听到 URL 的变化，从而进行跳转页面。)
+* history 模式  (History 模式是 HTML5 新推出的功能)
 
+对于路由注册来说，核心就是调用 `Vue.use(VueRouter)`，使得 VueRouter 可以使用 Vue。然后通过 Vue 来调用 VueRouter 的 `install` 函数。在该函数中，核心就是给组件混入钩子函数和全局注册两个路由组件。
+
+在实例化 VueRouter 的过程中，核心是创建一个路由匹配对象，并且根据 mode 来采取不同的路由方式。
+
+`createMatcher` 函数的作用就是创建路由映射表，然后通过闭包的方式让 `addRoutes` 和 `match` 函数能够使用路由映射表的几个对象，最后返回一个 `Matcher` 对象。
+
+### 路由初始化
+
+当根组件调用 `beforeCreate` 钩子函数时，会执行以下代码
+
+```javascript
+beforeCreate () {
+// 只有根组件有 router 属性，所以根组件初始化时会初始化路由
+  if (isDef(this.$options.router)) {
+    this._routerRoot = this
+    this._router = this.$options.router
+    this._router.init(this)
+    Vue.util.defineReactive(this, '_route', this._router.history.current)
+  } else {
+    this._routerRoot = (this.$parent && this.$parent._routerRoot) || this
+  }
+  registerInstance(this, this)
+}
+```
+
+在路由初始化时，核心就是进行路由的跳转，改变 URL 然后渲染对应的组件。接下来来看一下路由是如何进行跳转的。
 
 
 
@@ -2069,17 +2116,38 @@ React中也有对应的三种方式：父组件通过props可以向子组件传�
 
 
 
-react中render函数是支持闭包特性的，所以我们import的组件在render中可以直接调用。但是在Vue中，由于模板中使用的数据都必须挂在 this 上进行一次中转，所以我们import 一个组件完了之后，还需要在 components 中再声明下，这样显然是很奇怪但又不得不这样的做法。
+**react中render函数是支持闭包特性的，所以我们import的组件在render中可以直接调用。但是在Vue中，由于模板中使用的数据都必须挂在 this 上进行一次中转，所以我们import 一个组件完了之后，还需要在 components 中再声明下，这样显然是很奇怪但又不得不这样的做法。**
 
 
 
 * **渲染过程不同**
 
-Vue可以更快地计算出Virtual DOM的差异，这是由于它在渲染过程中，会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。
+**Vue可以更快地计算出Virtual DOM的差异，这是由于它在渲染过程中，会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。**
 
 React在应用的状态被改变时，全部子组件都会重新渲染。通过shouldComponentUpdate这个生命周期方法可以进行控制，但Vue将此视为默认的优化。
 
 
+
+----
+
+
+
+变化侦测分为两种类型：一种是“推”（push），另一种是“拉”（pull）。
+
+- Angualar和React中的变化侦测都属于“拉”，这就是说当状态发生变化时，它不知道哪个状态变了，只知道状态有可能变了，然后会发送一个信号告诉框架，框架内部收到信号后，**会进行一个暴力对比来找出哪些DOM节点需要重新渲染**。这在Angualar中是脏检查的流程，在React中使用的是虚拟DOM。
+- Vue.js的变化侦测属于“推”。当状态发生变化时，Vue.js立刻就知道了，而且在一定程度上知道哪些状态变了。因此，它知道的信息更多，也就可以进行更细粒度的更新。
+
+
+
+所谓更细粒度的更新，就是说：假如有一个状态绑定着好多个依赖，每个依赖表示一个具体的DOM节点，那么当这个状态发生变化时，向这个状态的所有依赖发送通知，让它们进行DOM更新操作。想比较而言，“拉”的粒度是最粗的。
+
+所谓更细粒度的更新，就是说：假如有一个状态绑定着好多个依赖，每个依赖表示一个具体的DOM节点，那么当这个状态发生变化时，向这个状态的所有依赖发送通知，让它们进行DOM更新操作。想比较而言，“拉”的粒度是最粗的。
+
+但是它也有一定的代价，**因为粒度越细，每个状态所绑定的依赖就越多，依赖追踪在内存上的开销就会越大**。因此，从Vue.js2.0开始，它引入了虚拟DOM，将粒度调整为中等粒度，**即一个状态所绑定的依赖不再是具体的DOM节点，而是一个组件**。这样状态变化后，会通知到组件，组件内部再使用虚拟DOM进行对比。这可以大大降低依赖数量，从而降低依赖追踪所消耗的内存。
+
+
+
+**VUE2 采用中等粒度的方案，在组件级别是 push，每一个组件是一个响应式的 watcher，当数据变动之后可以直接知道哪些组件变了，组件可以进行更新，在组件内部使用 virtual dom 进行比对。**
 
 
 
@@ -2112,6 +2180,26 @@ React在应用的状态被改变时，全部子组件都会重新渲染。通过
 [https://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html](https://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html)
 
 
+
+
+
+### vnode 有什么优势
+
+首先是抽象，引入 vnode，可以把渲染过程抽象化，从而使得组件的抽象能力也得到提升。
+
+其次是跨平台，因为 patch vnode 的过程不同平台可以有自己的实现，基于 vnode 再做服务端渲染、Weex 平台、小程序平台的渲染都变得容易了很多。
+
+
+
+每个DOM上的属性多达 228 个，而这些属性有 90% 多对我们来说都是无用的。VNode 就是简化版的真实 DOM 元素，保留了我们要的属性，并新增了一些在 diff 过程中需要使用的属性，例如 isStatic。
+
+
+
+**使用 vnode 并不意味着不用操作 DOM 了，很多同学会误以为 vnode 的性能一定比手动操作原生 DOM 好，这个其实是不一定的。**
+
+
+
+**性能并不是 vnode 的优势**
 
 
 
