@@ -21,6 +21,8 @@ tags:
 
 ## Node了解
 
+> nodejs提供那么多模块，以及能在各个平台上跑的飞起，不是因为js很牛逼，而是因为底层依赖了一些你不知道的技术。最大的两个依赖便是**v8和libuv**
+
 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 
 Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。 
 
@@ -30,11 +32,13 @@ Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量�
 
 
 
+```text
+Nodejs封装了所有与底层交流的信息，给开发者提供一致的接口定义。在不断升级v8和libuv的同时，依然能够做到接口的一致性，这个就是nodejs想要实现的目标。
+```
+
 
 
 ## nodejs 的单线程架构模型
-
-
 
 优势：
 
@@ -49,9 +53,9 @@ Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量�
 
 > 当然这些劣势都已经有成熟的解决方案了，使用 PM2 管理进程，或者上 K8S 也可以
 
-
-
 ###  **nodejs 的事件循环（重要）**
+
+[http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html](http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html)
 
 ![](https://mmbiz.qpic.cn/mmbiz_png/68e53Trxt1gCoLYibhDAZ5wOAadwAsxzevKW0Wlco5QwzKxJeyGq8z3bAcmbRmdiaaepajdibdBlwNUn7PyC3rJbg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
@@ -66,11 +70,7 @@ Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量�
 5. `Check`: 执行 setImmediate() 的回调
 6. `Close`: 执行 socket 的 close 事件回调
 
-
-
 与我们开发相关的三个阶段分别是 `Timers Poll Check`
-
-
 
 * **`Timers` ：执行定时器的回调，但注意，在 node 11 前，连续的几个定时器回调会连续的执行，而不是像浏览器那样，执行完一个宏任务立即执行微任务。**
 
@@ -372,6 +372,16 @@ InterProcess Communication
 [https://www.jianshu.com/p/c1015f5ffa74](https://www.jianshu.com/p/c1015f5ffa74)
 
 每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以进程之间要交换数据必须通过内核，在内核中开辟一块缓冲区，进程1把数据从用户空间拷到内核缓冲区，进程2再从内核缓冲区把数据读走，内核提供的这种机制称为**进程间通信（IPC，InterProcess Communication）**
+
+
+
+
+
+
+
+
+
+
 
 
 

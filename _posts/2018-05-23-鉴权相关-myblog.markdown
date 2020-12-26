@@ -63,13 +63,22 @@ http
     .listen(3000)
 ```
 
-
-
-
-
 * Header Set-Cookie负责设置cookie 
-
 * 请求传递Cookie
+
+
+
+服务器端向客户端发送Cookie是通过HTTP响应报文实现的，在Set-Cookie中设置需要向客户端发送的cookie，
+
+cookie格式如下：
+
+```
+Set-Cookie: “name=value;domain=.domain.com;path=/;expires=Sat, 11 Jun 2016 11:29:42 GMT;HttpOnly;secure”
+```
+
+
+
+
 
 
 
