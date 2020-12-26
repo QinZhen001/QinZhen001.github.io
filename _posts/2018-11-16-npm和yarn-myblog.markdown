@@ -268,7 +268,13 @@ const task = process.env.npm_lifecycle_event.startsWith('pre') ? process.env.npm
 
 现在，我们可以在任何 `pre` script 中放置 `node ./scripts/env-check.js`，它将为我们执行这些所有的初步检查。
 
-### npm_lifecycle_event
+
+
+
+
+
+
+
 
 
 
@@ -346,6 +352,45 @@ package.json:
 * yarn workspace并没有像lerna那样封装大量的高层API，整个workspace整体上还是依赖于整个yarn命令体系。
 * workspace不能嵌套（只能有一个根workspace）
 * workspace采用的是向上遍历，所以workspace并不能识别根workspace之外的依赖。
+
+
+
+
+
+# npx
+
+[http://www.ruanyifeng.com/blog/2019/02/npx.html](http://www.ruanyifeng.com/blog/2019/02/npx.html)
+
+npx 的原理很简单，就是运行的时候，会到`node_modules/.bin`路径和环境变量`$PATH`里面，检查命令是否存在。
+
+
+
+一般来说，调用 Mocha ，只能在项目脚本和 package.json 的[`scripts`](http://www.ruanyifeng.com/blog/2016/10/npm_scripts.html)字段里面， 如果想在命令行下调用，必须像下面这样。
+
+```
+# 项目的根目录下执行
+$ node-modules/.bin/mocha --version
+```
+
+npx 就是想解决这个问题，让项目内部安装的模块用起来更方便，只要像下面这样调用就行了。
+
+```
+$ npx mocha --version
+```
+
+**也就是说 npx 会自动查找当前依赖包中的可执行文件，如果找不到，就会去 PATH 里找。如果依然找不到，就会帮你安装！**
+
+
+
+**除了调用项目内部模块，npx 还能避免全局安装的模块。**比如，`create-react-app`这个模块是全局安装，npx 可以运行它，而且不进行全局安装。
+
+```
+$ npx create-react-app my-react-app
+```
+
+
+
+
 
 
 
