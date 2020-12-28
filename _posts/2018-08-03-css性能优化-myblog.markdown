@@ -209,7 +209,7 @@ CSS中更多的选择器是不会匹配的，所以在考虑性能问题时，�
 我们只需要添加以下 CSS 就能为任何网站添加这样的效果
 
 
-```html
+```css
 html * {
     outline: 1px solid red
 }

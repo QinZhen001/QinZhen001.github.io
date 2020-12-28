@@ -66,7 +66,36 @@ First, npm link in a package folder will create a symlink in the global folder `
 这个命令的作用就是在全局环境下，生成一个符号链接文件，该文件的名字就是package.json文件中指定的模块名。同时我们对此模块的修改会实时反馈在全局目录下。
 
 
-## 给npm init命令设置自动执行的默认值
+
+## npm init 
+
+[https://www.npmjs.cn/cli/init/](https://www.npmjs.cn/cli/init/)
+
+[https://docs.npmjs.com/cli/v6/commands/npm-init](https://docs.npmjs.com/cli/v6/commands/npm-init)
+
+`npm init <initializer>` can be used to set up a new or existing npm package.
+
+
+
+`initializer` in this case is an npm package named `create-<initializer>`, which will be installed by [``](https://npm.im/npx)`npx`, and then have its main bin executed -- presumably creating or updating `package.json` and running any other initialization-related operations.
+
+
+
+The init command is transformed to a corresponding `npx` operation as follows:
+
+ init命令转换为对应的npx操作，如下所示
+
+- `npm init foo` -> `npx create-foo`
+- `npm init @usr/foo` -> `npx @usr/create-foo`
+- `npm init @usr` -> `npx @usr/create`
+
+
+
+
+
+
+
+## 设置自动执行的默认值
 
 我们通常在一个项目中使用npm init来初始化package.json文件。如果你想把经常用到的一些值搞成默认配置，可以使用config set命令。
 
