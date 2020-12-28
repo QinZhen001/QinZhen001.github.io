@@ -384,9 +384,8 @@ InterProcess Communication
 
 nodejs源码有两个重要的目录：
 
- 
-
-
+1. `lib`: 包含了所有nodejs函数和模块的javascript实现，这些实现都是可以直接在你js项目中引用进去的
+2. `src`: 包含了所有函数的C++版本实现，这里的代码才会真正引用Libuv和V8。
 
 
 

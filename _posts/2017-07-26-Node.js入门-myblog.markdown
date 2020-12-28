@@ -244,6 +244,25 @@ console.log("文件压缩完成。");
 ```
 
 
+
+
+
+### process
+
+
+
+#### exit
+
+[https://stackoverflow.com/questions/43147330/what-is-difference-between-method-process-exit1-and-process-exit0-in-node-js](https://stackoverflow.com/questions/43147330/what-is-difference-between-method-process-exit1-and-process-exit0-in-node-js)
+
+process.exit(1)  and process.exit(0) 的区别
+
+Node normally exits with a 0 status code （正常情况） when no more async operations are pending. There are other exit codes which are described below:
+
+> `0` is a success code and `1` (or another number) can be a failure code
+
+
+
 ### 模块的缓存
 
 **这是一个非常重要的知识点**
