@@ -45,4 +45,16 @@
 
 
 
+### 2020-12-28
+
+```html
+<meta name="referrer" content="no-referrer" />
+```
+
+加入no-referrer，避免引用的图片403 **Forbidden**    （有些cdn图片会检验referrer） （防盗链）
+
+
+
+
+
 [1]: https://github.com/QinZhen001/QinZhen001.github.io/blob/master/img/website-QR%20-code.png
