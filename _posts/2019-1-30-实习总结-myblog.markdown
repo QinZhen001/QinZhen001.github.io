@@ -46,7 +46,7 @@ sdk挂载在wepy.$instance.xhwSdk这里
  onLaunch(option) {
      xhwSdk.xhwInit(option, baseConfig, reqConfig);
  }
-  ```
+```
 
 下面总结一下一些比较难的点
 
@@ -688,15 +688,15 @@ node一些简单的脚本之前还是写过，但是要做一个要放到线上�
     "xhw-build": "cross-env NODE_ENV=production wepy build --no-cache && xhw-cli compile -a",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
- ```
- 
- 
+```
+
+
 #### 预编译
- 
+
  去读一个json配置文件，循环遍历相应的页面找到对应的字段，将配置项替换成找到的字段
- 
+
  >这里逐行读取文件，用到linebyline库 
- 
+
 * 生成baseConfig.js (config/baseConfig.js)
 * 生成app的config (包括pages，window，navigateToMiniProgramAppIdList)
 * 复制通用页面到src/pages下 (可选功能)
@@ -744,7 +744,7 @@ node一些简单的脚本之前还是写过，但是要做一个要放到线上�
 
 
 #### 后编译
- 
+
  ```javascript
  /**
  * 解决wepy框架 npm包嵌套导致的bug
@@ -786,7 +786,7 @@ async function _fixBug(path) {
         console.log(chalk.blue(`成功改变${path} @imoport指向`))
     }
 }
-```
+ ```
 
 
 
@@ -865,7 +865,7 @@ async function _fixBug(path) {
         this.$apply();
       }
     }
-```	
+```
 
 这里有些细节设计
 

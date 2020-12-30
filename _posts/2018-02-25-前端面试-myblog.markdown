@@ -692,36 +692,6 @@ console.log('B')
 
 "任务队列"是一个先进先出的数据结构，排在前面的事件，优先被主线程读取。主线程的读取过程基本上是自动的，只要执行栈一清空，"任务队列"上第一位的事件就自动进入主线程。但是，由于存在后文提到的"定时器"功能，主线程首先要检查一下执行时间，某些事件只有到了规定的时间，才能返回主线程。
 
-### Event Loop
-主线程从"任务队列"中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）。
-
-![enter description here][12]
-
-上图中，主线程运行的时候，产生堆（heap）和栈（stack），栈中的代码调用各种外部API，它们在"任务队列"中加入各种事件（click，load，done）。只要栈中的代码执行完毕，主线程就会去读取"任务队列"，依次执行那些事件所对应的回调函数。
-
-
-**执行栈中的代码（同步任务），总是在读取"任务队列"（异步任务）之前执行**。请看下面这个例子。
-```
- var req = new XMLHttpRequest();
-    req.open('GET', url);    
-    req.onload = function (){};    
-    req.onerror = function (){};    
-    req.send();
-```
-
-上面代码中的req.send方法是Ajax操作向服务器发送数据，它是一个异步任务，意味着只有当前脚本的所有代码执行完，系统才会去读取"任务队列"。所以，它与下面的写法等价。
-
-
-```
- var req = new XMLHttpRequest();
-    req.open('GET', url);
-    req.send();
-    req.onload = function (){};    
-    req.onerror = function (){};   
-```
-
->回调函数的部分（onload和onerror），在send()方法的前面或后面无关紧要
-
 
 
 ## 页面性能类

@@ -2754,6 +2754,18 @@ Function.__proto__ === Function.prototype					// true
 
 https://zhuanlan.zhihu.com/p/33058983
 
+
+
+[深入探究 eventloop 与浏览器渲染的时序问题](https://www.404forest.com/2017/07/18/how-javascript-actually-works-eventloop-and-uirendering/#4-requestAnimationFrame-callback-%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E6%9C%BA)
+
+**并不是每轮 eventloop 都会执行 UI Render**
+
+
+
+
+
+
+
 ### Event loop介绍
 
 1. Javascript的事件分为同步任务和异步任务.
@@ -3162,32 +3174,32 @@ function foo() {
 
 ## commonjs 与 esm 的区别
 
-
-
 * commonjs输出拷贝
 * esm输出引用
 
 - CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
 
-
-
  **esm 的 import read-only 特性**
-
-
 
 read-only 的特性很好理解，import 的属性是只读的，不能赋值，类似于 const 的特性，这里就不举例解释了。
 
-
-
 **esm 存在 export/import 提升**
-
-
 
 esm 对于 import/export 存在提升的特性，具体表现是规范规定 import/export 必须位于模块顶级，不能位于作用域内；其次对于模块内的 import/export 会提升到模块顶部，**这是在编译阶段完成的**。
 
 
 
 esm 的 import/export 提升在正常情况下，使用起来跟 commonjs 没有区别，因为一般情况下，我们在引入模块的时候，都会在模块的同步代码执行完才获取到输出值。所以即使存在提升，也无法感知。
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4668,3 +4680,97 @@ f();
 ```
 
 你就可以确定(不考虑`bind`，以及严格模式时情况下)，`f`里面的`this`就是指全局对象`window`。
+
+
+
+
+
+## requestAnimationFrame在EventLoop的执行位置
+
+[https://github.com/ginobilee/blog/issues/6](https://github.com/ginobilee/blog/issues/6)
+
+[深入探究 eventloop 与浏览器渲染的时序问题](https://www.404forest.com/2017/07/18/how-javascript-actually-works-eventloop-and-uirendering/#4-requestAnimationFrame-callback-%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E6%9C%BA)
+
+> requestAnimationFrame 会在UI渲染之前
+
+1. 当开始执行它的回调时，在此刻之前注册的所有该类回调，会一次性执行完(一个loop内，这点很关键)
+2. 每个该类任务执行完，也会执行微任务(其实不能称为特性，毕竟所有脚本任务都是这样)
+3. 如果以自身递归调用的方式(raf回调内递归调用raf，使用该api的正确姿势)，它的触发时机总是与浏览器的渲染频率保持一致。
+
+
+
+**特别指出，在一个loop中，可能并不会执行这一步，只要浏览器任务不需要执行渲染，就会跳过。**
+
+
+
+结论:
+
+我们看到宏任务与raf任务有明显的差异:
+
+1. 执行时机不同
+2. raf任务队列被执行时，会将其此刻队列中所有任务都执行完
+
+所以raf任务不属于宏任务。而由于微任务的特殊性(单独的任务队列)，它显然更不是微任务。
+
+所以它既不是宏任务，又不是微任务。那么它是什么？
+
+**任务。**
+
+
+
+![img](https://pic1.zhimg.com/80/v2-4afcb7df8ddbb488046360ea4920ef4c_720w.jpg)
+
+在一些文章中将 requestAnimationFrame 划分为 task，理由是假如你在 requestAnimationFrame 的 callback 中注册了 microtask 任务，你会发现该 microtask 任务会在 requestAnimationFrame 的 callback 结束后立刻执行。
+
+```js
+setTimeout(() => {
+  console.log('A')
+}, 0)
+requestAnimationFrame(() => {
+  console.log('B')
+  Promise.resolve().then(() => {
+    console.log('C')
+  })
+})
+```
+
+```
+B
+C
+A
+// 有可能出现 A B C 的情况，本节讨论的重点在于 B C 一定紧挨着输出
+```
+
+
+
+![eventloop-2](https://www.404forest.com/imgs/blog/eventloop-2.jpg)
+
+
+
+可以看到 requestAnimationFrame 中注册的 microtask 并没有在下一轮 eventloop 的 task 之后执行，而是直接在本轮 eventloop 中紧跟着 requestAnimationFrame 执行了。
+
+
+
+深入 requestAnimationFrame 的执行过程也能发现：[在执行 animation frame callbacks 时，会唤起 callback（invoke the callback）](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#animation-frames)，[在唤起 callback 的最后一步，会 clean up after running a callback](https://heycam.github.io/webidl/#invoke-a-callback-function)，此时若满足 javascript 执行栈为空的条件，则执行 microtask。
+
+
+
+总结
+
+1. 每个 eventloop 由三个阶段构成：执行一个 task，执行 microtask 队列，可选的 ui render 阶段，requestAnimationFrame callback 在 render 阶段执行。我们平时写的逻辑代码会被分类为不同的 task 和 microtask。
+2. microtask 中注册的 microtask 事件会直接加入到当前 microtask 队列。
+3. microtask 执行时机『尽可能早』，只要 javascript 执行栈为空，就会执行。一轮 eventloop 中，可能执行多次 microtask。
+4. requestAnimationFrame callback 的执行时机与浏览器的 render 策略有关，是黑箱的。
+
+
+
+
+
+## async和await 的es5实现
+
+[https://www.zhihu.com/question/39571954](https://www.zhihu.com/question/39571954)
+
+
+
+
+
