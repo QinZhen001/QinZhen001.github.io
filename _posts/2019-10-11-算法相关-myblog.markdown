@@ -284,6 +284,163 @@ function swap(arr, i, j) {
 
 
 
+
+
+## 数组排序
+
+
+
+
+
+### 堆排序
+
+[https://segmentfault.com/a/1190000015487916?utm_source=tag-newest](https://segmentfault.com/a/1190000015487916?utm_source=tag-newest)
+
+[https://segmentfault.com/a/1190000015487916?utm_source=tag-newest](https://segmentfault.com/a/1190000015487916?utm_source=tag-newest)
+
+[https://www.cnblogs.com/chengxiao/p/6129630.html](https://www.cnblogs.com/chengxiao/p/6129630.html)
+
+![clipboard.png](https://segmentfault.com/img/bVbc809?w=416&h=361)
+
+**对于结点 i ，其子结点为 2*i+1 与 2*i+2 。**
+
+
+
+- 堆是一个完全二叉树。
+- 完全二叉树： 二叉树除开最后一层，其他层结点数都达到最大，最后一层的所有结点都集中在左边（左边结点排列满的情况下，右边才能缺失结点）。
+- 大顶堆：根结点为最大值，每个结点的值大于或等于其孩子结点的值。
+- 小顶堆：根结点为最小值，每个结点的值小于或等于其孩子结点的值。
+- 堆的存储： 堆由数组来实现，相当于对二叉树做层序遍历。
+
+
+
+我们用简单的公式来描述一下堆的定义就是：
+
+**大顶堆：arr[i] >= arr[2i+1] && arr[i] >= arr[2i+2]**  
+
+**小顶堆：arr[i] <= arr[2i+1] && arr[i] <= arr[2i+2]**  
+
+
+
+再简单总结下堆排序的基本思路：
+
+　　**a.将无需序列构建成一个堆，根据升序降序需求选择大顶堆或小顶堆;**
+
+　　**b.将堆顶元素与末尾元素交换，将最大元素"沉"到数组末端;**
+
+　　**c.重新调整结构，使其满足堆定义，然后继续交换堆顶元素与当前末尾元素，反复执行调整+交换步骤，直到整个序列有序。**
+
+
+
+
+
+代码实现：
+
+```js
+function swap(A, i, j) {
+  let temp = A[i]
+  A[i] = A[j]
+  A[j] = temp
+}
+
+// 将 i 结点以下的堆整理为大顶堆，注意这一步实现的基础实际上是：
+// 假设 结点 i 以下的子堆已经是一个大顶堆，shiftDown函数实现的
+// 功能是实际上是：找到 结点 i 在包括结点 i 的堆中的正确位置。后面
+// 将写一个 for 循环，从第一个非叶子结点开始，对每一个非叶子结点
+// 都执行 shiftDown操作，所以就满足了结点 i 以下的子堆已经是一大
+// 顶堆
+function shiftDown(A, i, length) {
+  let temp = A[i]
+  // j<length 的目的是对结点 i 以下的结点全部做顺序调整
+  for (let j = 2 * i + 1; j < length; j = 2 * j + 1) {
+    temp = A[i] // 将 A[i] 取出，整个过程相当于找到 A[i] 应处于的位置
+    if (j + 1 < length && A[j] < A[j + 1]) {
+      j++ // 找到两个孩子中较大的一个，再与父节点比较
+    }
+    if (temp < A[j]) {
+      swap(A, i, j) // 如果父节点小于子节点:交换；否则跳出
+      i = j // 交换后，temp 的下标变为 j
+    } else {
+      break
+    }
+  }
+}
+
+function heapSort(A) {
+  // 初始化大顶堆，从第一个非叶子节点开始
+  for (let i = Math.floor(A.length / 2 - 1); i >= 0; i--) {
+    shiftDown(A, i, A.length)
+  }
+
+  for (let i = Math.floor(A.length - 1); i > 0; i--) {
+    // 根节点与最后一个节点交换
+    swap(A, 0, i)
+    // 从根节点开始调整，并且最后一个结点已经为当
+    // 前最大值，不需要再参与比较，所以第三个参数
+    // 为 i，即比较到最后一个结点前一个即可
+    shiftDown(A, 0, i)
+  }
+  return A
+}
+```
+
+测试：
+
+```js
+let arr = [4, 6, 8, 5, 9, 1, 2, 5, 3, 2]
+const res =  heapSort(arr)
+console.log("res",res)
+```
+
+
+
+
+
+
+
+### 桶排序
+
+[https://wiki.jikexueyuan.com/project/easy-learn-algorithm/bucket-sort.html](https://wiki.jikexueyuan.com/project/easy-learn-algorithm/bucket-sort.html)
+
+[https://dailc.github.io/2016/12/03/baseKnowlenge_algorithm_sort_bucketSort.html](https://dailc.github.io/2016/12/03/baseKnowlenge_algorithm_sort_bucketSort.html)
+
+1. 设置固定空桶数
+2. 将数据放到对应的空桶中
+3. 将每个不为空的桶进行排序
+4. 拼接不为空的桶中的数据，得到结果
+
+
+
+举个例子：
+
+
+
+假设一组数据(20长度)为
+
+```
+[63,157,189,51,101,47,141,121,157,156,194,117,98,139,67,133,181,13,28,109] 
+```
+
+现在需要按5个分桶，进行桶排序，实现步骤如下:
+
+1. 找到数组中的最大值194和最小值13，然后根据桶数为5，计算出每个桶中的数据范围为`(194-13+1)/5=36.4`
+2. 遍历原始数据，(以第一个数据63为例)先找到该数据对应的桶序列`Math.floor(63 - 13) / 36.4) =1`，然后将该数据放入序列为1的桶中(从0开始算)
+3. 当向同一个序列的桶中第二次插入数据时，判断桶中已存在的数字与新插入的数字的大小，按从左到右，从小打大的顺序插入。如第一个桶已经有了63，再插入51，67后，桶中的排序为(51,63,67) **一般通过链表来存放桶中数据，但js中可以使用数组来模拟**
+4. 全部数据装桶完毕后，按序列，从小到大合并所有非空的桶(如0,1,2,3,4桶)
+5. 合并完之后就是已经排完序的数据
+
+
+
+![img](https://dailc.github.io/jsfoundation-perfanalysis/staticresource/performanceAnalysis/algorithmSort/demo_js_algorithmSort_bucketSort_1.png)
+
+
+
+时间复杂度为:O(N)+O(M*(N/M)*log(N/M))=O(N*(log(N/M)+1))
+
+
+
+
+
 ## 动态规划
 
 [https://mp.weixin.qq.com/s/3h9iqU4rdH3EIy5m6AzXsg](https://mp.weixin.qq.com/s/3h9iqU4rdH3EIy5m6AzXsg)
@@ -377,7 +534,27 @@ for (int i = 2; i < n; i++)
 
 
 
+## **分治法与减治法**
 
+**分治法**（Divide&Conquer），把一个大的问题，转化为若干个子问题（Divide），每个子问题“**都**”解决，大的问题便随之解决（Conquer）。这里的关键词是**“都”**。从伪代码里可以看到，快速排序递归时，先通过partition把数组分隔为两个部分，两个部分“都”要再次递归。
+
+> 快速排序 就是典型的分治算法
+
+
+
+**减治法**（Reduce&Conquer），把一个大的问题，转化为若干个子问题（Reduce），这些子问题中“**只**”解决一个，大的问题便随之解决（Conquer）。这里的关键词是**“只”**。
+
+> 二分查找 就是典型的减治法 
+
+
+
+
+
+通过分治法与减治法的描述，可以发现，分治法的复杂度一般来说是大于减治法的：
+
+快速排序：O(n*lg(n))
+
+二分查找：O(lg(n))
 
 
 
@@ -416,8 +593,6 @@ for (int i = 2; i < n; i++)
 
 
 
-
-
 二叉查找树（英语：Binary Search Tree），也称为二叉搜索树、有序二叉树（Ordered Binary Tree）或排序二叉树（Sorted Binary Tree），是指一棵空树或者具有下列性质的二叉树：
 
 
@@ -429,13 +604,37 @@ for (int i = 2; i < n; i++)
 
 
 
+### 完全二叉树
+
+[https://www.cnblogs.com/-citywall123/p/11788764.html](https://www.cnblogs.com/-citywall123/p/11788764.html)
+
+若设二叉树的深度为k，除第 k 层外，其它各层 (1～k-1) 的结点数都达到最大个数，第k 层所有的结点都**连续集中在最左边**，这就是完全二叉树。
+
+　
+
+![img](https://img2018.cnblogs.com/i-beta/1468919/201911/1468919-20191103194739538-2034251878.png)
+
+
+
+### 平衡二叉树
+
+平衡二叉树的提出就是为了保证树不至于出现二叉查找树的极端一条腿长现象，尽量保证两条腿平衡。因此它的定义如下：
+
+定义：**平衡二叉树要么是一棵空树，要么保证左右子树的高度之差不大于 1，并且子树也必须是一棵平衡二叉树。**
+
+
+
+![img](https://pic3.zhimg.com/80/v2-a1e28ff22a7279ce37149e401de2ab86_720w.jpg)
+
+**平衡二叉树是二叉搜索树**
+
+
+
+
+
 
 
 ### 红黑树
-
-[https://juejin.im/post/5dff59cb6fb9a0163c53ce1d](https://juejin.im/post/5dff59cb6fb9a0163c53ce1d)
-
-
 
 二叉查找树并非平衡树，它只限制了左右子树与根点之间的大小关系，只有在平衡二叉查找树时，其时间复杂度才能达到O(logn) ，并且在极端情况下它甚至会退化成链表；
 
