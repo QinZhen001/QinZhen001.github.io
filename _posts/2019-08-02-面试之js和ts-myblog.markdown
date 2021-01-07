@@ -4778,3 +4778,47 @@ A
 
 
 
+## 一道Object.defineProperty 输出题目
+
+> 来源： 微信小程序 前端面试星球 Day215
+
+```js
+  const person = {
+    name: "yd"
+  }
+  Object.defineProperty(person, 'age', {
+    value: 21
+  })
+  person.age = 18
+
+  console.log(person) // {name: "yd", age: 21}
+  console.log(Object.keys(person))  // ['name']
+```
+
+使用Object.defineProperty方法添加的属性默认不可枚举 （not enumerable）。用defineProperty方法添加的属性默认不可变。可以通过writable, configurable 和 enumerable 属性改变这一行为。
+
+```js
+var obj = {};
+obj.name = "tn";
+
+//相当于
+Object.defineProperty(obj, "name", {
+  value: "tn",
+  writable: true,
+  configurable: true,
+  enumerable: true,
+});
+```
+
+```js
+Object.defineProperty(obj, "name", { value: "tn" });
+
+//相当于
+Object.defineProperty(obj, "name", {
+  value: "tn",
+  writable: false,
+  configurable: false,
+  enumerable: false,
+});
+```
+

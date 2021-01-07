@@ -729,6 +729,8 @@ https://blog.shenfq.com/2020/react-%E6%9E%B6%E6%9E%84%E7%9A%84%E6%BC%94%E5%8F%98
 
 https://zh-hans.reactjs.org/docs/faq-state.html#when-is-setstate-asynchronous
 
+[https://mp.weixin.qq.com/s/CpEtFuez-MqX1FFAfIHFAw](https://mp.weixin.qq.com/s/CpEtFuez-MqX1FFAfIHFAw)
+
 
 
 网上有很多文章称 setState 是『异步操作』，所以导致 setState 之后并不能获取到最新值，其实这个观点是错误的**。setState 是一次同步操作，只是每次操作之后并没有立即执行，而是将 setState 进行了缓存，mount 流程结束或事件操作结束，才会拿出所有的 state 进行一次计算**。
@@ -760,6 +762,12 @@ class App extends React.Component {
 ```
 
 
+
+总结：
+
+* legacy模式命中batchedUpdates时异步 
+* legacy模式未命中batchedUpdates时同步 （例如：在setTimeout中）
+* Concurrent模式都是异步的
 
 
 

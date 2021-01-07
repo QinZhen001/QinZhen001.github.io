@@ -209,7 +209,7 @@ p {
 
 由于容器内元素浮动，脱离了文档流，所以容器只剩下 2px 的边距高度。如果使触发容器的 BFC，那么容器将会包裹着浮动元素。
 
-```
+```html
 <div style="border: 1px solid #000;overflow: hidden">
     <div style="width: 100px;height: 100px;background: #eee;float: left;">
     </div>
@@ -222,7 +222,7 @@ p {
 **3. BFC 可以阻止元素被浮动元素覆盖**
 先来看一个文字环绕效果：
 
-```
+```html
 <div style="height: 100px;width: 100px;float: left;background: lightblue">我是一个左浮动的元素
 </div>
 <div style="width: 200px; height: 200px;background: #eee">我是一个没有设置浮动, 
@@ -445,7 +445,7 @@ border-bottom: 40px solid #ff0000;
 
 
 
-## 利用line-height使单行文本垂直居中
+## 单行文本垂直居中
 
 行高是指一行文字的高度，具体说是两行文字间基线的距离。CSS中起高度作用的是height和line-height，没有定义height属性，最终其表现作用一定是line-height。
 
@@ -786,6 +786,133 @@ float、clear 和 vertical-align
 
 
 
+
+
+
+### 垂直居中的实现
+
+[https://github.com/chokcoco/iCSS/issues/64](https://github.com/chokcoco/iCSS/issues/64)
+
+* absolute + transform
+
+```html
+  <style lange="scss">
+    .parent{
+      position: relative;
+      width: 100px;
+      height: 100px;
+      background:red;
+    }
+    .child{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform:translate(-50%,-50%);
+      width: 10px;
+      height: 10px;
+      background:blue;
+    }
+  </style>
+
+<div class="parent">
+   <div class="child"></div>
+ </div>
+```
+
+* flex/grid  + margin:auto
+
+```html
+  <style lange="scss">
+    .parent{
+      display: flex;
+      width: 100px;
+      height: 100px;
+      background:red;
+    }
+    .child{
+      margin: auto;
+      width: 10px;
+      height: 10px;
+      background:blue;
+    }
+  </style> 
+
+<div class="parent">
+  <div class="child"></div>
+</div>
+```
+
+* flex + align-items
+
+  ```html
+    <style lange="scss">
+      .parent{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        height: 100px;
+        background:red;
+      }
+      .child{
+        width: 10px;
+        height: 10px;
+        background:blue;
+      }
+    </style> 
+  
+  
+  <div class="parent">
+     <div class="child"></div>
+  </div>
+  ```
+
+* table-cell + vertical-align:middle
+
+  ```html
+    <style lange="scss">
+      .parent{
+        display: table-cell;
+        vertical-align:middle;
+        width: 100px;
+        height: 100px;
+        background:red;
+      }
+      .child{
+        width: 10px;
+        height: 10px;
+        background:blue;
+      }
+    </style> 
+  
+  
+  <div class="parent">
+     <div class="child"></div>
+  </div>
+  ```
+
+
+
+在 `display: block` 中，如果 `margin-left` 和 `margin-right` 都是 auto，则它们的表达值相等，从而导致元素的水平居中。( 这里的计算值为元素剩余可用剩余空间的一半) 而如果 `margin-top` 和 `margin-bottom` 都是 auto，则他们的值都为 0，当然也就无法造成垂直方向上的居中。
+
+
+
+
+
+但是，让该元素处于 FFC(flex formatting context)，或者 GFC(grid formatting context) 上下文中，单个元素使用 `margin: auto` 就可以垂直居中
+
+```css
+{
+    display: flex;
+    display: inline-flex;
+    display: grid;
+    display: inline-grid;
+}
+```
+
+**flex 格式化上下文**中，设置了 `margin: auto` 的元素，在通过 `justify-content` 和 `align-self` 进行对齐之前，任何正处于空闲的空间都会分配到该方向的自动 margin 中去
+
+这里，很重要的一点是，margin auto 的生效不仅是水平方向，垂直方向也会自动去分配这个剩余空间。
 
 
 
