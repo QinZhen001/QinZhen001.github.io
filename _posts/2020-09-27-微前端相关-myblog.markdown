@@ -18,6 +18,8 @@ tags:
 
 [可能是你见过最完善的微前端解决方案](https://zhuanlan.zhihu.com/p/78362028)
 
+[解密微前端："巨石应用"的诞生](https://juejin.cn/post/6889956096501350408#heading-11)
+
 
 
 
@@ -148,7 +150,26 @@ shadow.innerHTML = '<sub-app>Here is some new text</sub-app><link rel="styleshee
 
 
 
+# 补充
 
+
+
+## iframe 架构
+
+iframe 对于这种跨团队的中后台巨无霸项目依然有着天然的优势，理由如下：
+
+- **框架无关**：iframe 只加载部署完应用链接；
+- **独立沙箱**：iframe 拥有浏览器的独立沙箱，子应用和主应用完全不用考虑 js & css 污染问题；
+- **开发简单**：仅仅一个 iframe 标签；
+
+
+
+iframe 方案的一些弊端：
+
+- 通信方式简单，简单的 postmessage API 并不能满足业务的需求；
+- 样式割裂，iframe 会导致诸如 Dialog 这样子的全局蒙层仅在 ifame 区块内展示，使我们系统更像是“拼凑”出来的；
+- 性能瓶颈，路由的切换会导致 iframe 内子应用的重新加载，性能堪忧；
+- 跨域问题，chrome80 的 samesite 策略会导致 iframe 方案的跨域 cookie 无法带给后端；
 
 
 

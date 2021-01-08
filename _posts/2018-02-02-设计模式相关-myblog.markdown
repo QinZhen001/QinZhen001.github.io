@@ -1,0 +1,684 @@
+---
+layout:     post
+title:      "设计模式相关"
+date:       2018-02-02 18:44:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - 设计模式
+---
+
+> “Yeah It's on. ”
+
+
+
+
+## 学习记录
+
+[自己的总结](https://github.com/QinZhen001/design-pattern)
+
+
+
+## 开放封闭原则
+
+
+
+
+[网页链接](https://baike.baidu.com/item/%E5%BC%80%E6%94%BE%E5%B0%81%E9%97%AD%E5%8E%9F%E5%88%99/6028662)
+
+
+开放封闭原则（OCP，Open Closed Principle）是所有面向对象原则的核心。软件设计本身所追求的目标就是**封装变化、降低耦合**，而开放封闭原则正是对这一目标的最直接体现。
+
+
+### 核心思想
+
+**软件实体应该是可扩展，而不可修改的。也就是说，对扩展是开放的，而对修改是封闭的。**
+
+因此，开放封闭原则主要体现在两个方面：
+* 对扩展开放，意味着有新的需求或变化时，可以对现有代码进行扩展，以适应新的情况。
+* 对修改封闭，意味着类一旦设计完成，就可以独立完成其工作，而不要对类进行任何修改。
+
+
+
+只有依赖于抽象。实现开放封闭的核心思想就是**对抽象编程**，而不对具体编程，因为抽象相对稳定。让类依赖于固定的抽象，所以对修改就是封闭的；而通过面向对象的继承和对多态机制，可以实现对抽象体的继承，通过覆写其方法来改变固有行为，实现新的扩展方法，所以对于扩展就是开放的。
+
+
+
+
+
+
+
+## 工厂模式
+
+
+### 简单工厂模式
+
+
+定义：又叫静态工厂方法，就是创建对象，并赋予属性和方法
+
+应用：抽取类相同的属性和方法封装到对象上
+
+代码：
+
+```javascript
+  let UserFactory = function (role) {
+  function User(opt) {
+    this.name = opt.name;
+    this.viewPage = opt.viewPage;
+  }
+  switch (role) {
+    case 'superAdmin':
+      return new User(superAdmin);
+      break;
+    case 'admin':
+      return new User(admin);
+      break;
+    case 'user':
+      return new User(user);
+      break;
+    default:
+      throw new Error('参数错误, 可选参数:superAdmin、admin、user')
+  }
+}
+
+//调用
+let superAdmin = UserFactory('superAdmin');
+let admin = UserFactory('admin') 
+let normalUser = UserFactory('user')
+//最后得到角色,可以调用
+```
+
+
+
+### 工厂方法模式
+
+
+定义：对产品类的抽象使其创建业务主要负责用于创建多类产品的实例
+
+
+应用:创建实例
+
+
+
+代码:
+
+
+
+```javascript
+var Factory=function(type,content){
+  if(this instanceof Factory){
+    var s=new this[type](content);
+    return s;
+  }else{
+    return new Factory(type,content);
+  }
+}
+
+//工厂原型中设置创建类型数据对象的属性
+Factory.prototype={
+  Java:function(content){
+    console.log('Java值为',content);
+  },
+  PHP:function(content){
+    console.log('PHP值为',content);
+  },
+  Python:function(content){
+    console.log('Python值为',content);
+  },
+}
+
+//测试用例
+Factory('Python','我是Python');
+```
+
+
+
+### jQuery的工厂模式
+
+[ https://juejin.im/post/5ec737b36fb9a04799583002 ]( https://juejin.im/post/5ec737b36fb9a04799583002 )
+
+
+
+ jQuery也是一个典型的工厂模式，你给他一个参数，他就给你返回符合参数DOM对象。 
+
+
+
+那jQuery这种不用`new`的工厂模式是怎么实现的呢？其实就是jQuery内部帮你调用了`new`而已，jQuery的调用流程简化了就是这样: 
+
+
+
+```js
+(function(){
+  var jQuery = function(selector) {
+    return new jQuery.fn.init(selector);   // new一下init, init才是真正的构造函数
+  }
+
+  jQuery.fn = jQuery.prototype;     // jQuery.fn就是jQuery.prototype的简写
+
+  jQuery.fn.init = function(selector) {
+    // 这里面实现真正的构造函数
+  }
+
+  // 让init和jQuery的原型指向同一个对象，便于挂载实例方法
+  jQuery.fn.init.prototype = jQuery.fn;  
+
+  // 最后将jQuery挂载到window上
+  window.$ = window.jQuery = jQuery;
+})();
+```
+
+
+
+
+
+
+
+
+
+
+
+
+## 原型模式
+
+
+定义:设置函数的原型属性
+
+
+应用:实现继承 
+
+代码:
+
+```javascript
+function Animal (name) {
+  // 属性
+  this.name = name || 'Animal';
+  // 实例方法
+  this.sleep = function(){
+    console.log(this.name + '正在睡觉！');
+  }
+}
+// 原型方法
+Animal.prototype.eat = function(food) {
+  console.log(this.name + '正在吃：' + food);
+};
+
+function Cat(){ 
+}
+Cat.prototype = new Animal();
+Cat.prototype.name = 'cat';
+
+//&emsp;Test Code
+var cat = new Cat();
+console.log(cat.name);//cat
+console.log(cat.eat('fish'));//cat正在吃：fish  undefined
+console.log(cat.sleep());//cat正在睡觉！ undefined
+console.log(cat instanceof Animal); //true 
+console.log(cat instanceof Cat); //true  
+
+```
+
+
+## 桥接模式
+[https://www.cnblogs.com/TomXu/archive/2012/04/19/2437321.html](https://www.cnblogs.com/TomXu/archive/2012/04/19/2437321.html)
+
+桥接模式（Bridge）将抽象部分与它的实现部分分离，使它们都可以独立地变化。
+
+
+桥接模式最常用在事件监控上，先看一段代码：
+
+
+```javascript
+addEvent(element, 'click', getBeerById);
+
+function getBeerById(e) {
+    var id = this.id;
+        asyncRequest('GET', 'beer.uri?id=' + id, function(resp) {
+        // Callback response.
+        console.log('Requested Beer: ' + resp.responseText);
+    });
+}
+```
+
+上述代码，有个问题就是getBeerById必须要有浏览器的上下文才能使用，因为其内部使用了this.id这个属性，如果没用上下文，那就歇菜了。所以说一般稍微有经验的程序员都会将程序改造成如下形式：
+
+
+```javascript
+function getBeerById(id, callback) {
+// 通过ID发送请求，然后返回数据
+    asyncRequest('GET', 'beer.uri?id=' + id, function(resp) {
+    // callback response
+     callback(resp.responseText);
+    });
+}
+```
+
+
+实用多了，对吧？首先ID可以随意传入，而且还提供了一个callback函数用于自定义处理函数。但是这个和桥接有什么关系呢？这就是下段代码所要体现的了：
+
+```
+addEvent(element, 'click', getBeerByIdBridge);
+　　function getBeerByIdBridge (e) {
+　　　　getBeerById(this.id, function(beer) {
+　　　　　　console.log('Requested Beer: '+beer);
+　　});
+}
+```
+
+
+这里的getBeerByIdBridge就是我们定义的桥，用于将抽象的click事件和getBeerById连接起来，同时将事件源的ID，以及自定义的call函数（console.log输出）作为参数传入到getBeerById函数里。
+
+
+
+
+
+## 访问者模式
+
+> 封装一些作用于某种数据结构中的各元素的操作，它可以在不改变这个数据结构的前提下定义作用于这些元素的新的操作。
+
+
+
+[http://blueskykong.com/2017/03/13/design-visitor/](http://blueskykong.com/2017/03/13/design-visitor/)
+
+
+
+变化的部分是具体的操作，那我们就把操作部分的逻辑抽象出来。我们发现每个操作都会遍历所有的 Element 对象，这个逻辑是不变的，变化的只是遍历时要做的事情，所以我们把要做的事情定义成一个抽象层次，通过一个 Visitor 类来实现要做的事的逻辑，而原本的类本身只需要接收一个 Visitor 对象然后遍历所有成员并应用 visitor 对象来完成对成员对象的操作。这样我们就将变化的部分从整个结构中抽离了出来，如果我们需要增加一种新的操作，只需要在实现一个新的 Visitor 类就可以了。
+
+
+
+## 责任链模式
+
+[https://juejin.im/post/6844903937695318029](https://juejin.im/post/6844903937695318029)
+
+责任链模式 (Iterator Pattern) ,属于行为型设计模式之一。什么是 “链” ？`我们将多个节点首尾相连所构成的模型称为链` 。就好比生活中一个个铁圆环一个连这一个环环相扣一样。
+
+
+
+**顾名思义，责任链模式是一条链，链上有多个节点，每个节点都有各自的责任。当有输入时，第一个责任节点看自己能否处理该输入，如果可以就处理。如果不能就交由下一个责任节点处理。依次类推，直到最后一个责任节点。**
+
+
+
+使用场景:
+
+1. 多个对象可以处理同一个请求，但是具体由哪个对象处理则在运行时动态决定。
+2. 在请求处理者不明确的情况下向多个对象中的一个提交一个请求。
+3. 需要动态指定一组对象处理请求。
+
+
+
+
+
+## 备忘录模式
+
+备忘录模式是为了解决系统中状态回退，撤销问题的。比如系统功能中的回到上一步，下棋悔棋等。我们可能因为当前的状态存在了问题，需要回滚到上一个状态去。
+
+
+
+Without violating encapsulation,capture and externalize an object's internal state so that the object can be restored to this state later. 在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可将该对象恢复到原先保存的状态。 （来自《设计模式之禅》）
+
+
+
+
+
+## 观察者模式和发布订阅模式
+
+
+
+[网页链接](https://www.zhihu.com/question/23486749)
+
+**发布订阅模式属于广义上的观察者模式**.
+
+发布订阅模式是最常用的一种观察者模式的实现，并且从解耦和重用角度来看，更优于典型的观察者模式
+
+
+**发布订阅模式多了个事件通道**
+
+
+在观察者模式中，观察者需要直接订阅目标事件；在目标发出内容改变的事件后，直接接收事件并作出响应
+
+```
+ ╭─────────────╮  Fire Event  ╭──────────────╮
+ │             │─────────────>│              │
+ │   Subject   │              │   Observer   │
+ │             │<─────────────│              │
+ ╰─────────────╯  Subscribe   ╰──────────────╯
+````
+
+
+
+在发布订阅模式中，发布者和订阅者之间多了一个发布通道；一方面从发布者接收事件，另一方面向订阅者发布事件；订阅者需要从事件通道订阅事件
+
+
+以此避免发布者和订阅者之间产生依赖关系
+
+
+```
+ ╭─────────────╮                 ╭───────────────╮   Fire Event   ╭──────────────╮
+ │             │  Publish Event  │               │───────────────>│              │
+ │  Publisher  │────────────────>│ Event Channel │                │  Subscriber  │
+ │             │                 │               │<───────────────│              │
+ ╰─────────────╯                 ╰───────────────╯    Subscribe   ╰──────────────╯
+```
+
+
+### 从代码看区别
+
+>需求：数据打包下载功能 
+
+**用观察者模式实现**
+
+定义一个 DownloadTask 类作为观察者
+
+```
+function DownloadTask(id) {
+  this.id = id;
+  this.loaded = false;
+  this.url = null;
+}
+
+DownloadTask.prototype.finish = function(url) {
+  this.loaded = true;
+  this.url = url;
+  console.log('Task ' + this.id + ' load data from ' + url);
+}
+```
+
+再定义一个 DownloadTaskList 类放便管理多个下载任务
+
+```
+function DownloadTaskList() {
+  this.downloadTaskList = [];
+}
+
+DownloadTaskList.prototype.getCount = function() {
+  return this.downloadTaskList.length;
+};
+
+DownloadTaskList.prototype.get = function(index) {
+  return this.downloadTaskList[index];
+};
+
+DownloadTaskList.prototype.add = function(obj) {
+  return this.downloadTaskList.push(obj);
+};
+
+DownloadTaskList.prototype.remove = function(obj) {
+  const downloadTaskCount = this.downloadTasks.getCount();
+  while (i < downloadTaskCount) {
+    if (this.downloadTaskList[i] === obj) {
+      this.downloadTaskList.splice(i, 1);
+      break;
+    }
+    i++;
+  }
+};
+```
+
+定义一个 DataHub 作为被观察目标
+
+```
+function DataHub() {
+  this.downloadTasks = new DownloadTaskList();
+}
+
+DataHub.prototype.addDownloadTask = function(downloadTask) {
+  this.downloadTasks.add(downloadTask);
+};
+
+DataHub.prototype.removeDownloadTask = function(downloadTask) {
+  this.downloadTasks.remove(downloadTask);
+};
+
+DataHub.prototype.notify = function(url) {
+  const downloadTaskCount = this.downloadTasks.getCount();
+  for (var i = 0; i < downloadTaskCount; i++) {
+    this.downloadTasks.get(i).finish(url);
+  }
+};
+```
+
+创建一个数据中心
+
+```
+var dataHub = new DataHub();
+现在用户来取数据了，创建两个任务var downloadTask1 = new DownloadTask(1);
+var downloadTask2 = new DownloadTask(2);
+
+dataHub.addDownloadTask(downloadTask1);
+dataHub.addDownloadTask(downloadTask2);
+
+```
+
+数据打包完成了
+
+```
+dataHub.notify('http://somedomain.someaddress');
+```
+
+
+
+
+
+**用发布订阅模式实现**
+
+定义 DataHub 类作为发布者
+
+```
+function DataHub() {}
+
+DataHub.prototype.notify = function(url, callback) {
+  callback(url);
+}
+```
+
+定义 DownloadManager 类作为事件通道
+
+```
+function DownloadManager() {
+  this.events = {};
+  this.uId = -1;
+}
+
+DownloadManager.prototype.publish = function(eventType, url) {
+  if (!this.events[eventType]) {
+    return false;
+  }
+  var subscribers = this.events[eventType],
+    count = subscribers ? subscribers.length : 0;
+  while (count--) {
+    var subscriber = subscribers[count];
+    subscriber.handler(eventType, subscriber.taskId, url);
+  }
+}
+
+DownloadManager.prototype.subscribe = function(eventType, handler) {
+  if (!this.events[eventType]) {
+    this.events[eventType] = [];
+  }
+  var taskId = (++this.uId).toString();
+  this.events[eventType].push({
+    taskId: taskId,
+    handler: handler
+  });
+
+  return taskId;
+}
+```
+
+创建一个数据中心
+
+```
+var dataHub = new DataHub();
+```
+
+创建一个下载事件管理器
+```var downloadManager = new DownloadManager();```
+创建一个下载器
+
+```
+var dataLoader = function(eventType, taskId, url) {
+  console.log('Task ' + taskId + ' load data from ' + url);
+}
+```
+
+用户来请求数据了
+
+```
+var downloadTask1 = downloadManager.subscribe('dataReady', dataLoader);
+```
+
+数据打包完成了
+
+```
+dataHub.notify('http://somedomain.someaddress', function(url){
+  downloadManager.publish('dataReady', url);
+});
+```
+
+
+
+
+
+
+**订阅/发布 模式重点是广播外的消息，这个模式并不关心谁接收事件，只管发送事件。**
+
+
+很多人把观察者模式和订阅模式混淆一谈，其实订阅模式有一个**调度中心**，对订阅事件进行统一管理。而观察者模式可以随意注册事件，调用事件，虽然实现原理都雷同，设计模式上有一定的差别，实际代码运用中差别在于：订阅模式中，可以抽离出调度中心单独成一个文件，可以对一系列的订阅事件进行统一管理。这样和观察者模式中的事件漫天飞就有千差万别了，在开发大型项目的时候，订阅/发布模式会让业务更清晰！
+
+
+
+
+
+
+
+## 策略模式和状态模式
+
+
+
+
+
+[网页链接](https://www.zhihu.com/question/23693088)
+
+策略模式和状态模式的同点是**去耦合**，它们都有一个上下文、一些策略或者状态类，上下文委托给这些类来执行。
+
+它们之间的区别是策略模式中的各个策略类之间是平等又平行的，它们之间没有任何联系， 所以客户必须熟知这些策略类的作用，以便可以随时主动切换算法;而在状态模式中，**状态和状态对应的行为是早已经封装好的**，状态之间的切换也早被规定完成，“改变行为”这件事情 发生在状态模式内部。对客户来说，并不需要了解这些细节。这正是状态模式的作用所在。 
+
+
+策略模式一般用于单个算法的替换，客户端事先必须知道所有的可替换策略，由客户端去指定环境类需要哪个策略，注意通常都只有一个最恰当的策略（算法）被选择。其他策略是同级的，可互相动态的在运行中替换原有策略。
+
+而状态模式的每个状态子类中需要包含环境类（Context）中的所有方法的具体实现——条件语句。通过把行为和行为对应的逻辑包装到状态类里，在环境类里消除大量的逻辑判断，而不同状态的切换由继承（实现）State的状态子类去实现，当发现修改的当前对象的状态不是自己这个状态所对应的参数，则各个状态子类自己给Context类切换状态（有职责链模式思想）！且客户端不直接和状态类交互，客户端不需要了解状态！（和策略不一样），策略模式是直接依赖注入到Context类的参数进行选择策略，不存在切换状态的操作，客户端需要了解策略！
+
+
+
+
+### 状态模式的使用场景是什么？
+
+状态模式主要解决的是（目的or意图）：控制一个对象内部的状态转换的条件表达式过于复杂时的情况，且客户端调用之前不需要了解具体状态。它把状态的判断逻辑转到表现不同状态的一系列类当中，可以把复杂的判断逻辑简化。维持开闭原则，方便维护
+
+
+**状态模式是让各个状态对象自己知道其下一个处理的对象是谁！即在状态子类编译时在代码上就设定好了！**
+
+
+### 优化代码
+
+实际编程中，面对大量的if-else，switch-case逻辑判断，如何优化？
+
+
+有时业务不是很复杂，参数校验不是很多的时候，当然可以使用if或者if-else逻辑块或者switch-case块来进行编码，但是一旦扩展了程序，增加了业务，或者开始就有很多很多的逻辑判断分支，这并不是一件好事，它首先不满足OCP——开闭原则，一旦需要修改判断方法或者类，那么牵一发动全身，常常整个逻辑块都需要大改，责任没有分解，对象内部状态的改变和对应逻辑都杂糅在了一起，也不符合单一职责原则，恰恰此时，我希望分解整个判断过程，分离职责，把状态的判断逻辑转移到表示不同状态的一系列类当中，把复杂的判断逻辑简化，这就是刚刚说的状态模式。状态模式把当前类对象的内部的各种状态转移逻辑分布到State抽象类的子类中，这样减少了各个逻辑间的依赖，客户端也不需要实现了解各个状态。
+
+
+
+## 代理模式,适配器模式和装饰者模式
+
+
+
+[网页链接](https://blog.csdn.net/lulei9876/article/details/39994825)
+
+
+代理模式和装者模式最重要的区别在于它们的意图和设计目的。
+
+### 装饰者模式
+
+[网页链接](https://www.cnblogs.com/star91/p/zhuang-shi-qi-mo-shiES7-Decorator-zhuang-shi-qi.html)
+
+http://www.runoob.com/design-pattern/decorator-pattern.html
+
+在不改变接口的前提下，动态扩展对象的访问。
+动态继承，让类具有**在运行期改变行为的能力**。
+装饰者模式，突出的是运行期增加行为，这和继承是不同的，继承是在编译期增加行为。
+
+　　**强调：增强**
+
+
+
+![](https://s2.ax1x.com/2019/06/06/VdVdIJ.jpg)
+
+
+
+
+
+
+
+
+### 代理模式
+
+在不改变接口的前提下，控制对象的访问。
+
+1.从封装的角度讲，是为了解决类与类之间相互调用而由此导致的耦合关系，可以说是接口的另外一个层引用。
+
+　　　　比如：在a类->b代理->c类这个关系中，c类的一切行为都隐藏在b中。即调用者不知道要访问的内容与代理了什么对象。
+
+
+2.从复用的角度讲，可以解决不同类调用一个复杂类时，仅仅因较小的改变而导致整个复杂类新建一个类
+
+　　　　比如：a类->c类1；b类->c类2。
+　　　　可以变为a类->ca代理类->c类；b类->cb代理类-c类。
+　　　　
+　　代理模式，是类之间的封装和（某方面的）复用。
+　　
+　　**强调：限制**
+　　
+　　
+　　
+　　
+
+### 适配器模式
+
+一个适配允许通常因为接口不**兼容**而不能在一起工作的类工作在一起，做法是将类自己的接口包裹在一个已存在的类中。
+
+
+适配器的特点在于兼容，从代码上的特点来说，适配类与原有的类具有相同的接口，并且持有新的目标对象。
+
+就如同一个三孔转2孔的适配器一样，他有三孔的插头，可以插到三孔插座里，又有两孔的插座可以被2孔插头插入。
+
+适配器模式是在于对原有3孔的改造。
+
+在使用适配器模式的时候，我们必须同时持有原对象，适配对象，目标对象
+
+　**强调：兼容**
+
+
+----------
+
+
+
+代理模式的目的是，当直接访 问本体不方便或者不符合需要时，为这个本体提供一个替代者。本体定义了关键功能，而代理提供对它的访问，或者在访问本体之前做一些额外的事情。装饰者模式的作用就是为对象动态增加行为。换句话说，代理模式强调一种关系（Proxy与它的实体之间的关系），**这种关系 可以静态的表达，也是说，这种关系在一开可以被确定**。而装饰者模式用于**一开始不能确定对象的全部功能时**。代理模式通常只有一层‘代理-本体’的用，而装饰者模式经常会形成一条长长的装饰链。 
+
+
+
+
+
+
+
+
+### 总结
+
+* 适配器模式是将一个类(a)通过某种方式转换成另一个类(b).
+* 装饰模式是在一个原有类(a)的基础之上增加了某些新的功能变成另一个类(b).
+* 代理模式是将一个类(a)转换成具体的操作类(b).
+
+
+
+
+
+
