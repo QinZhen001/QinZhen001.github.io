@@ -375,3 +375,36 @@ console.log(counter)
 * **引入模块是只读的，不能修改。并且import命令具有提升效果**
 * import是静态执行，所以不能使用表达式和变量
 * import语句是Singleton模式
+
+
+
+### 如何实现选中复制的功能
+
+它一般可以使用第三方库 [clipboard.js](https://github.com/zenorocha/clipboard.js) 来实现，源码很简单，可以读一读
+
+主要有两个要点
+
+1. 选中: `Selection API`
+2. 复制: `document.execCommand`
+
+
+
+[Selection API](https://developer.mozilla.org/en-US/docs/Web/API/Selection)
+
+```js
+const selection = window.getSelection();
+const range = document.createRange();
+
+range.selectNodeContents(element);
+selection.removeAllRanges();
+selection.addRange(range);
+
+selectedText = selection.toString();
+```
+
+复制: execCommand
+
+```js
+document.execCommand('copy')
+```
+

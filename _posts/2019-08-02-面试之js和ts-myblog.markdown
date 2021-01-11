@@ -3690,6 +3690,34 @@ function pickCark(x: any): any {
 
 
 
+# JSON 相关
+
+
+
+
+
+## 一道JSON.stringify输出题
+
+```js
+const obj = {
+  a: 3,
+  b: 4,
+  c: null,
+  d: undefined,
+  get e () {}
+}
+
+console.log(JSON.stringify(obj))
+```
+
+输出：
+
+```js
+{"a":3,"b":4,"c":null}
+```
+
+对其中的 `undefined`，`function` 将在 `JSON.stringify` 时会忽略掉
+
 
 
 
@@ -4108,14 +4136,7 @@ test();
 
 
 
-## 如何理解JSON
 
-JSON只不过是一个JS对象而已
-
-```
-JSON.stringify({a:10,b:20}) 
-JSON.parse(‘{“a”:10,”b”:20}’)
-```
 
 ## 判断一个变量会被当作true还是false
 
