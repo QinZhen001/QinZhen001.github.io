@@ -747,6 +747,8 @@ CSRF跨站点请求伪造(Cross—Site Request Forgery)
 
 * 在 HTTP 头中自定义属性并验证。
 
+* [Cookie 设置 SameSite](http://www.ruanyifeng.com/blog/2019/09/cookie-samesite.html)
+
   
 
 

@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "vuex相关分析"
+title:      "vuex相关"
 date:       2017-11-12 16:55:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -755,6 +755,56 @@ import router from '../../router'
   }
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+### state 上使用 v-model
+
+[https://vuex.vuejs.org/zh/guide/forms.html](https://vuex.vuejs.org/zh/guide/forms.html)
+
+当在严格模式中使用 Vuex 时，在属于 Vuex 的 state 上使用 `v-model` 会比较棘手：
+
+```html
+<input v-model="obj.message">
+```
+
+假设这里的 `obj` 是在计算属性中返回的一个属于 Vuex store 的对象，在用户输入时，`v-model` 会试图直接修改 `obj.message`。在严格模式中，由于这个修改不是在 mutation 函数中执行的, 这里会抛出一个错误。
+
+
+
+解决：双向绑定的计算属性
+
+```html
+<input v-model="message">
+```
+
+```js
+// ...
+computed: {
+  message: {
+    get () {
+      return this.$store.state.obj.message
+    },
+    set (value) {
+      this.$store.commit('updateMessage', value)
+    }
+  }
+}
+```
+
+
+
+
+
+
 
 
 

@@ -789,7 +789,7 @@ float、clear 和 vertical-align
 
 
 
-### 垂直居中的实现
+## 垂直居中的实现
 
 [https://github.com/chokcoco/iCSS/issues/64](https://github.com/chokcoco/iCSS/issues/64)
 
@@ -913,6 +913,47 @@ float、clear 和 vertical-align
 **flex 格式化上下文**中，设置了 `margin: auto` 的元素，在通过 `justify-content` 和 `align-self` 进行对齐之前，任何正处于空闲的空间都会分配到该方向的自动 margin 中去
 
 这里，很重要的一点是，margin auto 的生效不仅是水平方向，垂直方向也会自动去分配这个剩余空间。
+
+
+
+
+
+
+
+
+
+## 判断图片是否在可视区
+
+[**搞清clientHeight、offsetHeight、scrollHeight、offsetTop、scrollTop**](https://www.imooc.com/article/17571)
+
+判断图片所在位置是否在可视区内，图片移到可视区内进行加载，提供三种判断方法
+
+1. offsetTop < clientHeight + scrollTop
+2. element.getBoundingClientRect().top < clientHeight   **(这里的clientHeight 是指设置了overflow: scroll的那个父元素)**
+3. IntersectionObserver
+
+
+
+这里2的判断其实不够完善
+
+最终版本：
+
+[https://www.cnblogs.com/zzy1996/archive/2004/01/13/11568234.html](https://www.cnblogs.com/zzy1996/archive/2004/01/13/11568234.html)
+
+```js
+function elementInView(element) {
+  const rect = element.getBoundingClientRect()
+  // window.innerHeight 可以替换成 xxx.clientHeight   
+  const yInView = rect.top < window.innerHeight && rect.bottom > 0  
+  const xInView = rect.left < window.innerWidth && rect.right > 0
+  return yInView && xInView
+}
+
+```
+
+
+
+
 
 
 

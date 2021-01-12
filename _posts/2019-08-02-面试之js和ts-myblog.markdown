@@ -4843,3 +4843,36 @@ Object.defineProperty(obj, "name", {
 });
 ```
 
+
+
+## 表单可以跨域吗
+
+[https://github.com/frontend9/fe9-interview/issues/1](https://github.com/frontend9/fe9-interview/issues/1)
+
+> 表单提交是可以进行跨域的，不受浏览器的同源策略限制，估计是历史遗留原因，也有可能是表单提交的结果js是拿不到的，所以不限制问题也不大。但是存在一个问题，就是csrf攻击，具体不展开了，因为可以自动带上cookie造成攻击成功，而cookie的新属性SameSite就能用来限制这种情况
+
+因为原页面用 form 提交到另一个域名之后，原页面的脚本无法获取新页面中的内容。
+
+所以浏览器认为这是安全的。。
+
+
+
+**浏览器为什么禁止ajax跨域，又为什么允许form表单来跨域?**
+
+限制ajax跨域的原因在于ajax网络请求是可以携带cookie的（通过设置withCredentials为true），比如用户打开了浏览器，登录了weibo.com，然后又打开了百度首页，这时候百度首页内的js，向weibo.com用withCredentials为true的ajax方式提交一个post请求，是会携带浏览器和weibo.com之间的cookie的，所以浏览器就默认禁止了ajax跨域，服务端必须设置CORS才可以。
+
+
+
+**form表单提交会不会携带cookie?**
+
+会的。
+
+假设在a.com下,表单提交到baidu.com, 请求会带上baidu.com的cookie。 但不会带上a.com的cookie
+
+```html
+<form action="baidu.com"></form>
+```
+
+我认为的原因是, **同源策略主要是限制js行为,form表单提交的结果js是无法拿到,所以没有去限制.**
+
+csrf攻击就能利用form表单能带cookie的特点. 而cookie的新属性SameSite就能用来限制这种情况
