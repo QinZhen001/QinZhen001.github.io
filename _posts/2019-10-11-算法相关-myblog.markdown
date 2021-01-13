@@ -446,6 +446,20 @@ console.log("res",res)
 
 
 
+[优先队列 二叉堆](https://juejin.cn/post/6917022255180414984?utm_source=gold_browser_extension)
+
+```js
+function push {
+  * 在堆尾部添加元素
+  * 执行上浮循环
+    * 与父元素对比大小，将较大的放在父节点位置
+  
+  return minItem
+}
+```
+
+
+
 
 
 ### 桶排序

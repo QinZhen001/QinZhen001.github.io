@@ -25,11 +25,11 @@ tags:
 
 
 
-### 什么是Webpack
+## 什么是Webpack
 WebPack可以看做是**模块打包机**：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。
 
 
-### WebPack和Grunt以及Gulp相比有什么特性
+## WebPack和Grunt以及Gulp相比有什么特性
 其实Webpack和另外两个并没有太多的可比性，Gulp/Grunt是一种能够优化前端的开发流程的工具，而WebPack是一种模块化的解决方案，不过Webpack的优点使得Webpack在很多场景下可以替代Gulp/Grunt类的工具。
 
 Grunt和Gulp的工作方式是：在一个配置文件中，指明对某些文件进行类似编译，组合，压缩等任务的具体步骤，工具之后可以自动替你完成这些任务。
@@ -1112,6 +1112,25 @@ function determineDate() {
 
 determineDate();
 ```
+
+
+
+### Tree shaking
+
+Tree shaking是一种通过清除多余代码方式来优化项目打包体积的技术，专业术语叫 Dead code elimination
+
+
+
+`tree shaking`只能在静态`modules`下工作。`ECMAScript 6` 模块加载是静态的,因此整个依赖树可以被静态地推导出解析语法树。所以在 `ES6` 中使用 `tree shaking` 是非常容易的。
+
+
+
+
+
+#### tree shaking 的原理
+
+- `ES6 Module`引入进行静态分析，故而编译的时候正确判断到底加载了那些模块
+- 静态分析程序流，判断那些模块和变量未被使用或者引用，进而删除对应代码
 
 
 
