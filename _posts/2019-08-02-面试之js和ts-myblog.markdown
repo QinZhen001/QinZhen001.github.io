@@ -2117,14 +2117,19 @@ new (Foo.getName());
 ## 拷贝相关
 
 
-### 浅拷贝的使用场景
+
+### 浅拷贝
+
+
+
+#### 浅拷贝的使用场景
 
 * Object.assign()
 * 展开语法 Spread
 * Array.prototype.slice()
 
 
-### 什么是深拷贝
+#### 什么是深拷贝
 
 深拷贝会拷贝所有的属性，并拷贝属性指向的动态分配的内存。当对象和它所引用的对象一起拷贝时即发生深拷贝。深拷贝相比于浅拷贝速度较慢并且花销较大。拷贝前后两个对象互不影响。
 
@@ -2144,6 +2149,161 @@ new (Foo.getName());
 6. 不能处理正则
 
 
+
+#### 实现一个深拷贝
+
+一个简单的深拷贝
+
+```javascript
+function cloneDeep1(source) {
+    var target = {};
+    for(var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+            if (typeof source[key] === 'object') {
+                target[key] = cloneDeep1(source[key]); // 注意这里
+            } else {
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
+}
+```
+
+
+
+
+* 对于对象的判断逻辑不严谨，因为 typeof null === 'object'
+* 没有考虑数组的兼容
+
+-----
+
+改动过后的 isObject 判断逻辑如下
+
+```javascript
+function isObject(obj) {
+	return typeof obj === 'object' && obj != null;
+}
+```
+
+---
+
+
+
+#### 深拷贝如何解决循环引用
+
+需要解决拷贝对象内的循环引用问题（使用数组记录拷贝过的对象，记录一个拷贝对象的数据结构，{source:原拷贝对象，target:拷贝后的对象}）
+
+
+
+```js
+//存放已拷贝的对象用于循环引用检测
+let objArr = [];
+ 
+function deepCopy(obj) {
+  //判断循环引用检测
+  for (let ele of objArr) {
+    if (obj === ele.source) {
+      // 在递归中已经出现过  
+      return ele.target;
+    }
+  }
+  //拷贝容器
+  let newObj = {};
+ 
+  //将拷贝的对象放入数组中用于循环引用检测
+  objArr.push({
+    source: obj, //被拷贝对象上的原引用对象，用于循环检测比对
+    target: newObj
+  })
+ 
+  // 使用Reflect可以检测到Symbol类型的属性
+  Reflect.ownKeys(obj).forEach(key => {
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === 'object') {
+        // 使用Array.from对拷贝的数组进行处理
+        newObj[key] = Object.prototype.toString.call(obj[key]) === '[object Array]' ? Array.from(deepCopy(obj[key], key)) : deepCopy(obj[key], key);
+      } else {
+        // 属性值为原始类型的值
+        newObj[key] = obj[key];
+      }
+    }
+  })
+  return newObj;
+}
+```
+
+使用递归的方式可能会造成爆栈，解决办法就是采用迭代的方式
+
+```js
+function cloneForce(x) {
+  //拷贝对象记录
+  const uniqueList = []; 
+ 
+  let root = {};
+ 
+  // 循环数组
+  const loopList = [{
+    parent: root,
+    key: undefined,
+    data: x,
+  }];
+ 
+  while (loopList.length) {
+    //深拷贝，元素出栈
+    const node = loopList.pop();
+    const parent = node.parent;
+    const key = node.key;
+    const data = node.data;
+ 
+    let res = parent;
+    if (typeof key !== 'undefined') {
+      res = parent[key] = {};
+    }
+ 
+    // 判断数据是否存在
+    let uniqueData = find(uniqueList, data);、
+    //数据存在
+    if (uniqueData) {
+      parent[key] = uniqueData.target;
+      break; // 中断本次循环
+    }
+ 
+    //数据不存在，将其放入数组
+    uniqueList.push({
+      source: data,
+      target: res,
+    });
+ 
+    for (let k in data) {
+      if (data.hasOwnProperty(k)) {
+        if (typeof data[k] === 'object') {
+          // 下一次循环
+          loopList.push({
+            parent: res,
+            key: k,
+            data: data[k],
+          });
+        } else {
+          res[k] = data[k];
+        }
+      }
+    }
+  }
+ 
+  return root;
+}
+ 
+function find(arr, item) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].source === item) {
+      return arr[i];
+    }
+  }
+ 
+  return null;
+}
+```
 
 ### Object.assign 
 
@@ -2387,165 +2547,6 @@ for (var nextKey in nextSource) {
         // 赋值给对象 to,并在遍历结束后返回对象 to
         to[nextKey] = nextSource[nextKey];
     }
-}
-```
-
-
-
-
-
-### 实现一个深拷贝
-
-一个简单的深拷贝
-
-```javascript
-function cloneDeep1(source) {
-    var target = {};
-    for(var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-            if (typeof source[key] === 'object') {
-                target[key] = cloneDeep1(source[key]); // 注意这里
-            } else {
-                target[key] = source[key];
-            }
-        }
-    }
-    return target;
-}
-```
-
-
-
-
-* 对于对象的判断逻辑不严谨，因为 typeof null === 'object'
-* 没有考虑数组的兼容
-
------
-
-改动过后的 isObject 判断逻辑如下
-
-```javascript
-function isObject(obj) {
-	return typeof obj === 'object' && obj != null;
-}
-```
-
----
-
-
-
-### 深拷贝如何解决循环引用
-
-需要解决拷贝对象内的循环引用问题（使用数组记录拷贝过的对象，记录一个拷贝对象的数据结构，{source:原拷贝对象，target:拷贝后的对象}）
-
-
-
-```js
-//存放已拷贝的对象用于循环引用检测
-let objArr = [];
- 
-function deepCopy(obj) {
-  //判断循环引用检测
-  for (let ele of objArr) {
-    if (obj === ele.source) {
-      // 在递归中已经出现过  
-      return ele.target;
-    }
-  }
-  //拷贝容器
-  let newObj = {};
- 
-  //将拷贝的对象放入数组中用于循环引用检测
-  objArr.push({
-    source: obj, //被拷贝对象上的原引用对象，用于循环检测比对
-    target: newObj
-  })
- 
-  // 使用Reflect可以检测到Symbol类型的属性
-  Reflect.ownKeys(obj).forEach(key => {
-    if (obj.hasOwnProperty(key)) {
-      if (typeof obj[key] === 'object') {
-        // 使用Array.from对拷贝的数组进行处理
-        newObj[key] = Object.prototype.toString.call(obj[key]) === '[object Array]' ? Array.from(deepCopy(obj[key], key)) : deepCopy(obj[key], key);
-      } else {
-        // 属性值为原始类型的值
-        newObj[key] = obj[key];
-      }
-    }
-  })
-  return newObj;
-}
-```
-
-使用递归的方式可能会造成爆栈，解决办法就是采用迭代的方式
-
-```js
-function cloneForce(x) {
-  //拷贝对象记录
-  const uniqueList = []; 
- 
-  let root = {};
- 
-  // 循环数组
-  const loopList = [{
-    parent: root,
-    key: undefined,
-    data: x,
-  }];
- 
-  while (loopList.length) {
-    //深拷贝，元素出栈
-    const node = loopList.pop();
-    const parent = node.parent;
-    const key = node.key;
-    const data = node.data;
- 
-    let res = parent;
-    if (typeof key !== 'undefined') {
-      res = parent[key] = {};
-    }
- 
-    // 判断数据是否存在
-    let uniqueData = find(uniqueList, data);、
-    //数据存在
-    if (uniqueData) {
-      parent[key] = uniqueData.target;
-      break; // 中断本次循环
-    }
- 
-    //数据不存在，将其放入数组
-    uniqueList.push({
-      source: data,
-      target: res,
-    });
- 
-    for (let k in data) {
-      if (data.hasOwnProperty(k)) {
-        if (typeof data[k] === 'object') {
-          // 下一次循环
-          loopList.push({
-            parent: res,
-            key: k,
-            data: data[k],
-          });
-        } else {
-          res[k] = data[k];
-        }
-      }
-    }
-  }
- 
-  return root;
-}
- 
-function find(arr, item) {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].source === item) {
-      return arr[i];
-    }
-  }
- 
-  return null;
 }
 ```
 

@@ -501,8 +501,6 @@ The code above is ok. You can mix require and export. You can‘t mix import and
 
 [https://segmentfault.com/a/1190000015689240](https://segmentfault.com/a/1190000015689240)
 
-
-
 webpack v4 开始新增了一个 sideEffects 特性，通过给 package.json 加入 sideEffects: false 声明该包模块是否包含 sideEffects(副作用)，从而可以为 tree-shaking 提供更大的优化空间。
 
 
