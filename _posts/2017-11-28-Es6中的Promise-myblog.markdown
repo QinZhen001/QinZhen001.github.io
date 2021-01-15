@@ -669,6 +669,73 @@ await _templateListReport()
 返回的是reject状态，catch会捕获reject
 ```
 
+
+
+
+
+### Promise中的resolve,reject没有执行
+
+[resolve,reject没有执行](http://blog.mapplat.com/public/javascript/%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8Epromise%E7%9A%84%E9%97%AE%E9%A2%98/)
+
+```js
+let tAsync = async function () {
+    console.log(`----->`)
+    await new Promise(() => {});
+    console.log(`<-----`)
+};
+
+tAsync();
+//输出
+----->
+```
+
+发现程序执行结束后并没有输出`<-----`,
+
+根据Promise定义[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise):
+
+```
+new Promise( function(resolve, reject) {...} /* executor */  );
+```
+
+executor是带有 resolve 和 reject 两个参数的函数。 Promise构造函数执行时立即调用executor 函数，resolve和reject 两个函数作为参数传递给executor（executor 函数在Promise构造函数返回所建promise实例对象前被调用）。resolve 和 reject 函数被调用时，分别将promise的状态改为fulfilled（完成）或rejected（失败）。如果在executor函数中抛出一个错误，那么该promise 状态为rejected。executor函数的返回值被忽略。
+
+
+
+看来由于await使异步功能的执行被暂停，直到Promise被解决（resolve或reject），并在实现后恢复执行异步功能。由于该Promise一直没有调用resolve 和 reject导致下面的程序无法执行
+
+
+
+### resolve在Promise外面执行
+
+resolve在Promise外部被执行，这样是否可以改变Promise的状态呢？
+
+```js
+let waitf = null;
+let tAsync = async function () {
+    console.log(`----->`)
+    await new Promise((resolve) => {
+       waitf = resolve
+    });
+    console.log(`<-----`)
+};
+tAsync();
+waitf()
+
+//输出
+//----->
+//<-----
+```
+
+
+
+
+
+
+
+
+
+
+
 ## 其他
 
 

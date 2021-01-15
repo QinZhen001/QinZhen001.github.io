@@ -371,6 +371,10 @@ function A() {
 
 
 
+**闭包产生的本质就是，当前环境中存在指向父级作用域的引用**
+
+
+
 
 
 ---
@@ -4877,3 +4881,67 @@ Object.defineProperty(obj, "name", {
 我认为的原因是, **同源策略主要是限制js行为,form表单提交的结果js是无法拿到,所以没有去限制.**
 
 csrf攻击就能利用form表单能带cookie的特点. 而cookie的新属性SameSite就能用来限制这种情况
+
+
+
+
+
+## js中如何实现函数重载
+
+[https://segmentfault.com/a/1190000016193719](https://segmentfault.com/a/1190000016193719)
+
+利用arguments和switch实现重载
+
+......
+
+
+
+利用arguments和闭包实现重载
+
+```js
+function addMethod (object, name, fn) {
+  // 把前一次添加的方法存在一个临时变量old中
+  var old = object[name];
+
+  // 重写object[name]方法
+  object[name] = function () {
+    if (fn.length === arguments.length) {
+      // 如果调用object[name]方法时，如果实参和形参个数一致，则直接调用
+      return fn.apply(this, arguments);
+    } else if (typeof old === 'function') {
+      // 如果实参形参不一致，判断old是否是函数，如果是，就调用old
+      return old.apply(this, arguments);
+    }
+  };
+}
+
+addMethod(people, 'find', function() {
+  return this.values;
+});
+
+addMethod(people, 'find', function(firstName) {
+  return this.values.filter((value) => {
+    return value.indexOf(firstName) !== -1 ? true : false;
+  });
+});
+
+addMethod(people, 'find', function(firstName, lastName) {
+  return this.values.filter((value) => {
+    var fullName = `${firstName} ${lastName}`;
+    return value.indexOf(fullName) !== -1 ? true : false;
+  });
+});
+
+console.log(people.find());                     // ["Dean Edwards", "Sam Stephenson", "Alex Russell", "Dean Tom"]
+console.log(people.find('Dean'));               // ["Dean Edwards", "Dean Tom"]
+console.log(people.find('Dean', 'Edwards'));    // ["Dean Edwards"]
+```
+
+
+
+
+
+JavaScript可以实现函数重载，主要有两种思想：
+
+1. 利用arguments类数组来判断接收参数的个数
+2. 利用闭包保存以前注册进来的同名函数
