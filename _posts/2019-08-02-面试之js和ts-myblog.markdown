@@ -1607,6 +1607,24 @@ obj.say();  // undefined window
 
 
 
+### 自执行函数的this指向window
+
+[https://segmentfault.com/q/1010000004648772](https://segmentfault.com/q/1010000004648772)
+
+从上面的题目的题目我们可以知道，obj.say执行，里面的this不是指向obj，而是指向window。
+
+这是为什么？
+
+
+
+当你要确定“函数中的this是什么”的时候，永远不要到函数**定义的地方**去找答案！而是要到**函数被调用**的地方找答案！
+
+
+
+obj.say中的自执行函数所在环境是window，所以里面的this也是指向window。
+
+
+
 
 
 ### call模拟实现的一个问题
@@ -1804,7 +1822,7 @@ function myInstanceof(letf,right){
 
 > Hi, This is Hank!
 > // 等待5秒
-> Weak up after 10
+> Weak up after 5
 > Eat dinner ~
 
 `LazyMan('Hank').eat('dinner').eat('supper')`，输出
@@ -1929,14 +1947,6 @@ function myInstanceof(letf,right){
 >
 >
 >以上关于 new 绑定来源于你不知道的js上卷 2.2绑定规则。
-
-
-
-##### 
-
-
-
-
 
 ### 手写一个new
 
