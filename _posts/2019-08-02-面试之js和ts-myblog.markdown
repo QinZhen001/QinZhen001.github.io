@@ -1993,7 +1993,7 @@ car.start();
 
 非常要注意的一点
 
-**var ret = Con.apply(obj, argu78ments);**
+**var ret = Con.apply(obj, arguments);**
 
 
 构造函数执行时要绑定obj的上下文环境,在构造函数中经常会用到this.xxx =xxxx 
