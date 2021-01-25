@@ -4057,22 +4057,6 @@ f(p1, p2, p3, p4, p5)
 
 
 
-
-## ES6 与 ES5 继承的区别
-
-
-
-* ES5的继承是通过prototype或构造函数机制来实现。ES5的继承实质上是**先创建子类的实例对象**，然后再将父类的方法添加到this上(Parent.apply(this))。
-* ES6的继承机制实质上是**先创建父类的实例对象**this(所以必须先调用父类的super()方法)，然后再用子类的构造函数修改this。
-
-具体的：ES6通过class关键字定义类，里面有构造方法，类之间通过extends关键字实现继承。子类必须在constructor方法中调用super方法，否则新建实例报错。因为子类没有自己的this对象，而是继承了父类的this对象，然后对其进行加工。如果不调用super方法，子类得不到this对象。
-
-> super关键字指代父类的实例，即父类的this对象。在子类构造函数中，调用super后，才可使用this关键字，否则报错。
-
-
-
-
-
 ##  虚拟dom的优势
 
 1. 优化了dom操作，提升渲染性能；
@@ -4205,22 +4189,15 @@ console.log(location.hash);
 
 
 
-
-
-
-
-
-
 ### ES5的继承和ES6的继承有什么区别？
 
-ES5的继承时通过prototype或构造函数机制来实现。ES5的继承实质上是先创建子类的实例对象，然后再将父类的方法添加到this上（Parent.apply(this)）。
-
-
-ES6的继承机制完全不同，实质上是先创建父类的实例对象this（所以必须先调用父类的super()方法），然后再用子类的构造函数修改this。
+* ES5的继承是通过prototype或构造函数机制来实现。ES5的继承实质上是**先创建子类的实例对象**，然后再将父类的方法添加到this上(Parent.apply(this))。
+* ES6的继承机制实质上是**先创建父类的实例对象**this(所以必须先调用父类的super()方法)，然后再用子类的构造函数修改this。
 
 具体的：ES6通过class关键字定义类，里面有构造方法，类之间通过extends关键字实现继承。子类必须在constructor方法中调用super方法，否则新建实例报错。因为子类没有自己的this对象，而是继承了父类的this对象，然后对其进行加工。如果不调用super方法，子类得不到this对象。
 
-ps：super关键字指代父类的实例，即父类的this对象。在子类构造函数中，调用super后，才可使用this关键字，否则报错。
+> super关键字指代父类的实例，即父类的this对象。在子类构造函数中，调用super后，才可使用this关键字，否则报错。
+
 
 
 
@@ -4229,7 +4206,7 @@ ps：super关键字指代父类的实例，即父类的this对象。在子类构
 
 用到instanceof和constructor来检测某个对象是不是另一个对象的实例
 
-```
+```js
 var M = function(name){
     this.name = name
 }
@@ -4264,7 +4241,6 @@ o3.\_\_proto__.constructor === Object //false**
 
 
 
-
 ### 借助构造函数实现继承
 
 ```
@@ -4281,7 +4257,6 @@ console.log(Child1())
 ```
 
 **缺点：Parent1原型链上的东西并没有被Child1继承**
-
 
 ### 借助原型链实现继承
 
