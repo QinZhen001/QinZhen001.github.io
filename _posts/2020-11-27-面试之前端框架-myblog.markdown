@@ -539,6 +539,25 @@ export default {
 
 
 
+## Vue的数据为什么频繁变化但只会更新一次
+
+1. 检测到数据变化
+2. 开启一个队列
+3. 在同一事件循环中缓冲所有数据改变
+4. 如果同一个 `watcher (watcherId相同)`被多次触发，只会被推入到队列中`一次`
+
+
+
+不优化，每一个数据变化都会执行: `setter->Dep->Watcher->update->run`
+
+优化后：`执行顺序update -> queueWatcher -> 维护观察者队列（重复id的Watcher处理） -> waiting标志位处理 -> 处理$nextTick（在为微任务或者宏任务中异步更新DOM） `
+
+
+
+
+
+
+
 
 
 # VueRouter 
