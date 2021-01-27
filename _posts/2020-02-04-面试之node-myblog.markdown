@@ -56,7 +56,7 @@ libuv：帮助你调用平台和机器上各种系统特性，包括操作文件
 
 > 当然这些劣势都已经有成熟的解决方案了，使用 PM2 管理进程，或者上 K8S 也可以
 
-###  **nodejs 的事件循环（重要）**
+##  **nodejs 的事件循环（重要）**
 
 [http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html](http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html)
 
@@ -81,7 +81,45 @@ libuv：帮助你调用平台和机器上各种系统特性，包括操作文件
 
 * `Poll` ：上面两个阶段的触发，其实是在 poll 阶段触发的。
 
-  
+
+
+
+### timers 阶段
+
+一个`timer`指定一个下限时间而不是准确时间，在达到这个下限时间后执行回调。在指定的时间过后，`timers`会尽早的执行回调，但是系统调度或者其他回调的执行可能会延迟它们。
+
+> 从技术上来说，`poll`阶段控制`timers`什么时候执行，而执行的具体位置在`timers`。
+
+下限的时间有一个范围：`[1, 2147483647]`，如果设定的时间不在这个范围，将被设置为1。
+
+
+
+
+
+### poll 阶段
+
+当事件循环进入`poll`阶段：
+
+- `poll`队列不为空的时候，事件循环肯定是先遍历队列并同步执行回调，直到队列清空或执行回调数达到系统上限。
+- `poll`队列为空的时候，这里有两种情况。
+  - 如果代码已经被`setImmediate()`设定了回调，那么事件循环直接结束`poll`阶段进入`check`阶段来执行`check`队列里的回调。
+  - 如果代码没有被设定`setImmediate()`设定回调：
+    - 如果有被设定的`timers`，那么此时事件循环会检查`timers`，如果有一个或多个`timers`下限时间已经到达，那么事件循环将绕回`timers`阶段，并执行`timers`的有效回调队列。
+    - 如果没有被设定`timers`，这个时候事件循环是阻塞在`poll`阶段等待回调被加入`poll`队列。
+
+
+
+### check 阶段
+
+这个阶段允许在`poll`阶段结束后立即执行回调。如果`poll`阶段空闲，并且有被`setImmediate()`设定的回调，那么事件循环直接跳到`check`执行而不是阻塞在`poll`阶段等待回调被加入。
+
+
+
+`setImmediate()`实际上是一个特殊的`timer`，跑在事件循环中的一个独立的阶段。它使用`libuv`的`API`来设定在`poll`阶段结束后立即执行回调。
+
+
+
+**注：`setImmediate()`具有最高优先级，只要`poll`队列为空，代码被`setImmediate()`，无论是否有`timers`达到下限时间，`setImmediate()`的代码都先执行。**
 
 
 
@@ -127,6 +165,85 @@ timer1->promise1->timer2->promise2
 ```
 
 
+
+## setTimeout和setImmediate执行顺序随机
+
+[https://segmentfault.com/a/1190000013102056](https://segmentfault.com/a/1190000013102056)
+
+```js
+setTimeout(() => {
+    console.log('setTimeout');
+}, 0);
+setImmediate(() => {
+    console.log('setImmediate');
+})
+
+// console 的顺序是随机的
+```
+
+首先进入的是`timers`阶段，如果我们的机器性能一般，那么进入`timers`阶段，一毫秒已经过去了（`setTimeout(fn, 0)`等价于`setTimeout(fn, 1)`），那么`setTimeout`的回调会首先执行。
+
+如果没有到一毫秒，那么在`timers`阶段的时候，下限时间没到，`setTimeout`回调不执行，事件循环来到了`poll`阶段，这个时候队列为空，此时有代码被`setImmediate()`，于是先执行了`setImmediate()`的回调函数，之后在下一个事件循环再执行`setTimemout`的回调函数。
+
+而我们在执行代码的时候，进入`timers`的时间延迟其实是随机的，并不是确定的，所以会出现两个函数执行顺序随机的情况。
+
+
+
+- `setImmediate` 设计为在当前轮询 `poll` 阶段完成后执行脚本。
+- `setTimeout` 计划在以毫秒为单位的最小阈值过去之后运行脚本。
+
+
+
+但是，如果这两个调用在一个 `I/O` 回调中，那么 `immediate` 总是执行第一：
+
+```js
+// timeout_vs_immediate.js
+const fs = require('fs');
+
+fs.readFile(__filename, () => {
+  setTimeout(() => {
+    console.log('timeout');
+  }, 0);
+  setImmediate(() => {
+    console.log('immediate');
+  });
+});
+```
+
+`poll` 阶段用 `setImmediate` 设置下阶段 `check` 的回调，等到了 `check` 就开始执行；`timers` 阶段只能等到下次循环执行！
+
+
+
+## process.nextTick
+
+无论事件循环的当前阶段如何，都将在当前操作完成之后处理 `nextTickQueue`
+
+```js
+           ┌───────────────────────────┐
+        ┌─>│           timers          │
+        │  └─────────────┬─────────────┘
+        │           nextTickQueue
+        │  ┌─────────────┴─────────────┐
+        │  │     pending callbacks     │
+        │  └─────────────┬─────────────┘
+        │           nextTickQueue
+        │  ┌─────────────┴─────────────┐
+        |  |     idle, prepare         │
+        |  └─────────────┬─────────────┘
+  nextTickQueue     nextTickQueue
+        |  ┌─────────────┴─────────────┐
+        |  │           poll            │
+        │  └─────────────┬─────────────┘
+        │           nextTickQueue
+        │  ┌─────────────┴─────────────┐
+        │  │           check           │
+        │  └─────────────┬─────────────┘
+        │           nextTickQueue
+        │  ┌─────────────┴─────────────┐
+        └──┤       close callbacks     │
+           └───────────────────────────┘
+
+```
 
 
 

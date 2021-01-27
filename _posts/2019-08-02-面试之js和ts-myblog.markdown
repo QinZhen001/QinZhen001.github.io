@@ -625,6 +625,104 @@ data[0]Context = {
 
 
 
+### 闭包输出的题目
+
+[https://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html](https://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html)
+
+```js
+var name = 'The Window'
+
+var object = {
+  name: 'My Object',
+
+  getNameFunc: function () {
+    return function () {
+      return this.name
+    }
+  },
+}
+
+
+alert(object.getNameFunc()()) // The Window
+```
+
+
+
+```js
+var name = 'The Window'
+
+var object = {
+  name: 'My Object',
+
+  getNameFunc: function () {
+    var that = this
+    return function () {
+      return that.name
+    }
+  },
+}
+
+alert(object.getNameFunc()())  // My Object
+```
+
+
+
+
+
+### 闭包实现缓存
+
+```js
+function cached(fn) {
+  const cache = Object.create(null)
+  return function (n) {
+    const hit = cache[n]
+    return hit || (cache[n] = fn(n))
+  }
+}
+```
+
+这样fn就拥有了缓存功能
+
+
+
+### 闭包实现带缓存的fibo函数
+
+```js
+function createFib() {
+  const cache = {}
+  function fib(n) {
+    if (n == 0) {
+      return 0
+    }
+    if (n == 1) {
+      return 1
+    }
+    if (cache[n]) {
+      return cache[n]
+    }
+    const temp = fib(n - 1) + fib(n - 2)
+    cache[n] = temp
+    return temp
+  }
+
+  return fib
+}
+```
+
+测试
+
+```js
+const fib = createFib()
+const res = fib(30)
+console.log('res', res)
+```
+
+
+
+
+
+
+
 
 
 

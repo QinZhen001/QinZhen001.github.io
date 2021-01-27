@@ -412,11 +412,128 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 
 
 
+## 依赖属性收集依赖
+
+
+
+初始化时，页面渲染会将“渲染`Watcher`”入栈，并挂载到`Dep.target`
+
+在页面渲染过程中遇到计算属性，对其取值，因此执行 `watcher.evaluate` 的逻辑，接着调用 `this.get`:
+
+```js
+get () {
+  // 1
+  pushTarget(this)
+  let value
+  const vm = this.vm
+  try {
+    // 2
+    value = this.getter.call(vm, vm) // 计算属性求值
+  } catch (e) {
+    if (this.user) {
+      handleError(e, vm, `getter for watcher "${this.expression}"`)
+    } else {
+      throw e
+    }
+  } finally {
+    popTarget()
+    this.cleanupDeps()
+  }
+  return value
+}
+
+```
+
+
+
+```js
+Dep.target = null
+let stack = []  // 存储 watcher 的栈
+
+export function pushTarget(watcher) {
+  stack.push(watcher)
+  Dep.target = watcher
+} 
+
+export function popTarget(){
+  stack.pop()
+  Dep.target = stack[stack.length - 1]
+}
+```
+
+**很重要的一点 watcher 会形成一个栈**
+
+`pushTarget` 轮到“计算属性`Watcher`”入栈，并挂载到`Dep.target`，此时栈中为 [渲染Watcher, 计算属性Watcher]
+
+`this.getter` 对计算属性求值，在获取依赖属性时，触发依赖属性的 数据劫持`get`，执行 `dep.depend` 收集依赖（“计算属性`Watcher`”）
+
+
+
+> 计算属性Watcher  =>  依赖data的监听方法get   (get的依赖收集)
+>
+> 实际上是defineReactive中的get方法的dep.depend()将computed的watcher推入依赖data的dep的sub队列中
 
 
 
 
 
+### 收集渲染Watcher
+
+`this.getter` 求值完成后`popTragte`，“计算属性`Watcher`”出栈，`Dep.target` 设置为“渲染`Watcher`”，此时的 `Dep.target` 是“渲染`Watcher`”
+
+```js
+if (Dep.target) {
+  watcher.depend()
+}
+```
+
+`watcher.depend` 收集依赖：
+
+```js
+depend() {
+  let i = this.deps.length
+  while (i--) {
+    this.deps[i].depend()
+  }
+}
+```
+
+`deps` 内存储的是依赖属性的 `dep`，这一步是依赖属性收集依赖（“渲染`Watcher`”）
+
+经过上面两次收集依赖后，依赖属性的 `subs` 存储两个 `Watcher`，[计算属性Watcher，渲染Watcher]
+
+
+
+
+
+
+
+### 为什么依赖属性要收集渲染Watcher
+
+模板内只用到计算属性
+
+```html
+<template>
+  <div>{{msg1}}</div>
+</template>
+
+export default {
+  data(){
+    return {
+      msg: 'hello'
+    }
+  },
+  computed:{
+    msg1(){
+      return this.msg + ' world'      
+    }
+  }
+}
+```
+
+模板上没有使用到依赖属性，页面渲染时，那么依赖属性是不会收集 “渲染`Watcher`”的。此时依赖属性里只会有“计算属性`Watcher`”，当依赖属性被修改，只会触发“计算属性`Watcher`”的 `update`。而计算属性的 `update` 里仅仅是将 `dirty` 设置为 true，并没有立刻求值，那么计算属性也不会被更新。
+
+所以需要收集“渲染`Watcher`”，在执行完“计算属性`Watcher`”后，再执行“渲染`Watcher`”。页面渲染对计算属性取值，执行 `watcher.evaluate` 才会重新计算求值，页面计算属性更新。
 
 
 

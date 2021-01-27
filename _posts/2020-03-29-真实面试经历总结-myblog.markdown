@@ -23,17 +23,11 @@ tags:
 
 
 
-
-
-# 面试
-
-
-
-## 斗游
+# 斗游
 
 
 
-### 一面
+## 一面
 
 
 
@@ -134,7 +128,7 @@ function  lottery(whiteList,  participant){
 
 
 
-### 二面
+## 二面
 
 
 
@@ -168,13 +162,13 @@ function  lottery(whiteList,  participant){
 
 
 
-## 深信服
+# 深信服
 
 
 
-### 一面
+## 一面
 
-> 已拿到offer，不去
+> 已拿到offer没去
 
 基础
 
@@ -215,9 +209,9 @@ vue
 
 
 
-## 字节跳动
+# 字节跳动
 
-### 一面
+## 一面
 
 > 宇宙条，面试要求极高，考察算法，会一直追问知道你答不出来为止
 
@@ -292,11 +286,11 @@ async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但a
 
 
 
-## 追一科技
+# 追一科技
 
 一家c轮做人工智能的公司，前端对node要求高，问框架原理问的很细很深
 
-### 一面
+## 一面
 
 * 链表和数组区别？真实应用场景 （偏后端）（卧槽）
 * diff细节？dom树更新怎么比较的？比较顺序？（是否component是否普通标签是否相同标签）同层对比？如果只是属性变了怎么更新？patchChildren？key的作用？
@@ -325,11 +319,11 @@ async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但a
 
 
 
-## 晓教育
+# 晓教育
 
 
 
-### 一面
+## 一面
 
 
 
@@ -372,7 +366,7 @@ gulp
 
 
 
-### 二面
+## 二面
 
 
 
@@ -421,11 +415,11 @@ gulp
 
 
 
-## 阿里
+# 阿里
 
 
 
-### 盒马一面(笔试)
+## 盒马一面(笔试)
 
 > 两道笔试题，一小时内完成
 
@@ -744,7 +738,7 @@ lazy3.forEach((v) => {
 
 
 
-###  盒马二面 (电话 同事面)  
+##  盒马二面 (电话 同事面)  
 
 > 40分钟左右
 
@@ -772,7 +766,7 @@ lazy3.forEach((v) => {
 
 
 
-#### 深拷贝循环引用不报错
+### 深拷贝循环引用不报错
 
 
 
@@ -828,7 +822,7 @@ console.log(res)
 
 
 
-#### Promise.catch的优势
+### Promise.catch的优势
 
 [https://www.css3.io/promise-catch-vs-reject.html](https://www.css3.io/promise-catch-vs-reject.html)
 
@@ -932,7 +926,7 @@ p2.catch(function(e) {
 
 
 
-#### npm pacakge的版本控制规范
+### npm pacakge的版本控制规范
 
 以当前版本为1.0.0为例子，遵循以下规范：
 
@@ -964,7 +958,7 @@ p2.catch(function(e) {
 
 
 
-#### 不同版本的npm 
+### 不同版本的npm 
 
 * npm 2 在安装依赖包时，采用简单的递归安装方法。
 * npm 3  扁平结构
@@ -982,7 +976,7 @@ package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 
 
 
 
-#### 判断async函数
+### 判断async函数
 
 
 
@@ -1010,7 +1004,7 @@ package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 
 
 
 
-#### node stream
+### node stream
 
 流（stream）是 Node.js 中处理流式数据的抽象接口。 `stream` 模块用于构建实现了流接口的对象。
 
@@ -1075,7 +1069,7 @@ server.listen(8000);
 
 
 
-#### node如何做到主进程和子进程共享一个端口
+### node如何做到主进程和子进程共享一个端口
 
 [https://zhuanlan.zhihu.com/p/112597848](https://zhuanlan.zhihu.com/p/112597848)
 
@@ -1175,7 +1169,7 @@ if (cluster.isMaster) {
 
 
 
-#### Socket是什么
+### Socket是什么
 
 [https://www.jianshu.com/p/01b9a454de5a](https://www.jianshu.com/p/01b9a454de5a)
 
@@ -1199,7 +1193,7 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 
 
-### 盒马三面 (电话 同事面)
+## 盒马三面 (电话 同事面)
 
 > 50分钟左右，已过
 
@@ -1214,7 +1208,7 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 
 
-#### 找到大数组中的最大的数
+### 找到大数组中的最大的数
 
 [leetcode 上的解法](https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/solution/tu-jie-top-k-wen-ti-de-liang-chong-jie-fa-you-lie-/)
 
@@ -1246,27 +1240,473 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 
 
+### 微信小程序双线程架构的优势和特点
 
-
-
-
-#### 微信小程序双线程架构的优势和特点
-
-
-
+与传统的浏览器Web页面最大区别在于，小程序的是基于 双线程 模型的，在这种架构中，**小程序的渲染层使用 WebView 作为渲染载体，而逻辑层则由独立的 JsCore 线程运行 JS 脚本，双方并不具备数据直接共享的通道，因此渲染层和逻辑层的通信要由 Native 的 JSBrigde 做中转。**
 
 
 
 
 
 
-#### 总结
+
+
+
+
+
+
+
+
+
+### 总结
 
 **总结：面试官会对着一个问题不断深挖，促使你不断地优化你回答的方案**
 
-### 中止
+## 中止
 
 阿里hr最多接受**三年两跳**，遂只能中止面试流程，没有达到主管面，GG了。。
+
+
+
+
+
+# 腾讯
+
+
+
+## pcg一面
+
+> 基础面
+
+### 常见状态码
+
+* 100 
+* 200
+* 301 302 304   **（临时重定向，永久重定向的表现有什么不一样）**
+* 400 401 403  404  （401 403 的区别）
+* 500 503
+
+
+
+http状态码301和302的区别
+
+[https://blog.csdn.net/ai2000ai/article/details/80242193](https://blog.csdn.net/ai2000ai/article/details/80242193)
+
+​    详细来说，301和302状态码都表示重定向，就是说浏览器在拿到服务器返回的这个状态码后会自动跳转到一个新的URL地址，这个地址可以从响应的Location首部中获取（用户看到的效果就是他输入的地址A瞬间变成了另一个地址B）——这是它们的共同点。
+
+​	他们的不同在于301表示旧地址A的资源已经被永久地移除了（这个资源不可访问了），**搜索引擎在抓取新内容的同时也将旧的网址交换为重定向之后的网址**；302表示旧地址A的资源还在（仍然可以访问），这个重定向只是临时地从旧地址A跳转到地址B，**搜索引擎会抓取新的内容而保存旧的网址。**
+
+什么时候需要重定向呢？
+
+* 网站调整（如改变网页目录结构）；
+* 网页被移到一个新地址；
+* 网页扩展名改变(如应用需要把.php改成.Html或.shtml)。
+
+这种情况下，如果不做重定向，则用户收藏夹或搜索引擎数据库中旧地址只能让访问客户得到一个404页面错误信息，访问流量白白丧失；再者某些注册了多个域名的网站，也需要通过重定向让访问这些域名的用户自动跳转到主站点等。
+
+### vue 的 computed 的原理
+
+[https://juejin.cn/post/6844904200539734023](https://juejin.cn/post/6844904200539734023)
+
+```js
+// 注意这里 lazy watcher
+const computedWatcherOptions = {lazy: true}
+
+
+function initComputed(vm: Component, computed: Object) {
+  // $flow-disable-line
+  const watchers = (vm._computedWatchers = Object.create(null))
+  // computed properties are just getters during SSR
+  const isSSR = isServerRendering()
+
+  for (const key in computed) {
+    const userDef = computed[key]
+    const getter = typeof userDef === 'function' ? userDef : userDef.get
+
+    if (!isSSR) {
+      // create internal watcher for the computed property.
+      watchers[key] = new Watcher(
+        vm,
+        getter || noop,
+        noop,
+        computedWatcherOptions
+      )
+    }
+
+    // component-defined computed properties are already defined on the
+    // component prototype. We only need to define computed properties defined
+    // at instantiation here.
+    if (!(key in vm)) {
+      defineComputed(vm, key, userDef)
+    }
+  }
+}
+
+```
+
+这里遍历了 `computed` 里面的每一个属性，并且为每一个属性初始化了一个 `Watcher` 对象。这样，当我们在 `computed` 里面访问 `data` 里面的属性时，就可以收集到依赖了。注意到这里传入了 `{ lazy: true }`，我们看看会有什么效果：
+
+```js
+    this.dirty = this.lazy // for lazy watchers
+    ...
+    this.value = this.lazy
+      ? undefined
+      : this.get()
+```
+
+
+该属性仅仅是标记了当前数据是 “脏的”，并且不会立即求值。
+
+然后我们看看 `defineComputed` 做了啥：
+
+```js
+export function defineComputed(
+  target: any,
+  key: string,
+  userDef: Object | Function
+) {
+  // 不考虑服务端渲染，这里为 true
+  const shouldCache = !isServerRendering()
+  // 只看 computed 值为函数的情况
+  if (typeof userDef === 'function') {
+    sharedPropertyDefinition.get = shouldCache
+      ? createComputedGetter(key)
+      : createGetterInvoker(userDef)
+    sharedPropertyDefinition.set = noop
+  }
+  Object.defineProperty(target, key, sharedPropertyDefinition)
+}
+```
+
+这里执行了 `createComputedGetter` 这个方法：
+
+```js
+function createComputedGetter(key) {
+  return function computedGetter() {
+    const watcher = this._computedWatchers && this._computedWatchers[key]
+    if (watcher) {
+      if (watcher.dirty) {
+        watcher.evaluate()
+      }
+      if (Dep.target) {
+        watcher.depend()
+      }
+      return watcher.value
+    }
+  }
+}
+```
+
+当我们第一次访问计算属性的时候会触发 `get`，由于 `dirty` 为 true，所以这里会走 `watcher.evaluate` 进行求值，并将 `this.dirty` 置为 false，这样下次再对 `computed` 进行求值的时候就不会执行 `watcher.evaluate()` 了，这样就实现了缓存功能。
+
+```js
+  evaluate () {
+    this.value = this.get()
+    this.dirty = false
+  }
+```
+
+而当 `computed` 依赖的数据变化的时候，会触发 `Watcher` 的 `update`：
+
+```js
+  update () {
+    /* istanbul ignore else */
+    // computed
+    if (this.lazy) {
+      this.dirty = true
+    } else if (this.sync) {
+      this.run()
+    } else {
+      // 入队
+      queueWatcher(this)
+    }
+  }
+```
+
+这里仅仅是把 `dirty` 又重置为了 `true` 以使得下次对 `computed` 进行求值的时候重新执行 `watcher.evaluate()`。
+
+
+
+![img](https://user-gold-cdn.xitu.io/2020/6/27/172f65b5f99e240c?imageslim)
+
+
+
+页面A 引用了 computed B，computed B 依赖了 data C
+
+[https://juejin.cn/post/6844903877699960846](https://juejin.cn/post/6844903877699960846)
+
+data C 开始变化后
+
+通知 computed B 更新，然后 computed B 开始重新计算
+
+接着 computed B 通知 页面A更新，然后重新读取 computed
+
+一条链式的操作？ C -》 B -》 A 这样的执行顺序吗？
+
+**答案：不是**
+
+
+
+
+
+其实真正的流程是，data C 开始变化后
+
+1通知 computed B watcher 更新，其实只会重置 脏数据标志位 dirty =true，不会计算值
+
+2通知 页面 A watcher 进行更新渲染，进而重新读取 computed B ，然后 computed B 开始重新计算
+
+
+
+![在这里插入图片描述](https://user-gold-cdn.xitu.io/2019/7/1/16bab98330583c7a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+
+
+为什么 data C 能通知 页面 A?
+
+data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
+
+
+
+
+
+为什么 data C 能收集到 页面A 的watcher?
+
+在 页面 A 在读取 computed B 的时候，趁机把 页面A 介绍给 data C ，于是 页面A watcher 和 data C 间接牵在了一起，于是 data C 就会收集到 页面A watcher
+
+
+
+所以computed 如何更新
+
+**被依赖通知更新后，重置 脏数据标志位 ，页面读取 computed 时再更新值**
+
+
+
+
+
+
+
+### 判断一个东西是不是对象
+
+* Object.prototype.toString()
+* instanceof 原理
+* typeof  弊端
+
+### CSS基础
+
+* flex布局 grid布局
+* 给你设计稿 怎么拆分页面 组件 布局
+
+
+
+### 对单测试的了解
+
+。。。
+
+
+
+### 对ts的了解
+
+。。。
+
+
+
+### vue3
+
+对vue3的理解
+
+
+
+### 深挖简历
+
+* loc 依赖反转为什么用 有什么用 还是会打包进sdk吗 （sdk相关）
+
+* b端项目的文件结构
+
+* 爬虫
+
+* 框架
+
+   
+
+# pcg二面
+
+主要是对简历的一些深入了解，对项目的考察
+
+* 你做过最难的事情是什么
+* 技术成长
+* 技术思考
+* ...
+
+### 总结
+
+具体描述的时候组织语言欠缺一点清晰，不能把一件事讲的非常清楚，和岗位的匹配度不够
+
+
+
+
+
+
+
+# 富途
+
+
+
+## 富途一面
+
+> 时长：一个半小时  对基础的考察非常的深
+
+### 闭包
+
+闭包是什么？
+
+闭包的作用？
+
+哪些场景会用到闭包 =>  回调函数，compose,缓存 
+
+
+
+### even loop
+
+浏览器的事件循环
+
+node的事件循环
+
+node事件循环和浏览器事件循环的区别
+
+node后来版本的事件循环 相比 之前版本的事件循环做了哪些变动
+
+
+
+
+
+
+
+### url
+
+输入一个url到最终页面展示的详细过程
+
+在这个过程中我们可以做的优化手段
+
+
+
+
+
+### 安全
+
+* xss
+* csrf
+* ddos
+* http中间人攻击
+
+怎么样做可以避免这些安全问题
+
+### promise
+
+你对promise的理解
+
+### webpack
+
+webpack是什么 => 模块打包器
+
+webpack打包原理 => entry => 构建依赖图谱 => loader处理对应文件
+
+webpack 的loader和plugin是什么?有什么区别
+
+怎么样写一个webpack-loader
+
+treeshaking是什么
+
+treeshaking在什么时候执行的 => 编译时
+
+对webpack5的了解 => hard-source-webpack-plugin
+
+
+
+### http
+
+http和https的区别
+
+对http2的了解
+
+
+
+### vue
+
+vue 的diff过程  => patch => patchChildren => diff 双指针对比
+
+isSameNode 怎么判断的  =>  key是否相等 && type是否相等 ...
+
+computed 和 watcher 的区别  
+
+computed 为什么初始化的时候不会去计算值 => dirty => 不会去调用
+
+
+
+
+
+### jwt
+
+jwt是什么  => **这是一套无状态的验证机制**
+
+
+
+**使用 JWT 的劣势**
+
+* **JWT 的最大缺点是无法作废已颁布的令牌**：由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。
+* **严重依赖于秘钥**：`JWT` 的生成与解析过程都需要依赖于秘钥(`Secret`)，且都以硬编码的方式存在于系统中(也有放在外部配置文件中的)。如果秘钥不小心泄露，系统的安全性将受到威胁。
+* **冗余的数据开销**：一个 `JWT` 签名的大小要远比一个 `Session` ID 长很多，如果对有效载荷(`payload`)中的数据不做有效控制，其长度会成几何倍数增长，且在每一次请求时都需要负担额外的网络开销。如果放在 Local Storage，**则可能受到 `XSS` 攻击**。
+
+
+
+
+
+
+
+
+
+### 手写题
+
+请使用两种方式实现纯css“左栏定宽200px，右栏自适应”布局
+
+* 这两种方式的优点和缺点
+* flex布局的优点和缺点
+
+----
+
+用递归的方式实现斐波那契数列，输入数字n, 输出第n项，
+并加上缓存功能
+
+* 缓存功能能不能不使用全局变量 =>  使用局部变量  fibo(n,obj)
+* 更好的方式 => 闭包实现
+
+---
+
+给定一个字符串str, 只会出现{}[]()这6种字符，
+请实现一个函数isMatch(str)判断这个字符串中的括号是否是匹配的
+例如以下字符串均为括号匹配的: (){()[{}]} ()({}) {()}[]{()}
+
+
+
+解决思路： 栈
+
+---
+
+实现一个批量请求函数 multiRequest(urls, maxNum)，要求如下：
+
+* 要求最大并发数 maxNum
+
+* 每当有一个请求返回，就留下一个空位，可以增加新的请求
+* 所有请求完成后，结果按照 urls 里面的顺序依次打出
+
+---
+
+
+
+
+
+
+
+
 
 
 
@@ -1274,7 +1714,7 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 
 
-* 一面面试官一般为前端leader，考察前端知识
+* 一面面试官一般为前端leader，考察前端知识  (大厂的话会是你的同事)
 * 二面面试官一般为技术负责人，很大概率他是cto，技术总监，并不是前端的leader，所以他的考察点主要在于你对一个问题的思考过程，你的解决方案，你的计算机基础等
 * 大厂面试会对算法进行考察，前端对标LeetCode的medium难度，想要进大厂算法一定要花时间去学习
 * 基础知识一定要稳，基础知识问题在面试中答不出来会扣分很多
@@ -1286,3 +1726,4 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 经过几家面试下来，也大概清楚自己在市场的位置 
 
 hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情，毕竟工作经验不够（按理来说工作时间越长工资越高）
+
