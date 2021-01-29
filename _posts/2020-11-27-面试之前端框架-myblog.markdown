@@ -558,6 +558,78 @@ export default {
 
 
 
+### Functional component
+
+优化前的组件代码如下：
+
+```html
+<template>
+  <div class="cell">
+    <div v-if="value" class="on"></div>
+    <section v-else class="off"></section>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ['value'],
+}
+</script>
+```
+
+优化后的组件代码如下：
+
+```html
+<template functional>
+  <div class="cell">
+    <div v-if="props.value" class="on"></div>
+    <section v-else class="off"></section>
+  </div>
+</template>
+```
+
+优化前：
+
+![img](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/efdc43d574544231ad9012482a064ba8~tplv-k3u1fbpfcp-watermark.image)
+
+优化后：
+
+![img](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2234e433d468465a8f86cb6d4420c318~tplv-k3u1fbpfcp-watermark.image)
+
+
+
+
+
+函数式组件和普通的对象类型的组件不同，它不会被看作成一个真正的组件，我们知道在 `patch` 过程中，如果遇到一个节点是组件 `vnode`，会递归执行子组件的初始化过程；而函数式组件的 `render` 生成的是普通的 `vnode`，**不会有递归子组件的过程，因此渲染开销会低很多。**
+
+
+
+因此，函数式组件也不会有状态，不会有响应式数据，生命周期钩子函数这些东西。你可以把它当成把普通组件模板中的一部分 DOM 剥离出来，通过函数的方式渲染出来，是一种在 DOM 层面的复用。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # VueRouter 
@@ -591,6 +663,101 @@ beforeCreate () {
 ```
 
 在路由初始化时，核心就是进行路由的跳转，改变 URL 然后渲染对应的组件。接下来来看一下路由是如何进行跳转的。
+
+
+
+
+
+### 作为插件 
+
+`VueRouter` 对象是在 `src/index.js` 中暴露出来的，这个对象有一个静态的 `install` 方法：
+
+```js
+/* @flow */
+// 导入 install 模块
+import { install } from './install'
+// ...
+import { inBrowser, supportsHistory } from './util/dom'
+// ...
+
+export default class VueRouter {
+// ...
+}
+
+// 赋值 install
+VueRouter.install = install
+
+// 自动使用插件
+if (inBrowser && window.Vue) {
+  window.Vue.use(VueRouter)
+}
+```
+
+
+
+
+
+### install
+
+[https://github.com/DDFE/DDFE-blog/issues/9](https://github.com/DDFE/DDFE-blog/issues/9)
+
+`install` 在这里是一个单独的模块，继续来看同级下的 `src/install.js` 的主要逻辑：
+
+```js
+// router-view router-link 组件
+import View from './components/view'
+import Link from './components/link'
+
+// export 一个 Vue 引用  (注意这里)
+export let _Vue
+
+// 安装函数
+export function install (Vue) {
+  if (install.installed) return
+  install.installed = true
+	
+  // 赋值私有 Vue 引用
+  _Vue = Vue
+
+  // 注入 $router $route
+  Object.defineProperty(Vue.prototype, '$router', {
+    get () { return this.$root._router }
+  })
+
+  Object.defineProperty(Vue.prototype, '$route', {
+    get () { return this.$root._route }
+  })
+  // beforeCreate mixin
+  Vue.mixin({
+    beforeCreate () {
+      // 判断是否有 router
+      if (this.$options.router) {
+      	// 赋值 _router
+        this._router = this.$options.router
+        // 初始化 init
+        this._router.init(this)
+        // 定义响应式的 _route 对象
+        Vue.util.defineReactive(this, '_route', this._router.history.current)
+      }
+    }
+  })
+
+  // 注册组件
+  Vue.component('router-view', View)
+  Vue.component('router-link', Link)
+// ...
+}
+```
+
+- 为啥要 export 一个 Vue 引用？
+
+> 插件在打包的时候是肯定不希望把 vue 作为一个依赖包打进去的，但是呢又希望使用 `Vue` 对象本身的一些方法，此时就可以采用上边类似的做法，在 `install` 的时候把这个变量赋值 `Vue` ，这样就可以在其他地方使用 `Vue` 的一些方法而不必引入 vue 依赖包（前提是保证 `install` 后才会使用）。
+
+ 
+
+- 通过给 `Vue.prototype` 定义 `$router`、`$route` 属性就可以把他们注入到所有组件中吗？
+
+> 在 Vue.js 中所有的组件都是被扩展的 Vue 实例，也就意味着所有的组件都可以访问到这个实例原型上定义的属性。
 
 
 
