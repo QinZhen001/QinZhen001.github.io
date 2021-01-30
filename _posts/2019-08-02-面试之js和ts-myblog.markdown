@@ -1067,6 +1067,43 @@ checkScope()() // 'local scope'
 
 
 
+----
+
+另一道题:
+
+```js
+function Foo() {
+  Foo.a = function () {
+    console.log(1)
+  }
+
+  this.a = function () {
+    console.log(2)
+  }
+}
+
+Foo.prototype.a = function () {
+  console.log(3)
+}
+
+Foo.a = function () {
+  console.log(4)
+}
+
+
+
+Foo.a()  //4 
+let obj = new Foo()
+obj.a() //2
+Foo.a() //1
+```
+
+
+
+
+
+
+
 
 
 
@@ -3957,6 +3994,40 @@ machine('ygy').waitFirst(5).do('eat').execute();
   console.log(5);
   
   // 2 3 5 4 1 
+```
+
+
+
+----
+
+
+
+
+
+```js
+setTimeout(()=>{
+  console.log(1)
+  Promise.resolve().then(()=>{
+    // 微任务
+    console.log(2) 
+  })
+},0)
+
+new Promise(function(resolve,reject){
+  console.log(3)
+  setTimeout(function(){
+    console.log(4)
+    resolve(5)
+  })
+}).then(res=>{
+  console.log(6)
+  setTimeout(()=>{
+    console.log(res)
+  },0)
+})
+
+   
+// 3 1 2 4 6 5 
 ```
 
 
