@@ -142,6 +142,26 @@ tags:
 
 
 
+
+
+#### **502 和 504**
+
+[https://mp.weixin.qq.com/s/WK_yzjA23BTfs6B0243ZLw](https://mp.weixin.qq.com/s/WK_yzjA23BTfs6B0243ZLw)
+
+这两种异常状态码都与网关 Gateway 有关，首先明确两个概念
+
+- Proxy (Gateway)，反向代理层或者网关层。在公司级应用中一般使用 Nginx 扮演这个角色
+- Application (upstream serrver)，应用层服务，作为 Proxy 层的上游服务。在公司中一般为各种语言编写的服务器应用，如 Go/Java/Python/PHP/Node 等
+
+此时关于 502 与 504 的区别就很显而易见
+
+- `502 Bad Gateway`。一般表现为你自己写的应用层服务(Java/Go/PHP)挂了，网关层无法接收到响应
+- `504 Gateway Timeout`。一般表现为应用层服务 (upstream) 超时，如查库操作耗时十分钟，超过了 Nginx 配置的超时时间
+
+##  
+
+
+
 ### HTTP连接的优化怎么做
 
 
@@ -702,6 +722,90 @@ postMessage()方法允许来自不同源的脚本采用异步方式进行有限�
 两者的区别在于代理的对象不一样：**正向代理**代理的对象是客户端，**反向代理**代理的对象是服务端
 
 
+
+
+
+# **nginx** 
+
+
+
+## 在 nginx 中配置负载均衡
+
+通过 `proxy_pass` 与 `upstream` 即可实现最为简单的负载均衡。如下配置会对流量均匀地导向 `172.168.0.1`，`172.168.0.2` 与 `172.168.0.3` 三个服务器
+
+```
+http {
+  upstream backend {
+      server 172.168.0.1;
+      server 172.168.0.2;
+      server 172.168.0.3;
+  }
+
+  server {
+      listen 80;
+      location / {
+          proxy_pass http://backend;
+      }
+  }
+}
+```
+
+关于负载均衡的策略大致有以下四种种
+
+1. round_robin，轮询
+2. weighted_round_robin，加权轮询
+3. ip_hash
+4. least_conn
+
+
+
+###  round_robin 轮询
+
+`nginx` 默认的负载均衡策略就是轮询，假设负载三台服务器节点为 A、B、C，则每次流量的负载结果为 ABCABC
+
+
+
+### Weighted_Round_Robin
+
+加权轮询，根据关键字 weight 配置权重，如下则平均来的请求，会有八次打在 A，会有一次打在 B，一次打在 C
+
+```
+upstream backend {
+  server 172.168.0.1 weight=8;
+  server 172.168.0.2 weight=1;
+  server 172.168.0.3 weight=1;
+}
+```
+
+
+
+### IP_hash
+
+对每次的 IP 地址进行 Hash，进而选择合适的节点，如此，每次用户的流量请求将会打在固定的服务器上，利于缓存，也更利于 AB 测试等。
+
+```
+upstream backend {
+  server 172.168.0.1;
+  server 172.168.0.2;
+  server 172.168.0.3;
+  ip_hash;
+}
+```
+
+
+
+### Least Connection
+
+选择连接数最少的服务器节点优先负载
+
+```
+upstream backend {
+  server 172.168.0.1;
+  server 172.168.0.2;
+  server 172.168.0.3;
+  least_conn;
+}
+```
 
 
 

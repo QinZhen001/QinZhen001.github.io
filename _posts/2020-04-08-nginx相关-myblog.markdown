@@ -42,6 +42,12 @@ Nginx更长于底层服务器端资源的处理（静态资源处理转发、反
 
 
 
+nginx模块一般被分成三大类：handler、filter和upstream
+
+
+
+
+
 
 
 
@@ -199,8 +205,6 @@ location ^~/apis/ {
 
 
 也可以统一一点，直接把前后端服务器地址直接都转发到另一个 `server.sherlocked93.club`，只通过在后面添加的 path 来区分请求的是静态资源还是后端服务，看需求了。
-
-### 
 
 
 

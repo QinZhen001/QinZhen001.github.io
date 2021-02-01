@@ -20,6 +20,14 @@ tags:
 
 
 
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/24338fdc22dc4023bea1b1263d7404d5~tplv-k3u1fbpfcp-watermark.image?imageslim)
+
+
+
+https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/24338fdc22dc4023bea1b1263d7404d5~tplv-k3u1fbpfcp-watermark.image
+
+
+
 ## 开放封闭原则
 
 

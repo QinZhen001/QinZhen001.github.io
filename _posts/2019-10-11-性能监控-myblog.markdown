@@ -12,10 +12,11 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+# 正文
 
 
-### 首屏性能监控
+
+## 首屏性能监控
 
 
 先明确概念：
@@ -97,4 +98,75 @@ First paint time 的概念W3C并没有定义，因为是存在争议的。
         }
       }
     }, 0);
-```  
+```
+
+
+
+
+
+## 监控接口错误
+
+[https://juejin.cn/post/6862559324632252430#heading-0](https://juejin.cn/post/6862559324632252430#heading-0)
+
+
+
+
+
+## js代码错误
+
+```js
+  window.addEventListener('error', function(e) {
+    const { message, filename, lineno, colno, error } = e
+    const route = router.currentRoute
+    const page = route.meta.pv || route.name || route.path.split('/').pop()
+    window.logger.log({
+      event: 'error',
+      page,
+      url: filename,
+      line: lineno,
+      col: colno,
+      msg: message,
+      error
+    })
+  })
+```
+
+
+
+
+
+
+
+
+
+## 监听unhandledrejection
+
+当[`Promise`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise) 被 `reject` 且没有 `reject` 处理器的时候，会触发 `unhandledrejection` 事件
+
+```js
+window.addEventListener('unhandledrejection', (e) => {
+  console.log(e)
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+# 补充
+
+
+
+
+
+## replaceOld
+
+装饰器模式，增强原函数
+
+![replaceOld](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9828fb478366475eb547e7f26f15f0fd~tplv-k3u1fbpfcp-zoom-1.image)
