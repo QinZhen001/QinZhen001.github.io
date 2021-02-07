@@ -476,6 +476,52 @@ var obj = (0, _defineProperty3.default)({}, 'name', 'JavaScript');
 
 
 
+
+
+## core-js
+
+[https://juejin.cn/post/6844904055005773831](https://juejin.cn/post/6844904055005773831)
+
+- 它是JavaScript标准库的 polyfill，它支持
+  - 最新的 [ECMAScript](https://en.wikipedia.org/wiki/ECMAScript) 标准
+  - ECMAScript 标准库提案
+  - 一些 [WHATGW](https://en.wikipedia.org/wiki/WHATWG) / [W3C](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium) 标准（跨平台或者 ECMAScript 相关）
+
+- 它最大限度的模块化：你能仅仅加载你想要使用的功能
+- 它能够不污染全局命名空间
+- 它[和babel紧密集成](https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#Babel)：这能够优化`core-js`的导入
+
+
+
+它是最普遍、[最流行](https://www.npmtrends.com/core-js-vs-es5-shim-vs-es6-shim-vs-airbnb-js-shims-vs-polyfill-library-vs-polyfill-service-vs-js-polyfills)给 JavaScript 标准库打补丁的方式，但是有很大一部分开发者并不知道他们间接的使用了`core-js`🙂
+
+
+
+`babel` 和 `core-js` 是紧密集成的：`babel` 提供了优化 `core-js` 优化导入的可能性。`core-js@3` 开发中很重要的一部分是改进 `core-js` 相关的 `babel` 功能
+
+
+
+---
+
+[`@babel/polyfill`](https://babeljs.io/docs/en/next/babel-polyfill.html) 是一个包裹的包，里面仅仅包含 `core-js` 稳定版的引入（在Babel 6 中也包含提案）和 `regenerator-runtime/runtime`，用来转译 generators 和 async 函数。这个包没有提供从 `core-js@2` 到 `core-js@3` 平滑升级路径：因为这个原因，决定弃用 `@babel/polyfill` 代之以分别引入需要的 `core-js` 和 `regenerator-runtime` 。
+
+
+
+原来
+
+```js
+import "@babel/polyfill";
+```
+
+现在使用两行代替：
+
+```js
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+```
+
+
+
 ## stage
 
 #### stage-0

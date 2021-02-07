@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "vue-cli3相关"
+title:      "vue-cli相关"
 date:       2019-10-09 19:56:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -558,6 +558,44 @@ polyfills
 Default: ['es6.array.iterator', 'es6.promise', 'es6.object.assign', 'es7.promise.finally']
 
 
+
+
+
+
+
+
+
+
+
+# vue-cli4
+
+[https://github.com/vuejs/vue-cli](https://github.com/vuejs/vue-cli)
+
+[https://cli.vuejs.org/migrating-from-v3/#the-global-vue-cli](https://cli.vuejs.org/migrating-from-v3/#the-global-vue-cli)
+
+- In v3, only `vuex` or `vue-router` will be added to the project;
+- In v4, there will also be `@vue/cli-plugin-vuex` or `@vue/cli-plugin-router` installed.
+
+
+
+
+
+
+
+## 支持的webpack版本
+
+[https://github.com/vuejs/vue-cli/blob/dev/packages/%40vue/cli-service/package.json](https://github.com/vuejs/vue-cli/blob/dev/packages/%40vue/cli-service/package.json)
+
+```
+    "webpack": "^5.4.0",
+    "webpack-bundle-analyzer": "^4.1.0",
+    "webpack-chain": "^6.5.1",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.5.0",
+    "webpack-virtual-modules": "^0.4.1"
+```
+
+我们去查看源码，可以发现vue-cli4的webpack版本是5以上的版本
 
 
 

@@ -14,7 +14,6 @@ tags:
 
 ## 基础
 
-
 [网页链接](http://www.jianshu.com/p/42e11515c10f)
 
 [webpack从入门到工程实践](https://github.com/zhangwang1990/blogs/blob/master/articles/webpack%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%B7%A5%E7%A8%8B%E5%AE%9E%E8%B7%B5.md)
@@ -64,12 +63,29 @@ Webpack的工作方式是：把你的项目当做一个整体，通过一个给�
 
 >cheap-module-eval-source-map方法构建速度更快，但是不利于调试，推荐在大型项目考虑时间成本时使用。
 
+### devserver
 
-### 使用webpack构建本地服务器
+[https://webpack.js.org/configuration/dev-server/](https://webpack.js.org/configuration/dev-server/)
 
 想不想让你的浏览器监听你的代码的修改，并自动刷新显示修改后的结果，其实Webpack提供一个可选的本地开发服务器，这个本地服务器基于node.js构建，可以实现你想要的这些功能，不过它是一个单独的组件，在webpack中进行配置之前需要单独安装它作为项目依赖
 
->npm install --save-dev webpack-dev-server
+
+
+#### compress
+
+boolean
+
+Enable [gzip compression](https://betterexplained.com/articles/how-to-optimize-your-site-with-gzip-compression/) for everything served:
+
+为所有服务启用gzip压缩
+
+
+
+
+
+
+
+
 
 devserver作为webpack配置选项中的一项，以下是它的一些配置选项，更多配置可参考
 
@@ -79,6 +95,12 @@ devserver作为webpack配置选项中的一项，以下是它的一些配置选�
 | port                | 设置默认监听端口，如果省略，默认为”8080“                                                                                                        |
 | inline              | 设置为true，当源文件改变时会自动刷新页面                                                                                                          |
 | historyApiFallback  | 在开发单页应用时非常有用，它依赖于HTML5 history API，如果设置为true，所有的跳转将指向index.html                                                   |
+
+
+
+
+
+
 
 
 
