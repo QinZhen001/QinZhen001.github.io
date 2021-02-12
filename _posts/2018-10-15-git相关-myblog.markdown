@@ -134,11 +134,49 @@ git checkout .
 git reset --hard HEAD^
 ```
 
-### git log (查看commit hash值)
+
+
+### git log
+
+
+
+#### 查看commit hash值
+
 查看commit日志 执行下面命令
 ```
 git log
 ```
+
+
+
+
+
+#### 打印当前分支的所有提交信息
+
+```bash
+git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+```
+
+效果：
+
+```bash
+* eab47ad - (HEAD -> feature-a) 666 (2 minutes ago) <渣臻>
+* e8f73f5 - 555 (2 minutes ago) <渣臻>
+* 8ff64a8 - 444 (2 minutes ago) <渣臻>
+* 2e694f9 - (origin/feature-a) Update README.md (4 minutes ago) <渣臻>
+* 7e97af0 - feat:featurea随便 (4 minutes ago) <渣臻>
+* 3a7b123 - feat: feature-a (4 minutes ago) <渣臻>
+* 7d75693 - (origin/main, origin/feature-b, origin/feature, origin/develop, origin/HEAD, main, feature-b, feature, develop) Update README.md (22 minutes ago) <
+渣臻>
+* 1505699 - Initial commit (2 weeks ago) <渣臻>
+```
+
+
+
+
+
+
+
 
 
 ### 回滚、取消之前的提交
@@ -599,6 +637,51 @@ cherry-pick是Git里对commit操作很好的一个指令，比如想把test分�
 - 先解决冲突
 - git add 将解决了冲突的文件添加到暂存区
 - git cherry-pick --continue就行
+
+
+
+
+
+## Git Flow
+
+[https://juejin.cn/post/6844903542084517896](https://juejin.cn/post/6844903542084517896)
+
+
+
+**主要分支**
+
+> master: 永远处在**`即将发布(production-ready)状态`**；
+>
+> develop: **`最新的开发状态`**；
+
+**辅助分支**
+
+> feature: **`开发新功能的分支, 基于 develop`**, 完成后 **`merge 回 develop`**；
+>
+> release: **`准备要发布版本的分支, 用来修复 bug. 基于 develop`**, 完成后 **`merge 回 develop 和 master`**；
+>
+> hotfix: **`修复 master 上的问题`**, 等不及 release 版本就必须马上上线. **`基于 master`**, 完成后 **`merge 回 master 和 develop`**；
+
+
+
+### init
+
+git flow init 在初始化git Flow模型项目时会有一些交互选项来设置一些预设分支与命名规则。
+
+```haskell
+$ git flow init
+Initialized empty Git repository in /Users/abc/desktop/git-test/.git/
+Branch name for production releases: [master] 
+Branch name for "next release" development: [develop] 
+
+How to name your supporting branch prefixes?
+Feature branches? [feature/] 
+Release branches? [release/] 
+Hotfix branches? [hotfix/]
+
+```
+
+
 
 
 

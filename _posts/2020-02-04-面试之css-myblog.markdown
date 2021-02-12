@@ -515,12 +515,32 @@ display属性规定元素应该生成的框的类型；position属性规定元�
 
 类似于优先级机制：position：absolute/fixed优先级最高，有他们在时，float不起作用，display值需要调整。**float 或者absolute定位的元素，只能是块元素或表格。**
 
+
+
 ## box-sizing属性
 
 用来控制元素的盒子模型的解析模式，默认为content-box
 
 * context-box：W3C的标准盒子模型，设置元素的 height/width 属性指的是content部分的高/宽
 * border-box：IE传统盒子模型。设置元素的height/width属性指的是border + padding + content部分的高/宽
+
+
+
+## 行内元素设置margin
+
+[https://leetcode-cn.com/circle/discuss/Ua2cjo/](https://leetcode-cn.com/circle/discuss/Ua2cjo/)
+
+设置 `margin-left` 和 `margin-right` 有影响，而 `margin-top` 和 `margin-bottom` 无影响。
+
+
+
+🚩 行内元素中，padding-left / padding-right / margin-left / margin-right 有影响结果；
+
+🚩 行内元素中，padding-top / padding-bottom / margin-top / margin-bottom 不影响结果；
+
+🚩 padding-top / padding-bottom 虽然不影响结果，但实际上生效了。
+
+
 
 
 

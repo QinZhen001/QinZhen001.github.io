@@ -3196,6 +3196,92 @@ function foo() {
 
 
 
+## null == 0 
+
+[https://zhuanlan.zhihu.com/p/79114506](https://zhuanlan.zhihu.com/p/79114506)
+
+
+
+null == 0 ? 结果是什么呢
+
+答案： false
+
+
+
+
+
+这里涉及到了 == 比较法的运算
+
+比较运算 x==y, 其中 x 和 y 是值，产生 true 或者 false。这样的比较按如下方式进行：
+
+* 若 Type(x)与 Type(y)相同，则 
+
+* 若 Type(x)为 Undefined， 返回 true。
+
+* 若 Type(x)为 Null， 返回 true。
+
+* 若 Type(x)为 Number， 则
+
+* 若 x 为 NaN， 返回 false。
+
+* 若 y 为 NaN， 返回 false。
+
+* 若 x 与 y 为相等数值， 返回 true。
+
+* 若 x 为 +0 且 y 为−0， 返回 true。
+
+* 若 x 为 −0 且 y 为+0， 返回 true。
+
+* 返回 false。
+
+
+
+---
+
+
+
+* 若 Type(x) 为 Number 且 Type(y) 为 String ，返回comparison x ==ToNumber(y)的结果。 
+
+* 若Type(x) 为 String 且 Type(y)为 Number，返回比较 ToNumber(x) == y 的结果。
+
+* 若Type(x)为 Boolean，返回比较 ToNumber(x) == y 的结果。若 Type(y)为 Boolean， 返回比较 x == ToNumber(y)的结果。
+
+* 若 Type(x) 为 String 或Number ，且Type(y)为Object ，返回比较 x ==ToPrimitive(y)的结果。
+
+* 若Type(x)为Object 且Type(y)为String 或Number，返回比较ToPrimitive(x)== y 的结果。
+
+
+
+当 X, Y 中任意一是 Boolean 类型时，把 Boolean 类型的转换成数字类型进行判断。
+
+转化规则 true == 1 false == 0
+
+
+
+ToPrimitive 运算符接受一个值，和一个可选的 期望类型作参数。ToPrimitive 运算符把其值参数转换为非对象类型。
+
+
+
+对于 NaN 来说，只要存在 NaN 就一定是 false。
+
+undefined == null 值为 true 这个是规定，不存在类型转换。
+
+
+
+null == 0 对应不上上面的任何一条规则，所以返回false
+
+
+
+> null >= 0 结果是true
+>
+> null <= 0 结果是true
+
+
+
+
+
+
+
 
 
 # ES6相关
