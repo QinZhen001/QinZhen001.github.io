@@ -398,6 +398,139 @@ babel-preset-env 的工作方式类似 babel-preset-latest，唯一不同的就�
 
 
 
+### useBuiltIns
+
+[https://www.babeljs.cn/docs/babel-preset-env#usebuiltins](https://www.babeljs.cn/docs/babel-preset-env#usebuiltins)
+
+preset-env 中的 useBuiltIns 配置
+
+```json
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry"
+      }
+    ]
+  ]
+}
+```
+
+`"usage"` | `"entry"` | `false`, defaults to `false`.
+
+This option configures how `@babel/preset-env` handles polyfills.
+
+When either the `usage` or `entry` options are used, `@babel/preset-env` will add direct references to `core-js` modules as bare imports (or requires). This means `core-js` will be resolved relative to the file itself and needs to be accessible.
+
+Since `@babel/polyfill` was deprecated in 7.4.0, we recommend directly adding `core-js` and setting the version via the [`corejs`](https://www.babeljs.cn/docs/babel-preset-env#corejs) option.
+
+
+
+
+
+#### useBuiltIns: 'entry'
+
+This option enables a new plugin that replaces the `import "core-js/stable";` and `import "regenerator-runtime/runtime"` statements (or `require("core-js")` and `require("regenerator-runtime/runtime")`) with individual requires to different `core-js` entry points based on environment.
+
+提供一个新插件代替core-js/stable 和 regenerator-runtime/runtime
+
+
+
+根据配置的浏览器兼容，引入浏览器不兼容的 `polyfill`。需要在入口文件手动添加 `import '@babel/polyfill'`，会自动根据 `browserslist` 替换成浏览器不兼容的所有 `polyfill`。
+
+
+
+<details open="" style="box-sizing: border-box; border: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-weight: 400; font-stretch: inherit; line-height: inherit; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; color: rgb(36, 41, 46); letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;"><div id="details-content"><table style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px 0px 16px; padding: 0px; vertical-align: baseline; border-collapse: collapse; border-spacing: 0px; display: block; overflow: auto; width: 697px;"><thead style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline;"><tr style="box-sizing: border-box; border-width: 1px 0px 0px; border-top-style: solid; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: rgb(223, 226, 229); border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image: initial; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; background-color: transparent;"><th style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: 600; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; background-color: inherit; color: inherit;">Version</th><th style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: 600; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; background-color: inherit; color: inherit;">Changes</th></tr></thead><tbody style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline;"><tr style="box-sizing: border-box; border-width: 1px 0px 0px; border-top-style: solid; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: rgb(223, 226, 229); border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image: initial; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; background-color: transparent;"><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;"><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">v7.4.0</code></td><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;">It replaces<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">"core-js/stable"</code><span>&nbsp;</span>and<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">"regenerator-runtime/runtime"</code><span>&nbsp;</span>entry imports</td></tr><tr style="box-sizing: border-box; border-width: 1px 0px 0px; border-top-style: solid; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: rgb(223, 226, 229); border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image: initial; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; background-color: rgb(246, 248, 250);"><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;"><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">v7.0.0</code></td><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;">It replaces<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">"@babel/polyfill"</code><span>&nbsp;</span>entry imports</td></tr></tbody></table><p style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px 0px 1em; padding: 0px; vertical-align: baseline;"></p></div></details>
+
+
+
+
+
+**In**
+
+```js
+import "core-js";
+```
+
+**Out (different based on environment)**
+
+```js
+import "core-js/modules/es.string.pad-start";
+import "core-js/modules/es.string.pad-end";
+```
+
+
+
+
+
+#### useBuiltIns: 'usage'
+
+Adds specific imports for polyfills when they are used in each file. We take advantage of the fact that a bundler will load the same polyfill only once.
+
+为每一个文件添加特定的import，这样只会填充一次相同的依赖
+
+
+
+**In**
+
+a.js
+
+```js
+var a = new Promise();
+Copy
+```
+
+b.js
+
+```js
+var b = new Map();
+Copy
+```
+
+**Out (if environment doesn't support it)**
+
+a.js
+
+```js
+import "core-js/modules/es.promise";
+var a = new Promise();
+Copy
+```
+
+b.js
+
+```js
+import "core-js/modules/es.map";
+var b = new Map();
+Copy
+```
+
+**Out (if environment supports it)**
+
+a.js
+
+```js
+var a = new Promise();
+Copy
+```
+
+b.js
+
+```js
+var b = new Map();
+```
+
+
+
+#### useBuiltIns: false
+
+Don't add polyfills automatically per file, and don't transform `import "core-js"` or `import "@babel/polyfill"` to individual polyfills.
+
+
+
+
+
 ## polyfill
 
 **语法转换只是将高版本的语法转换成低版本的，但是新的内置函数、实例方法无法转换**。这时，就需要使用 polyfill，顾名思义，polyfill的中文意思是垫片，所谓垫片就是垫平不同浏览器或者不同环境下的差异，让新的内置函数、实例方法等在低版本浏览器中也可以使用。
@@ -519,6 +652,14 @@ import "@babel/polyfill";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 ```
+
+
+
+
+
+
+
+
 
 
 

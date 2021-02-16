@@ -14,11 +14,11 @@ tags:
 
 
 
-## 前序
+# 前序
 
 
 
-### Reflect 
+## Reflect 
 
 
 
@@ -524,7 +524,20 @@ render() {
 
 
 
-## 补充
+# 补充
+
+
+
+### vue-cli-plugin-commitlint
+
+`vue-cli-plugin-commitlint` 是以 `vue` 插件的形式写的，可以执行 `vue add commitlint` 直接使用，如果不是 `vue` 的项目也可以根据下面的配置自行配置。
+
+
+
+1. 自动检测 `commit` 是否规范，不规范不允许提交
+2. 自动提示 `commit` 填写格式。不怕忘记规范怎么写
+3. 集成 `git add && git commit` 不需要执行两个命令
+4. 自动生成 `changelog`
 
 
 

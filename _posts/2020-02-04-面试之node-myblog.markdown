@@ -19,7 +19,7 @@ tags:
 
 
 
-## Node了解
+## node了解
 
 > nodejs提供那么多模块，以及能在各个平台上跑的飞起，不是因为js很牛逼，而是因为底层依赖了一些你不知道的技术。最大的两个依赖便是**v8和libuv**
 
@@ -38,6 +38,183 @@ Nodejs封装了所有与底层交流的信息，给开发者提供一致的接�
 v8：一个帮助你将js代码转变成可以在各个平台和机器上运行的机器码
 libuv：帮助你调用平台和机器上各种系统特性，包括操作文件、监听socket等等
 ```
+
+
+
+
+
+## node里的模块是什么
+
+[https://juejin.cn/post/6844903951742025736](https://juejin.cn/post/6844903951742025736)
+
+Node中，每个文件模块都是一个对象，它的定义如下：
+
+```js
+function Module(id, parent) {
+  this.id = id;
+  this.exports = {};
+  this.parent = parent;
+  this.filename = null;
+  this.loaded = false;
+  this.children = [];
+}
+
+module.exports = Module;
+
+var module = new Module(filename, parent);
+```
+
+所有的模块都是 Module 的实例。可以看到，当前模块（module.js）也是 Module 的一个实例。
+
+
+
+
+
+## require的加载机制
+
+[https://juejin.cn/post/6844903951742025736](https://juejin.cn/post/6844903951742025736)
+
+- 1、先计算模块路径
+- 2、如果模块在缓存里面，取出缓存
+- 3、加载模块
+- 4、输出模块的exports属性
+
+
+
+```js
+// require 其实内部调用 Module._load 方法
+Module._load = function(request, parent, isMain) {
+  //  计算绝对路径
+  var filename = Module._resolveFilename(request, parent);
+
+  //  第一步：如果有缓存，取出缓存
+  var cachedModule = Module._cache[filename];
+  if (cachedModule) {
+    return cachedModule.exports;
+
+  // 第二步：是否为内置模块
+  if (NativeModule.exists(filename)) {
+    return NativeModule.require(filename);
+  }
+  
+  /********************************这里注意了**************************/
+  // 第三步：生成模块实例，存入缓存
+  // 这里的Module就是我们上面的1.1定义的Module
+  var module = new Module(filename, parent);
+  Module._cache[filename] = module;
+
+  /********************************这里注意了**************************/
+  // 第四步：加载模块
+  // 下面的module.load实际上是Module原型上有一个方法叫Module.prototype.load
+  try {
+    module.load(filename);
+    hadException = false;
+  } finally {
+    if (hadException) {
+      delete Module._cache[filename];
+    }
+  }
+
+  // 第五步：输出模块的exports属性
+  return module.exports;
+};
+
+```
+
+
+
+
+
+## `__dirname,__filename` 哪里来的
+
+```js
+(function (exports, require, module, __filename, __dirname) {
+  // 模块源码
+  // 假如模块代码如下
+  var math = require('math');
+  exports.area = function(radius){
+      return Math.PI * radius * radius
+  }
+});
+
+```
+
+module里面都会传入__filename, __dirname参数，这两个参数并不是module本身就有的，是外界传入的
+
+
+
+
+
+## exports 和 module.exports
+
+```js
+// hello.js
+
+function hello() {
+    console.log('Hello, world!');
+}
+
+function greet(name) {
+    console.log('Hello, ' + name + '!');
+}
+
+function hello() {
+    console.log('Hello, world!');
+}
+
+
+exports.hello = hello;
+exports.greet = greet;
+但是你不可以直接对exports赋值：
+
+// 代码可以执行，但是模块并没有输出任何变量:
+exports = {
+    hello: hello,
+    greet: greet
+};
+
+```
+
+首先，Node会把整个待加载的hello.js文件放入一个包装函数load中执行。在执行这个load()函数前，Node准备好了module变量： 
+
+```js
+var module = {
+    id: 'hello',
+    exports: {}
+};
+```
+
+load()函数最终返回module.exports
+
+```js
+var load = function (exports, module) {
+    // hello.js的文件内容
+    ...
+    // load函数返回:
+    return module.exports;
+};
+
+```
+
+```js
+var exportes = load(module.exports, module);
+```
+
+也就是说，默认情况下，Node准备的exports变量和module.exports变量实际上是同一个变量，并且初始化为空对象{}
+
+
+
+如果我们要输出的是一个函数或数组，那么，只能给module.exports赋值
+
+```js
+module.exports = function () { return 'foo'; };
+```
+
+给exports赋值是无效的，因为赋值后，module.exports仍然是空对象{}。
+
+
+
+
 
 
 
