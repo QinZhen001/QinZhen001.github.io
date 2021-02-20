@@ -2285,7 +2285,7 @@ console.log = function(...args){
 
 ```
 
-这样做，刷新的时候，部分log无法上报，该怎么做？
+这样做，刷新的时候，可能还是在request流程中，部分log无法上报，该怎么做？
 
 将log存到localstorage中
 
@@ -2293,7 +2293,7 @@ console.log = function(...args){
 
 用户换浏览器，换电脑的话，localstorage这部分log还是无法上报？
 
-除了localstorage还有别的解决方案没？
+除了localstorage还有别的更好的解决方案没？
 
 没了。。。
 
@@ -2352,8 +2352,58 @@ function getRandom() {
 - 0像素打点上传，通过构建img的src输出，在get请求拼接日志
 - xhr、fetch等网络请求，主动发起网络请求，主要用于提交内容较大的日志
 - script、link标签等可以发起网络请求的其他标签，与像素打点类似
+- sendBeacon
 
 
+
+当页面刷新的时候，页面卸载的时候，可能还在请求中，异步的XMLHttpRequest不能保证日志一定上报成功。该怎么做？
+
+
+
+[Navigator.sendBeacon](https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/sendBeacon)
+
+可用于通过[HTTP](https://developer.mozilla.org/zh-CN/docs/Glossary/HTTP)将少量数据异步传输到Web服务器。
+
+**这个方法还是异步发出请求，但是请求与当前页面脱钩，作为浏览器的任务，因此可以保证会把数据发出去，不拖延卸载流程。**
+
+
+
+
+
+这个方法主要用于满足统计和诊断代码的需要，这些代码通常尝试在卸载（unload）文档之前向web服务器发送数据。过早的发送数据可能导致错过收集数据的机会。然而，对于开发者来说保证在文档卸载期间发送数据一直是一个困难。因为用户代理通常会忽略在 `unload` 事件处理器中产生的异步 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest)。
+
+
+
+
+
+为了解决这个问题， 统计和诊断代码通常要在 `unload` 或者 `beforeunload` 事件处理器中发起一个同步 `XMLHttpRequest` 来发送数据。同步的 `XMLHttpRequest` 迫使用户代理延迟卸载文档，并使得下一个导航出现的更晚。下一个页面对于这种较差的载入表现无能为力。
+
+
+
+有一些技术被用来保证数据的发送。其中一种是通过在卸载事件处理器中创建一个图片元素并设置它的 src 属性的方法来延迟卸载以保证数据的发送。因为绝大多数用户代理会延迟卸载以保证图片的载入，所以数据可以在卸载事件中发送。另一种技术是通过创建一个几秒钟的 no-op 循环来延迟卸载并向服务器发送数据。
+
+这些技术不仅编码模式不好，其中的一些甚至并不可靠而且会导致非常差的页面载入性能。
+
+
+
+使用 **`sendBeacon() `**方法会使用户代理在有机会时异步地向服务器发送数据，同时不会延迟页面的卸载或影响下一导航的载入性能。这就解决了提交分析数据时的所有的问题：数据可靠，传输异步并且不会影响下一页面的加载。此外，代码实际上还要比其他技术简单许多！
+
+```js
+window.addEventListener('unload', logData, false);
+
+function logData() {
+    navigator.sendBeacon("/log", analyticsData);
+}
+
+```
+
+
+
+
+
+
+
+---
 
 第一个问题：如果进行了日志上报，则每个访客都可能上报大量相同的日志，pv过大会导致日志存量极速增长，因此建议不要频繁地上传错误日志，这个问题可以通过增加日志采样率解决
 
@@ -2364,6 +2414,12 @@ function log(msg, sampling = 1){
     }
 }
 ```
+
+
+
+
+
+
 
 
 
@@ -2457,8 +2513,6 @@ function logError (err, vm, info) {
 就是同时构造多个不同的哈希函数：
  Hi = RHi(key)   i= 1,2,3 ... k;
  当H1 = RH1(key)  发生冲突时，再用H2 = RH2(key) 进行计算，直到冲突不再产生，这种方法不易产生聚集，但是增加了计算时间。
-
-### 
 
 
 
