@@ -336,8 +336,6 @@ Server-Side Rendering Support
 
 When bundling with `target: 'node'`, the styles in all rendered components are collected and exposed on the Vue render context object as `context.styles`, which you can simply inline into your markup's `<head>`. If you are building a Vue SSR app, you probably should use this loader for CSS imported from JavaScript files too.
 
-### 
-
 
 
 ### postcss-loader

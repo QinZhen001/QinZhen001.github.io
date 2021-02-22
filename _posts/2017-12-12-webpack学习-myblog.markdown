@@ -1767,6 +1767,163 @@ vendors: {
 
 
 
+## webpack 5
+
+[https://webpack.js.org/blog/2020-10-10-webpack-5-release/](https://webpack.js.org/blog/2020-10-10-webpack-5-release/)
+
+
+
+This release focus on the following:
+
+- Improve build performance with Persistent Caching. (使用持久缓存提高构建性能。)
+- Improve Long Term Caching with better algorithms and defaults. (使用更好的算法和默认值改进长期缓存。)
+- Improve bundle size with better Tree Shaking and Code Generation.(通过更好的摇树和代码生成来改进bundle的大小。)
+- Improve compatibility with the web platform. (提高与web平台的兼容性。)
+- Clean up internal structures that were left in a weird state while implementing features in v4 without introducing any breaking changes.
+- Prepare for future features by introducing breaking changes now, allowing us to stay on v5 for as long as possible.
+
+
+
+### Long Term Caching
+
+[https://webpack.js.org/blog/2020-10-10-webpack-5-release/#major-changes-long-term-caching](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#major-changes-long-term-caching)
+
+
+
+New algorithms were added for long term caching. These are enabled by default in production mode.  (生产模式的默认配置)
+
+```
+chunkIds: "deterministic"` 
+`moduleIds: "deterministic"`
+`mangleExports: "deterministic"
+```
+
+The algorithms assign short (3 or 5 digits) numeric IDs to modules and chunks and short (2 characters) names to exports in a deterministic way. This is a trade-off between bundle size and long term caching.
+
+算法以确定的方式将短(3或5位数字)的数字id分配给模块和块，将短(2个字符)的名称分配给导出。这是捆绑包大小和长期缓存之间的权衡。
+
+
+
+[https://juejin.cn/post/6844903967793627149](https://juejin.cn/post/6844903967793627149)
+
+以下操作均会让 webpack 使 entry 缓存失效：
+
+- 当 npm 升级 loader 或 plugin 时
+- 当更改配置时
+- 当更改在配置中读取的文件时
+- 当 npm 升级配置中使用的 dependencies 时
+- 当不同命令行参数传递给 build 脚本时
+- 当有自定义构建脚本并进行更改时
+
+
+
+这变得非常棘手。 开箱即用的情况下，webpack 无法处理所有这些情况。 这就是我们为什么选择安全的方式，并将持久化缓存变为可选特性的原因
+
+
+
+
+
+
+
+
+
+### Real Content Hash
+
+Webpack 5 will use a real hash of the file content when using [contenthash] now. Before it "only" used a hash of the internal structure. This can be positive impact on long term caching when only comments are changed or variables are renamed. These changes are not visible after minimizing.
+
+Webpack 5将会在使用[contenthash]的时候使用一个真正的文件内容散列。在此之前，它“仅”使用了内部结构的散列。当只更改注释或重命名变量时，这会对长期缓存产生积极影响。这些更改在最小化后是不可见的。
+
+
+
+### Module Federation（模块联合）
+
+Webpack 5 adds a new feature called "Module Federation", which allows multiple webpack builds to work together. From runtime perspective modules from multiple builds will behave like a huge connected module graph. From developer perspective modules can be imported from specified remote builds and used with minimal restrictions.
+
+Webpack 5增加了一个名为“模块联合”的新特性，它允许多个Webpack构建一起工作。从运行时的角度来看，来自多个构建的模块将表现为一个巨大的连接模块图。从开发人员的角度来看，可以从指定的远程构建中导入模块，并以最小的限制使用它们。
+
+
+
+[https://juejin.cn/post/6847902220298649607](https://juejin.cn/post/6847902220298649607)
+
+webpack 5引入联邦模式是为了**更好的共享代码**。 在此之前，我们共享代码一般用npm发包来解决。 npm发包需要经历构建，发布，引用三阶段，而联邦模块可以**直接引用其他应用代码**,实现热插拔效果。对比npm的方式更加简洁、快速、方便。
+
+
+
+假设我们有app1，app2两个应用，端口分别为3001，3002。 app1应用要想引用app2里面的js，直接用script标签即可。
+
+例如app1应用里面index.html引入app2应用remoteEntry.js
+
+```html
+ <head>
+    <script src="http://localhost:3002/remoteEntry.js"></script>
+  </head>
+```
+
+
+
+### Async modules
+
+Webpack 5 supports so called "async modules". That are modules that do not evaluate synchronously, but are async and Promise-based instead.
+
+Webpack 5支持所谓的“异步模块”。它们是不同步计算的模块，而是基于异步和承诺的。
+
+Importing them via `import` is automatically handled and no additional syntax is needed and difference is hardly notice-able.
+
+Importing them via `require()` will return a Promise that resolves to the exports.
+
+
+
+In webpack there are multiple ways to have async modules:
+
+- async externals
+- WebAssembly Modules in the new spec
+- ECMAScript Modules that are using Top-Level-Await
+
+### 
+
+### Optimization
+
+
+
+#### Nested tree-shaking
+
+webpack is now able to track access to nested properties of exports. This can improve Tree Shaking (Unused export elimination and export mangling) when reexporting namespace objects.
+
+webpack现在可以跟踪对导出的嵌套属性的访问。这可以在重新导出名称空间对象时改善摇树(未使用的导出消除和导出破坏)。
+
+```js
+// inner.js
+export const a = 1;
+export const b = 2;
+
+// module.js
+export * as inner from './inner';
+// or import * as inner from './inner'; export { inner };
+
+// user.js
+import * as module from './module';
+console.log(module.inner.a);
+
+```
+
+In this example, the export `b` can be removed in production mode.
+
+
+
+
+
+### NodeJS 的 polyfill 脚本被移除
+
+最开始，Webpack 目标是允许在浏览器中运行 Node 模块。但是现在在 Webpack 看来，大多模块就是专门为前端开发的。在 v4 及以前的版本中，对于大多数的 Node 模块会自动添加 polyfill 脚本，polyfill 会加到最终的 bundle 中，其实通常情况下是没有必要的。在 v5 中将停止这一行为。
+
+
+
+
+作者：BDEEFE
+链接：https://juejin.cn/post/6844904169405415432
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
 
 
 
