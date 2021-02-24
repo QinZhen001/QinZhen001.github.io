@@ -196,6 +196,7 @@ CSS中脱离文档流，也就是将元素从普通的布局排版中拿走，�
 
 为了获得最佳的浏览器支持，您应该始终定义为0％和100％的选择器。
 注意: 使用animation属性来控制动画的外观，还使用选择器绑定动画。
+
 * animationname	必需的。定义animation的名称。
 * keyframes-selector	必需的。动画持续时间的百分比。
 合法值：0-100%  from (和0%相同)  to (和100%相同)
@@ -221,6 +222,86 @@ CSS中脱离文档流，也就是将元素从普通的布局排版中拿走，�
 100% {top:0px; left:0px; background:red;}
 }
 ```
+
+
+
+### overflow:hidden
+
+[为什么overflow:hidden能清除浮动(float)的影响](https://www.zhihu.com/question/30938856)
+
+overflow 取值只要不是 visible ，就会开启这个超级属性（BFC），此超级属性反过来决定了 height: auto 是如何计算的
+
+从 BFC 的机制设计来看，把 float 元素纳入尺寸计算（即所谓父块包裹子块）是合理的。
+
+
+
+#### 隐藏页面滚动条
+
+在 PC 端，无论是什么浏览器，默认滚动条均来自`<html>`，而不是`<body>`标签。
+
+
+所以，如果我们想要去除页面默认滚动条，只需要： 
+
+```
+html { overflow: hidden; }
+```
+
+>注：此方法在移动端基本上无效
+
+在 PC 端， 窗体滚动高度可以使用 document.documentElement.scrollTop 获取，但是在移动端， 可能就要使用document.body.scrollTop获取。
+
+
+----------
+
+**滚动条会占用容器的可用宽度或高度**
+
+IE7 及以上版本 IE、Chrome、Firefox 浏览器滚动栏所占据的宽度均是**17px**
+
+
+
+
+
+#### 自定义滚动条
+
+支持-webkit-前缀的浏览器。例如，对于 Chrome 浏览器：
+
+* 整体部分，::-webkit-scrollbar；
+* 两端按钮，::-webkit-scrollbar-button； 
+* 外层轨道，::-webkit-scrollbar-track  
+* 内层轨道，::-webkit-scrollbar-track-piece；   
+* 滚动滑块，::-webkit-scrollbar-thumb；
+* 边角，::-webkit-scrollbar-corner
+
+
+
+但是我们平时开发中只用下面 3 个属性： 
+
+
+```css
+    ::-webkit-scrollbar { /* 血槽宽度 */
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb { /* 拖动条 */
+      background-color: rgba(0, 0, 0, .3);
+      border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar-track { /* 背景槽 */
+      background-color: #ddd;
+      border-radius: 6px;
+    }
+```
+
+
+
+
+
+
+
+
+
 
 
 ### box-sizing

@@ -51,7 +51,6 @@ RR4 本次采用单代码仓库模型架构（monorepo），这意味者这个�
 作用：导航到此页面前执行的函数，默认使用 window.confirm
 使用场景：当需要用户进入页面前执行什么操作时可用，不过一般用到的不多。
 
-
 **forceRefresh: bool**
 作用：当浏览器不支持 HTML5 的 history API 时强制刷新页面。
 使用场景：同上。
@@ -143,7 +142,72 @@ const FadingRoute = ({ component: Component, ...rest }) => (
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
+
+
+
+### IndexRoute
+
+[网页链接](http://www.mycode.net.cn/language/javascript/2198.html)
+
+通常情况下，我们会建立如下情况的路由：
+
+```jsx
+<Router>
+  <Route path="/" component={App}>
+    <Route path="accounts" component={Accounts}/>
+    <Route path="statements" component={Statements}/>
+  </Route>
+</Router>
+```
+
+其中 App 组件一般情况下是一个 layout，比如包含了 header、footer 或者其他内容，其下面的 route 会被嵌入到这个 App 中（它们将成为 App 的
+children），但这样配置路由有一个问题，就是我们访问 http://localhost:3000/ 这个地址时，你会发现仅渲染了一个 App 的 layout 内容，Accounts 和 Statements 都没有被渲染，这种情况下我们一般会设置一个默认页，当访问 / 这个路由时显示这个默认页。由此就需要用到 IndexRoute 功能，修改一下路由如下所示：
+
+```jsx
+<Router>
+  <Route path="/" component={App}>
+    <IndexRoute component={Home}/>
+    <Route path="accounts" component={Accounts}/>
+    <Route path="statements" component={Statements}/>
+  </Route>
+</Router>
+```
+
+如此配置后，我们再次访问 / 路由，你会发现页面渲染了 Home 组件的内容。这就是 IndexRoute 的功能，指定一个路由的默认页。
+
+
+
+
+
+### IndexRedirect
+
+上面这种情况比较常见，还有一种非常常见的方式就是当我们尝试访问 / 这个路由时，我们想让其直接跳转到 ‘/Accounts’，直接免去了默认页 Home，这样来的更加直接。由此我们就需要 IndexRedirect 功能。考虑如下路由：
+
+```
+<Router>
+  <Route path="/" component={App}>
+    <IndexRedirect to="/accounts"/>
+    <Route path="accounts" component={Accounts}/>
+    <Route path="statements" component={Statements}/>
+  </Route>
+</Router>
+```
+
+这样设计路由后，我们再次访问 / 时，系统默认会跳转到 /accounts 路由。
+
+---
+
+
+
+* **IndexRoute 一般情况下用于设计一个默认页且不改变 URL 地址，而 IndexRedirect 则是跳转默认地址且地址会发生改变。**
+* **IndexRoute 指定一个组件作为默认页，而 IndexRedirect 指定一个路由地址作为跳转地址。**
+
+
+
+
+
 ### 嵌套路由
+
 [http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu](http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu)
 Route组件还可以嵌套。
 

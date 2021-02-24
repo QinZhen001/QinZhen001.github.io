@@ -1,6 +1,7 @@
 ---
+
 layout:     post
-title:      "Redux入门"
+title:      "redux相关"
 date:       2018-01-19 22:27:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -30,7 +31,7 @@ Redux 除了和 React 一起用外，还支持其它界面库。
 惟一改变 state 的办法是触发 action，一个描述发生什么的对象。
 为了描述 action 如何改变 state 树，你需要编写 reducers。
 
-```
+```js
 import { createStore } from 'redux';
 
 /**
@@ -113,7 +114,7 @@ console.log(store.getState())
 
 这样确保了视图和网络请求都不能直接修改 state，相反它们只能表达想要修改的意图。因为所有的修改都被集中化处理，且严格按照一个接一个的顺序执行，因此不用担心 race condition 的出现。 Action 就是普通对象而已，因此它们可以被日志打印、序列化、储存、后期调试或测试时回放出来。
 
-```
+```js
 store.dispatch({
   type: 'COMPLETE_TODO',
   index: 1
@@ -130,7 +131,7 @@ store.dispatch({
 
 Reducer 只是一些纯函数，它接收先前的 state 和 action，并返回新的 state。刚开始你可以只有一个 reducer，随着应用变大，你可以把它拆成多个小的 reducers，分别独立地操作 state tree 的不同部分，因为 reducer 只是函数，你可以控制它们被调用的顺序，传入附加数据，甚至编写可复用的 reducer 来处理一些通用任务，如分页器。
 
-```
+```js
 function visibilityFilter(state = 'SHOW_ALL', action) {
   switch (action.type) {
     case 'SET_VISIBILITY_FILTER':
@@ -177,7 +178,7 @@ Action 是把数据从应用（译者注：这里之所以不叫 view 是因为�
 
 添加新 todo 任务的 action 是这样的：
 
-```
+```js
 const ADD_TODO = 'ADD_TODO'
 
 {
@@ -278,7 +279,7 @@ Action 只是描述了**有事情发生了**这一事实，并没有指明应用
 
 >只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。
 
-```
+```js
 import { VisibilityFilters } from './actions'
 
 const initialState = {
@@ -298,7 +299,7 @@ function todoApp(state, action) {
 ```
 这里一个技巧是使用 ES6 参数默认值语法 来精简代码。
 
-```
+```js
 function todoApp(state = initialState, action) {
   // 这里暂不处理任何 action，
   // 仅返回传入的 state。
@@ -308,7 +309,7 @@ function todoApp(state = initialState, action) {
 
 现在可以处理 SET_VISIBILITY_FILTER。需要做的只是改变 state 中的 visibilityFilter。
 
-```
+```js
 function todoApp(state = initialState, action) {
   switch (action.type) {
     case SET_VISIBILITY_FILTER:
@@ -327,7 +328,7 @@ function todoApp(state = initialState, action) {
 
 #### 处理多个 action
 还有两个 action 需要处理。让我们先处理 ADD_TODO。
-```
+```js
 function todoApp(state = initialState, action) {
   switch (action.type) {
     case SET_VISIBILITY_FILTER:
@@ -353,7 +354,7 @@ function todoApp(state = initialState, action) {
 
 最后，TOGGLE_TODO 的实现也很好理解：
 
-```
+```js
 case TOGGLE_TODO:
   return Object.assign({}, state, {
     todos: state.todos.map((todo, index) => {
@@ -403,7 +404,393 @@ function todoApp(state = initialState, action) {
 }
 ```
 
+
+
+## 中间件
+
+为了理解中间件，让我们站在框架作者的角度思考问题：如果要添加功能，你会在哪个环节添加？
+
+1. Reducer：纯函数，只承担计算 State 的功能，不合适承担其他功能，也承担不了，因为理论上，纯函数不能进行读写操作。
+2. View：与 State 一一对应，可以看作 State 的视觉层，也不合适承担其他功能。
+3. Action：存放数据的对象，即消息的载体，只能被别人操作，自己不能进行任何操作。
+
+
+
+
+
+### applyMiddlewares
+
+applyMiddlewares这个方法到底是干什么的？
+
+它是 Redux 的原生方法，作用是将所有中间件组成一个数组，依次执行
+
+```js
+export default function applyMiddleware(...middlewares) {
+  return (createStore) => (reducer, preloadedState, enhancer) => {
+    var store = createStore(reducer, preloadedState, enhancer);
+    var dispatch = store.dispatch;
+    var chain = [];
+
+    var middlewareAPI = {
+      getState: store.getState,
+      dispatch: (action) => dispatch(action)
+    };
+    chain = middlewares.map(middleware => middleware(middlewareAPI));
+    dispatch = compose(...chain)(store.dispatch);
+
+    return {...store, dispatch}
+  }
+}
+```
+
+上面代码中，所有中间件被放进了一个数组chain，然后嵌套执行，最后执行store.dispatch。可以看到，中间件内部（middlewareAPI）可以拿到getState和dispatch这两个方法。
+
+
+
+
+
+
+
+### redux-thunk
+
+http://www.redux.org.cn/docs/advanced/AsyncActions.html
+
+Action 发出以后，Reducer 立即算出 State，这叫做同步；Action 发出以后，过一段时间再执行 Reducer，这就是异步。
+
+怎么才能 Reducer 在异步操作结束后自动执行呢？这就要用到新的工具：中间件（middleware）。
+
+>**中间件:它提供的是位于 action 被发起之后，到达 reducer 之前的扩展点。**
+
+redux-thunk中间件可以让action创建函数先不返回一个action对象，而是返回一个函数，函数传递两个参数(dispatch,getState),在函数体内进行业务逻辑的封装
+
+
+
+```js
+function add() {
+    return {
+        type: 'ADD',
+    }
+}
+
+function addIfOdd() {
+    return (dispatch, getState) => {
+        const currentValue = getState();
+        if (currentValue % 2 == 0) {
+            return false;
+        }
+        //分发一个任务
+        dispatch(add())
+    }
+}
+```
+
+
+
+使用：
+
+```js
+let store = createStore(reducer函数，applyMiddleware(thunk))
+```
+
+
+
+完整的例子：
+
+```jsx
+import {createStore, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+
+function count(state = 0, action) {
+    switch (action.type) {
+        case 'ADD':
+            return state + 1;
+        case 'REDUCER':
+            return state - 1;
+        default:
+            return state;
+    }
+}
+const store = createStore(count,applyMiddleware(thunk));
+
+
+//action创建函数
+function add() {
+    return {
+        type: 'ADD',
+    }
+}
+
+function reducer() {
+    return {
+        type: 'REDUCER'
+    }
+}
+
+
+function addIfOdd() {
+    return (dispatch, getState) => {
+        const currentValue = getState();
+        if (currentValue % 2 == 0) {
+            return false;
+        }
+        dispatch(add())
+    }
+}
+
+function addAsy(delay = 2000) {
+    return (dispatch, getState) => {
+        setTimeout(() => {
+            dispatch(add())
+        }, delay)
+    }
+}
+
+//获取当前值
+let currentValue = store.getState();
+//创建一个监听
+store.subscribe(() => {
+    const previosValue = currentValue;
+    currentValue = store.getState();
+    console.log('上一个值:', previosValue, '当前值:', currentValue)
+});
+
+//分发任务
+store.dispatch(add());
+store.dispatch(add());
+store.dispatch(add());
+store.dispatch(add());
+store.dispatch(reducer());
+store.dispatch(addIfOdd());
+store.dispatch(addAsy());
+```
+
+当 action creator 返回函数时，这个函数会被 Redux Thunk middleware 执行。这个函数并不需要保持纯净；它还可以带有副作用，包括执行异步 API 请求。这个函数还可以 dispatch action，就像 dispatch 前面定义的同步 action 一样。
+
+
+
+```js
+import fetch from 'isomorphic-fetch'
+
+export const REQUEST_POSTS = 'REQUEST_POSTS'
+function requestPosts(subreddit) {
+  return {
+    type: REQUEST_POSTS,
+    subreddit
+  }
+}
+
+export const RECEIVE_POSTS = 'RECEIVE_POSTS'
+function receivePosts(subreddit, json) {
+  return {
+    type: RECEIVE_POSTS,
+    subreddit,
+    posts: json.data.children.map(child => child.data),
+    receivedAt: Date.now()
+  }
+}
+
+// 来看一下我们写的第一个 thunk action creator！
+// 虽然内部操作不同，你可以像其它 action creator 一样使用它：
+// store.dispatch(fetchPosts('reactjs'))
+
+export function fetchPosts(subreddit) {
+
+  // Thunk middleware 知道如何处理函数。
+  // 这里把 dispatch 方法通过参数的形式传给函数，
+  // 以此来让它自己也能 dispatch action。
+
+  return function (dispatch) {
+
+    // 首次 dispatch：更新应用的 state 来通知
+    // API 请求发起了。
+
+    dispatch(requestPosts(subreddit))        // 可以多次 dispatch！
+
+    // thunk middleware 调用的函数可以有返回值，
+    // 它会被当作 dispatch 方法的返回值传递。
+
+    // 这个案例中，我们返回一个等待处理的 promise。
+    // 这并不是 redux middleware 所必须的，但这对于我们而言很方便。
+
+    return fetch(`http://www.subreddit.com/r/${subreddit}.json`)
+      .then(response => response.json())
+      .then(json =>
+
+      )
+
+      // 在实际应用中，还需要
+      // 捕获网络请求的异常。
+  }
+}
+```
+
+thunk 的一个优点是它的结果可以再次被 dispatch
+
+
+
+使用双箭头简化函数的写法
+
+```js
+const addToCartUnsafe = productId => ({
+  type: types.ADD_TO_CART,
+  productId
+})
+
+
+export const addToCart = productId => (dispatch, getState) => {
+  if (getState().products.byId[productId].inventory > 0) {
+    dispatch(addToCartUnsafe(productId))
+  }
+}
+```
+
+
+
+注意点：
+
+1. createStore方法可以接受整个应用的初始状态作为参数，那样的话，applyMiddleware就是第三个参数了。
+
+```js
+    const store = createStore(
+      reducer,
+      initial_state,
+      applyMiddleware(logger)
+    );
+```
+
+2. 中间件的次序有讲究。
+
+```js
+    const store = createStore(
+      reducer,
+      applyMiddleware(thunk, promise, logger)
+    );
+```
+
+上面代码中，applyMiddleware方法的三个参数，就是三个中间件。有的中间件有次序要求，使用前要查一下文档。比如，logger就一定要放在最后，否则输出结果会不正确。
+
+
+
+
+
+
+
+### redux-undo
+
+redux-undo是一个reducer增强组件,它提供了undoable函数,这个函数接收已经存在的reducer和配置对象,使用undo函数增强已经存在的reducer.
+
+### 
+
+```js
+ // Redux utility functions 
+import { combineReducers } from 'redux';
+// redux-undo higher-order reducer 
+import undoable from 'redux-undo';
+
+combineReducers({
+  counter: undoable(counter)
+})
+```
+
+包装你的reducer 像这样
+
+```js
+ {
+  past: [...pastStatesHere...],
+  present: {...currentStateHere...},
+  future: [...futureStatesHere...]
+}
+```
+
+**现在你必须使用state.present获取当前的state
+获取所有过去的state使用state.past.**
+
+### 
+
+**Undo/Redo**
+
+```js
+store.dispatch(ActionCreators.undo()) // undo the last action  (撤销 last action)
+store.dispatch(ActionCreators.redo()) // redo the last action  (再次执行 last action)
+ 
+store.dispatch(ActionCreators.jumpToPast(index)) // jump to requested index in the past[] array 
+store.dispatch(ActionCreators.jumpToFuture(index)) // jump to requested index in the future[] array
+```
+
+**配置**
+
+配置对象传递给undoable()(值是默认值)
+
+```js
+undoable(reducer, {
+  limit: false, // set to a number to turn on a limit for the history 
+ 
+  filter: () => true, // see `Filtering Actions` section 
+ 
+  undoType: ActionTypes.UNDO, // define a custom action type for this undo action 
+  redoType: ActionTypes.REDO, // define a custom action type for this redo action 
+ 
+  jumpToPastType: ActionTypes.JUMP_TO_PAST, // define custom action type for this jumpToPast action 
+  jumpToFutureType: ActionTypes.JUMP_TO_FUTURE, // define custom action type for this jumpToFuture action 
+ 
+  initialState: undefined, // initial state (e.g. for loading) 
+  initTypes: ['@@redux/INIT', '@@INIT'] // history will be (re)set upon init action type 
+  initialHistory: { // initial history (e.g. for loading) 
+    past: [],
+    present: config.initialState,
+    future: []
+  },
+ 
+  debug: false, // set to `true` to turn on debugging 
+})
+```
+
+
+
+过滤Actions
+
+如果你不想包含每一步的action,可以传递一个函数到undoable
+
+```js
+undoable(reducer, function filterActions(action, currentState, previousState) {
+  return action.type === SOME_ACTION; // only add to history if action is SOME_ACTION只有some_action的action才能记录 
+})
+ 
+// or you could do... 
+ 
+undoable(reducer, function filterState(action, currentState, previousState) {
+  return currentState !== previousState; // only add to history if state changed只有state变化的才能记录重做 
+})
+```
+
+或者你可以使用distinctState,includeAction,excludeAction助手函数
+
+```js
+import undoable, { distinctState, includeAction, excludeAction } from 'redux-undo';
+```
+
+现在你可以使用助手函数了,相当简单
+
+```js
+undoable(reducer, { filter: includeAction(SOME_ACTION) })
+undoable(reducer, { filter: excludeAction(SOME_ACTION) })
+ 
+// or you could do... 
+ 
+undoable(reducer, { filter: distinctState() })
+```
+
+甚至还支持数组
+
+```js
+undoable(reducer, { filter: includeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
+undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
+```
+
+
+
 ## 补充
+
 张著名的 flux 的单向数据流图
 ```
                  _________               ____________               ___________
@@ -426,7 +813,79 @@ function todoApp(state = initialState, action) {
 
 ```
 
+
+
+
+
+### bindActionCreators
+
+[网页链接](http://blog.csdn.net/liwusen/article/details/54138854)
+
+简要介绍：Redux中的bindActionCreators，是通过dispatch将action包裹起来，这样可以通过bindActionCreators创建的方法，直接调用dispatch(action)(隐式调用）。
+
+主要用处：一般情况下，我们可以通过Provider将store通过React的connext属性向下传递，bindActionCreators的唯一用处就是需要传递action creater到子组件，并且改子组件并没有接收到父组件上传递的store和dispatch。
+
+bindActionCreators的参数
+`let newAction = bindActionCreators(oldActionCreator,dispatch)`
+
+来看一下形参所表示的意思：
+
+
+
+**oldActionCreator**
+
+这个参数就是创建的action的集合：
+
+```js
+//action.js
+
+function action1(){
+  return {
+   type:'type1'
+  }
+}
+function action2(){
+  return {
+   type:'type2'
+  }
+}
+```
+
+```js
+import * as oldActionCreator from './action.js'
+
+let newAction = bindActionCreators(oldActionCreator,dispatch)
+```
+
+从上述的例子中我们可以看到oldActionCreator的形式为key:function的形式，其中function必须返回一个action(包含type标识的唯一对象）。
+
+
+
+**dispatch**
+
+这里的dispatch，等同于store中的store.dispatch，用于组合action
+
+
+
+`<child {...newAction}></child>`
+
+
+我们将组合oldAction和dispatch的对象传递给子组件，在子组件中，调用newAction.action1,相当于实现了dispatch(action1)。于是我们就实现了在没有store和dispatch组件中，如何调用dispatch(action)
+
+后面发现这个接口并没有什么用，**因为一般都会import react-redux….** 目前还未发现bindActionCreators的用处，估计唯一的用处就是在子组件未察觉redux的情况下，将dispatch传递给子组件。。。。。。。。
+
+
+
+
+
+
+
+
+
+
+
 ## 总结
+
 * store 由 Redux 的 createStore(reducer) 生成
 * state 通过 store.getState() 获取，本质上一般是一个存储着整个应用状态的对象
 * action 本质上是一个包含 type 属性的普通对象，由 Action Creator (函数) 产生
