@@ -526,11 +526,13 @@ display属性规定元素应该生成的框的类型；position属性规定元�
 
 
 
-## 行内元素设置margin
+## 行内元素设置margin padding
 
 [https://leetcode-cn.com/circle/discuss/Ua2cjo/](https://leetcode-cn.com/circle/discuss/Ua2cjo/)
 
-设置 `margin-left` 和 `margin-right` 有影响，而 `margin-top` 和 `margin-bottom` 无影响。
+**设置 `margin-left` 和 `margin-right` 有影响，而 `margin-top` 和 `margin-bottom` 无影响。**
+
+
 
 
 
@@ -538,7 +540,17 @@ display属性规定元素应该生成的框的类型；position属性规定元�
 
 🚩 行内元素中，padding-top / padding-bottom / margin-top / margin-bottom 不影响结果；
 
-🚩 padding-top / padding-bottom 虽然不影响结果，但实际上生效了。
+🚩 padding-top / padding-bottom 虽然不影响结果，**但实际上生效了**。
+
+
+
+所以，padding实际上是生效的
+
+
+
+
+
+padding的值是根据目标元素的width计算出来的，而inline， non-replace元素的width是不确定的
 
 
 

@@ -16,11 +16,7 @@ tags:
 
 # 正文
 
-
-
 app和h5交互通常通过WebViewJavascriptBridge
-
-
 
 [WebViewJavascriptBridge相关知识]( https://segmentfault.com/a/1190000008948594 )
 
@@ -30,19 +26,11 @@ app和h5交互通常通过WebViewJavascriptBridge
 
 ### WebViewJavascriptBridge
 
-
-
 [ https://github.com/marcuswestin/WebViewJavascriptBridge ]( https://github.com/marcuswestin/WebViewJavascriptBridge )
-
-
 
 An iOS/OSX bridge for sending messages between Obj-C and JavaScript in WKWebViews, UIWebViews & WebViews.
 
-
-
  一个iOS / OSX桥，用于在WKWebViews，UIWebViews和WebViews中的Obj-C和JavaScript之间发送消息。 
-
-
 
 
 
@@ -55,8 +43,6 @@ An iOS/OSX bridge for sending messages between Obj-C and JavaScript in WKWebView
 
 
 Copy and paste `setupWebViewJavascriptBridge` into your JS:
-
-
 
 ```js
 function setupWebViewJavascriptBridge(callback) {
@@ -71,26 +57,23 @@ function setupWebViewJavascriptBridge(callback) {
 }
 ```
 
-  
-
  实现一个到`https://__bridge_loaded__`的跳转，从而达到初始化javascript环境的bridge的作用。 
 
 
 
 Finally, call `setupWebViewJavascriptBridge` and then use the bridge to register handlers and call ObjC handlers:
 
-
-
 ```js
 setupWebViewJavascriptBridge(function(bridge) {
 	
 	// xxx 就是app提供给h5的方法
-
 	bridge.registerHandler('xxx', function(data, responseCallback) {
 		console.log("JS Echo called with:", data)
 		responseCallback(data)
 	})
 
+    // 调用app的方法
+     bridge.callHandler('backNative')
 })
 ```
 
@@ -104,13 +87,7 @@ setupWebViewJavascriptBridge(function(bridge) {
 
 ### WebViewJavascriptBridge_JS.js解析
 
-
-
-
-
 上面我们讲到了注入javascript方法到webview中。具体的代码就是`WebViewJavascriptBridge_JS.js`这个文件中的方法。我们通过分析这个文件的代码可以知道javascript环境的bridge是如何初始化的。
-
-
 
 ```js
 ;(function() {

@@ -1750,7 +1750,195 @@ cdn的原理？当资源一上传的cdn它就一定能在最近的节点获取�
 
 
 
+#### 如何使首屏加载更快
 
+* 组件懒加载
+
+* 减少http请求
+
+* 图片压缩 图片懒加载
+
+* **CSS Sprites** 精灵图
+
+* 使用CDN
+
+* 合理利用缓存
+
+* pwa
+
+* 代码压缩
+
+* **将样式表放在头部** **将脚本放在底部**
+
+* gizp压缩
+
+* **Tree-shaking、Scope hoisting、Code-splitting**
+
+* **SSR**
+
+* **提早解析 DNS**    `<link rel="dns-prefetch" href="//oss-dev.ishowyu.com">`
+
+* **使用HTTP2**
+
+  
+
+#### CDN
+
+[https://juejin.cn/post/6844903873518239752](https://juejin.cn/post/6844903873518239752)
+
+CDN（Content Delivery Network，内容分发网络）将源站的内容发布到接近用户的网络“边缘”，用户可以就近获取所需数据，不仅降低了网络的拥塞状况、提高请求的响应速度，也能够减少源站的负载压力。
+
+
+
+为了更加清楚地展示CDN的原理，我们首先回顾一下不使用缓存直接到源站请求数据的过程：
+
+![img](https://user-gold-cdn.xitu.io/2019/6/24/16b87f006a1ab7bd?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+如上图所示，如果要访问的网站名为："join.qq.com"，客户端首先会在本机的hosts文件和hosts缓存中查找该域名对应的IP地址；如果本机中没有此信息，则会到我们的`本地DNS`进行询问该域名对应的IP地址；如果本地DNS中仍然没有该域名的IP信息时，则会由本地DNS依次向`根DNS`、`顶级域DNS`、`权威DNS`进行询问，最终`本地DNS`将IP地址发送给客户端。客户端通过IP地址向远程的源站服务器发出HTTP请求并获取相应的数据内容。
+
+
+
+----
+
+
+
+通过CDN获取缓存内容的过程
+
+**CDN将我们对源站的请求导向了距离用户较近的缓存节点，而非源站。**
+
+
+
+如图所示是通过CDN进行请求响应的过程图。通过图中可以看出，在DNS解析域名时新增了一个`全局负载均衡系统（GSLB）`，GSLB的主要功能是根据用户的本地DNS的IP地址判断用户的位置，筛选出距离用户较近的`本地负载均衡系统（SLB）`，并将该SLB的IP地址作为结果返回给本地DNS。SLB主要负责判断`缓存服务器集群`中是否包含用户请求的资源数据，如果缓存服务器中存在请求的资源，则根据缓存服务器集群中节点的健康程度、负载量、连接数等因素筛选出最优的缓存节点，并将HTTP请求重定向到最优的缓存节点上。
+
+
+
+![img](https://user-gold-cdn.xitu.io/2019/6/24/16b87f0340a17453?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+
+
+
+**通过这一系列的操作，将解析源站的目标域名的权力交给了GSLB，以致于GSLB可以根据地理位置等信息将用户的请求引导至距离其最近的"缓存节点"，减缓了源站的负载压力和网络拥塞。**
+
+
+
+
+
+这种工作方式利用CNAME将域名和目标IP之间进行解耦，将目标IP的解析权下放到GSLB中，方便实现更多自定义的功能，是一种更加灵活的方式。
+
+
+
+
+
+> 补充：
+>
+> CNAME记录则可以将一个域名（别名）转换为另一个域名，如果多条CNAME记录指向同一个域名，则可以将多个不同的域名的请求指向同一台服务器主机。并且，CNAME记录通常还对应了一条A记录，用于提供被转换的域名的IP地址。
+
+
+
+-----
+
+
+
+CDN 回源？
+
+当 cdn 缓存服务器中没有符合客户端要求的资源的时候，缓存服务器会请求上一级缓存服务器，以此类推，直到获取到。最后如果还是没有，就会回到我们自己的服务器去获取资源。
+
+**回源的请求或流量太多的话，有可能会让源站点的服务器承载着过大的访问压力，进而影响服务的正常访问。**
+
+
+
+
+
+那都有哪些时候会回源呢？
+
+没有资源，资源过期，访问的资源是不缓存资源等都会导致回源。
+
+
+
+[阿里云配置回源协议](https://help.aliyun.com/document_detail/34949.html)
+
+[阿里云配置回源HOST](https://help.aliyun.com/document_detail/27131.html?spm=a2c4g.11186623.2.6.70635e52YKCqCy)
+
+
+
+----
+
+
+
+当资源一上传的cdn它就一定能在最近的节点获取到吗？
+
+不一定。要等资源推到所有的节点后，才那个获取
+
+
+
+
+
+#### canvas
+
+  **Canvas提供的功能更原始，适合像素处理，动态渲染和大数据量绘制**
+
+- 依赖分辨率 
+- 不支持事件处理器
+- 弱的文本渲染能力
+- 能够以 .png 或 .jpg 格式保存结果图像
+- 最适合图像密集型的游戏，其中的许多对象会被频繁重绘
+
+
+
+
+
+canvas优点：
+
+**定制型更强，可以绘制绘制自己想要的东西。**
+
+**非dom结构形式，用JavaScript进行绘制，涉及到动画性能较高。**
+
+canvas缺点：
+
+**事件分发由canvas处理，绘制的内容的事件需要自己做处理。**
+
+**依赖于像素，无法高效保真，画布较大时候性能较低**。
+
+
+
+
+
+#### 缓存
+
+[https://zhuanlan.zhihu.com/p/28113197](https://zhuanlan.zhihu.com/p/28113197)
+
+**给你一个网站如何具体设计缓存策略？**
+
+
+
+不要对变化的资源添加较短的max-age
+
+如果对缓存使用恰当，能够为你的网站提升不少性能。但如果使用错误，也同样会给你的网站带来灾难。
+
+
+
+index.html 不设置缓存 no-store
+
+
+
+
+
+#### Service Worker
+
+[https://developers.google.com/web/fundamentals/primers/service-workers](https://developers.google.com/web/fundamentals/primers/service-workers)
+
+Service Worker 是浏览器在后台独立于网页运行的脚本，它打开了通向不需要网页或用户交互的功能的大门。 现在，它们已包括如[推送通知](https://developers.google.com/web/updates/2015/03/push-notifications-on-the-open-web)和[后台同步](https://developers.google.com/web/updates/2015/12/background-sync)等功能。
+
+
+
+[https://zhuanlan.zhihu.com/p/28113197](https://zhuanlan.zhihu.com/p/28113197)
+
+
+
+
+
+
+
+#### pwa
 
 
 
