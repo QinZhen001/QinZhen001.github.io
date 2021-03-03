@@ -261,7 +261,133 @@ new Vue({
 
 
 
+
+
+
+
+### no-case-declarations
+
+[https://eslint.org/docs/rules/no-case-declarations](https://eslint.org/docs/rules/no-case-declarations)
+
+[https://segmentfault.com/q/1010000012751143](https://segmentfault.com/q/1010000012751143)
+
+该规则禁止词法声明 (`let`、`const`、`function` 和 `class`) 出现在 `case`或`default` 子句中。原因是，词法声明在整个 `switch` 语句块中是可见的，但是它只有在运行到它定义的 `case` 语句时，才会进行初始化操作。
+
+为了保证词法声明语句只在当前 `case` 语句中有效，将你子句包裹在块中。
+
+> 该规则旨在避免访问未经初始化的词法绑定以及跨 `case` 语句访问被提升的函数。
+
+```js
+switch (foo) {
+    case 1:
+        let x = 1;
+        break;
+    case 2:
+        const y = 2;
+        break;
+    case 3:
+        function f() {}
+        break;
+    default:
+        class C {}
+}
+```
+
+大概是指上面`case 1`里的`x`在`case 2`里也会影响，所以要用`{}`包起来，防止`x`提升到整个`switch`语句。
+
+
+
+
+
+
+
+
+
 ## 补充
+
+
+
+
+
+### eslint 和 stylelint 的区别
+
+[https://juejin.cn/post/6844904151793532936](https://juejin.cn/post/6844904151793532936)
+
+eslint 是什么前文已经讲述过了 
+
+那么 stylelint  是什么呢？
+
+
+
+- 解析器
+- 插件入口
+- 命名规则
+
+与 eslint 最核心的区别，无疑就是解析器。**stylelint 所使用的解析器，是大名鼎鼎的[postcss](https://api.postcss.org/)。**如果开发过 postcss 插件就会发现，stylelint 的处理逻辑就类似于 postcss 插件。
+
+
+
+具体实现上来说，stylelint 通过`stylelint.createPlugin`方法，接收一个 rule 回调函数，并返回一个函数。函数中可以取到所检测 css 代码的 postcss 对象，该对象可以调用 postcss 的 api 对代码进行解析、遍历、修改等操作：
+
+```js
+function rule(actual) {
+  return (root, result) => {
+    // root即为postcss对象
+   };
+}
+```
+
+相比 eslint，css 的节点类型少很多，主要有`rule`，比如`#main { border: 1px solid black; }`、`decl`，比如`color: red`、`atrule`，比如`@media`、`comment`等。
+
+
+
+对于我们检测 css 属性值是否含有色值的需求，可以调用`root.walkDecls`对所有 css 规则做遍历：
+
+```js
+root.walkDecls((decl) => {
+  if (decl) { ... }
+});
+```
+
+随后，再利用[postcss-value-parser](https://github.com/TrySound/postcss-value-parser)解析出规则中的值部分，通过枚举或正则，判断是否为色值：
+
+```js
+const parsed = valueParser(decl.value);
+parsed.walk((node) => {
+  const { type, value, sourceIndex } = node;
+
+  if (type === "word") {
+    if (
+      /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(value) ||
+      colorKeywords.includes(value)
+    ) {
+      ...
+    }
+  }
+
+  if (type === "function" && /^(rgba?|hsla?)$/.test(value)) {
+    ...
+  }
+});
+
+```
+
+
+
+
+
+
+
+作者：LiuRhoRamen
+链接：https://juejin.cn/post/6844904151793532936
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+
 
 
 

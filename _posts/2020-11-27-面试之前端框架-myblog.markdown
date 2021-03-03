@@ -225,8 +225,6 @@ function set (target, key, val) {
 
 
 
-### 
-
 
 
 ## 前端页面路由的权限实现
@@ -294,6 +292,57 @@ key 的作用就是在更新组件时判断两个节点是否相同。相同就�
 `Object.defineProperty` 中的缺陷
 
 如果通过下标方式修改数组数据或者给对象新增属性并不会触发组件的重新渲染，因为 `Object.defineProperty` 不能拦截到这些操作，更精确的来说，对于数组而言，大部分操作都是拦截不到的，只是 Vue 内部通过重写函数的方式解决了这个问题。
+
+
+
+### Dep.target什么时候存在
+
+Dep.target是由依赖赋值的。依赖又称为Watcher（侦听者）或者订阅者。在Vue中有三种依赖，其中两种是很常见的，就是watch（侦听器）和computed（计算属性）。还有一种隐藏的依赖———渲染Watcher，在模板首次渲染的过程中创建的。
+
+
+
+Dep.target是在依赖创建时被赋值，依赖是用构造函数Watcher创建。
+
+```js
+function Watcher(vm, expOrFn, cb, options, isRenderWatcher) {
+    //...
+    if (typeof expOrFn === 'function') {
+        this.getter = expOrFn;
+    } else {
+        this.getter = parsePath(expOrFn);
+    }
+    this.value = this.lazy ? undefined : this.get();
+};
+Watcher.prototype.get = function get() {
+    pushTarget(this);
+    try {
+        value = this.getter.call(vm, vm);
+    } catch (e) {
+        
+    }
+    return value
+};
+Dep.target = null;
+var targetStack = [];
+function pushTarget(target) {
+    targetStack.push(target);
+    Dep.target = target;
+}
+
+
+```
+
+在构造函数Watcher最后会执行实例方法`get`，在实例方法`get`中执行`pushTarget(this)`中给Dep.target赋值的。
+
+**而依赖是在Vue页面或组件初次渲染时创建，所以产生的性能问题应该是首次渲染过慢的问题。**
+
+
+
+
+
+
+
+
 
 
 
@@ -501,6 +550,18 @@ depend() {
 经过上面两次收集依赖后，依赖属性的 `subs` 存储两个 `Watcher`，[计算属性Watcher，渲染Watcher]
 
 
+
+
+
+- 渲染Watcher的`this.getter`是一个函数如下所示：
+
+```js
+updateComponent = function() {
+  vm._update(vm._render(), hydrating);
+};
+```
+
+其中`vm._render()`会把template模板生成的渲染函数render转成虚拟DOM（VNode）：`vnode = render.call(vm._renderProxy, vm.$createElement);`
 
 
 

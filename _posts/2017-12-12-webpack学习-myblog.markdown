@@ -1879,7 +1879,7 @@ In webpack there are multiple ways to have async modules:
 - WebAssembly Modules in the new spec
 - ECMAScript Modules that are using Top-Level-Await
 
-### 
+
 
 ### Optimization
 

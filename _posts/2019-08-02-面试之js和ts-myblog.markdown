@@ -2057,6 +2057,22 @@ function myInstanceof(letf,right){
 
 
 
+### 如何判断一个对象是不是空对象
+
+```js
+function isEmptyObj(obj) {
+  return Object.keys(obj).length === 0
+}
+```
+
+> `Object.keys()` 方法会返回一个由一个给定对象的**自身可枚举属性组成的数组**，数组中属性名的排列顺序和正常循环遍历该对象时返回的顺序一致 。
+
+
+
+
+
+
+
 
 ## new
 
@@ -3279,6 +3295,46 @@ null == 0 对应不上上面的任何一条规则，所以返回false
 
 
 
+
+## [] + {} 和 {} + [] 
+
+
+
+```js
+[] + {}  // "[object Object]"
+{} + []  // 0
+```
+
+
+
+operand + operand = result
+
+1. 使用`ToPrimitive`运算转换左与右运算元为原始数据类型值(primitive)
+2. 在第1步转换后，如果有运算元出现原始数据类型是"字符串"类型值时，则另一运算元作强制转换为字符串，然后作字符串的连接运算(concatenation)
+3. 在其他情况时，所有运算元都会转换为原始数据类型的"数字"类型值，然后作数学的相加运算(addition)
+
+
+
+模拟代码
+
+```js
+a + b:
+    pa = ToPrimitive(a)
+    pb = ToPrimitive(b)
+
+    if(pa is string || pb is string)
+       return concat(ToString(pa), ToString(pb))
+    else
+       return add(ToNumber(pa), ToNumber(pb))
+
+```
+
+
+
+在JS中所设计的`Object`纯对象类型的`valueOf`与`toString`方法，它们的返回如下:
+
+- `valueOf`方法返回值: 对象本身。
+- `toString`方法返回值: "[object Object]"字符串值，不同的内建对象的返回值是"[object type]"字符串，"type"指的是对象本身的类型识别，例如Math对象是返回"[object Math]"字符串。但有些内建对象因为覆盖了这个方法，所以直接调用时不是这种值。(注意: 这个返回字符串的前面的"object"开头英文是小写，后面开头英文是大写)
 
 
 

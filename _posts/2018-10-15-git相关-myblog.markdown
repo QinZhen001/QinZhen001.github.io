@@ -821,6 +821,24 @@ Hotfix branches? [hotfix/]
 
 
 
+### 修改commit信息
+
+```js
+git commit --amend -m "重新提交注释"
+```
+
+
+
+![img](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/de72f49ffe144aef9b0d2786ec7b8e53~tplv-k3u1fbpfcp-zoom-1.image?imageslim)
+
+
+
+
+
+
+
+
+
 ### 解决.gitignore文件不起作用
 
 原因是新建的文件在git中会有缓存，如果某些文件已经被纳入了版本管理中，就算是在.gitignore中已经声明了忽略路径也是不起作用的，这时候我们就应该先把本地缓存删除，然后再进行git的push，这样就不会出现忽略的文件了

@@ -2274,6 +2274,94 @@ export default {
 
 
 
+### computed中避免滥用this
+
+[https://juejin.cn/post/6934911314871451685?utm_source=gold_browser_extension](https://juejin.cn/post/6934911314871451685?utm_source=gold_browser_extension)
+
+计算属性的值是一个函数，其参数是Vue的实例化`this`对象
+
+
+
+**优化前：**
+
+```js
+computed:{
+    d:function(){
+        let result = 0;
+        for(let key in this.a){
+            if(this.a[key].num > 20){
+                result += this.a[key].num + this.b + this.c;
+            }else{
+                result += this.a[key].num + this.e + this.f;
+            }
+        }
+        return result;
+    }
+}
+
+```
+
+**优化后：**
+
+```js
+computed: {
+  d({ a, b, c, e, f }) {
+    let result = 0;
+    for (let key in a) {
+      if (a[key].num > 20) {
+        result += a[key].num + b + c;
+      } else {
+        result += a[key].num + e + f;
+      }
+    }
+    return result;
+  }
+}
+
+```
+
+以上利用解构赋值提前把data数据中的`a`、`b`、`c`、`e`、`f`赋值给对应的变量`a`、`b`、`c`、`e`、`f`，然后在计算属性中可以通过这些变量访问data数据的，且不会触发data中对应数据的依赖收集。**这样只用this读取了一次data中的数据，只触发了一次依赖收集，避免了多次重复地依赖收集产生的性能问题。**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
