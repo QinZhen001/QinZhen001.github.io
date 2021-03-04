@@ -89,6 +89,19 @@ babel的相关插件
 
 
 
+使用`@babel/preset-env`，可以**「按需」**将`core-js`中的特性打包，这样可以显著减少最终打包的体积。
+
+这里的**「按需」**，分为两个粒度：
+
+- 宿主环境的粒度。根据不同宿主环境将该环境下所需的所有特性打包
+- 按使用情况的粒度。仅仅将使用了的特性打包
+
+
+
+
+
+
+
 
 那么我们在安装了@babel/preset-env，并且在.babelrc中配置了@babel/preset-env之后
 
@@ -237,6 +250,37 @@ import "core-js/modules/es7.string.pad-end";
 
 
 
+### @babel/polyfill
+
+[https://mp.weixin.qq.com/s/hgiSKyFxb6RFD6n2diixvQ](https://mp.weixin.qq.com/s/hgiSKyFxb6RFD6n2diixvQ)
+
+`@babel/polyfill`可以看作是：`core-js`加`regenerator-runtime`。
+
+regenerator-runtime是generator以及async/await的运行时依赖
+
+
+
+单独使用`@babel/polyfill`会将`core-js`全量导入，造成项目打包体积过大。
+
+> 从**Babel v7.4.0**[5]开始，`@babel/polyfill`被废弃了，可以直接引用`core-js`与`regenerator-runtime`替代
+
+
+
+### **@babel/runtime**
+
+`@babel/runtime`包含了`Babel`所有**「辅助方法」**以及`regenerator-runtime`。
+
+单纯引入`@babel/runtime`还不行，因为`Babel`不知道何时引用`@babel/runtime`中的**「辅助方法」**。
+
+所以，还需要引入`@babel/plugin-transform-runtime`。
+
+这个插件会在编译时将所有使用**「辅助方法」**的地方从**「自己维护一份」**改为从`@babel/runtime`中引入。
+
+
+
+所以我们需要将`@babel/plugin-transform-runtime`置为`devDependence`，因为他在编译时使用。
+
+将`@babel/runtime`置为`dependence`，因为他在运行时使用。
 
 
 
@@ -244,7 +288,20 @@ import "core-js/modules/es7.string.pad-end";
 
 
 
-### @babel/plugin-transform-runtime
+### plugin
+
+
+
+
+
+
+
+
+
+
+
+
+#### @babel/plugin-transform-runtime
 
 @babel/plugin-transform-runtime的作用是提供统一的模块化的helper，那什么是helper，我们举个例子：
 
@@ -371,7 +428,7 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 
 
 
-### @babel/plugin-proposal-decorators
+#### @babel/plugin-proposal-decorators
 
 
 

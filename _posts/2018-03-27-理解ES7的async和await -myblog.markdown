@@ -567,6 +567,151 @@ initBucketA()
 
 
 
+
+### 异步导出变量导致 undefined
+
+[为何在 JavaScript 中使用顶层 await](https://mp.weixin.qq.com/s?__biz=MjM5MDc4MzgxNA==&mid=2458459629&idx=1&sn=ccff389bd895d95c8cf49d29a47a4560&chksm=b1c23dc486b5b4d2638ea755c914dadb6319519ec5bc9c130937d91e2bba2e55fc4fee328a64&scene=132#wechat_redirect)
+
+
+
+
+
+举个例子：
+
+```jsx
+//------ library.js ------
+export const sqrt = Math.sqrt;
+export function square(x) {
+    return x * x;
+}
+export function diagonal(x, y) {
+    return sqrt(square(x) + square(y));
+}
+
+
+//------ middleware.js ------
+import { square, diagonal } from './library.js';
+
+console.log('From Middleware');
+
+let squareOutput;
+let diagonalOutput;
+
+// IIFE
+ (async () => {
+  await delay(1000); // 延时 导致后面squareOutput 和 diagonalOutput 的计算也会延时
+  squareOutput = square(13);
+  diagonalOutput = diagonal(12, 5);
+ })();
+
+function delay(delayInms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(console.log('❤️'));
+    }, delayInms);
+  });
+}
+
+// 一开始为 undefined 
+// delay之后才有值
+export {squareOutput,diagonalOutput}; 
+```
+
+
+
+解决办法：
+
+**导出一个 Promise 表示初始化**
+
+你可以导出一个 IIFE 并依靠它确定可以访问导出结果的时机。`async` 关键字可以异步化一个方法，并相应**返回一个 promise**。因此，下面的代码中，`async` IIFE 会返回一个 promise。
+
+```js
+//------ middleware.js ------
+import { square, diagonal } from './library.js';
+
+console.log('From Middleware');
+
+let squareOutput;
+let diagonalOutput;
+
+//解决方案
+export default (async () => {
+ await delay(1000);
+ squareOutput = square(13);
+ diagonalOutput = diagonal(12, 5);
+})();
+
+function delay(delayInms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(console.log('❤️'));
+    }, delayInms);
+  });
+}
+
+export {squareOutput,diagonalOutput};
+```
+
+当你在 `main.js` 中访问导出结果的时候，你可以静待 `async` IIFE 被 resolve，之后再去访问变量。
+
+```js
+//------ main.js ------
+import promise, { squareOutput, diagonalOutput } from './middleware.js';
+
+promise.then(()=>{
+  console.log(squareOutput); // 169
+  console.log(diagonalOutput); // 13
+  console.log('From Main');
+
+  setTimeout(() => console.log(squareOutput), 2000);// 169
+
+  setTimeout(() => console.log(diagonalOutput), 2000);// 13
+})
+```
+
+尽管这个方案可以生效，但它也引入了新的问题：
+
+- 大家都必须将这种模式作为标准去遵循，而且必须要找到并等待合适的 promise；
+- 倘若有另一个模块依赖 `main.js` 中的变量 `squareOutput` 和`diagonalOutput`，那么我们就需要再次书写类似的 IIFE promise 并导出，从而让另一个模块得以正确地访问变量。
+
+
+
+为了解决这两个新问题，第二个方案应运而生。
+
+**用导出的变量去 resolve IIFE promise**
+
+```js
+//------ middleware.js ------
+import { square, diagonal } from './library.js';
+
+console.log('From Middleware');
+
+let squareOutput;
+let diagonalOutput;
+
+export default (async () => {
+ await delay(1000);
+ squareOutput = square(13);
+ diagonalOutput = diagonal(12, 5);
+ return {squareOutput,diagonalOutput};
+})();
+
+function delay(delayInms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(console.log('❤️'));
+    }, delayInms);
+  });
+}s
+```
+
+
+
+
+
+
+
+
 ## 补充
 ```javascript
 const synchronous = () => {

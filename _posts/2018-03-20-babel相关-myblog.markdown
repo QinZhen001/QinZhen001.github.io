@@ -615,7 +615,7 @@ var obj = (0, _defineProperty3.default)({}, 'name', 'JavaScript');
 
 [https://juejin.cn/post/6844904055005773831](https://juejin.cn/post/6844904055005773831)
 
-- 它是JavaScript标准库的 polyfill，它支持
+- **它是JavaScript标准库的 polyfill，它支持**
   - 最新的 [ECMAScript](https://en.wikipedia.org/wiki/ECMAScript) 标准
   - ECMAScript 标准库提案
   - 一些 [WHATGW](https://en.wikipedia.org/wiki/WHATWG) / [W3C](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium) 标准（跨平台或者 ECMAScript 相关）
