@@ -1932,6 +1932,26 @@ In this example, the export `b` can be removed in production mode.
 
 
 
+### webpack打包主流程
+
+- 总体的文件就是一个 `IIFE`——立即执行函数
+- `webpack` 会对加载过的文件进行缓存，从而优化性能
+- 主要是通过 `__webpack_require__ `来模拟 `import` 一个模块，并在最后返回模块 `export` 的变量
+- `webpack` 是如何支持 `ES Module` 的
+- 动态加载 `import()` 的实现主要是使用 `JSONP` 动态加载模块，并通过 `webpackJsonpCallback` 判断加载的结果
+
+## 
+
+
+
+
+
+
+
+
+
+
+
 ### webpack 是如何解决两次引入的
 
 [https://segmentfault.com/a/1190000008521430](https://segmentfault.com/a/1190000008521430)
@@ -2062,6 +2082,14 @@ __webpack_require__.e(/*! import() */ 0)
 
 1. **`__webpack_require__` 是根据我们之前传入的 `modules` 来获取 `module` 的，但是，在 `__webpack_require__.e` 中并没有看到有对 `modules` 执行操作的代码。那 `modules` 到底是什么时候被更新的呢？**
 2. `promise` 把 `resolve` 和 `reject` 全部存入了 `installedChunks` 中， 并没有在获取异步chunk成功的`onload` 回调中执行 `resolve`，那么，`resolve` 是什么时候被执行的呢?
+
+
+
+
+
+
+
+
 
 
 
