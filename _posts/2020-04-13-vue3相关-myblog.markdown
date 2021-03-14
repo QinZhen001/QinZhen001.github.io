@@ -61,7 +61,7 @@ Reflect.setPrototypeOf
 
 
 
-### Proxy基础
+## Proxy基础
 
 
 
@@ -110,8 +110,6 @@ new Proxy(data, {
 `track` 用来在读取时收集依赖。
 
 `trigger` 用来在更新时触发依赖。
-
-### 
 
 ### track
 
@@ -293,6 +291,82 @@ function getSequence(arr: number[]): number[] {
 
 
 Vue3 通过拷贝一个数组，用来存储正确的结果，然后通过回溯赋值的方式解决了贪心 + 二分查找替换方式可能造成的值不正确的问题。
+
+
+
+
+
+### @vue/reactivity
+
+响应式的功能被封装在 `@vue/reactivity` 模块中，该模块为我们提供了一个 `reactive` 函数来创建响应式对象。
+
+
+
+
+
+```jsx
+// packages/reactivity/src/reactive.ts
+export function reactive(target: object) {
+  if (target && (target as Target)[ReactiveFlags.IS_READONLY]) {
+    return target
+  }
+  return createReactiveObject(
+    target,
+    false,
+    mutableHandlers,
+    mutableCollectionHandlers
+  )
+}
+```
+
+在 `reactive` 函数内部，会继续调用 `createReactiveObject` 函数来创建响应式对象，该函数也是被定义在 `reactive.ts` 文件中，该函数的的具体实现如下：
+
+```jsx
+// packages/reactivity/src/reactive.ts
+function createReactiveObject(
+  target: Target,
+  isReadonly: boolean,
+  baseHandlers: ProxyHandler<any>,
+  collectionHandlers: ProxyHandler<any>
+) {
+  // 省略部分代码  
+  const proxyMap = isReadonly ? readonlyMap : reactiveMap
+  const existingProxy = proxyMap.get(target)
+  if (existingProxy) {
+    return existingProxy
+  }
+  const proxy = new Proxy(
+    target,
+    targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers
+  )
+  proxyMap.set(target, proxy)
+  return proxy
+}
+```
+
+在 `createReactiveObject` 函数内部，我们终于见到了期待已久的 `Proxy` 对象。当 `target` 对象不是集合类型的对象，比如 Map、Set、WeakMap 和 WeakSet 时，在创建 Proxy 对象时，使用的是 `baseHandlers`，该 `handler` 对象定义了以下 5 种捕获器：
+
+```jsx
+export const mutableHandlers: ProxyHandler<object> = {
+  get,
+  set,
+  deleteProperty,
+  has,
+  ownKeys
+}
+```
+
+其中 `get` 和 `set` 捕获器是分别用于收集 effect 函数和触发 effect 函数的执行。
+
+
+
+
+
+### Vue 3 的 `$emit` 与 Vue 2 的 `$emit`
+
+[https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension](https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension)
+
+在 Vue 2 中 `$emit` 方法是 `Vue.prototype` 对象上的属性，而 Vue 3 上的 `$emit` 是组件实例上的一个属性，`instance.emit = emit.bind(null, instance)`。
 
 
 
