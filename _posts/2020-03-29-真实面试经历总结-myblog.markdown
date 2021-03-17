@@ -509,7 +509,6 @@ console.log(res2)
 
 
 
-
 ----
 
 
@@ -1939,6 +1938,158 @@ Service Worker 是浏览器在后台独立于网页运行的脚本，它打开�
 
 
 #### pwa
+
+......
+
+
+
+
+
+## 商业直播三面
+
+- pc端网站扫码登录的整个流程。（pc端网站显示二维码后轮询登录结果，手机扫码登录...认证服务器返回token）
+- 除了轮询还有别的什么方式吗？ （webstock 和 http2）
+- webstock 比 轮询的优势在哪？ （webstock初始启动会慢）
+- Http2  服务器推送消息的原理
+
+- 首屏加载优化 如何减少白屏时间  （可以采用ssr）
+- 资源压缩
+- webpack的压缩比例？
+- 图片压缩 png和jpg的区别  png压缩成jpg体积减少多少
+- 懒加载 和 预渲染 的区别
+- ssr的优点 和 缺点  （优点：seo  缺点：要注意原来生命周期的写法 全局data）
+
+- 从技术的角度分析 一个产品什么时候选择native app 什么时候选择web app 什么时候选择小程序？ **（复杂交互动画效果 基于音视频 采用native app 基于微信生态系统 微信用户认证体系 采用微信小程序）**
+- 还有别的混合app的实现方式吗？ （react native 和 fluter）
+- 你对fluter的了解 （没了解）
+- 你对react native 的了解 （基于react render渲染器采用native 渲染成native组件）
+- preload 和 prefetch
+
+
+
+
+
+#### preload 和 prefetch
+
+[https://blog.fundebug.com/2019/04/11/understand-preload-and-prefetch/](https://blog.fundebug.com/2019/04/11/understand-preload-and-prefetch/)
+
+* [preload](https://www.smashingmagazine.com/2016/02/preload-what-is-it-good-for/) 是一个声明式 `fetch`，可以强制浏览器在不阻塞 `document` 的 [onload](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload) 事件的情况下请求资源。
+* `Prefetch` 告诉浏览器这个资源将来可能需要，但是什么时间加载这个资源是由浏览器来决定的。
+
+
+
+`preload` *加载资源一般是当前页面需要的，*`prefetch` *一般是其它页面有可能用到的资源。*
+
+
+
+
+
+
+
+#### HTTP/2 服务器推送（Server Push）
+
+[https://www.ruanyifeng.com/blog/2018/03/http2_server_push.html](https://www.ruanyifeng.com/blog/2018/03/http2_server_push.html)
+
+
+
+**简单的说，HTTP/2 所谓的server push其实是当服务器接收一个请求时，可以响应多个资源。**
+
+> 举个栗子：浏览器向服务器请求index.html，服务器不仅把index.html返回了，还可以把index.js，index.css等一起推送给客户端。最直观的好处就是，浏览器不用解析页面再发起请求来获取数据，节约了页面加载时间。
+
+
+
+举个例子：
+
+```basic
+// conf/conf.d/default.conf
+
+server {
+    listen 443 ssl http2;
+    server_name  localhost;
+
+    ssl                      on;
+    ssl_certificate          /etc/nginx/certs/example.crt;
+    ssl_certificate_key      /etc/nginx/certs/example.key;
+
+    ssl_session_timeout  5m;
+
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers   on;
+
+    location / {
+      root   /usr/share/nginx/html;
+      index  index.html index.htm;
+      http2_push /style.css;
+      http2_push /example.png;
+    }
+}
+```
+
+其实就是最后多了两行`http2_push`命令。它的意思是，如果用户请求根路径`/`，就推送`style.css`和`example.png`。
+
+
+
+后端实现：
+
+上面的服务器推送，需要写在服务器的配置文件里面。这显然很不方便，每次修改都要重启服务，而且应用与服务器的配置不应该混在一起。
+
+服务器推送还有另一个实现方法，就是后端应用产生 HTTP 回应的头信息`Link`命令。服务器发现有这个头信息，就会进行服务器推送。
+
+> ```bash
+> Link: </styles.css>; rel=preload; as=style
+> ```
+
+如果要推送多个资源，就写成下面这样。
+
+> ```bash
+> Link: </styles.css>; rel=preload; as=style, </example.png>; rel=preload; as=image
+> ```
+
+这时，Nginx 的[配置](https://www.nginx.com/blog/nginx-1-13-9-http2-server-push/)改成下面这样。
+
+> ```bash
+> server {
+>     listen 443 ssl http2;
+> 
+>     # ...
+> 
+>     root /var/www/html;
+> 
+>     location = / {
+>         proxy_pass http://upstream;
+>         http2_push_preload on;
+>     }
+> }
+> ```
+
+如果服务器或者浏览器不支持 HTTP/2，那么浏览器就会按照 preload 来处理这个头信息，预加载指定的资源文件。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

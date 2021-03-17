@@ -1134,6 +1134,8 @@ The `onload` attribute in the `link` allows us to run a script when the non-crit
 
 
 
+# 补充
+
 
 
 
@@ -1475,7 +1477,6 @@ class EndWebpackPlugin {
 module.exports = EndWebpackPlugin;
 ```
 
-
 **从开发这个插件可以看出，找到合适的事件点去完成功能在开发插件时显得尤为重要。 在 工作原理概括 中详细介绍过 Webpack 在运行过程中广播出常用事件，你可以从中找到你需要的事件。**
 
 
@@ -1485,13 +1486,39 @@ module.exports = EndWebpackPlugin;
 
 
 
-
 虽然可以通过 console.log 的方式完成调试，但这种方法非常不方便也不优雅，本节将教你如何断点调试 工作原理概括 中的插件代码。 由于 Webpack 运行在 Node.js 之上，调试 Webpack 就相对于调试 Node.js 程序。
+
+
+
+
+
 
 
 ## 关于Tapable
 
+[https://juejin.cn/post/6937829048332746788?utm_source=gold_browser_extension](https://juejin.cn/post/6937829048332746788?utm_source=gold_browser_extension)
 
+- Webpack中，一切皆插件（Hook）。
+- Webpack通过tapable将这些插件串起来，组成固定流程。
+- tapable解耦了流程任务和具体实现，同时提供了强大的扩展能力：拿到Hook，就能插入自己的逻辑。（我们平时写Webpack插件，就是找到对应的Hook去，然后注册我们自己的钩子函数。这样就方便地把我们自定义逻辑，插入到了Webpack任务流程中了）。
+
+
+
+
+
+---
+
+
+
+
+
+- tapable是一个流程管理工具。
+- 提供了10种类型Hook，可以很方便地让我们去实现复杂的业务流程。
+- **tapable核心原理是基于配置，通过new Function方式，实时动态生成函数表达式去执行，从而完成逻辑**
+- tapable通过串联流程节点来实现流程控制，保证了流程的准确有序。
+- 每个流程节点可以任意注册钩子函数，从而提供了强大的扩展能力。
+- **tapable是Webpack基石，它支撑了Webpack庞大的插件系统，又保证了这些插件的有序运行。**
+- 如果你也正在做一个复杂的流程系统（任务系统），可以考虑用tapable来管理你的流程。
 
 
 

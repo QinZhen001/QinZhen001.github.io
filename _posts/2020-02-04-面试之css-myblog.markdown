@@ -385,9 +385,23 @@ border-bottom: 40px solid #ff0000;
 **但是，注意display:inline-block和margin:auto同时出现时元素无法居中**
 
 
+
+
+
+## BFC会与float元素相互覆盖吗
+
+[https://juejin.cn/post/6936913689115099143?utm_source=gold_browser_extension#heading-41](https://juejin.cn/post/6936913689115099143?utm_source=gold_browser_extension#heading-41)
+
+**不会，因为 BFC 是页面中一个独立的隔离容器，其内部的元素不会与外部的元素相互影响**，比如两个 div，上面的 div 设置了 float，那么如果下面的元素不是 BFC，也没有设置 float，会形成对上面的元素进行包裹内容的情况，如果设置了下面元素为 overflow：hidden；属性那么就能够实现经典的两列布局，左边内容固定宽度，右边因为是 BFC 所以会进行自适应。
+
+注明出处。
+
+
+
+
 ## 品字布局
 
-```
+```html
 		<style type="text/css">
 	
 			.container {
@@ -696,7 +710,6 @@ float、clear 和 vertical-align
 
 
 **渲染用的是GUI线程、js执行用的是js引擎线程就是v8，GUI线程与V8之间是互斥的。又因为浏览器会维持html中css和js的顺序，所以css渲染会阻塞js执行。**
-
 
 
 
