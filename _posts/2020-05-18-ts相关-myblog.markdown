@@ -1713,6 +1713,60 @@ var cat = new Cat('Tom');
 
 
 
+
+
+## & 操作符
+
+This looks like it's from the [*Intersection Types*](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#35-intersection-types) portion of the Language Specification. Specifically, the `&` appears to be an [intersection type literal](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#387-intersection-type-literals). As for what it does:
+
+> Intersection types represent values that simultaneously have multiple types. A value of an intersection type A & B is a value that is both of type A and type B. Intersection types are written using intersection type literals (section 3.8.7).
+
+
+
+交集类型表示同时具有多种类型的值。交集类型A和B的值是同时具有A和B类型的值。
+
+
+
+举一例子：
+
+```tsx
+interface A { a: number }  
+interface B { b: number }
+
+var ab: A & B = { a: 1, b: 1 };  
+var a: A = ab;  // A & B assignable to A  
+var b: B = ab;  // A & B assignable to B
+
+```
+
+
+
+Because `ab` is both of type `A` *and* of type `B`, we can assign it to `a` and/or `b`. If `ab` were only of type `B`, we could only assign it to `b`.
+
+
+
+
+
+### & string
+
+> Above, a keyof T & string intersection is required because keyof T could contain symbol types that cannot be transformed using template string types.
+
+
+
+```tsx
+type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
+```
+
+
+
+这里会自动把联合类型展开并分配，`${'cart'}/${'add' | 'remove'}` 会被推断成 `'cart/add' | 'cart/remove'`，不过由于我们传入的是 `keyof GetMutations<Module>` 它还有可能是 `symbol | number` 类型，所以用 `Keys & string` 来取其中的 `string` 类型
+
+
+
+
+
+
+
 ## as 
 
 
@@ -2042,22 +2096,6 @@ type T = Values<Obj> // 'foo' | 'bar'
 ```
 
 
-
-### & string
-
-
-
-> Above, a keyof T & string intersection is required because keyof T could contain symbol types that cannot be transformed using template string types.
-
-
-
-```tsx
-type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
-```
-
-
-
-这里会自动把联合类型展开并分配，`${'cart'}/${'add' | 'remove'}` 会被推断成 `'cart/add' | 'cart/remove'`，不过由于我们传入的是 `keyof GetMutations<Module>` 它还有可能是 `symbol | number` 类型，所以用 `Keys & string` 来取其中的 `string` 类型
 
 
 
