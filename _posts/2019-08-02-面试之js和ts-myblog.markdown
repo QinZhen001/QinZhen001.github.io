@@ -1203,6 +1203,78 @@ function setTimeout(fn, delay) {
 }
 ```
 
+### class 中 this的指向问题
+
+下面代码中 resolve的this指向undefined
+
+```js
+class MyPromise {
+  constructor(executor) {
+    executor(this.resolve, this.reject);
+  }
+
+  resolve() {
+    console.log("resolve", this); // undefined
+  }
+
+  reject = () => {
+    console.log("reject", this);
+  };
+}
+
+const p = new MyPromise(function (resolve, reject) {
+  resolve();
+});
+
+```
+
+如何能将resolve中的this指向MyPromise实例
+
+使用箭头函数
+
+```js
+class MyPromise {
+  constructor(executor) {
+    executor(this.resolve, this.reject);
+  }
+
+  resolve = () => {
+    console.log("resolve", this);
+  };
+
+  reject = () => {
+    console.log("reject", this);
+  };
+}
+
+const p = new MyPromise(function (resolve, reject) {
+  resolve();
+});
+```
+
+使用bind
+
+```js
+class MyPromise {
+  constructor(executor) {
+    this.resolve = this.resolve.bind(this);
+    executor(this.resolve, this.reject);
+  }
+
+  resolve() {
+    console.log("resolve", this);
+  }
+
+  reject = () => {
+    console.log("reject", this);
+  };
+}
+
+const p = new MyPromise(function (resolve, reject) {
+  resolve();
+});
+```
+
 
 
 

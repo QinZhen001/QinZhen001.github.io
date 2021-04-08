@@ -587,6 +587,8 @@ false && false || alert(1)
 
 
 
+
+
 ## ES6
 
 
@@ -1102,13 +1104,6 @@ console.log(new Date().toUTCString())  //Tue, 17 Apr 2018 14:37:22 GMT
 
 
 ### target，currentTarget和this
-
-
-
-
-
-
-
 
 [网页链接](https://blog.csdn.net/wkyseo/article/details/51863483)
 
