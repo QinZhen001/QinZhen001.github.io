@@ -19,8 +19,9 @@ tags:
 
 [https://www.jianshu.com/p/8b7e6025354b](https://www.jianshu.com/p/8b7e6025354b)
 
-
 [https://blog.realign.pro/posts/tech/notes/automation/lerna-gracefully_manage_multiple_npm_packages.html](https://blog.realign.pro/posts/tech/notes/automation/lerna-gracefully_manage_multiple_npm_packages.html)
+
+[现代前端工程化-基于 Monorepo 的 lerna 详解(从原理到实战)]()
 
 
 A tool for managing JavaScript projects with multiple packages.
@@ -99,9 +100,22 @@ Bootstrap the packages in the current Lerna repo. Installing all their dependenc
 
 
 
-把所有包的依赖安装到根 node_modules。
+`lerna` 提供了可以**将子项目的依赖包提升到最顶层**的方式 ，我们可以执行 `lerna clean`先删除每个子项目的 `node_modules` , 然后执行命令  `lerna bootstrop --hoist`。
+
+`lerna bootstrop --hoist` 会将 `packages` 目录下的公共模块包抽离到最顶层，但是这种方式会有一个问题，**不同版本号只会保留使用最多的版本**，这种配置不太好，当项目中有些功能需要依赖老版本时，就会出现问题。
+
+#### yarn workspaces
+
+可以解决前面说的当不同的项目依赖不同的版本号问题， `yarn workspaces`会检查每个子项目里面依赖及其版本，如果版本不一致都会保留到自己的 `node_modules` 中，只有依赖版本号一致的时候才会提升到顶层。注意：这种需要在 `lerna.json` 中增加配置。
+
+```js
+  "npmClient": "yarn",  // 指定 npmClent 为 yarn
+  "useWorkspaces": true // 将 useWorkspaces 设置为 true
+```
 
 
+
+增加了这个配置后 不再需要 `lerna bootstrap` 来安装依赖了，可以直接使用 `yarn install` 进行依赖的安装。注意：`yarn install` 无论在顶层运行还是在任意一个子项目运行效果都是可以。
 
 
 
@@ -195,6 +209,30 @@ https://juejin.cn/post/6944877410827370504?utm_source=gold_browser_extension
 其次是**项目基建成本的降低**，所有项目复用一套标准的工具和规范，无需切换开发环境，如果有新的项目接入，也可以直接复用已有的基建流程，比如 CI 流程、构建和发布流程。这样只需要很少的人来维护所有项目的基建，维护成本也大大减低。
 
 再者，**团队协作也更加容易**，一方面大家都在一个仓库开发，能够方便地共享和复用代码，方便检索项目源码，另一方面，git commit 的历史记录也支持以功能为单位进行提交，之前对于某个功能的提交，需要改好几个仓库，提交多个 commit，现在只需要提交一次，简化了 commit 记录，方便协作。
+
+
+
+
+
+### node 如何实现软连接
+
+`lerna` 中也是通过这种方式来实现软链的
+
+```js
+fs.symlinkSync(target,path,type)
+fs.symlinkSync(target,path,type)
+target <string> | <Buffer> | <URL>   // 目标文件
+path <string> | <Buffer> | <URL>  // 创建软链对应的地址
+type <string>
+```
+
+
+
+### private
+
+在根项目中
+
+package.json 中 private 必须设置为 true
 
 
 
