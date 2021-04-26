@@ -190,15 +190,13 @@ export const invert: InvertColor;
 
 
 
-## 操作符
+## 运算符
 
-
-
-### !操作符
+### ! 运算符
 
 **x! 将从 x 值域中排除 null 和 undefined 。**
 
-```js
+```
 function myFunc(maybeString: string | undefined | null) {
   // Type 'string | null | undefined' is not assignable to type 'string'.
   // Type 'undefined' is not assignable to type 'string'. 
@@ -209,7 +207,7 @@ function myFunc(maybeString: string | undefined | null) {
 
 **调用函数时忽略 undefined 类型**
 
-```js
+```
 type NumGenerator = () => number;
 
 function myFunc(numGenerator: NumGenerator | undefined) {
@@ -218,14 +216,13 @@ function myFunc(numGenerator: NumGenerator | undefined) {
   const num1 = numGenerator(); // Error
   const num2 = numGenerator!(); //OK
 }
-
 ```
 
 **确定赋值断言**
 
 在 TypeScript 2.7 版本中引入了确定赋值断言，即允许在实例属性和变量声明后面放置一个 `!` 号，从而告诉 TypeScript 该属性会被明确地赋值。为了更好地理解它的作用，我们来看个具体的例子：
 
-```js
+```
 let x: number;
 initialize();
 // Variable 'x' is used before being assigned.(2454)
@@ -234,13 +231,11 @@ console.log(2 * x); // Error
 function initialize() {
   x = 10;
 }
-
-
 ```
 
 很明显该异常信息是说变量 x 在赋值前被使用了，要解决该问题，我们可以使用确定赋值断言：
 
-```js
+```
 let x!: number;
 initialize();
 console.log(2 * x); // Ok
@@ -252,9 +247,151 @@ function initialize() {
 
 通过 `let x!: number;` 确定赋值断言，TypeScript 编译器就会知道该属性会被明确地赋值。
 
+### & 运算符
+
+This looks like it's from the [*Intersection Types*](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#35-intersection-types) portion of the Language Specification. Specifically, the `&` appears to be an [intersection type literal](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#387-intersection-type-literals). As for what it does:
+
+> Intersection types represent values that simultaneously have multiple types. A value of an intersection type A & B is a value that is both of type A and type B. Intersection types are written using intersection type literals (section 3.8.7).
+
+交集类型表示同时具有多种类型的值。交集类型A和B的值是同时具有A和B类型的值。
+
+举一例子：
+
+```
+interface A { a: number }  
+interface B { b: number }
+
+var ab: A & B = { a: 1, b: 1 };  
+var a: A = ab;  // A & B assignable to A  
+var b: B = ab;  // A & B assignable to B
+```
+
+Because `ab` is both of type `A` *and* of type `B`, we can assign it to `a` and/or `b`. If `ab` were only of type `B`, we could only assign it to `b`.
+
+#### & string
+
+> Above, a keyof T & string intersection is required because keyof T could contain symbol types that cannot be transformed using template string types.
+
+```
+type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
+```
+
+这里会自动把联合类型展开并分配，`${'cart'}/${'add' | 'remove'}` 会被推断成 `'cart/add' | 'cart/remove'`，不过由于我们传入的是 `keyof GetMutations<Module>` 它还有可能是 `symbol | number` 类型，所以用 `Keys & string` 来取其中的 `string` 类型
+
+### ?. 运算符
+
+?.用来判断左侧的表达式是否是 null | undefined，如果是则会停止表达式运行，可以减少我们大量的&&运算。
+
+比如我们写出`a?.b`时，编译器会自动生成如下代码
+
+```
+a === null || a === void 0 ? void 0 : a.b;
+```
+
+这里涉及到一个小知识点:`undefined`这个值在非严格模式下会被重新赋值，使用`void 0`必定返回真正的 undefined。
+
+### ?? 运算符
+
+??与||的功能是相似的，区别在于 **??在左侧表达式结果为 null 或者 undefined 时，才会返回右侧表达式** 。
+
+比如我们书写了`let b = a ?? 10`，生成的代码如下：
+
+```
+let b = a !== null && a !== void 0 ? a : 10;
+```
+
+而 || 表达式，大家知道的，则对 false、''、NaN、0 等逻辑空值也会生效，不适于我们做对参数的合并。
+
+## 操作符
+
+### keyof
+
+键值获取 keyof
+
+keyof 可以获取一个类型所有键值，返回一个联合类型，如下：
+
+```
+type Person = {
+  name: string;
+  age: number;
+}
+type PersonKey = keyof Person;  // PersonKey得到的类型为 'name' | 'age'
+function prop<T, K extends keyof T>(obj: T, key: K) {
+    return obj[key];
+}
+
+---------------------------------------------------------------
+
+function prop2<T>(obj: T, key: keyof T) {
+    return obj[key];
+}
 
 
 
+let o = {
+    p1: 0,
+    p2: ''
+}
+
+let v = prop(o, 'p1') // is number, K is of type 'p1'
+let v2 = prop2(o, 'p1') // is number | string, no extra info is captured
+```
+
+The difference is that in the first case the return type will be `T[K]` while in the second case it will be `T[keyof T]`.
+
+`K` can at it's widest be `keyof T` but it can be a specific string literal type representing a key. This means if `K` is a specific property the return value will be of the same type as the property:
+
+### typeof
+
+在 TypeScript 中，`typeof` 操作符可以用来获取**一个变量或对象**的类型。
+
+**注意typeof操作的是一个变量或对象**
+
+**注意typeof操作的是一个变量或对象**
+
+**注意typeof操作的是一个变量或对象**
+
+```
+interface Person {
+  name: string;
+  age: number;
+}
+
+const sem: Person = { name: "semlinker", age: 30 };
+type Sem = typeof sem; // type Sem = Person
+
+注意下面这种写法是错误的：
+const Sem = typeof sem;
+```
+
+此外，`typeof` 操作符除了可以获取对象的结构类型之外，它也可以用来获取函数对象的类型，比如：
+
+```
+function toArray(x: number): Array<number> {
+  return [x];
+}
+
+type Func = typeof toArray; // -> (x: number) => number[]
+```
+
+#### keyof 结合 typeof 一起使用
+
+```
+const cats = {
+  "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
+  "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
+  "Testing Cat": "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+};
+
+function f(a: keyof typeof cats) {
+  console.log(a);
+}
+
+// f("x"); // error
+f("Coding Cat"); // ok
+```
+
+## 
 
 ##  void 
 
@@ -1406,108 +1543,6 @@ declare module "UUU" {
 
 
 
-
-
-## keyof
-
-
-
-```js
-function prop<T, K extends keyof T>(obj: T, key: K) {
-    return obj[key];
-}
-
----------------------------------------------------------------
-
-function prop2<T>(obj: T, key: keyof T) {
-    return obj[key];
-}
-
-
-
-let o = {
-    p1: 0,
-    p2: ''
-}
-
-let v = prop(o, 'p1') // is number, K is of type 'p1'
-let v2 = prop2(o, 'p1') // is number | string, no extra info is captured
-
-```
-
-
-
-The difference is that in the first case the return type will be `T[K]` while in the second case it will be `T[keyof T]`.
-
-
-
- `K` can at it's widest be `keyof T` but it can be a specific string literal type representing a key. This means if `K` is a specific property the return value will be of the same type as the property:
-
-
-
-## typeof
-
-在 TypeScript 中，`typeof` 操作符可以用来获取**一个变量或对象**的类型。
-
-
-
-**注意typeof操作的是一个变量或对象**
-
-**注意typeof操作的是一个变量或对象**
-
-**注意typeof操作的是一个变量或对象**
-
-
-
-```tsx
-interface Person {
-  name: string;
-  age: number;
-}
-
-const sem: Person = { name: "semlinker", age: 30 };
-type Sem = typeof sem; // type Sem = Person
-
-注意下面这种写法是错误的：
-const Sem = typeof sem;
-```
-
-此外，`typeof` 操作符除了可以获取对象的结构类型之外，它也可以用来获取函数对象的类型，比如：
-
-```tsx
-function toArray(x: number): Array<number> {
-  return [x];
-}
-
-type Func = typeof toArray; // -> (x: number) => number[]
-
-```
-
-
-
-####  keyof 结合 typeof 一起使用
-
-```tsx
-const cats = {
-  "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
-  "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
-  "Testing Cat": "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-};
-
-function f(a: keyof typeof cats) {
-  console.log(a);
-}
-
-// f("x"); // error
-f("Coding Cat"); // ok
-```
-
-
-
-
-
-
-
 ## Record & Dictionary & Many
 
 这几个语法糖是从 `lodash` 的 types 源码中学到的，平时工作中的使用频率还挺高。
@@ -1710,58 +1745,6 @@ var Cat = (function (_super) {
 })(Animal);
 var cat = new Cat('Tom');
 ```
-
-
-
-
-
-## & 操作符
-
-This looks like it's from the [*Intersection Types*](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#35-intersection-types) portion of the Language Specification. Specifically, the `&` appears to be an [intersection type literal](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#387-intersection-type-literals). As for what it does:
-
-> Intersection types represent values that simultaneously have multiple types. A value of an intersection type A & B is a value that is both of type A and type B. Intersection types are written using intersection type literals (section 3.8.7).
-
-
-
-交集类型表示同时具有多种类型的值。交集类型A和B的值是同时具有A和B类型的值。
-
-
-
-举一例子：
-
-```tsx
-interface A { a: number }  
-interface B { b: number }
-
-var ab: A & B = { a: 1, b: 1 };  
-var a: A = ab;  // A & B assignable to A  
-var b: B = ab;  // A & B assignable to B
-
-```
-
-
-
-Because `ab` is both of type `A` *and* of type `B`, we can assign it to `a` and/or `b`. If `ab` were only of type `B`, we could only assign it to `b`.
-
-
-
-
-
-### & string
-
-> Above, a keyof T & string intersection is required because keyof T could contain symbol types that cannot be transformed using template string types.
-
-
-
-```tsx
-type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
-```
-
-
-
-这里会自动把联合类型展开并分配，`${'cart'}/${'add' | 'remove'}` 会被推断成 `'cart/add' | 'cart/remove'`，不过由于我们传入的是 `keyof GetMutations<Module>` 它还有可能是 `symbol | number` 类型，所以用 `Keys & string` 来取其中的 `string` 类型
-
-
 
 
 
