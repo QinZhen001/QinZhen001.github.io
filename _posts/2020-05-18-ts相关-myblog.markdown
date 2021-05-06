@@ -2047,9 +2047,27 @@ function logMe(x: any) {
 
 
 
+## ts结合react
+
+
+
+### style
+
+```tsx
+style: React.CSSProperties;
+```
+
+
+
+
+
+
+
 
 
 # 补充
+
+
 
 
 
