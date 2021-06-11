@@ -941,6 +941,40 @@ export default React.memo(MyComponent, areEqual);
 
 
 
+### useMemo 和 useEffect 的区别
+
+[useMemo 官方文档](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
+
+[useMemo和useEffect有什么区别](https://blog.csdn.net/hsany330/article/details/106122228)
+
+[React Hooks: 深入剖析 useMemo 和 useEffect](https://zhuanlan.zhihu.com/p/268802571)
+
+
+
+* **当你调用 useEffect 时，就是在告诉 React 在完成对 DOM 的更改后运行你的“副作用”函数**。**effect只能在DOM更新后再触发**.
+* useMemo 的函数会在渲染期间执行，所以使用`useMemo`就能解决怎么在`DOM`改变的时候，控制某些函数不被触发。
+
+
+
+> 不能在useMemo中操作DOM之类的副作用操作，不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo
+
+
+
+> 在`useMemo`中使用`setState`你会发现会产生死循环，并且会有警告，因为`useMemo`是在渲染中进行的，你在其中操作`DOM`后，又会导致触发`memo`
+
+
+
+* **memo是在DOM更新前触发的，就像官方所说的，类比生命周期就是shouldComponentUpdate**
+* useEffect 可以看成 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的替代。
+
+
+
+> useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
+
+
+
+
+
 
 
 #### useCallback
