@@ -939,15 +939,19 @@ function areEqual(prevProps, nextProps) {
 export default React.memo(MyComponent, areEqual);
 ```
 
-
-
-### useMemo 和 useEffect 的区别
+#### useMemo 和 useEffect 的区别
 
 [useMemo 官方文档](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
 
 [useMemo和useEffect有什么区别](https://blog.csdn.net/hsany330/article/details/106122228)
 
 [React Hooks: 深入剖析 useMemo 和 useEffect](https://zhuanlan.zhihu.com/p/268802571)
+
+[useEffect的陷阱](https://zhuanlan.zhihu.com/p/84697185)
+
+
+
+
 
 
 
@@ -970,6 +974,16 @@ export default React.memo(MyComponent, areEqual);
 
 
 > useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
+
+
+
+
+
+#### useContext
+
+https://zhuanlan.zhihu.com/p/260789887
+
+**`useContext`可以帮助我们跨越组件层级直接传递变量，实现共享。**
 
 
 
@@ -1066,6 +1080,21 @@ function Form() {
 
 1. 能充分利用一个函数式组件多次 `render` 时产生的相同功能的 `callback`
 2. `callback` 能不受闭包限制，访问到这个函数式组件内部最新的状态
+
+
+
+
+
+#### useHistory
+
+> 从React Router v5.1.0开始，新增了useHistory钩子（hook），如果是使用React >16.8.0，使用useHistory即可实现编程时页面跳转导航。
+
+```js
+const history = useHistory();
+history.push("/home")
+```
+
+
 
 
 

@@ -588,60 +588,6 @@ DocumentFragment 接口表示一个没有父级文件的最小文档对象。它
 * 使用SSR后端渲染，数据直接突入到HTML中
 
 
-## js基础类
-
-
-### 通用事件绑定
-```
- function bindEvent(elem, type, fn) {
-        elem.addEventListener(type, fn);
-    }
-
-    var a = document.getElementById('link1');
-    bindEvent(a, 'click', function (e) {
-        e.preventDefault();
-        alert('clicked-self');
-    })
-```
-
-
-
-
-### cookie
-* 本身用于客户端和服务器端通信、
-* 但是它有本地存储的功能，于是就被“借用”
-* 使用document.cookie = … 获取和修改即可
-
-
-
-#### 缺点
-* 存储量太小，只有4KB
-* 所有的http请求都带着，会影响获取资源的效率
-* API简单，需要封装
-
-### locationStorage 和 sessionStorage
-* HTML5专门为存储而设计，最大容量5M
-* API简洁易用
-* localStorage.setItem(key,value);localStorage.getItem(key)
-
-
-### navigator & screen
-```
-// navigator
-    var ua = navigator.userAgent;
-    var isChrome = ua.indexOf('Chrome');
-    console.log(isChrome);
-
-// screen
-    console.log(screen.width);
-    console.log(screen.height);
-```
-
-
-
-
-
-
 
 ## 页面性能类
 提升页面性能的方法有哪些？

@@ -818,8 +818,6 @@ type Pick<T, K extends keyof T> = {
 
 Record<K extends keyof any, T> 的作用是将 K 中所有的属性的值转化为 T 类型。
 
-
-
 ```tsx
 // node_modules/typescript/lib/lib.es5.d.ts
 
@@ -831,11 +829,7 @@ type Record<K extends keyof any, T> = {
 };
 ```
 
-
-
 举个例子 在WechatMiniprogram中的data
-
-
 
 ```tsx
 type DataOption = Record<string, any>
@@ -844,6 +838,30 @@ type DataOption = Record<string, any>
 interface Data<D extends DataOption> {
     
 }
+```
+
+
+
+
+
+#### Map 和 Record
+
+While the idea that "TypeScript supports `Map` natively" is still true, since version 2.1 TypeScript supports something called [`Record`](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeystype).
+
+
+
+TypeScript原生支持Map
+
+但我们也可以使用Record来实现Map
+
+
+
+```tsx
+type MyMapLikeType = Record<string, IPerson>;
+const peopleA: MyMapLikeType = {
+    "a": { name: "joe" },
+    "b": { name: "bart" },
+};
 ```
 
 
@@ -1063,7 +1081,7 @@ type T7 = ReturnType<Function>; // Error
 
 
 
-#### 使用ReturnType应用redux中的action
+#### 应用redux中的action
 
 
 
@@ -1138,6 +1156,10 @@ export const createRemoveTodo = (id: number) => ({
 [https://blog.csdn.net/yunfeihe233/article/details/108027882](https://blog.csdn.net/yunfeihe233/article/details/108027882)
 
 
+
+#### 拿到泛型函数的返回类型
+
+https://segmentfault.com/q/1010000015557807
 
 
 

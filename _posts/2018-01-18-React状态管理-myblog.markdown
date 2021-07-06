@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "react-redux"
+title:      "react状态管理"
 date:       2018-01-18 16:05:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -11,7 +11,14 @@ tags:
 
 > “Yeah It's on. ”
 
+
+
+# Redux
+
+
+
 ## react-redux
+
 在react里面用redux，一般我们会用到react-redux，其中包括Provider和connect接口
 
 Provider接收redux的createStore()的结果，并且放到context里，让子组件可以通过context属性直接获取到这个
@@ -53,7 +60,7 @@ UI 组件有以下几个特征。
 ```
 const Title =
   value => <h1>{value}</h1>;
-```  
+```
 因为不含有状态，UI 组件又称为"纯组件"，即它纯函数一样，纯粹由参数决定它的值。
 
 ### 容器组件
@@ -266,6 +273,16 @@ render(
 上面代码中，Provider在根组件外面包了一层，这样一来，App的所有子组件就默认都可以拿到state了。
 
 [http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_three_react-redux.html](http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_three_react-redux.html)
+
+
+
+
+
+# MobX
+
+https://zh.mobx.js.org/README.html
+
+
 
 
 

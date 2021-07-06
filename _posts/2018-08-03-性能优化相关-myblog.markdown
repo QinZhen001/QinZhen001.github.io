@@ -117,7 +117,16 @@ Web应用的运行离不开静态资源，所以对静态资源的优化至关�
 
 当然，如果您不满足这种尺度的优化，还可以对图片进行更深层次的优化。例如：模糊图片中不重要的部分以减小文件大小、使用自动播放与循环的HTML5视频替换GIF图，因为视频比GIF文件还小（好消息是未来可以通过img标签加载视频）。
 
+
+
+
+
+
+
+
+
 ### 交付优化
+
 交付优化指的是对页面加载资源以及用户与网页之间的交付过程进行优化。
 
 #### 异步无阻塞加载JS
@@ -241,7 +250,12 @@ code-splitting是Webpack中最引人注目的特性之一。此特性能够把�
 
 比较推荐的做法是：使用服务端渲染静态HTML来获得更快的首次有效绘制，一旦JavaScript加载完毕再将页面接管下来。
 
+
+
+
+
 #### 使用import函数动态导入模块
+
 使用import函数可以在运行时动态地加载ES2015模块，从而实现按需加载的需求。
 
 这种优化在单页应用中变得尤为重要，在切换路由的时候动态导入当前路由所需的模块，会避免加载冗余的模块（试想如果在首次加载页面时一次性把整个站点所需要的所有模块都同时加载下来会加载多少非必须的JS，应该尽可能的让加载的JS更小，只在首屏加载需要的JS）。
@@ -253,7 +267,74 @@ code-splitting是Webpack中最引人注目的特性之一。此特性能够把�
 
 推荐使用Cache-control: immutable避免重新验证。
 
-### vue中长列表性能优化
+
+
+### Service Worker
+
+[Service Worker API](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API#service_worker_%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E7%94%A8%E6%B3%95)
+
+Service workers 本质上充当 Web 应用程序、浏览器与网络（可用时）之间的代理服务器。这个 API 旨在创建有效的离线体验，它会拦截网络请求并根据网络是否可用采取来适当的动作、更新来自服务器的的资源。它还提供入口以推送通知和访问后台同步 API。
+
+
+
+**Service worker运行在worker上下文，因此它不能访问DOM。**
+
+**相对于驱动应用的主JavaScript线程，它运行在其他线程中，所以不会造成阻塞。**
+
+**出于安全考量，Service workers只能由HTTPS承载**
+
+
+
+service worker将遵守以下生命周期：
+
+1. 下载
+2. 安装
+3. 激活
+
+
+
+例子：
+
+https://qiita.com/ufoo68/items/5cf65f0e2897bdc76a5e
+
+```html
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('sw.js')
+      .then(function(registration) {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope)
+        registration.pushManager.subscribe({userVisibleOnly: true})
+      })
+      .catch(function(err) {
+        console.log('ServiceWorker registration failed: ', err)
+      })
+  }
+</script>
+```
+
+
+
+#### Workbox
+
+Workbox is a set of libraries that can power a production-ready [service worker](https://web.dev/service-workers-cache-storage/) for your [Progressive Web App](https://web.dev/progressive-web-apps/).
+
+- Precaching
+- Runtime caching
+- Strategies
+- Request routing
+- Background sync
+- Helpful debugging
+
+
+
+
+
+
+
+### 框架使用优化
+
+#### vue中长列表性能优化
 
 我们应该都知道vue会通过object.defineProperty对数据进行劫持，来实现视图响应数据的变化，然而有些时候我们的组件就是纯粹的数据展示，不会有任何改变，我们就不需要vue来劫持我们的数据，在大量数据展示的情况下，这能够很明显的减少组件初始化的时间，那如何禁止vue劫持我们的数据呢？可以通过object.freeze方法来冻结一个对象，一旦被冻结的对象就再也不能被修改了。
 
@@ -295,11 +376,7 @@ export default {
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-
-
-### vue中keep-alive优化
-
-
+#### vue中keep-alive优化
 
 一个常见的的场景，
 主页 -->前进 列表页-->前进 详情页，详情页 -->返回 主页 -->返回 列表页
@@ -365,10 +442,8 @@ new Router({
 })
 ```
 
+##### 按需keep-alive
 
-
-
-#### 按需keep-alive
 我们从官方文档提供的api入手,
 
 keep-alive组件如果设置了 include ，就只有和 include 匹配的组件会被缓存，

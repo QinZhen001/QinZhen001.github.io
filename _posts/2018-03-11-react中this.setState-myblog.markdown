@@ -366,10 +366,6 @@ ReactDOM.render(
 
 
 
-## React何以称为React
-React虽然并不像Rx.js那样高举Reactive Programming（响应式编程）的大旗，但是依然体现了Reactive Programming的思想。
-
-Reactive Programming通俗说就是这样的编程风格：改变一个东西，另一个东西会做出响应发生改变，而不用我们的Code去主动让另一个东西做出改变。
 
 
 

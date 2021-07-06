@@ -15,7 +15,19 @@ tags:
 [网页链接](https://github.com/react-guide/react-basic)
 
 
+
+## React何以称为React
+
+React虽然并不像Rx.js那样高举Reactive Programming（响应式编程）的大旗，但是依然体现了Reactive Programming的思想。
+
+Reactive Programming通俗说就是这样的编程风格：改变一个东西，另一个东西会做出响应发生改变，而不用我们的Code去主动让另一个东西做出改变。
+
+
+
+
+
 ### 变换（Transformation）
+
 设计 React 的核心前提是认为 UI 只是把数据通过映射关系变换成另一种形式的数据。同样的输入必会有同样的输出。这恰好就是纯函数。
 ```
 function NameBox(name) {
@@ -556,7 +568,53 @@ function wrapperDev(func) {
 
 
 
+### render函数
+
+> react16中 render函数允许返回一个数组，单个字符串等，不在只限制为一个顶级DOM节点，可以减少很多不必要的div
+
+render函数会插入jsx生成的dom结构，react会生成一份虚拟dom树，在每一次组件更新时，在此react会通过其diff算法比较更新前后的新旧DOM树，比较以后，找到**最小的有差异的DOM节点**，并重新渲染
 
 
 
+意思你现在可以这样：
+
+```tsx
+render () {
+  return " "
+}
+```
+
+或者这样：
+
+```tsx
+render () {
+  return [
+    <div></div>
+    <div></div>
+    ]
+}
+```
+
+
+
+
+
+### 父子组件更新
+
+[https://www.jianshu.com/p/ee122bb5b14b](https://www.jianshu.com/p/ee122bb5b14b)
+
+父子组件 componentWillMount生命周期是先进入父组件还是子组件？
+componentDidMount呢？
+
+在react的组件挂载及render过程中，最底层的子组件是最先完成挂载及更新的。
+
+
+
+**constructor()构造函数、componentWillMount执行顺序：**
+顶层父组件--子组件--子组件--...--底层子组件
+
+
+
+**render、componentDidMount顺序：**
+底层子组件--子组件--子组件--...--顶层父组件
 
