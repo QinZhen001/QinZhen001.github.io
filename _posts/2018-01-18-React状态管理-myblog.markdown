@@ -284,6 +284,30 @@ https://zh.mobx.js.org/README.html
 
 
 
+## mobx-react
+
+[源码地址](https://github.com/mobxjs/mobx/blob/main/packages/mobx-react/src/index.ts)
+
+
+
+###  observer
+
+[observer 源码](https://github.com/mobxjs/mobx/blob/main/packages/mobx-react/src/observer.tsx)
+
+
+
+
+
+## Mobx-react-lite 
+
+Lightweight React bindings for MobX based on React 16.8 and Hooks
+
+它是专门服务于react hooks的mobx-react轻量级版本
+
+虽然mobx-react@6已经包含了mobx-react-lite，但官方是推荐在没有类组件的react项目中直接使用mobx-react-lite的。
+
+
+
 
 
 
