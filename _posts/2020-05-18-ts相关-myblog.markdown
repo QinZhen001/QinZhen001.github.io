@@ -411,6 +411,16 @@ let unusable: void = undefined;
 
 
 
+### void和never的区别
+
+一旦有人告诉你，`never` 表示一个从来不会优雅的返回的函数时，你可能马上就会想到与此类似的 `void`，然而实际上，**`void` 表示没有任何类型，`never` 表示永远不存在的值的类型。**
+
+
+
+当一个函数返回空值时，它的返回值为 void 类型，但是，当一个函数永不返回时（或者总是抛出错误），它的返回值为 never 类型。void 类型可以被赋值（在 strictNullChecking 为 false 时），但是除了 never 本身以外，其他任何类型不能赋值给 never。
+
+
+
 
 
 ## Never
@@ -2001,11 +2011,7 @@ type ExtractActionCreaotrKey<T> = {
 
 ## tsconfig
 
-
-
 [配置的项解释](https://www.cnblogs.com/gina/p/8960754.html)
-
-
 
 ```js
 {
@@ -2066,6 +2072,50 @@ function logMe(x: any) {
 ```
 
 这意味着，如果你要把*现有的JS代码库*迁移到TS，那除了更改文件扩展名，你还得做一些较复杂的东西。这还意味着，在编写代码时，您需要更多地关注类型，如果不指定类型，编译器就总是会「抱怨」。由于在实际情况中*显式地声明`any`*被认为是不好的实践，所以在开发过程的早期，您就需要分配*正确的类型*。如果没有显式的声明，这可能意味着「我太懒了，没有正确地注释这里的类型」。
+
+
+
+
+
+### [声明文件（.d.ts）的使用](https://www.cnblogs.com/xpengp/p/12787239.html)
+
+1. 在ts文件中对引用的外部库做类型判断；
+2. 制作npm包时，书写自己的声明文件，需要在package.json的typing/types字段注册声明文件的路径；
+3. 不使用ts时，也可以添加声明文件与（自己的）的模块存放在同一目录下，简单做一下数据结构体，对IDE参数声明也有用哦；
+
+### --lib选项
+
+有时，你想要解耦编译目标（即生成的 JavaScript 版本）和环境库支持之间的关系。例如对于 Promise，你的编译目标是 `--target es5`，但是你仍然想使用它，这时，你可以使用 `lib` 对它进行控制。
+
+- JavaScript 功能
+  - es5
+  - es6
+  - es2015
+  - es7
+  - es2016
+  - es2017
+  - esnext
+- 运行环境
+  - dom
+  - dom.iterable
+  - webworker
+  - scripthost
+- ESNext 功能选项
+  - es2015.core
+  - es2015.collection
+  - es2015.generator
+  - es2015.iterable
+  - es2015.promise
+  - es2015.proxy
+  - es2015.reflect
+  - es2015.symbol
+  - es2015.symbol.wellknown
+  - es2016.array.include
+  - es2017.object
+  - es2017.sharedmemory
+  - esnext.asynciterable
+
+
 
 
 
@@ -2522,6 +2572,10 @@ if (isAxiosError(err)) {
 
 
 # 遇到的问题
+
+[常见的 error](https://jkchao.github.io/typescript-book-chinese/error/common.html)
+
+
 
 
 
@@ -3424,6 +3478,32 @@ var superHero = new HorseflyWoman();
 superHero.climb();
 superHero.fly();
 ```
+
+
+
+## Cannot find module or its corresponding type declarations.ts(2307)
+
+这个是因为找不到module导致的
+
+我们可以在tsconfig设置paths别名
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib",
+    "target": "es6",
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "paths": {
+      "agora-rte-sdk": ["../agora-rte-sdk/src"],
+      "agora-meeting-core": ["../agora-meeting-core/src"]
+    },
+  },
+}
+```
+
+
 
 
 

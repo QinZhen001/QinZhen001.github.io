@@ -294,6 +294,10 @@ https://zh.mobx.js.org/README.html
 
 [observer 源码](https://github.com/mobxjs/mobx/blob/main/packages/mobx-react/src/observer.tsx)
 
+使用了高阶组件的模式，并在内部封装了React.memo，将传入的函数组件转换为监听者。
+
+
+
 
 
 
