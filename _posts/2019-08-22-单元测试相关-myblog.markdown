@@ -400,6 +400,26 @@ foo();
 
 
 
+## jest.config
+
+
+
+### [setupFiles and setupFilesAfterEnv?](https://stackoverflow.com/questions/58080435/when-should-i-use-setupfiles-rather-than-setupfilesafterenv)
+
+**setupFiles** will be executed
+
+> before the test framework is installed in the environment.
+
+**setupFilesAfterEnv** will be executed
+
+> after the test framework has been installed in the environment.
+
+
+
+
+
+
+
 ## testing-library
 
 [https://testing-library.com/docs/react-testing-library/example-intro](https://testing-library.com/docs/react-testing-library/example-intro)
@@ -741,3 +761,34 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 ```
 
 如果我们想通过className查询元素，可以利用wrapper.container调用querySelector
+
+
+
+
+
+# 踩坑
+
+
+
+## jest的testEnvironment
+
+Default: `"node"`
+
+The test environment that will be used for testing. The default environment in Jest is a Node.js environment. If you are building a web app, you can use a browser-like environment through jsdom instead.
+
+用于测试的测试环境。Jest中的默认环境是Node.js环境。如果你正在构建一个web应用程序，你可以通过jsdom来使用一个类似于浏览器的环境。
+
+
+
+一般我们是写web应用程序的单元测试所以testEnvironment要设置为jsdom
+
+
+
+
+
+
+
+## jest和jest-environment-jsdom版本对应
+
+
+
