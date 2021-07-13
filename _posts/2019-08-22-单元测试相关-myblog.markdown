@@ -790,5 +790,21 @@ The test environment that will be used for testing. The default environment in J
 
 ## jest和jest-environment-jsdom版本对应
 
+当我们使用jsdom作为testEnvironment
 
+jest版本和jest-environment-jsdom的版本需要一一对应
+
+例如
+
+```js
+  "jest": "24.9.0",
+  "testEnvironment": "jest-environment-jsdom-fourteen",
+```
+
+例如
+
+```js
+"jest": "^27.0.6",
+"testEnvironment": 'jest-environment-jsdom'   // 27.0.6
+```
 

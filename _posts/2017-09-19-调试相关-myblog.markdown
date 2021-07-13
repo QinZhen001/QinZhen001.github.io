@@ -1,0 +1,164 @@
+---
+layout:     post
+title:      "调试相关"
+date:       2017-09-19 22:48:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - 调试
+---
+
+> “Yeah It's on. ”
+
+
+
+
+
+# web调试
+
+[调试技巧](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/11.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%89%8D%E7%AB%AF%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7%E3%80%8B.md)
+
+
+
+## 手机调试模式下鼠标小圆点消失
+
+[网页链接](https://segmentfault.com/q/1010000006084696)
+
+ctrl+shift+c会toggle选择dom的状态， 此时光标会变为非模拟touch
+
+
+### 最终解决方案
+
+HDMI线下部分显卡驱动的造成的,更改设置
+
+以Intel核显为例，在显卡控制面板里选择「显示-量化范围」（在nvidia那边叫动态范围），里面有三项：
+
+* 默认范围 Default Range
+* 有限范围 Limited Range
+* 全范围 Full Range
+
+勾上「全范围」，保存看chrome里那个小圆点就出来了
+
+
+
+
+> Tip：
+
+**其实选 有限范围 也可以**
+
+
+
+
+
+
+
+## 显示需要鼠标focus才出现元素
+
+一开始我在触发元素上设置Force state，发现气泡弹窗并未弹出
+
+![](https://s3.ax1x.com/2021/01/20/sWfv6K.png)
+
+最终解决：
+
+使用这个 Break on => 
+
+
+
+或者:
+
+找到这个元素 （一般直接覆在body上）
+
+```html
+<div role="tooltip" id="el-popover-9073" aria-hidden="true" class="el-popover el-popper" tabindex="0" style="transform-origin: left center; z-index: 2011; display: none;"><!----><div data-v-7b616fd4=""><div data-v-7b616fd4="">
+    ....
+</div>
+```
+
+改成
+
+```html
+<div role="tooltip" id="el-popover-9073" aria-hidden="true" class="el-popover el-popper" tabindex="0" style="transform-origin: left center; z-index: 2011; display: none;"><!----><div data-v-7b616fd4=""><div data-v-7b616fd4="">
+    ....
+</div>
+```
+
+
+
+
+
+## 打印最近 focus 过的元素
+
+`document.activeElement` 可以打印最近 focus 过的元素，因为打开控制台导致失去焦点，但我们可以通过此 api 获取它。
+
+
+
+
+
+## 打印对象瞬时状态
+
+`JSON.stringify(obj, null, 2)` 可以结构化打印出对象，因为是字符串，不用担心引用问题。
+
+
+
+
+
+## Chrome 快速查找元素
+
+Chrome 会记录最后插入的 5 个元素，分别以 `$0` ~ `$4` 的方式在控制台直接输出。
+
+
+
+# node调试
+
+
+
+
+
+## nodemon
+
+[网页链接](http://blog.csdn.net/sinat_36871349/article/details/53433324)
+
+
+### Installation
+
+```
+npm install -g nodemon
+```
+
+And nodemon will be installed globally to your system path.
+
+You can also install nodemon as a developement dependency:
+
+```
+npm install --save-dev nodemon
+```
+
+With a local installation, nodemon will not be available in your system path. Instead, the local installation of nodemon can be run by calling it from within an npm script (such as npm start) or using npx nodemon.
+
+
+
+### Usage
+
+nodemon wraps your application, so you can pass all the arguments you would normally pass to your app:
+
+```js
+nodemon [your node app]
+```
+
+Using nodemon is simple, if my application accepted a host and port as the arguments, I would start it as so:
+
+```js
+nodemon ./server.js localhost 8080
+```
+
+
+#### Running non-node scripts
+
+nodemon can also be used to execute and monitor other programs. nodemon will read the file extension of the script being run and monitor that extension instead of .js if there's no nodemon.json:
+
+```js
+nodemon --exec "python -v" ./app.py
+```
+
+
