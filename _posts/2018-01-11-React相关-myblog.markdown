@@ -1038,6 +1038,144 @@ class PotentialError extends React.Component {
 
 
 
+### Refs
+
+[https://zh-hans.reactjs.org/docs/refs-and-the-dom.html](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html)
+
+> `ref` 会在 `componentDidMount` 或 `componentDidUpdate` 生命周期钩子触发前更新。
+
+下面是几个适合使用 refs 的情况：
+
+- 管理焦点，文本选择或媒体播放。
+- 触发强制动画。
+- 集成第三方 DOM 库。
+
+避免使用 refs 来做任何可以通过声明式实现来完成的事情。
+
+#### Refs 与函数组件
+
+默认情况下，**你不能在函数组件上使用 `ref` 属性**，因为它们没有实例：
+
+```tsx
+function MyFunctionComponent() {
+  return <input />;
+}
+
+class Parent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.textInput = React.createRef();
+  }
+  render() {
+    // This will *not* work!
+    return (
+      <MyFunctionComponent ref={this.textInput} />
+    );
+  }
+}
+```
+
+如果要在函数组件中使用 `ref`，你可以使用 [`forwardRef`](https://zh-hans.reactjs.org/docs/forwarding-refs.html)（可与 [`useImperativeHandle`](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle) 结合使用），或者可以将该组件转化为 class 组件。
+
+不管怎样，你可以**在函数组件内部使用 `ref` 属性**，只要它指向一个 DOM 元素或 class 组件：
+
+```tsx
+function CustomTextInput(props) {
+  // 这里必须声明 textInput，这样 ref 才可以引用它
+  const textInput = useRef(null);
+
+  function handleClick() {
+    textInput.current.focus();
+  }
+
+  return (
+    <div>
+      <input
+        type="text"
+        ref={textInput} />
+      <input
+        type="button"
+        value="Focus the text input"
+        onClick={handleClick}
+      />
+    </div>
+  );
+}
+```
+
+#### DOM Refs 暴露给父组件
+
+如果你使用 16.3 或更高版本的 React, 这种情况下我们推荐使用 [ref 转发](https://zh-hans.reactjs.org/docs/forwarding-refs.html)。**Ref 转发使组件可以像暴露自己的 ref 一样暴露子组件的 ref**。关于怎样对父组件暴露子组件的 DOM 节点，在 [ref 转发文档](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components)中有一个详细的例子。
+
+
+
+
+
+
+
+
+
+
+
+### render prop
+
+```tsx
+class Mouse extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.state = { x: 0, y: 0 };
+  }
+
+  handleMouseMove(event) {
+    this.setState({
+      x: event.clientX,
+      y: event.clientY
+    });
+  }
+
+  render() {
+    return (
+      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
+
+        {/*
+          使用 `render`prop 动态决定要渲染的内容，
+          而不是给出一个 <Mouse> 渲染结果的静态表示
+        */}
+        {this.props.render(this.state)}
+      </div>
+    );
+  }
+}
+```
+
+使用
+
+```tsx
+class MouseTracker extends React.Component {
+  render() {
+    return (
+      <div>
+        <h1>移动鼠标!</h1>
+        <Mouse render={mouse => (
+          <Cat mouse={mouse} />
+        )}/>
+      </div>
+    );
+  }
+}
+```
+
+更具体地说，**render prop 是一个用于告知组件需要渲染什么内容的函数 prop。**
+
+
+
+
+
+
+
+
+
 ### Hooks
 
 

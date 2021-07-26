@@ -776,6 +776,9 @@ Babel 默认是将ES6模块语法转化为CommonJS规范写法，配置为module
 * 具体项目还是需要使用 babel-polyfill，只使用 babel-runtime 的话，实例方法不能正常工作（例如 "foobar".includes("foo")）；
 * JavaScript 库和工具可以使用 babel-runtime，在实际项目中使用这些库和工具，需要该项目本身提供 polyfill；
 
+### babel 发展规律
 
+babel就是为了 **把目标环境中不支持的语法和 api 进行转换或 polyfill，尽量的准确、配置尽量的简单、插件更容易书写能做到更多事情**。
 
+所以针对这个目标，babel 一路发展而来， 设计出了 preset（babel 6）、preset-env (babel 7)、polyfill provider（babel 8），plugin-transform-runtime （babel 6）等。
 

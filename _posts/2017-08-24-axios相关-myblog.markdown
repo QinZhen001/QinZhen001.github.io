@@ -1,12 +1,12 @@
 ---
 layout:     post
-title:      "axios"
+title:      "axios相关"
 date:       2017-08-24 18:19:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - 网路
+    - 网络
 ---
 
 > “Yeah It's on. 

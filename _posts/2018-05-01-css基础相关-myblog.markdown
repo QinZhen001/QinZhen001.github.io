@@ -1703,6 +1703,101 @@ pointer-events:none
 
 
 
+### box-shadow
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-shadow](https://developer.mozilla.org/zh-CN/docs/Web/CSS/box-shadow)
+
+
+[https://www.w3cplus.com/css3/css3-box-shadows-unnoticed-spread](https://www.w3cplus.com/css3/css3-box-shadows-unnoticed-spread)
+
+
+
+ box-shadow不仅仅只有
+【投景方式：外阴影或内阴影】
+【X轴偏移量：x-offset】
+【Y轴偏移量：y-offset】
+【阴影模糊半径：blur-radius】和【阴影颜色：color】
+
+
+
+它还有一个常被我们遗忘的另外一个值——【阴影扩展半径：spread-radius】。我们可以通过【spread-radius扩展半径】来控制阴影的扩展方向：扩展半径有两个值，如果取值为正值，则个阴影会向外扩展，如果你给其取负值，整个阴影向内缩小。如此可以通个这个值配合阴影的模糊半径来制作单边的不同阴影效果，而且不会影响其他边的效果。或者换句简单的点，可以使用他制作单边投影效果。”
+
+
+
+
+[更多效果](https://conceptboard.github.io/box-shadow-spread-examples/)
+
+[Box-shadow生成器](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Background_and_Borders/Box-shadow_generator)
+
+
+
+
+
+### getComputedStyle
+
+[网页链接](http://blog.csdn.net/s110902/article/details/73312802?locationNum=12&fps=1)
+
+
+getComputedStyle是一个可以获取当前元素所有最终使用的CSS属性值。
+
+window.getComputedStyle(element[,pseudo-element]); 
+
+首先是有两个参数，元素和伪类。第二个参数不是必须的，当不查询伪类元素的时候可以忽略或者传入 null。
+
+使用示例
+
+```
+let style = window.getComputedStyle(my_div, null);
+```
+
+返回值
+
+getComputedStyle 返回的对象是 CSSStyleDeclaration 类型的对象。取数据的时候可以直接按照属性的取法去取数据，例如 style.backgroundColor。
+
+**需要注意的是，返回的对象的键名是 css 的驼峰式写法，background-color -> backgroundColor。** 
+
+需要注意的是 float 属性，根据 《JavaScript 高级程序》所描述的情况 ，float 是 JS 的保留关键字。根据 DOM2 级的规范，**取元素的 float 的时候应该使用 cssFloat。**
+
+
+
+例子：
+
+```tsx
+let imageWrapper = document.getElementsByClassName('imageWrapper')[0];
+let wTransform =getComputedStyle(imageWrapper)['transform'];
+```
+
+
+
+
+
+#### 和 style 的异同
+
+相同点：
+
+getComputedStyle 和 element.style 的相同点就是二者返回的都是 CSSStyleDeclaration 对象，取相应属性值得时候都是采用的 CSS 驼峰式写法，均需要注意 float 属性。
+
+不同点：
+
+* element.style 读取的只是元素的“内联样式”，即 写在元素的 style 属性上的样式；而 getComputedStyle 读取的样式是**最终样式**，包括了“内联样式”、“嵌入样式”和“外部样式”。
+* element.style 既支持读也支持写，我们通过 element.style 即可改写元素的样式。而 getComputedStyle 仅支持读并不支持写入。
+
+
+
+#### currentStyle
+
+[https://www.huaweicloud.com/articles/a33c8dae11b47cb2ad32238c77beac5f.html](https://www.huaweicloud.com/articles/a33c8dae11b47cb2ad32238c77beac5f.html)
+
+**（尽量不要用这个）**
+
+currentStyle是只兼容各种IE的，但是不兼容火狐，谷歌的，而getComputeStyle的话是可以兼容火狐，谷歌，和IE9+的。
+
+
+
+
+
+
+
 
 
 ### 移动端border-1px

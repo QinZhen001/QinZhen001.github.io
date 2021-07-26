@@ -12,7 +12,32 @@ tags:
 > “Yeah It's on. ”
 
 
+
+## 前序
+
+[https://juejin.cn/post/6956224866312060942](https://juejin.cn/post/6956224866312060942)
+
+babel 6 存在的问题
+
+- es 的标准每年都在变，现在的 stage-0 可能很快就 stage-2 了，那 preset 怎么维护，要不要跟着变，用户怎么知道这个 stage-x 都支持什么特性？
+- 只能转成 es5，那目标环境支持一些 es6 特性了，那这些转换和 polyfill 岂不是无用功？ 而且还增加了产物的体积。
+- polyfill 手动引入，比较麻烦，有没有更好的方式
+
+
+
+babel 7 如何解决：
+
+babel 7 废弃了 preset-20xx 和 preset-stage-x 的 preset 包，而换成了 preset-env，preset-env 默认会支持所有 es 标准的特性，如果没进入标准的，不再封装成 preset，需要手动指定 plugin-proposal-xxx。
+
+
+
+
+
+
+
+
 ## 正文
+
 [https://www.jianshu.com/p/cbd48919a0cc](https://www.jianshu.com/p/cbd48919a0cc)
 
 
@@ -177,9 +202,7 @@ findIndex方法和padStart方法，这两个方法作为es6提出的新方法，
 
 ####  useBuiltIns 
 
-
-
-`@babel/preset-env` 与按需加载 polyfill 相关的选项是 `useBuiltIns`，它有两个值需要重点关注： `entry` 和 `usage`。
+**useBuiltIns 就是使用 polyfill （corejs）的方式，是在入口处全部引入（entry），还是每个文件引入用到的（usage），或者不引入（false）。**
 
 
 
