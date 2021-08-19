@@ -314,5 +314,22 @@ Lightweight React bindings for MobX based on React 16.8 and Hooks
 
 
 
+## mobx6.0为什么移除装饰器
 
+https://www.yuque.com/mosinng/blog/gmq6ra
+
+主要的原因是跟随js的class语言标准不兼容才迫不得已修改的
+
+
+
+
+
+## 不作出反应
+
+https://cn.mobx.js.org/best/react.html
+
+MobX 不会对其作出反应:
+
+- 从 observable 获取的值，但是在追踪函数之外
+- 在异步调用的代码块中读取的 observable
 

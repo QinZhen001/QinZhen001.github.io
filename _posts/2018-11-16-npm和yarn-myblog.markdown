@@ -105,6 +105,23 @@ npm config set init.author.name $name
 npm config set init.author.email $email
 ```
 
+## **legacy-peer-deps**
+
+[https://juejin.cn/post/6971268824288985118](https://juejin.cn/post/6971268824288985118)
+
+[https://www.coder.work/article/7517082](https://www.coder.work/article/7517082)
+
+> 在NPM v7中，现在默认安装**peerDependencies**。
+
+*--legacy-peer-deps*标志是在*v7*中引入的，目的是绕过**peerDependency**自动安装；它告诉 NPM 忽略项目中引入的各个**modules**之间的相同**modules**但不同版本的问题并继续安装，保证各个引入的依赖之间对自身所使用的不同版本**modules**共存。
+
+
+
+`--legacy-peer-deps` :安装时忽略所有 peerDependencies，采用 npm 版本 4 到版本 6 的样式。
+
+`--strict-peer-deps` :在遇到任何冲突的 peerDependencies 时失败并中止安装过程。默认情况下，npm 只会因根项目直接依赖导致的 peerDependencies 冲突而崩溃。
+
+
 
 
 
@@ -526,6 +543,24 @@ test()
 ```javascript
 npm xmas
 ```
+
+
+
+
+
+### 版本后缀
+
+* -alpha 说明这个文件目前的这个版本是 内测版本
+* -beta 说明这个文件目前的这个版本是 公测版本
+* -rc 这个代表的是发布正式版本前的预览版本，和正式的版本很接近了
+
+
+
+## ~和^和*
+
+- ~ 会匹配最近的小版本依赖包，比如~1.2.3会匹配所有1.2.x版本，但是不包括1.3.0
+- ^ 会匹配最新的大版本依赖包，比如^1.2.3会匹配所有1.x.x的包，包括1.3.0，但是不包括2.0.0
+- `* `这意味着安装最新版本的依赖包
 
 
 

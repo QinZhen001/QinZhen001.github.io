@@ -477,6 +477,52 @@ $ git status
 
 
 
+
+### squash
+
+[https://www.cnblogs.com/hzglearn/p/13042282.html](https://www.cnblogs.com/hzglearn/p/13042282.html)
+
+[https://www.jianshu.com/p/a122aa26dd2e](https://www.jianshu.com/p/a122aa26dd2e)
+
+分支上过多commit的话，比如一个功能点我们可能分了几个提交，如果合并到主分支的话，提交记录会显得繁琐，最终我们重点关注的应该是这个功能点的提交，而不是开发者中间做了多少开发，这时候就要用到了git squash，两种情况
+
+
+
+例子：
+
+我想将本地开发分支的内容合并到master主线分支上，并且期望将一个功能的所有提交压缩成一个commit
+
+1. 先checkout master分支并做本地分支和远程仓库同步
+    git checkout master
+    git pull  （一定要做同步，若本地代码和远端仓库不同步的话，就会出现很多远端的修改进入我们的squash时的commits当中）
+2. 切换到开发分支 dev ， 并执行commits合并操作
+    git checkout dev
+    git rebase -i master
+
+
+
+```bash
+ # 执行上面的语句后，会进入以下编辑界面
+ pick xxx: commit1 add : add xxx 
+ pick xxx: commit2 fix: update xxxx
+ pick xxx: commit3 fix: delete xxx
+ pick xxx: commit4 modify : update xxxx 
+# 进入编辑模式，将除第一行的pick外，其余的pick都改成 squash ，退出编辑模式，保存即可
+ pick xxx: commit1 add : add xxx 
+ squash xxx: commit2 fix: update xxxx
+ squash xxx: commit3 fix: delete xxx
+ squash xxx: commit4 modify : update xxxx 
+```
+
+
+
+> git 在merge的时候提供了这种squash merge的操作方式
+>
+> 在bitbucket中我们可以先squash在进行merge
+
+
+
+
 ### rebase
 
 [https://www.jianshu.com/p/4a8f4af4e803](https://www.jianshu.com/p/4a8f4af4e803)

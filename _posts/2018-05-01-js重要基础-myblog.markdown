@@ -465,6 +465,16 @@ rect.move(1, 1); // Outputs, 'Shape moved.'
 
 
 
+### call和apply的null/undefined
+
+[call和apply的第一个参数是null/undefined时函数内的的this指向window或global](https://www.cnblogs.com/snandy/archive/2012/03/01/2373243.html)
+
+
+
+
+
+
+
 ### ||和&&的高级用法
 
 
