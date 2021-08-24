@@ -833,9 +833,22 @@ render('{{xfoo}} {{say.what}}', { xfoo: 'yep', say: { what: 'yep' } });
 
 
 
+### execa
 
+[https://www.npmjs.com/package/execa](https://www.npmjs.com/package/execa)
 
+> Process execution for humans
 
+This package improves [`child_process`](https://nodejs.org/api/child_process.html) methods with:
 
-
+- Promise interface.
+- [Strips the final newline](https://www.npmjs.com/package/execa#stripfinalnewline) from the output so you don't have to do `stdout.trim()`.
+- Supports [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) binaries cross-platform.
+- [Improved Windows support.](https://github.com/IndigoUnited/node-cross-spawn#why)
+- Higher max buffer. 100 MB instead of 200 KB.
+- [Executes locally installed binaries by name.](https://www.npmjs.com/package/execa#preferlocal)
+- [Cleans up spawned processes when the parent process dies.](https://www.npmjs.com/package/execa#cleanup)
+- [Get interleaved output](https://www.npmjs.com/package/execa#all) from `stdout` and `stderr` similar to what is printed on the terminal. [*(Async only)*](https://www.npmjs.com/package/execa#execasyncfile-arguments-options)
+- [Can specify file and arguments as a single string without a shell](https://www.npmjs.com/package/execa#execacommandcommand-options)
+- More descriptive errors.
 

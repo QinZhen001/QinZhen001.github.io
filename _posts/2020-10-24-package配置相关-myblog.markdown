@@ -18,6 +18,10 @@ tags:
 
 # 正文
 
+[package.json 指南](http://nodejs.cn/learn/the-package-json-guide)
+
+
+
 ##  [main](https://docs.npmjs.com/files/package.json#main)
 
 The main field is a module ID that is the primary entry point to your program. That is, if your package is named `foo`, and a user installs it, and then does `require("foo")`, then your main module’s exports object will be returned.
@@ -25,6 +29,8 @@ The main field is a module ID that is the primary entry point to your program. T
 This should be a module ID relative to the root of your package folder.
 
 For most modules, it makes the most sense to have a main script and often not much else.
+
+
 
 ## [bin](https://docs.npmjs.com/files/package.json#bin)
 
@@ -166,9 +172,19 @@ Conversely, some files are always ignored:
 }
 ```
 
+## engines
 
+设置此软件包/应用程序要运行的 Node.js 或其他命令的版本。
 
+示例：
 
+```json
+"engines": {
+  "node": ">= 6.0.0",
+  "npm": ">= 3.0.0",
+  "yarn": "^0.13.0"
+}
+```
 
 
 
