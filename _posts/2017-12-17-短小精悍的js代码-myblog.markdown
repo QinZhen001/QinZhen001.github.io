@@ -1881,11 +1881,63 @@ console.log('继续执行')
 
 
 
+### cacheFunction 缓存函数结果
+
+[https://juejin.cn/post/6994976281053888519](https://juejin.cn/post/6994976281053888519)
+
+```jsx
+const cacheStringFunction = (fn) => {
+    const cache = Object.create(null);
+    return ((str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    });
+};
+```
+
+例子：
+
+```js
+// 首字母转大写
+const capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
+```
+
+
+
+### hasChanged 判断是不是有变化
+
+```js
+// compare whether a value has changed, accounting for NaN.
+const hasChanged = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
+```
+
+例子：
+
+```js
+// 认为 NaN 是不变的
+hasChanged(NaN, NaN); // false
+hasChanged(1, 1); // false
+hasChanged(1, 2); // true
+// 场景
+// watch 监测值是不是变化了
+```
 
 
 
 
 
+### def 定义对象属性
+
+```js
+const def = (obj, key, value) => {
+    Object.defineProperty(obj, key, {
+        configurable: true,
+        enumerable: false,
+        value
+    });
+};
+
+```
 
 
 
