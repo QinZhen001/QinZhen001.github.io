@@ -2762,21 +2762,13 @@ Here's another fix that works for me:
 
 
 
-## refers to a value, but is being used as a type here.
 
 
 
 
 
 
-
-
-
-
-
-
-
-## Define prototype 
+## ts(2339)
 
 > error TS2339: Property 'applyParams' does not exist on type 'Function'.
 
@@ -2806,8 +2798,6 @@ interface Function {
 
 在ts中我们如何用function模拟一个class？
 
-
-
 ```tsx
 let Greeter = (function () {
   function Greeter(message) {
@@ -2830,7 +2820,9 @@ console.log(greeter.greet()); // "Hello, world"
 
 
 
-## 'new' expression implicitly has an 'any' type.ts(7009)
+## ts(7009) 
+
+'new' expression implicitly has an 'any' type.
 
 [https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript](https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript)
 
@@ -2986,36 +2978,6 @@ var a = new A({ aaa: 123 });
 
 
 
-## [Property 'prototype' does not exist](https://stackoverflow.com/questions/50215073/property-prototype-does-not-exist)
-
-[https://stackoverflow.com/questions/50215073/property-prototype-does-not-exist](https://stackoverflow.com/questions/50215073/property-prototype-does-not-exist)
-
-
-
-```
-error TS2339: Property 'prototype' does not exist on ....
-```
-
-
-
-解决：
-
-```tsx
-interface IPrototype { prototype: any; }
-
-(IORedis as IPrototype & Redis).prototype ...
-```
-
-**Another option** might be to declare your const like this:
-
-```tsx
-interface IPrototype { prototype: any; }
-type MyRedis = Redis & IPrototype;
-const IORedis: MyRedis = jest.genMockFromModule<MyRedis>('ioredis');
-```
-
-
-
 ## new() 出现问题
 
 [https://stackoverflow.com/questions/34698710/defining-typescript-generic-type-with-new](https://stackoverflow.com/questions/34698710/defining-typescript-generic-type-with-new)
@@ -3077,7 +3039,7 @@ type actionValues = valueof<actions>
 
 
 
-## must be parenthesized when used in a union type
+## ts(1385)
 
 [https://stackoverflow.com/questions/47748830/typescript-union-type-with-a-function](https://stackoverflow.com/questions/47748830/typescript-union-type-with-a-function)
 
@@ -3098,8 +3060,6 @@ class TestClass {
     name: string | () => string;
 }
 ```
-
-
 
 解决：
 
@@ -3165,7 +3125,7 @@ function f(Param: typeof A) {
 
 
 
-## type 'null' is not assignable to parameter of type 'HTMLInputElement'
+## ts(2345) 
 
 [https://stackoverflow.com/questions/48488701/type-null-is-not-assignable-to-type-htmlinputelement-reactjs](https://stackoverflow.com/questions/48488701/type-null-is-not-assignable-to-type-htmlinputelement-reactjs) 
 
@@ -3203,11 +3163,11 @@ const fileInput = useRef<HTMLInputElement | null>(null)
 
 
 
-## An index signature parameter type cannot be a union type
+## ts(1337)
 
 [https://blog.csdn.net/weixin_43720095/article/details/106805276](https://blog.csdn.net/weixin_43720095/article/details/106805276)
 
-
+ An index signature parameter type cannot be a union type
 
 写接口类型时，希望一个类型的键值是联合类型中固定的几个
 
@@ -3226,9 +3186,7 @@ export interface QywxSendMessage = {
 }
 ```
 
-显然会报错An index signature parameter type cannot be a union type. Consider using a mapped object type instead. ts(1337)
-
-
+显然会报错 An index signature parameter type cannot be a union type. Consider using a mapped object type instead. ts(1337)
 
 解决：
 
@@ -3280,7 +3238,9 @@ export type QywxSendMessage = QywxSendMessageParams & MSGTYPE<number>;
 
 
 
-## Cannot redeclare block-scoped variable
+## ts(2451) 
+
+Cannot redeclare block-scoped variable
 
 https://www.jianshu.com/p/78268bd9af0a?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation
 
@@ -3353,12 +3313,6 @@ export {};
 
 
 ## All files must be modules when the '--isolatedModules' flag is provided
-
-
-
-[ https://roblox-ts.com/docs/usage/workflow-issues ]( https://roblox-ts.com/docs/usage/workflow-issues )
-
-
 
 This error is encountered when a file in your project is not considered a module (referring to “modules” in JavaScript, not ModuleScripts). As per the ECMAScript specification, files are considered modules in TypeScript when they contain at least one import or export. If a file is *not* a module, then it will share its top-most scope with every other file in your project.
 
@@ -3487,7 +3441,11 @@ superHero.fly();
 
 
 
-## Cannot find module or its corresponding type declarations.ts(2307)
+## ts (2307)
+
+Cannot find module or its corresponding type declarations.ts
+
+
 
 这个是因为找不到module导致的
 
@@ -3509,9 +3467,33 @@ superHero.fly();
 }
 ```
 
+## ts (2339)
 
+Property 'flexProps' does not exist on type 'Object'.
 
+例子：
 
+```tsx
+export type UserInfo = {
+  // 用户自定义属性
+  userProperties:Object
+};
+```
 
+```tsx
+const user:UserInfo
 
+// user.userProperties.flexProps 就会出现错误  
+```
+
+改为
+
+```tsx
+export type UserInfo = {
+  // 用户自定义属性
+  userProperties:{
+    [key: string]: any;
+  };
+};
+```
 

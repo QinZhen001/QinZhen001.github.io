@@ -903,6 +903,76 @@ ReactDOM.findDOMNode(Btn).style.color = 'red'
 
 
 
+## 动画
+
+
+
+### rc-queue-anim
+
+[网页链接](https://www.npmjs.com/package/rc-queue-anim)
+
+
+Animate React Component in queue, thanks to rc-animate and enter-animation.
+
+
+Usage
+
+```tsx
+import QueueAnim from 'rc-queue-anim';
+import React from 'react';
+import ReactDom from 'react-dom';
+ 
+ReactDom.render(
+  <QueueAnim>
+    <div key="1">enter in queue</div>
+    <div key="2">enter in queue</div>
+    <div key="3">enter in queue</div>
+  </QueueAnim>
+, mountNode);
+```
+
+### react-transition-group
+
+[http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit](http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit)
+
+#### [`unmountOnExit`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit)
+
+By default the child component stays mounted after it reaches the `'exited'` state. Set `unmountOnExit` if you'd prefer to unmount the component after it finishes exiting.
+
+* type: `boolean`
+* default: `false`
+
+#### [`appear`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-appear)
+
+By default the child component does not perform the enter transition when it first mounts, regardless of the value of `in`. If you want this behavior, set both `appear` and `in` to `true`.
+
+> **Note**: there are no special appear states like `appearing`/`appeared`, this prop only adds an additional enter transition. However, in the `<CSSTransition>` component that first enter transition does result in additional `.appear-*` classes, that way you can choose to style it differently.
+
+* type: `boolean`
+* default: `false`
+
+#### 测试
+
+[https://reactcommunity.org/react-transition-group/testing](https://reactcommunity.org/react-transition-group/testing)
+
+
+
+> 当我们使用测试框架事关闭react-transition-group的动画过渡效果
+
+In some situations, like visual snapshot testing, it's helpful to disable transitions so they don't complicate the test, or introduce abitrary waits. To make this easier `react-transition-group` exposes a way to globally toggle transitions. When set, **all** transitions, when toggled, will immediately switch to their entered or exited states as appropriate.
+
+
+
+```js
+import { config } from 'react-transition-group
+
+config.disabled = true
+```
+
+
+
+
+
 
 
 ## 新版react
@@ -1033,6 +1103,99 @@ class PotentialError extends React.Component {
 **错误边界仅可以捕获组件树中的后代组件错误。**
 
 一个错误边界无法捕获其自身的错误。若错误边界在渲染错误信息时失败，则该错误会传递至上一层最接近的错误边界。而这也类似与 JavaScript 中的 catch {} 块的工作方式。
+
+
+
+
+
+### forceUpdate
+
+[https://react.docschina.org/docs/hooks-faq.html#is-there-something-like-forceupdate](https://react.docschina.org/docs/hooks-faq.html#is-there-something-like-forceupdate)
+
+如果前后两次的值相同，`useState` 和 `useReducer` Hook [都会放弃更新](https://react.docschina.org/docs/hooks-reference.html#bailing-out-of-a-state-update)。
+
+通常，你不应该在 React 中修改本地 state。然而，作为一条出路，你可以用一个增长的计数器来在 state 没变的时候依然强制一次重新渲染：
+
+```tsx
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+  function handleClick() {
+    forceUpdate();
+  }
+```
+
+可能的话尽量避免这种模式。
+
+
+
+### 测量 DOM 节点
+
+[https://react.docschina.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node](https://react.docschina.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node)
+
+获取 DOM 节点的位置或是大小的基本方式是使用 [callback ref](https://react.docschina.org/docs/refs-and-the-dom.html#callback-refs)。每当 ref 被附加到一个另一个节点，React 就会调用 callback
+
+例子：
+
+```tsx
+function MeasureExample() {
+  const [height, setHeight] = useState(0);
+
+  const measuredRef = useCallback(node => {
+    if (node !== null) {
+      setHeight(node.getBoundingClientRect().height);
+    }
+  }, []);
+
+  return (
+    <>
+      <h1 ref={measuredRef}>Hello, world</h1>
+      <h2>The above header is {Math.round(height)}px tall</h2>
+    </>
+  );
+}
+```
+
+在这个案例中，我们没有选择使用 `useRef`，**因为当 ref 是一个对象时它并不会把当前 ref 的值的 *变化* 通知到我们**。使用 callback ref 可以确保 [即便子组件延迟显示被测量的节点](https://codesandbox.io/s/818zzk8m78) (比如为了响应一次点击)，我们依然能够在父组件接收到相关的信息，以便更新测量结果。
+
+
+
+注意到我们传递了 `[]` 作为 `useCallback` 的依赖列表。这确保了 ref callback 不会在再次渲染时改变，因此 React 不会在非必要的时候调用它。
+
+
+
+> 在此示例中，当且仅当组件挂载和卸载时，callback ref 才会被调用，因为渲染的 `<h1>` 组件在整个重新渲染期间始终存在。如果你希望在每次组件调整大小时都收到通知，则可能需要使用 [`ResizeObserver`](https://developer.mozilla.org/zh-CN/docs/Web/API/ResizeObserver) 或基于其构建的第三方 Hook。
+
+
+
+### 实现类似class 中的 this
+
+ [使用一个 ref](https://react.docschina.org/docs/hooks-faq.html#is-there-something-like-instance-variables) 来保存一个可变的变量
+
+例子：
+
+```tsx
+function Example(props) {
+  // 把最新的 props 保存在一个 ref 中
+  const latestProps = useRef(props);
+  useEffect(() => {
+    latestProps.current = props;
+  });
+
+  useEffect(() => {
+    function tick() {
+      // 在任何时候读取最新的 props
+      console.log(latestProps.current);
+    }
+
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []); // 这个 effect 从不会重新执行
+}
+```
+
+**仅当你实在找不到更好办法的时候才这么做，因为依赖于变更会使得组件更难以预测**
+
+
 
 
 
@@ -1180,6 +1343,16 @@ class MouseTracker extends React.Component {
 
 
 
+#### useEffect
+
+
+
+#### useMemo
+
+**你可以把 `useMemo` 作为一种性能优化的手段，但不要把它当做一种语义上的保证。**
+
+记住，传给 `useMemo` 的函数是在渲染期间运行的。不要在其中做任何你通常不会在渲染期间做的事。举个例子，副作用属于 `useEffect`，而不是 `useMemo`。
+
 
 
 #### React.memo 和 useMemo
@@ -1231,8 +1404,6 @@ export default React.memo(MyComponent, areEqual);
 [React Hooks: 深入剖析 useMemo 和 useEffect](https://zhuanlan.zhihu.com/p/268802571)
 
 [useEffect的陷阱](https://zhuanlan.zhihu.com/p/84697185)
-
-
 
 
 
@@ -1445,7 +1616,6 @@ function Counter() {
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
-
     this.inputRef = React.createRef();
   }
 
@@ -1529,9 +1699,33 @@ function TextInputWithFocusButton() {
 
 
 
+#### usePrevious 
 
+[https://react.docschina.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state](https://react.docschina.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state)
 
+> 自定义 hook
 
+获取上一轮的 props 或 state
+
+```tsx
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+```
+
+测试：
+
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevious(count);
+  return <h1>Now: {count}, before: {prevCount}</h1>;
+}
+```
 
 
 
