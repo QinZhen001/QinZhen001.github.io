@@ -3497,3 +3497,12 @@ export type UserInfo = {
 };
 ```
 
+## ts(2779)
+
+[https://blog.csdn.net/Laladoge/article/details/117085821](https://blog.csdn.net/Laladoge/article/details/117085821)
+
+https://stackoverflow.com/questions/66020801/angular-error-the-left-hand-side-of-an-assignment-expression-may-not-be-an-opt
+
+The left-hand side of an assignment expression may not be an optional property
+
+解决的办法是 赋值之前先判断是否存在

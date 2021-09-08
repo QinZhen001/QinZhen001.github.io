@@ -2135,11 +2135,10 @@ Object.getOwnPropertyNames(Point.prototype)
 
 
 
+### 类数组转化为数组
 
+#### Array.prototype.slice.call
 
-
-
-### Array.prototype.slice.call
 [网页链接](https://blog.csdn.net/hellokin
 
 gqwe/article/details/52585169)
@@ -2176,11 +2175,8 @@ var myobject ={ // array-like collection
     }   
         return result;   
     }       
-```
-
-
-​    
 可以看出，slice 并不需要 this 为 array 类型，只需要有 length 属性即可。并且 length 属性可以不为 number 类型，当不能转换为数值时，ToUnit32(this.length) 返回 0. 
+```
 
 ----
 
@@ -2190,6 +2186,43 @@ var myobject ={ // array-like collection
 * [].slice.call(arguments)
 * Array.prototype.slice.call(arguments)   **//最高效**
 * new Array().prototype.slice.call(arguments)
+
+
+
+
+
+#### 扩展运算符
+
+任何 Iterator 接口的对象，都可以用扩展运算符转为真正的数组。
+
+```
+var nodeList = document.querySelectorAll('div');  
+var array = [...nodeList];  
+```
+
+上面代码中，querySelectorAll方法返回的是一个nodeList对象。它不是数组，而是一个类似数组的对象。这时，扩展运算符可以将其转为真正的数组，原因就在于NodeList对象实现了 Iterator 接口。
+对于那些没有部署 Iterator 接口的类似数组的对象，扩展运算符就无法将其转为真正的数组。
+
+
+
+tip：
+
+扩展运算符内部调用的是<strong>数据结构的 Iterator 接口</strong>，因此只要具有 Iterator 接口的对象，都可以使用扩展运算符，比如 Map 结构。
+
+```tsx
+let map = new Map([  
+[1, 'one'],  
+[2, 'two'],  
+[3, 'three'],  
+]);  
+let arr = [...map.keys()]; // [1, 2, 3]  
+```
+
+
+
+**如果对没有iterator接口的对象，使用扩展运算符，将会报错**
+
+
 
 
 

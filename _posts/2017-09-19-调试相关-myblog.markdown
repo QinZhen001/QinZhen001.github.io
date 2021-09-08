@@ -109,6 +109,16 @@ Chrome 会记录最后插入的 5 个元素，分别以 `$0` ~ `$4` 的方式在
 
 
 
+
+
+### react调试
+
+[React调试利器：React DevTools](https://juejin.cn/post/6877546408925200391)
+
+
+
+
+
 # node调试
 
 
