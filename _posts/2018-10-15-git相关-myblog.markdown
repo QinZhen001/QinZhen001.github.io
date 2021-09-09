@@ -808,6 +808,18 @@ cherry-pick是Git里对commit操作很好的一个指令，比如想把test分�
 
 
 
+## Git 原理
+
+https://jingsam.github.io/2018/06/03/git-objects.html
+
+**从根本上来讲，Git是一个内容寻址的文件系统，其次才是一个版本控制系统**
+
+Git对象包含三种：数据对象、树对象、提交对象。
+
+在Git中，数据对象相当于文件内容，树对象相当于文件目录树，提交对象则是对文件系统的快照。
+
+
+
 
 
 ## Git Flow
@@ -1192,10 +1204,6 @@ ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
 
 
 ### [commitlint](https://github.com/conventional-changelog/commitlint)
-
-
-
-111111
 
 
 
