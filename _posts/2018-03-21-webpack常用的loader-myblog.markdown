@@ -15,6 +15,22 @@ tags:
 ## 正文
 [网页链接](http://blog.csdn.net/dongfengkuayue/article/details/52513011)
 
+
+
+Loaders是webpack提供的最激动人心的功能之一了。通过使用不同的loader，webpack有能力调用外部的脚本或工具，实现对不同格式的文件的处理，比如说分析转换scss为css，或者把下一代的JS文件（ES6，ES7)转换为现代浏览器兼容的JS文件，对React的开发而言，合适的Loaders可以把React的中用到的JSX文件转换为JS文件。
+
+Loaders需要单独安装并且需要在webpack.config.js中的modules关键字下进行配置，Loaders的配置包括以下几方面：
+
+
+* test：一个用以匹配loaders所处理文件的拓展名的正则表达式（必须）
+* loader：loader的名称（必须）
+* include/exclude:手动添加必须处理的文件（文件夹）或屏蔽不需要处理的文件（文件夹）（可选）；
+* query：为loaders提供额外的设置选项（可选）
+
+
+
+
+
 ### style-loader
 
 [https://www.npmjs.com/package/style-loader](https://www.npmjs.com/package/style-loader)
@@ -483,18 +499,12 @@ style-loader!css-loader!sass-loader
 * css-loader 是处理css文件中的url()等
 * style-loader 将css插入到页面的style标签顺便告诉你
 
-
-
-
-
-#### 在output中path和publicPath
+### 在output中path和publicPath
 
 * path 是你打包的路径
 * **publicpath 是你在html 中引入的路径**
 
-
-
-#### browserslist
+### browserslist
 
 为了让所有插件共享browserslist
 
@@ -682,13 +692,28 @@ module.exports = function(source) {
 
 [https://www.npmjs.com/package/loader-utils](https://www.npmjs.com/package/loader-utils)
 
+Utils for webpack loaders
 
+
+当我们在写自己的webpack-loader时经常会用到这个库
+
+
+例如：
+
+```javascript
+import loaderUtils from 'loader-utils';
+
+
+module.exports = function(source){
+    // 获取传入进来的options
+  const options = loaderUtils.getOptions(this) || {};
+}
+
+```
 
 
 
 #### getOptions
-
-
 
 Recommended way to retrieve the options of a loader invocation
 
@@ -729,6 +754,58 @@ This function:
 - replaces `\` with `/` if the request and the module are on the same hard drive
 - won't change the path at all if the request and the module are on different hard drives
 - applies `JSON.stringify` to the result
+
+
+
+
+
+### schema-utils
+
+[https://www.npmjs.com/package/schema-utils](https://www.npmjs.com/package/schema-utils)
+
+
+Package for validate options in loaders and plugins.
+
+用于验证options
+
+
+// options.json
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "option": {
+      "type": ["boolean"]
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+
+
+
+```javascript
+import validateOptions from 'schema-utils';
+import schema from './options.json';
+
+module.exports = function(source){
+  const options = loaderUtils.getOptions(this) || {};
+
+  validateOptions(schema, options, {
+    name: 'Style Loader',
+    baseDataPath: 'options',
+  });
+}
+
+```
+
+
+
+
+
+
 
 
 

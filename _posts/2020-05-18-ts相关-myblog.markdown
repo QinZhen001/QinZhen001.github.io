@@ -593,6 +593,41 @@ type All = Foo | Bar | Baz
 
 然而他忘记了在 handleValue 里面加上针对 Baz 的处理逻辑，这个时候在 default branch 里面 val 会被收窄为 Baz，导致无法赋值给 never，产生一个编译错误。所以通过这个办法，你可以确保 handleValue 总是穷尽 (exhaust) 了所有 All 的可能类型。
 
+## static
+
+* 访问static成员，用类(class)而不是实例化的对象。
+* static方法只能访问static属性
+* static成员可以保留其值(因为开辟了他自己内部的空间)。
+
+
+
+### private static与 public static
+
+[https://blog.csdn.net/chuigu0767/article/details/100671458](https://blog.csdn.net/chuigu0767/article/details/100671458)
+
+private static 和 public static 都是静态变量,在类加载时就定义,不需要创建对象
+
+**private static 是私有的,不能在外部访问,只能通过静态方法调用,这样可以防止对变量的修改**
+
+
+
+```tsx
+class Test {
+    private static aaa = 'aaa'
+    public static bbb = 'bb'
+
+    static logA(){
+       console.log(Test.aaa) 
+    }
+}
+
+// Property 'aaa' is private and only accessible within class 'Test'.ts(2341)
+console.log(Test.aaa) // error
+console.log(Test.bbb) // ok
+```
+
+
+
 
 
 ## reference 
