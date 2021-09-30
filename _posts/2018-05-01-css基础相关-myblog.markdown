@@ -982,7 +982,32 @@ observer.disconnect();
 
 
 
+### 原生变量 var
 
+[https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var](https://www.zhangxinxu.com/wordpress/2016/11/css-css3-variables-var/)
+
+CSS中原生的变量定义语法是：`--*`，变量使用语法是：`var(--*)`，其中`*`表示我们的变量名称。关于命名这个东西，各种语言都有些显示，例如CSS选择器不能是数字开头，JS中的变量是不能直接数值的，但是，在CSS变量中，这些限制通通没有，例如：
+
+```css
+:root {
+  --1: #369;
+}
+body {
+  background-color: var(--1);
+}
+```
+
+
+
+
+
+### line boxes盒子模型
+
+[CSS float浮动的深入研究、详解及拓展](https://www.zhangxinxu.com/wordpress/2010/01/css-float%e6%b5%ae%e5%8a%a8%e7%9a%84%e6%b7%b1%e5%85%a5%e7%a0%94%e7%a9%b6%e3%80%81%e8%af%a6%e8%a7%a3%e5%8f%8a%e6%8b%93%e5%b1%95%e4%b8%80/)
+
+
+
+**一个inline-block元素，如果里面没有inline内联元素，或者overflow不是visible，则该元素的基线就是其margin底边缘，否则，其基线就是元素里面最后一行内联元素的基线。**
 
 
 

@@ -3654,6 +3654,59 @@ if (typeof exports != "undefined" && !exports.nodeType) {
 
 
 
+### 监听滚轮滑动事件
+
+
+
+vue中
+
+```tsx
+<slider ref="slider" :pages="mypages" :sliderinit="slider" @mousewheel.native="mouseScroll">
+ </slider>
+```
+
+> 将组件变成了普通的HTML标签，不加'. native'事件是无法触发的。
+
+```tsx
+  mouseScroll(e){
+        console.log(e.wheelDelta)
+        if (e.wheelDelta < 0) {
+          //向下
+          this.$refs.slider.$emit('slideNext')
+        } else {
+          //向上
+          this.$refs.slider.$emit('slidePre')
+        }
+      }
+```
+
+普通js中
+
+> **注意:** onmousewheel不兼容火狐浏览器,只能监听"DOMMouseScroll"
+
+```tsx
+function addMouseWheelEvent(element,func) {
+ 
+   if (typeof element.onmousewheel == "object") {
+      element.onmousewheel = function() {
+        func();
+     };
+   }
+
+   if (typeof element.onmousewheel == "undefined") {
+      element.addEventListener("DOMMouseScroll",func,false);
+   } 
+ }
+```
+
+在给元素指定mousewheel事件时，对应的event对象会有一个wheelDelta属性（规范中的属性），当用户向前滚动滚轮时，其值是120的整数倍，当用户向后滚动滚轮时，其值是-120的整数倍。当然在FireFox中这个属性不叫wheelDelta，而是叫detail，当用户向前滚动滚轮时，detail的值是-3的整数倍，当用户向后滚动滚轮时，detail的值是3的整数倍，正负号与wheelDelta的值是相反的。
+
+
+
+
+
+
+
 
 
 
