@@ -287,6 +287,43 @@ Compared to the extract-text-webpack-plugin:
 
 将 css 独立拆包最大的好处就是 js 和 css 的改动，不会影响对方。比如我改了 js 文件并不会导致 css 文件的缓存失效。而且现在它自动会配合`optimization.splitChunks`的配置，可以自定义拆分 css 文件，比如我单独配置了`element-ui`作为单独一个`bundle`,它会自动也将它的样式单独打包成一个 css 文件，不会像以前默认将第三方的 css 全部打包成一个几十甚至上百 KB 的`app.xxx.css`文件了。
 
+#### **ReferenceError: document is not defined**
+
+https://blog.csdn.net/weixin_45122120/article/details/116713477
+
+使用MiniCssExtractPlugin报ReferenceError: document is not defined错误，是因为和style-loader冲突
+
+去掉style-loader即可
+
+```tsx
+     use: [
+          MiniCssExtractPlugin.loader,
+       		// 删除
+          // {
+          //   loader: 'style-loader',
+          // },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                ident: 'postcss',
+                config: path.resolve(__dirname, './postcss.config.js'),
+              },
+            },
+          },
+          {
+            loader: 'thread-loader',
+          },
+        ],
+```
+
+
+
+
+
 
 
 
@@ -991,7 +1028,11 @@ new webpack.ProvidePlugin({
 
 https://www.npmjs.com/package/terser-webpack-plugin
 
+[https://zhuanlan.zhihu.com/p/380612044](https://zhuanlan.zhihu.com/p/380612044)
+
 This plugin uses [terser](https://github.com/terser-js/terser) to minify your JavaScript.
+
+`terser-webpack-plugin` 内部封装了 [terser](https://link.zhihu.com/?target=https%3A//github.com/terser/terser) 库，用于处理 js 的压缩和混淆，通过 `webpack plugin` 的方式对代码进行处理
 
 ```js
 const TerserPlugin = require('terser-webpack-plugin');

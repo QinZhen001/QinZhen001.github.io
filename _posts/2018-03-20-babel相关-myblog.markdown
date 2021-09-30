@@ -367,8 +367,9 @@ module.exports = (api) => {
 
 ### babel-preset-env
 
-
 babel-preset-env 是一个新的 preset，可以根据配置的目标运行环境（environment）自动启用需要的 babel 插件。
+
+
 
 目前我们写 javascript 代码时，需要使用 N 个 preset，比如：babel-preset-es2015、babel-preset-es2016。es2015 可以把 ES6 代码编译为 ES5，es2016 可以把 ES2016 代码编译为 ES6。babel-preset-latest 可以编译 stage 4 进度的 ECMAScript 代码。
 
@@ -395,6 +396,19 @@ babel-preset-env 的工作方式类似 babel-preset-latest，唯一不同的就�
   ]
 },
 ```
+
+
+
+注意：
+
+**preset-env会转换语法，也就是我们看到的箭头函数、const一类。**
+**如果进一步需要转换内置对象、实例方法，那就得用polyfill, 这就需要你做一点配置了**
+
+
+
+
+
+
 
 
 
@@ -657,6 +671,15 @@ import "regenerator-runtime/runtime";
 
 
 
+### core-js@3
+
+[https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md](https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md)
+
+- `core-js` only has breaking changes in major releases, even if it is needed to reflect a change in a proposal.
+- `core-js@2` entered feature freeze 1.5 years ago; all new features were added only to the `core-js@3` branch.
+
+
+
 
 
 
@@ -767,6 +790,61 @@ Babel 默认是将ES6模块语法转化为CommonJS规范写法，配置为module
 
 
 **如果使用了 Webpack 且配置为modules:false，Webpack 会进行 tree shaking，去除一些无用代码。**
+
+
+
+
+
+### 项目开发配置
+
+[https://juejin.cn/post/6984020141746946084](https://juejin.cn/post/6984020141746946084)
+
+`useBuiltIns`使用`usage`，尽量使用社区广泛使用的优质库以优化打包体积，不使用暂未进入规范的特性。`plugin-transform-runtime`只使用其移除内联复用的辅助函数的特性，减小打包体积。
+
+```tsx
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        // targets 官方推荐使用 .browserslistrc 配置
+        "useBuiltIns": "usage",
+        "corejs": {
+          "version": 3,
+          "proposals": false
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": false // 默认值，即使如此依然需要 yarn add @babel/runtime
+      }
+    ]
+  ]
+}
+```
+
+
+### 类库开发
+
+```tsx
+{
+  presets: [["@babel/preset-env"]],
+  plugins: [
+    [
+      "@babel/plugin-transform-runtime",
+      { corejs: { version: 3, proposals: true }, useESModules: true },
+    ],
+  ],
+};
+```
+
+
+
+
 
 
 

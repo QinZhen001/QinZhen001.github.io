@@ -935,6 +935,36 @@ vendors: {
 
 [Create a `vendors` chunk, which includes all code from `node_modules` in the whole application](https://www.webpackjs.com/plugins/split-chunks-plugin/#split-chunks-example-2)
 
+
+
+
+
+### sideEffects
+
+[https://webpack.docschina.org/configuration/optimization/#optimizationsideeffects](https://webpack.docschina.org/configuration/optimization/#optimizationsideeffects)
+
+告知 webpack 去辨识 `package.json` 中的 [`副作用`](https://github.com/webpack/webpack/blob/master/examples/side-effects/README.md) 标记或规则，以跳过那些当导出不被使用且被标记不包含副作用的模块
+
+
+
+sideEffects: 副作用
+
+[https://zhuanlan.zhihu.com/p/41795312](https://zhuanlan.zhihu.com/p/41795312)
+
+简单说来就是 JS 引用类型属性读/写所带来的副作用
+
+
+
+webpack通过配置`optimization.sideEffects`为`true`，表示打包时跳过那些没有被使用的且被package.json标记为无副作用的模块。
+
+**注意：这个和package.json里面的sideEffects表示的含义不一样**
+
+
+
+package.json里面的sideEffects 表示当前项目发npm包时，无副作用
+
+
+
 ## bundle文件分析
 
 [https://segmentfault.com/a/1190000015088834#articleHeader8](https://segmentfault.com/a/1190000015088834#articleHeader8)
@@ -1255,10 +1285,11 @@ whenever a module reexports all exports (regardless if used or unused) need to b
 
 也就是说，只要你的包不是用来做 polyfill 或 shim 之类的事情，就尽管放心的给他加上 sideEffects: false 吧！
 
-
 最后，翻译成大白话
 
-**webpack里面的sideEffects是指应不应该保留副作用代码， true就保留，false就不保留，只要没有被import 就干掉。**Ï
+
+
+
 
 ## externals
 
@@ -2024,9 +2055,7 @@ alias: {
 
 `module.exports`增加配置`stats: { children: false }`即可解决；
 
-
-
-### Cannot assign to read only property
+## Cannot assign to read only property
 
 ```
 webpack报错：Cannot assign to read only property 'exports' of object '#<Object>'
@@ -2036,12 +2065,120 @@ The code above is ok. You can mix require and export. You can‘t mix import and
 
 也就是说，在webpack打包的时候，可以在js文件中混用require和export。**但是不能混用import 以及module.exports。**
 
-
-
-### node-sass 安装失败
+## node-sass 安装失败
 
 ```tsx
 npm i node-sass --sass_binary_site=https://npm.taobao.org/mirrors/node-sass/
+```
+
+
+
+## **Can't resolve 'crypto'**
+
+```
+ERROR in ../../node_modules/agora-access-token/src/AccessToken.js 1:13-30
+
+Module not found: Error: Can't resolve 'crypto' in '/Users/qz/Documents/company_project/cloudclass-desktop/node_modules/agora-access-token/src'
+```
+
+
+
+```ts
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+	- add a fallback 'resolve.fallback: { "crypto": require.resolve("crypto-browserify") }'
+	- install 'crypto-browserify'
+If you don't want to include a polyfill, you can use an empty module like this:
+	resolve.fallback: { "crypto": false }
+```
+
+
+
+
+
+在运行过程中出现了很多这样的报错信息，是由于在webpack5中移除了nodejs核心模块的polyfill自动引入，所以需要手动引入，如果打包过程中有使用到nodejs核心模块，webpack会提示进行相应配置
+
+```tsx
+  // webpack.config.js
+  module.exports = {
+    ...
+    resolve: {
+      // https://github.com/babel/babel/issues/8462
+      // https://blog.csdn.net/qq_39807732/article/details/110089893
+      // 如果确认需要node polyfill，设置resolve.fallback安装对应的依赖
+      fallback: {
+        crypto: require.resolve('crypto-browserify'),
+        path: require.resolve('path-browserify'),
+        url: require.resolve('url'),
+        buffer: require.resolve('buffer/'),
+        util: require.resolve('util/'),
+        stream: require.resolve('stream-browserify/'),
+        vm: require.resolve('vm-browserify')
+      },
+    }
+  }
+```
+
+或者
+
+```tsx
+  // webpack.config.js
+  module.exports = {
+    ...
+    resolve: {
+      // 如果确认不需要node polyfill，设置resolve.alias设置为false
+      alias: {
+        crypto: false
+      }
+    }
+  }
+```
+
+
+
+
+
+## include polyfills for node.js core modules
+
+同上
+
+## omit LICENSE.txt
+
+[https://stackoverflow.com/questions/64818489/webpack-omit-creation-of-license-txt-files](https://stackoverflow.com/questions/64818489/webpack-omit-creation-of-license-txt-files)
+
+webpack 5  打包会生成LICENSE.txt  如何可以忽略这个文件的生成呢？
+
+```tsx
+  optimization: {
+    minimizer: [new TerserPlugin({
+      extractComments: false,
+    })],
+  },
+```
+
+## ReferenceError: Buffer is not defined
+
+https://github.com/agoncal/swagger-ui-angular6/issues/2
+
+
+
+```tsx
+ "devDependencies": {
+    "buffer": "6.0.3"
+  }
+```
+
+webpack.config
+
+```tsx
+   plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
+    ],
 ```
 
 
