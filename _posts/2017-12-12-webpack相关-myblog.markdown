@@ -965,6 +965,10 @@ package.json里面的sideEffects 表示当前项目发npm包时，无副作用
 
 
 
+
+
+
+
 ## bundle文件分析
 
 [https://segmentfault.com/a/1190000015088834#articleHeader8](https://segmentfault.com/a/1190000015088834#articleHeader8)
@@ -1271,7 +1275,9 @@ webpack v4 开始新增了一个 sideEffects 特性，通过给 package.json 加
 whenever a module reexports all exports (regardless if used or unused) need to be evaluated and executed in the case that one of those exports created a side-effect with another.
 每当一个模块重导出了所有导出(无论是否会被用) 需要被计算和执行时，其中一个导出就对其他的导出产生了副作用。
 
-### sideEffects 的使用场景
+
+
+### 使用场景
 
 上面也说到，通常我们发布到 npm 上的包很难保证其是否包含副作用（可能是代码的锅可能是 transformer 的锅），但是我们基本能确保这个包是否会对包以外的对象产生影响，比如是否修改了 window 上的属性，是否复写了原生对象方法等。如果我们能保证这一点，其实我们就能知道整个包是否能设置 sideEffects: false了，至于是不是真的有副作用则并不重要，这对于 webpack 而言都是可以接受的。**这也就能解释为什么能给 vue 这个本身充满副作用的包加上 sideEffects: false 了。**
 
@@ -1286,6 +1292,22 @@ whenever a module reexports all exports (regardless if used or unused) need to b
 也就是说，只要你的包不是用来做 polyfill 或 shim 之类的事情，就尽管放心的给他加上 sideEffects: false 吧！
 
 最后，翻译成大白话
+
+
+
+### 处理css
+
+[https://juejin.cn/post/6844903937443627021](https://juejin.cn/post/6844903937443627021)
+
+或者配置个数组，表示不进行删减的文件，尤其是css,
+
+```json
+"sideEffects": [ 
+    "*.css"
+]
+```
+
+
 
 
 
