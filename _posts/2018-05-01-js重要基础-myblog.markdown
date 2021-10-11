@@ -3563,6 +3563,59 @@ return chunkedTasks.reduce((prevPromise, curChunkedTask) => {
 
 
 
+### Reflect
+
+[https://www.zhangxinxu.com/wordpress/2021/07/js-proxy-reflect/](https://www.zhangxinxu.com/wordpress/2021/07/js-proxy-reflect/)
+
+
+
+使用Reflect 的好处: 
+
+* Reflect.set可以知道设置是否成功
+
+```tsx
+console.log(input.type = 'number');
+
+// 输出 false
+console.log(Reflect.set(input, 'type', 'number'));
+```
+
+* 不会因为报错而中断正常的代码逻辑执行
+
+```tsx
+  'use strict';
+
+    var frozen = { 1: 81 };
+    Object.freeze(frozen);
+
+    frozen[1] = 'zhangxinxu';
+
+    console.log('no log');  // 不会执行
+```
+
+上面的例子会出现TypeError
+
+
+
+如果使用Reflect
+
+```tsx
+   'use strict';
+
+    var frozen = { 1: 81 };
+    Object.freeze(frozen);
+
+    Reflect.set(frozen, '1', 'zhangxinxu');
+
+    console.log('no log');  // 会执行
+```
+
+
+
+
+
+
+
 ### try/catch为何捕获不到异步错误
 
 **1.try-catch通常（注意在这里是“通常”）高级语言才有，由脚本解释器（或者运行时环境）层实现。**

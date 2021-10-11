@@ -421,3 +421,132 @@ Text Crop
 Want to rid your components of that pesky space above and below a block of text due to line height
 
 删除你的组件的讨厌的空间上面和下面的文本块由于行高
+
+
+
+
+
+
+
+### **caret-color 光标颜色**
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/caret-color](https://developer.mozilla.org/zh-CN/docs/Web/CSS/caret-color)
+
+**`caret-color`** 属性用来定义**插入光标**（caret）的颜色，这里说的插入光标，就是那个在网页的可编辑器区域内，用来指示用户的输入具体会插入到哪里的那个一闪一闪的形似竖杠 `|` 的东西。
+
+```css
+caret-color: red;
+```
+
+
+
+### 去掉input尾部的箭头
+
+[https://juejin.cn/post/7016476364446367780](https://juejin.cn/post/7016476364446367780)
+
+默认情况下`input type="number"`时尾部会出现小箭头，但是很多时候我们想去掉它，应该怎么办呢？
+
+```html
+<input type="number" class="no-arrow" />
+```
+
+```css
+/* 关键css */
+.no-arrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+```
+
+
+
+### 移除input状态线
+
+[https://juejin.cn/post/7016476364446367780](https://juejin.cn/post/7016476364446367780)
+
+输入框选中时，默认会带蓝色状态线，使用`outline:none`一键移除
+
+```html
+<input type="number" class="no-outline" />
+```
+
+```css
+.no-outline{
+  outline: none;
+}
+```
+
+
+
+### 解决IOS滚动条卡顿
+
+在IOS机器上，经常遇到元素滚动时卡顿的情况，只需要一行css即可让其支持弹性滚动
+
+```css
+body,html{   
+  -webkit-overflow-scrolling: touch;
+}
+```
+
+
+
+### 自定义文本选中的样式
+
+```html
+<div class="box">
+  <p class="box-default">
+    昨天遇见小学同学，没有想到他混的这么差--只放了一块钱到我的碗里
+  </p>
+  <p class="box--custom">
+    今年情人节，不出意外的话，一个人过，出意外的话--去医院过
+  </p>
+</div>
+```
+
+```css
+.box-custom::selection {
+  color: #ffffff;
+  background-color: #ff4c9f;
+}
+```
+
+
+
+
+
+
+
+### 禁止选择文本
+
+```html
+ <div class="box">
+  <p>好不容易习惯了自己的长相--去理了个发，又换了一种丑法</p>
+  <p>国庆节放假，想跟女朋友去旅游，请大家帮忙推荐下--哪里有女朋友</p>
+</div>
+```
+
+```css
+.box p:last-child{
+  user-select: none;
+}
+```
+
+
+
+
+
+
+
+
+
+### 灰色滤镜
+
+```css
+body{
+  filter: grayscale(1);
+}
+```
+
+
+
+
+
