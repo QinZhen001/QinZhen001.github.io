@@ -3347,6 +3347,22 @@ export {};
 
 
 
+## ts(1343)
+
+The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'esnext', or 'system'.
+
+
+
+解决：
+
+更改tsconfig中的 module
+
+
+
+
+
+
+
 ## All files must be modules when the '--isolatedModules' flag is provided
 
 This error is encountered when a file in your project is not considered a module (referring to “modules” in JavaScript, not ModuleScripts). As per the ECMAScript specification, files are considered modules in TypeScript when they contain at least one import or export. If a file is *not* a module, then it will share its top-most scope with every other file in your project.
@@ -3476,7 +3492,7 @@ superHero.fly();
 
 
 
-## ts (2307)
+## ts(2307)
 
 Cannot find module or its corresponding type declarations.ts
 
@@ -3502,7 +3518,7 @@ Cannot find module or its corresponding type declarations.ts
 }
 ```
 
-## ts (2339)
+## ts(2339)
 
 Property 'flexProps' does not exist on type 'Object'.
 
