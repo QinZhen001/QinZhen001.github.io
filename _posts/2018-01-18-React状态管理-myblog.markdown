@@ -282,6 +282,8 @@ render(
 
 https://zh.mobx.js.org/README.html
 
+[https://coggle.it/diagram/XfXJw2j7x59QruDW/t/mobx](https://coggle.it/diagram/XfXJw2j7x59QruDW/t/mobx)
+
 
 
 ## mobx-react
@@ -332,4 +334,6 @@ MobX 不会对其作出反应:
 
 - 从 observable 获取的值，但是在追踪函数之外
 - 在异步调用的代码块中读取的 observable
+- map 这种结构添加和删除不作出反应
+- array 这种结构添加和删除不作出反应
 

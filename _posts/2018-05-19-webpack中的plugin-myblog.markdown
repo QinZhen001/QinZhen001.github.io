@@ -166,6 +166,30 @@ Webpack在所有的 async chunk 中，找到来自 node_modules ，并且名字�
 
 
 
+### clean-webpack-plugin
+
+[https://www.npmjs.com/package/clean-webpack-plugin](https://www.npmjs.com/package/clean-webpack-plugin)
+
+A webpack plugin to remove/clean your build folder(s).
+
+
+
+[https://stackoverflow.com/questions/64617228/cleanwebpackplugin-does-not-clean-in-webpack-5](https://stackoverflow.com/questions/64617228/cleanwebpackplugin-does-not-clean-in-webpack-5)
+
+From webpack v5, you can remove the `clean-webpack-plugin` plugin and use the output.clean option in your webpack config:
+
+```tsx
+output: {
+    filename: 'utils.min.js',
+    clean: true,
+ }
+
+```
+
+
+
+
+
 
 
 ### SplitChunksPlugin 

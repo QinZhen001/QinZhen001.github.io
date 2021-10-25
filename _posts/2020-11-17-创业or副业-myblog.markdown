@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "创业相关"
+title:      "创业or副业"
 date:       2020-11-17 11:57:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
