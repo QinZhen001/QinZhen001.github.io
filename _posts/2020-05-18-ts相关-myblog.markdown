@@ -1823,6 +1823,16 @@ var cat = new Cat('Tom');
 
 
 
+## readonly
+
+readonly关键字将属性设置为只读的，只读属性必须在声明时或者构造函数里被初始化。
+
+### `readonly` vs `const`
+
+最简单判断该用`readonly`还是`const`的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用`const`，若做为属性则使用`readonly`。
+
+
+
 ## as 
 
 
@@ -2304,9 +2314,7 @@ interface Moment {
 
 
 
-## `readonly` vs `const`
 
-最简单判断该用`readonly`还是`const`的方法是看要把它做为变量使用还是做为一个属性。 做为变量使用的话用`const`，若做为属性则使用`readonly`。
 
 
 
