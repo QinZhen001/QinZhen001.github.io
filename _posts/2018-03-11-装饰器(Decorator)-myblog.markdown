@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "修饰器(Decorator)"
+title:      "装饰器(Decorator)"
 date:       2018-03-11 19:39:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -213,7 +213,7 @@ export default class MyReactComponent extends React.Component {}
 
 
 
-### 修饰器不能用于函数
+### 装饰器不能用于函数
 修饰器只能用于类和类的方法，不能用于函数，因为存在函数提升。
 ```
 var counter = 0;
@@ -260,7 +260,31 @@ function foo() {
 readOnly = require("some-decorator");
 ```
 
+### 写一个bound
 
+```tsx
+const bound = (proto: any, propertyName: string, descriptor: PropertyDescriptor) => {
+  return {
+    get() {
+      return descriptor.value.bind(this);
+    },
+  };
+};
+```
+
+测试：
+
+```tsx
+class I18nTranslate {
+
+  @bound
+  _transI18n(text: string, options?: any) {
+    let content = this._i18nInstance.t(text);
+    // ...
+    return content;
+  }
+}
+```
 
 
 
