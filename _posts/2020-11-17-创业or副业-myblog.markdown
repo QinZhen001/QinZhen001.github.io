@@ -103,31 +103,19 @@ tags:
 
 
 
+## 新零售
+
+[https://www.zhihu.com/question/52950329/answer/2009412300](https://www.zhihu.com/question/52950329/answer/2009412300)
+
+**一句半玩笑话——有线下店，通过线上买东西（更快的）送到家，就是新零售。**
+
+**新零售的最终目的，就是要提升线下零售的效率。**如何提升？从**数据运用**的角度去提升，**把合适的东西带给需要的人。**
+
+新零售的新，就新在海量且精准的数据上。如果这家公司没把线上业务作为重点发展的，不算新零售。
 
 
 
 
-## 乱七八糟
-
-
-
-https://leetcode-cn.com/circle/discuss/3vHCzp/
-
-https://leetcode-cn.com/circle/discuss/ZcTAe6/
-
-https://www.zhihu.com/question/436336543
-
-https://www.zhihu.com/question/408964456/answer/1722313173
-
-https://www.zhihu.com/question/441933392
-
-https://www.zhihu.com/question/47342018/answer/1135889516
-
-https://www.zhihu.com/question/412264426/answer/1390964418
-
-https://www.zhihu.com/question/402883947/answer/1329357008
-
-https://juejin.cn/post/6928922445311115278?utm_source=gold_browser_extension
 
 
 
@@ -175,3 +163,12 @@ https://juejin.cn/post/6928922445311115278?utm_source=gold_browser_extension
 
 时代向前发展，唯一不变的是变化，适应变化，跳出舒适区，终身学习，“持续充电”
 
+---
+
+企业管理中，很重要的一点是互相制衡
+
+---
+
+要正确地认识自己。
+
+要正视自己的缺点和弱点，能改正的叫缺点，不能改正的叫弱点。

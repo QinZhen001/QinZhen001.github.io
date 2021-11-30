@@ -1729,6 +1729,94 @@ function Counter() {
 
 
 
+#### useClassroomStyle
+
+> 自定义hook
+
+当网页放大缩小时 节点伴随着动画效果同时放大缩小
+
+根据传入参数计算出width height minWidth minHeight 同时加入动画transition
+
+```tsx
+export const useClassroomStyle = ({
+  minimumHeight,
+  minimumWidth,
+  delayBeforeScale,
+}: {
+  minimumHeight: number;
+  minimumWidth: number;
+  delayBeforeScale: number;
+}) => {
+  const minimumSize = useMemo(
+    () => ({ height: minimumHeight, width: minimumWidth }),
+    [minimumHeight, minimumWidth],
+  );
+  const { shareUIStore } = useStore();
+
+  const { classroomViewportSize } = shareUIStore;
+
+  const postStyle = useMemo(
+    () =>
+      classroomViewportSize.width !== 0 && classroomViewportSize.height !== 0
+        ? Object.assign(
+            {
+              width: classroomViewportSize.width,
+              height: classroomViewportSize.height,
+              minWidth: minimumSize.width,
+              minHeight: minimumSize.height,
+            },
+            { transition: 'all .3s' },
+          )
+        : {},
+    [
+      classroomViewportSize.width,
+      classroomViewportSize.height,
+      minimumSize.width,
+      minimumSize.height,
+    ],
+  );
+
+  return postStyle;
+};
+
+```
+
+
+
+
+
+
+
+使用： 
+
+```tsx
+const FixedAspectRatioContainer: React.FC<FixedAspectRatioProps> = observer(
+  ({ children, minimumWidth = 0, minimumHeight = 0, delayBeforeScale = 500 }) => {
+    
+    // 注意这个
+    const style = useClassroomStyle({ minimumHeight, minimumWidth, delayBeforeScale });
+
+    return (
+      <div className="flex bg-black justify-center items-center h-screen w-screen">
+        <div style={style} className="w-full h-full relative">
+          {children}
+        </div>
+      </div>
+    );
+  },
+);
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 

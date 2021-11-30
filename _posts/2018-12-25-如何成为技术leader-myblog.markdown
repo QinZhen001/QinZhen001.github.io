@@ -48,6 +48,58 @@ tags:
 
 
 
+## ipaas和apaas
+
+[https://www.zhihu.com/question/58264113](https://www.zhihu.com/question/58264113)
+
+一下就能看出，它们都是从Paas衍生而来。
+
+> Paas——云服务提供一个平台，企业自己设计软件应用，数据也由自己保管。这就是Paas。
+
+
+
+apaas从**应用和数据层面入手**，就足以看出，它趋向于PaaS和SaaS之间。
+
+**其次，就是打通企业内部的各个软件问题。**
+
+由于企业堆叠的各种SaaS软件，用着不同的主机和数据库，怎么将这些软件集成起来？这就需要一种技术，也就是iPaaS。
+
+它从虚拟主机和数据库层面入手，创建一个中心生态系统来查看、管理和修改所有数据、基础设施和操作。从而轻松打通各个系统的数据与功能。
+
+
+
+* 解决企业里各个软件造成的壁垒问题，减轻IT任务量——ipaas
+* 满足企业追求的灵活但要性价比高的软件开发，降低开发门槛——apaas
+
+
+
+技术偏重点：
+
+* ipaas偏向IaaS
+* apaas偏向SaaS
+
+使用对象：
+
+* ipaas：IT人员
+* apaas：所有人
+
+
+
+代表性产品：
+
+* ipaas：阿里云ipaas、Dell Boomi、Informatica、Jitterbit……
+* apaas：简道云、明道云、道一云、smartsheet、airtable……
+
+
+
+
+
+
+
+
+
+
+
 ## 小微/外包企业的前端
 
 
