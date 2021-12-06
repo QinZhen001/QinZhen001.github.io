@@ -337,3 +337,88 @@ MobX 不会对其作出反应:
 - map 这种结构添加和删除不作出反应
 - array 这种结构添加和删除不作出反应
 
+## 获取observable新旧值
+
+[computed 函数](https://cn.mobx.js.org/refguide/computed-decorator.html#computedexpression-%E5%87%BD%E6%95%B0)
+
+```tsx
+import {observable, computed} from "mobx";
+var name = observable.box("John");
+
+var upperCaseName = computed(() =>
+    name.get().toUpperCase()
+);
+
+// change 是  { newValue, oldValue }   可以拿到新旧值
+var disposer = upperCaseName.observe(change => console.log(change.newValue));
+// 该函数返回一个 disposer 函数，当调用时可以取消观察者。
+
+name.set("Dave");
+// 输出: 'DAVE'
+
+```
+
+
+
+## observe
+
+[observe 用法](https://cn.mobx.js.org/refguide/observe.html#observe)
+
+该函数返回一个 `disposer` 函数，当调用时可以取消观察者。 注意，`transaction` 不影响 `observe` 方法工作。 意味着即使在一个 `transaction` 中，`observe` 也会触发每个变化的监听器。 因此，`autorun` 通常是一个更强大的和更具声明性的 `observe` 替代品。
+
+
+
+
+
+## reaction
+
+[https://cn.mobx.js.org/refguide/reaction.html](https://cn.mobx.js.org/refguide/reaction.html)
+
+粗略地讲，reaction 是 `computed(expression).observe(action(sideEffect))` 或 `autorun(() => action(sideEffect)(expression))` 的语法糖。
+
+
+
+
+
+### reaction 只执行一次
+
+```tsx
+const counter = observable({ count: 0 });
+
+// 只调用一次并清理掉 reaction : 对 observable 值作出反应。
+const reaction3 = reaction(
+    () => counter.count,
+    (count, reaction) => {
+        console.log("reaction 3: invoked. counter.count = " + count);
+        reaction.dispose();
+    }
+);
+
+counter.count = 1;
+// 输出:
+// reaction 3: invoked. counter.count = 1
+
+counter.count = 2;
+// 输出:
+// (There are no logging, because of reaction disposed. But, counter continue reaction)
+
+console.log(counter.count);
+// 输出:
+// 2
+
+```
+
+
+
+
+
+## extendObservable
+
+[https://cn.mobx.js.org/refguide/extend-observable.html#extendobservable](https://cn.mobx.js.org/refguide/extend-observable.html#extendobservable)
+
+ExtendObservable 用来向已存在的目标对象添加 observable 属性。 属性映射中的所有键值对都会导致目标上的新的 observable 属性被初始化为给定值。 属性映射中的任意 getters 都会转化成计算属性。
+
+```
+extendObservable(target, properties, decorators?, options?)
+```
+

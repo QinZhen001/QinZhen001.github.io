@@ -286,7 +286,34 @@ class I18nTranslate {
 }
 ```
 
+### 装饰器和注解的区别
 
+[https://zhuanlan.zhihu.com/p/22277764](https://zhuanlan.zhihu.com/p/22277764)
 
+- 注解（Annotation）：仅提供附加元数据支持，并不能实现任何操作。需要另外的 Scanner 根据元数据执行相应操作。
+- 装饰器（Decorator）：仅提供定义劫持，能够对类及其方法的定义并没有提供任何附加元数据的功能。
 
+AtScript 语言中，@ 语法就是注解，用于添加对应的元数据；而在 TypeScript 语言中，@ 语法是装饰器，用于拦截类型的定义过程。
+
+例如，对于同样的 AtScript 代码：
+
+```ts
+@myFun
+class myClass {}
+```
+
+生成的结果（近似）为：
+
+```ts
+class myClass {}
+myClass.annotations = [
+  new myFun
+]
+```
+
+*注：很容易看出，由于注解都会通过 new 实例化，因此括号存在与否不会产生影响。*
+
+**（AtScript 的）注解能够完全被（ES next）装饰器在实现上模拟！**
+
+所有 Angular 中使用的 Decorator 都并不是真正作为 Decorator 使用，只是通过 Decorator + Reflect.metadata 的组合来模拟 Annotation 的功能。即附加元数据走的是 Reflect.metadata，该实现和 Decorator 本身并无联系。
 

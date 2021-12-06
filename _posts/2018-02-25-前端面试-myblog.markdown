@@ -658,7 +658,44 @@ DocumentFragment 接口表示一个没有父级文件的最小文档对象。它
 
 
 
+### Web Worker 和 Service Worker
 
+[Web Worker](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/76.%E7%B2%BE%E8%AF%BB%E3%80%8A%E8%B0%88%E8%B0%88%20Web%20Workers%E3%80%8B.md)
+
+Web Workers 可以将耗时任务拆解出去，降低主线程的压力，避免主线程无响应。
+
+1. 高效。
+2. 并行。
+
+Web Worker使得js可以多线程
+
+**主线程与 Web Workers 之间的通信，并不是对象引用的传递，而是序列化/反序列化的过程**
+
+当对象非常庞大时，序列化和反序列化都会消耗大量计算资源，降低运行速度。
+
+----
+
+[Service Worker API](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
+
+Service workers 本质上充当 Web 应用程序、浏览器与网络（可用时）之间的代理服务器。这个 API 旨在创建有效的离线体验，它会拦截网络请求并根据网络是否可用来采取适当的动作、更新来自服务器的的资源。它还提供入口以推送通知和访问后台同步 API。
+
+Service worker运行在worker上下文，因此它不能访问DOM
+
+相对于驱动应用的主JavaScript线程，它运行在其他线程中，所以不会造成阻塞。
+
+出于安全考量，Service workers只能由HTTPS承载，毕竟修改网络请求的能力暴露给中间人攻击会非常危险。
+
+
+
+Service workers也可以用来做这些事情：
+
+- 后台数据同步
+- 响应来自其它源的资源请求
+- 集中接收计算成本高的数据更新，比如地理位置和陀螺仪信息，这样多个页面就可以利用同一组数据
+- 在客户端进行CoffeeScript，LESS，CJS/AMD等模块编译和依赖管理（用于开发目的）
+- 后台服务钩子
+- 自定义模板用于特定URL模式
+- 性能增强，比如预取用户可能需要的资源，比如相册中的后面数张图片
 
 
 

@@ -905,5 +905,24 @@ TDD 的规则很简单，可以归纳为下面三条：
 
 
 
+### becoming cto
+
+[https://web.archive.org/web/20171128214925/https://juokaz.com/blog/becoming-a-cto](https://web.archive.org/web/20171128214925/https://juokaz.com/blog/becoming-a-cto)
 
 
+
+The CTO must protect the technology team from becoming a pure execution arm for ideas without tending to its own needs and its own ideas
+
+CTO 必须保护技术团队免于成为想法的纯粹执行机构，而不会倾向于满足自己的需求和自己的想法。
+
+If a CTO doesn’t have that sort of power for technical decisions, they are not a CTO, but more of a lead engineer, in a suit. Suit being optional.
+
+如果 CTO 在技术决策方面没有那种权力，那么他们就不是 CTO，而更像是穿着西装的首席工程师。西装可选。
+
+CTO is a job in business strategy, one which defines the direction of technology inside a company. 
+
+CTO 是一项业务战略工作，它定义了公司内部的技术方向。
+
+ I’d like to believe that this is a stepping stone to becoming a CTO - not caring about these sort of things, not overly focusing on technical details but instead looking out for the team and everything else on top of that.
+
+我愿意相信这是成为 CTO 的垫脚石——不关心这些事情，不过度关注技术细节，而是关注团队以及除此之外的其他一切。
