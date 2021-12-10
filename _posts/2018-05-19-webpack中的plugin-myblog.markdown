@@ -1195,6 +1195,22 @@ The `onload` attribute in the `link` allows us to run a script when the non-crit
 
 
 
+### eslint-webpack-plugin
+
+[https://webpack.js.org/plugins/eslint-webpack-plugin/](https://webpack.js.org/plugins/eslint-webpack-plugin/)
+
+This plugin uses [`eslint`](https://eslint.org/) to find and fix problems in your JavaScript code
+
+
+
+----
+
+**Adding ESLint to Webpack with React and TypeScript**
+
+[https://dev.to/alexi_be3/adding-eslint-to-webpack-with-react-and-typescript-4ep4](https://dev.to/alexi_be3/adding-eslint-to-webpack-with-react-and-typescript-4ep4)
+
+
+
 
 
 

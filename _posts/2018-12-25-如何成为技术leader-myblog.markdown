@@ -926,3 +926,9 @@ CTO 是一项业务战略工作，它定义了公司内部的技术方向。
  I’d like to believe that this is a stepping stone to becoming a CTO - not caring about these sort of things, not overly focusing on technical details but instead looking out for the team and everything else on top of that.
 
 我愿意相信这是成为 CTO 的垫脚石——不关心这些事情，不过度关注技术细节，而是关注团队以及除此之外的其他一切。
+
+
+
+### **服务业务，技术克制**
+
+简单说就是贴着业务走。拒绝只求花里胡哨的技术demo，把核心能力做好，把产品成熟度做好，考虑拿到业务价值是第一位的。
