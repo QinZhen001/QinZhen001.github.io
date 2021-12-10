@@ -257,7 +257,21 @@ inquirer
 Download and extract a git repository (GitHub, GitLab, Bitbucket) from node.
 
 
+
+### n
+
+[https://www.npmjs.com/package/n](https://www.npmjs.com/package/n)
+
+Node.js version management: no subshells, no profile setup, no convoluted API, just **simple**.
+
+node 版本管理工具
+
+
+
+
+
 ### async
+
 [https://www.npmjs.com/package/sync](https://www.npmjs.com/package/sync)
 
 node-sync is a simple library that allows you to call any asynchronous function in synchronous way

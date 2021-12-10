@@ -2062,6 +2062,8 @@ type ExtractActionCreaotrKey<T> = {
 
 ## tsconfig
 
+[https://www.tslang.cn/docs/handbook/tsconfig-json.html](https://www.tslang.cn/docs/handbook/tsconfig-json.html)
+
 [配置的项解释](https://www.cnblogs.com/gina/p/8960754.html)
 
 ```js
@@ -2165,6 +2167,44 @@ function logMe(x: any) {
   - es2017.object
   - es2017.sharedmemory
   - esnext.asynciterable
+
+
+
+
+
+### @types，typeRoots和types
+
+默认所有*可见的*"`@types`"包会在编译过程中被包含进来。 `node_modules/@types`文件夹下以及它们子文件夹下的所有包都是*可见的*； 也就是说， `./node_modules/@types/`，`../node_modules/@types/`和`../../node_modules/@types/`等等。
+
+
+
+如果指定了`typeRoots`，*只有*`typeRoots`下面的包才会被包含进来。 比如：
+
+```tsx
+{
+   "compilerOptions": {
+       "typeRoots" : ["./typings"]
+   }
+}
+```
+
+这个配置文件会包含*所有*`./typings`下面的包，而不包含`./node_modules/@types`里面的包。
+
+如果指定了`types`，只有被列出来的包才会被包含进来。 比如：
+
+```tsx
+{
+   "compilerOptions": {
+        "types" : ["node", "lodash", "express"]
+   }
+}
+```
+
+这个`tsconfig.json`文件将*仅会*包含 `./node_modules/@types/node`，`./node_modules/@types/lodash`和`./node_modules/@types/express`
+
+注意：
+
+`node_modules/@types/*`里面的其它包不会被引入进来
 
 
 
@@ -2619,6 +2659,22 @@ if (isAxiosError(err)) {
 
 - 它自动包含在 TypeScript 项目的编译上下文中；
 - 它能让你快速开始书写经过类型检查的 JavaScript 代码。
+
+
+
+## @types
+
+[https://jkchao.github.io/typescript-book-chinese/typings/types.html](https://jkchao.github.io/typescript-book-chinese/typings/types.html)
+
+[https://zhuanlan.zhihu.com/p/194196536](https://zhuanlan.zhihu.com/p/194196536)
+
+
+
+
+
+
+
+
 
 
 
