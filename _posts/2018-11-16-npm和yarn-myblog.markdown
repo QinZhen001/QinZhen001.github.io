@@ -440,6 +440,26 @@ $ npx create-react-app my-react-app
 
 
 
+# 命令修饰符
+
+
+
+## --if-present
+
+如果脚本名不存在时不想报错，可以使用`--if-present`，比如：`npm run \<script> --if-present`
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 补充
 
 

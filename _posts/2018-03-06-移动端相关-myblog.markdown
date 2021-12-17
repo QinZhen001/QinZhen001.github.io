@@ -949,6 +949,40 @@ html被微信强制缓存在本地
 
 ## Flutter 和 RN
 
-Flutter完全独立于平台层的渲染管线的优势
+React Native使用的JavaScript语言开发, Flutte使用的是Dart语言
 
-RN映射实体组件的方式
+
+
+* Flutter完全独立于平台层的渲染管线的优势
+
+* RN映射实体组件的方式
+
+### Flutter的优势
+
+- 性能上优于React Native
+
+  - RN 所使用的JSCore,原本用在浏览器中,用于解释执行网页中的JavaScriptd代码,为了兼容Web标准留下的历史包袱, 无法针对移动端进行性能优化
+  - Flutter 一开始就抛弃了这种包袱,使用全新的Dart语言进行编写,同时支持AOT和JIT两种编译方式, 而没有采用HTML/CSS/JavaScriptz组合方式开发, 在执行效率上明显高于JSCore
+
+- 开发效率体验优越
+
+  - 凭借热重载这种急速调试技术,极大的提升了开发效率
+  - Flutter因为重新实现了UI框架,可以不依赖IOS和Android平台的原生控件,所以无需专门去处理平台上的差异,在开发体验上实现了真正的统一
+
+  因为引擎定制问题,flutter包的大小是一个问题,从长远来看,App store对包的大小的限制只会越来越小,所以说这个问题一定不会成为卡点
+
+  动态化能力默认不支持在ios上面热更
+
+
+
+
+
+## JIT和AOT
+
+JIT (Just-In-Time - 实时编译)     代表 javaScript、python
+
+AOT (Ahead-Of-Time - 预先编译)    代表 C/C++
+
+* JIT：吞吐量高，有运行时性能加成，可以跑得更快，并可以做到动态生成代码等，但是相对启动速度较慢，并需要一定时间和调用频率才能触发 JIT 的分层机制
+* AOT：内存占用低，启动速度快，可以无需 runtime 运行，直接将 runtime 静态链接至最终的程序中，但是无运行时性能加成，不能根据程序运行情况做进一步的优化
+

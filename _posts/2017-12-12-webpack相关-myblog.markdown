@@ -1051,6 +1051,8 @@ webpack 5 打包的bundle文件内容:
 
 ## webpack-dev-server
 
+> 从 `webpack-dev-server` v4.0.0 开始，热模块替换是默认开启的。
+
 [https://www.npmjs.com/package/webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server)
 
 Webpack dev server 是一个轻量的node.js express服务器，实现了 webpack 编译代码实时输出更新。在前后端分离的前端项目开发中经常用到
@@ -1814,6 +1816,29 @@ In this example, the export `b` can be removed in production mode.
 - 主要是通过 `__webpack_require__ `来模拟 `import` 一个模块，并在最后返回模块 `export` 的变量
 - `webpack` 是如何支持 `ES Module` 的
 - 动态加载 `import()` 的实现主要是使用 `JSONP` 动态加载模块，并通过 `webpackJsonpCallback` 判断加载的结果
+
+
+
+
+
+## 热更新原理
+
+[https://juejin.cn/post/7038767740059926565](https://juejin.cn/post/7038767740059926565)
+
+[https://juejin.cn/post/6844904008432222215#heading-0](https://juejin.cn/post/6844904008432222215#heading-0)
+
+启动`websocket`服务，可以建立服务器和浏览器之间的双向通信。当监听到本地代码发生改变时，主动向浏览器发送新`hash`以及`ok`字段。
+
+
+
+客户端`websocket`注册和服务端一样注册了两个事件：
+
+- `hash` : `webpack`重新编辑打包后的新`hash`值 。
+- `ok` : 进行`reloadApp`热更新检查 。
+
+
+
+
 
 ## 模块打包运行原理
 

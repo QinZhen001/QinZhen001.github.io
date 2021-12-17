@@ -866,3 +866,12 @@ This package improves [`child_process`](https://nodejs.org/api/child_process.htm
 - [Can specify file and arguments as a single string without a shell](https://www.npmjs.com/package/execa#execacommandcommand-options)
 - More descriptive errors.
 
+
+
+
+
+### npm-run-all
+
+[https://www.npmjs.com/package/npm-run-all](https://www.npmjs.com/package/npm-run-all)
+
+A CLI tool to run multiple npm-scripts in parallel or sequential.
