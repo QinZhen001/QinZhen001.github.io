@@ -19,6 +19,16 @@ tags:
 
 
 
+### 小程序为什么性能还可以？
+
+webview渲染小程序，为什么性能高，核心是预载。点击一个新页面时，webview是提前创建好的，不会走复杂的webkit、v8的初始化流程，连开发者的js代码，也是预载好的。所以点击新页面时，它的渲染速度和原生应用没什么差别。当然也有个坏处，就是启动慢。微信里启动小程序速度看着还行，其实是微信在启动小程序之前，就已经提前初始化了小程序运行环境。
+
+
+
+
+
+
+
 ### 在逻辑层仿造一套 DOM 接口
 
 
@@ -464,5 +474,4 @@ function uint8ArrayToString(arr) {
 bindchange和bindchanging 在mpvue框架中的写法为: @change和@changing
 
 类型为事件的属性在完成触发事件后，取值的方式为：event.mp.detail = {value: value}
-
 

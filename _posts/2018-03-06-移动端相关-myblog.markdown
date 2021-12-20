@@ -949,13 +949,57 @@ html被微信强制缓存在本地
 
 ## Flutter 和 RN
 
+[https://ask.dcloud.net.cn/article/36083](https://ask.dcloud.net.cn/article/36083)
+
 React Native使用的JavaScript语言开发, Flutte使用的是Dart语言
 
 
 
-* Flutter完全独立于平台层的渲染管线的优势
+![v2-375798a9424bf72b0e60156702ec5ed5_1440w](https://pic2.zhimg.com/80/v2-375798a9424bf72b0e60156702ec5ed5_1440w.jpg)
 
+
+
+* Flutter完全独立于平台层的渲染管线的优势
 * RN映射实体组件的方式
+* **React Native 带有较强的平台关联性，而 Flutter UI 的平台关联性十分薄弱。**
+
+
+
+**React Native** 是一套 UI 框架，默认情况下 **React Native** 会在 `Activity` 下加载 JS 文件，然后运行在 `JavaScriptCore` 中解析 *Bundle* 文件布局，最终堆叠出一系列的原生控件进行渲染。
+
+简单来说就是 **通过写 JS 代码配置页面布局，然后 React Native 最终会解析渲染成原生控件**，如 `<View>` 标签对应 `ViewGroup/UIView` ，`<ScrollView>` 标签对应 `ScrollView/UIScrollView` ，`<Image>` 标签对应 `ImageView/UIImageView` 等。
+
+---
+
+*如果说 **React Native** 是为开发者做了平台兼容，那 **Flutter** 则更像是为开发者屏蔽平台的概念。*
+
+> **Flutter** 中只需平台提供一个 `Surface` 和一个 `Canvas` ，剩下的 **Flutter** 说：*“你可以躺下了，我们来自己动”。*
+
+**Flutter** 中绝大部分的 `Widget` 都与平台无关， 开发者基于 `Framework` 开发 App ，而 `Framework` 运行在 `Engine` 之上，由 `Engine` 进行适配和跨平台支持。这个跨平台的支持过程，其实就是将 **Flutter UI 中的 `Widget` “数据化” ，然后通过 `Engine` 上的 `Skia` 直接绘制到屏幕上 。**
+
+**Flutter 则是让你忘掉平台，专注于 Flutter UI 就好了。**
+
+**Flutter 的整体渲染脱离了原生层面，直接和 GPU 交互**
+
+ 
+
+
+
+
+
+
+
+### 动态性
+
+webview、rn/weex，都有一个特点，可以远程动态载入js代码，可以更新本地的js代码。前端开发者认为动态性是天经地义的，但其实flutter并不支持。
+
+flutter是有编译优化概念的，如果它提供动态性支持，会影响它的性能。
+
+除了flutter，rn/weex/uni-app都可以动态热更新。
+
+
+
+
 
 ### Flutter的优势
 
@@ -977,12 +1021,36 @@ React Native使用的JavaScript语言开发, Flutte使用的是Dart语言
 
 
 
+## uni-app
+
+对于国外的开发者，rn、flutter的生态肯定比uni-app好，比如facebook登陆分享、Google地图等。
+
+但对于国内的开发者，那是反过来的，中国开发者需要的全端推送（UniPush集成了iOS、华为、小米、OPPO等众多原厂推送）、各种国内登陆、支付、分享SDK、各种国内地图、各种ui库、以及Echart图表等，都是在uni-app体系里，这方面生态可比rn、flutter丰富多了。uni-app的插件市场有数千款插件，不能说应有尽有，但确实是最丰富的跨端开发框架生态了。
+
+
+
+另外，uni-app的生态还比其他竞品强在如下方面：
+
+- App和H5提供了renderjs技术，使得浏览器专用的库也可以在App和H5里使用，比如echart、threejs等[参考](https://uniapp.dcloud.io/frame?id=renderjs)
+- 兼容微信小程序 JS SDK，丰富的小程序生态内容可直接引入uni-app，并且在App侧通用，[参考](http://ask.dcloud.net.cn/article/35070)
+- 兼容微信小程序自定义组件，并且App、H5侧通用，[参考](http://uniapp.dcloud.io/frame?id=小程序组件支持)
+
+这些丰富的生态兼容，是rn和flutter无法享受的。
+
+
+
 ## JIT和AOT
 
 JIT (Just-In-Time - 实时编译)     代表 javaScript、python
 
-AOT (Ahead-Of-Time - 预先编译)    代表 C/C++
+AOT (Ahead-Of-Time - 预先编译)    代表 C/C++  java     **(注意java的特殊性)**
 
 * JIT：吞吐量高，有运行时性能加成，可以跑得更快，并可以做到动态生成代码等，但是相对启动速度较慢，并需要一定时间和调用频率才能触发 JIT 的分层机制
 * AOT：内存占用低，启动速度快，可以无需 runtime 运行，直接将 runtime 静态链接至最终的程序中，但是无运行时性能加成，不能根据程序运行情况做进一步的优化
+
+
+
+
+
+## 
 

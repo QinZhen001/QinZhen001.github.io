@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "React Router 4.0"
+title:      "react路由相关"
 date:       2018-01-15 13:00:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -11,30 +11,17 @@ tags:
 
 > “Yeah It's on. ”
 
-
-## 正文
-
-[api中文文档](http://reacttraining.cn/web/example/basic)
-
-[初探 React Router 4.0](https://www.jianshu.com/p/e3adc9b5f75c)
+# 正文
 
 
-RR4 本次采用单代码仓库模型架构（monorepo），这意味者这个仓库里面有若干相互独立的包，分别是：
-
-* react-router React Router 核心
-* react-router-dom 用于 DOM 绑定的 React Router
-* react-router-native 用于 React Native 的 React Router
-* react-router-redux React Router 和 Redux 的集成
-* react-router-config 静态路由配置的小助手
 
 
-### react-router 还是 react-router-dom？
-在 React 的使用中，我们一般要引入两个包，react 和 react-dom，那么 react-router 和 react-router-dom 是不是两个都要引用呢？
-非也，坑就在这里。他们两个只要引用一个就行了，不同之处就是后者比前者多出了 `<Link>` `<BrowserRouter>` 这样的 DOM 类组件。
-因此我们**只需引用 react-router-dom 这个包**就行了。当然，如果搭配 redux ，你还需要使用 react-router-redux。
 
-### 组件
-`<BrowserRouter>`
+## 组件
+
+
+
+### BrowserRouter
 
 一个使用了 HTML5 history API 的高阶路由组件，保证你的 UI 界面和 URL 保持同步。此组件拥有以下属性：
 
@@ -70,9 +57,8 @@ const supportsHistory = 'pushState' in window.history
 作用：渲染唯一子元素。
 使用场景：作为一个 React组件，天生自带 children 属性。
 
+## Route
 
-
-### `<Route>`
 `<Route>` 也许是 RR4 中最重要的组件了，重要到你必须理解它，学会它，用好它。它最基本的职责就是当页面的访问地址与 Route 上的 path 匹配时，就渲染出对应的 UI 界面。
 
 `<Route>` 自带三个 render method 和三个 props 。
@@ -106,21 +92,26 @@ History 和 match的获取方式类似。
 
 >ps：在这个例子中，match.params.user为123
 
-#### component
+
+
+component
 
 只有当访问地址和路由匹配时，一个 React component 才会被渲染，此时此组件接受 route props (match, location, history)。
 当使用 component 时，router 将使用 React.createElement 根据给定的 component 创建一个新的 React 元素。这意味着如果你使用内联函数（inline function）传值给 component 将会产生不必要的重复装载。对于内联渲染（inline rendering）, 建议使用 render prop。
 
-```
+```tsx
 <Route path="/user/:username" component={User} />
 const User = ({ match }) => {
   return <h1>Hello {match.params.username}!</h1>
 }
 ```
 
-#### render: func
+
+
+render: func
+
 此方法适用于内联渲染，而且不会产生上文说的重复装载问题。
-```
+```tsx
 // 内联渲染
 <Route path="/home" render={() => <h1>Home</h1} />
 
@@ -135,13 +126,6 @@ const FadingRoute = ({ component: Component, ...rest }) => (
 
 <FadingRoute path="/cool" component={Something} />
 ```
-
-作者：_minooo_
-链接：https://www.jianshu.com/p/e3adc9b5f75c
-來源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
-
 
 
 
@@ -204,14 +188,12 @@ children），但这样配置路由有一个问题，就是我们访问 http://l
 
 
 
-
-
-### 嵌套路由
+## 嵌套路由
 
 [http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu](http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu)
 Route组件还可以嵌套。
 
-```
+```tsx
     <Router history={hashHistory}>
       <Route path="/" component={App}>
         <Route path="/repos" component={Repos}/>
@@ -220,14 +202,14 @@ Route组件还可以嵌套。
     </Router>
 ```
 上面代码中，用户访问/repos时，会先加载App组件，然后在它的内部再加载Repos组件。
-```
+```tsx
 <App>
   <Repos/>
 </App>
 ```
 App组件要写成下面的样子。
 
-```
+```tsx
     export default React.createClass({
       render() {
         return <div>
@@ -241,93 +223,153 @@ App组件要写成下面的样子。
 
 子路由也可以不写在Router组件里面，单独传入Router组件的routes属性。
 
-```
-    let routes = <Route path="/" component={App}>
+```tsx
+ let routes = <Route path="/" component={App}>
       <Route path="/repos" component={Repos}/>
       <Route path="/about" component={About}/>
     </Route>;
 
-    <Router routes={routes} history={browserHistory}/>
-```
-
-### 通配符
-path属性可以使用通配符。
-
-```
-    <Route path="/hello/:name">
-    // 匹配 /hello/michael
-    // 匹配 /hello/ryan
-
-    <Route path="/hello(/:name)">
-    // 匹配 /hello
-    // 匹配 /hello/michael
-    // 匹配 /hello/ryan
-
-    <Route path="/files/*.*">
-    // 匹配 /files/hello.jpg
-    // 匹配 /files/hello.html
-
-    <Route path="/files/*">
-    // 匹配 /files/ 
-    // 匹配 /files/a
-    // 匹配 /files/a/b
-
-    <Route path="/**/*.jpg">
-    // 匹配 /files/hello.jpg
-    // 匹配 /files/path/to/file.jpg
+  <Router routes={routes} history={browserHistory}/>
 ```
 
 
 
-1. :paramName匹配URL的一个部分，直到遇到下一个/、?、#为止。这个路径参数可以通过this.props.params.paramName取出。
-2. ()表示URL的这个部分是可选的。
-3. *匹配任意字符，直到模式里面的下一个字符为止。匹配方式是非贪婪模式。
-4. ** 匹配任意字符，直到下一个/、?、#为止。匹配方式是贪婪模式。
-
-**URL的查询字符串/foo?bar=baz，可以用this.props.location.query.bar获取。**
 
 
 
 
+## React-Router v6
 
-### histroy 属性
-Router组件的history属性，用来监听浏览器地址栏的变化，并将URL解析成一个地址对象，供 React Router 匹配。
-
-history属性，一共可以设置三种值。
+[https://juejin.cn/post/6844904096059621389#heading-1](https://juejin.cn/post/6844904096059621389#heading-1)
 
 
-* browserHistory
-* hashHistory
-* createMemoryHistory
 
-如果设为hashHistory，路由将通过URL的hash部分（#）切换，URL的形式类似`example.com/#/some/path`。
 
-```
-import { hashHistory } from 'react-router'
 
-render(
-  <Router history={hashHistory} routes={routes} />,
-  document.getElementById('app')
-)
+### **简化路径**
+
+**React Router v6使用简化的路径格，仅支持2种占位符：动态:`id`样式参数和`\*`通配符**
+
+以下都是v6中的有效路由路径：
+
+```tsx
+/groups
+/groups/admin
+/users/:id
+/users/:id/messages
+/files/*
+/files/:id/*
+/files-*
 ```
 
-
-如果设为browserHistory，浏览器的路由就不再通过Hash完成了，而显示正常的路径`example.com/some/path`，背后调用的是浏览器的History API。
-
+使用`RegExp`正则匹配的路径将无效：
 
 ```
-import { browserHistory } from 'react-router'
-
-render(
-  <Router history={browserHistory} routes={routes} />,
-  document.getElementById('app')
-)
+/users/:id?
+/tweets/:id(\d+)
+/files/*/cat.jpg
 ```
 
-createMemoryHistory主要用于服务器渲染。它创建一个内存中的history对象，不与浏览器URL互动。
+
+
+`v6`中的所有路径匹配都将忽略URL上的尾部"`/`"。实际上，`<Route strict>`已被删除并且在v6中无效。这并不意味着您不需要使用斜杠。
+
+
+
+### Outlet
+
+> React Router v6 出现，用于处理嵌套路由
+
+[https://segmentfault.com/a/1190000023684163](https://segmentfault.com/a/1190000023684163)
+
+
+
+例子：
+
+```tsx
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="profile" element={<Profile />}>
+          <Route path=":id" element={<MyProfile />} />
+          <Route path="me" element={<OthersProfile />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Profile() {
+  return (
+    <div>
+      <nav>
+        <Link to="me">My Profile</Link>
+      </nav>
+        {/*
+       将直接根据上面定义的不同路由参数，渲染<MyProfile />或<OthersProfile />
+        */}
+      <Outlet />
+    </div>
+  )
+}
+```
 
 
 
 
 
 
+
+
+
+# 补充
+
+
+
+## react-router 还是 react-router-dom？
+
+在 React 的使用中，我们一般要引入两个包，react 和 react-dom，那么 react-router 和 react-router-dom 是不是两个都要引用呢？
+非也，坑就在这里。他们两个只要引用一个就行了，不同之处就是后者比前者多出了 `<Link>` `<BrowserRouter>` 这样的 DOM 类组件。
+因此我们**只需引用 react-router-dom 这个包**就行了。当然，如果搭配 redux ，你还需要使用 react-router-redux。
+
+
+
+## 滚动至顶部
+
+[https://juejin.cn/post/6844904093694033927#heading-5](https://juejin.cn/post/6844904093694033927#heading-5)
+
+在大多数情况下，您所需要做的只是“滚动到顶部”，因为您有一个较长的内容页面，该页面在导航到该页面时始终保持向下滚动。使用`<ScrollToTop>`组件可以轻松处理此问题，该组件将在每次导航时向上滚动窗口：
+
+
+
+```tsx
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+export default function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+```
+
+然后将其放在您应用的顶部。
+
+```tsx
+function App() {
+  return (
+    <Router>
+      <ScrollToTop />
+      <App />
+    </Router>
+  );
+}
+```
+
+Ï

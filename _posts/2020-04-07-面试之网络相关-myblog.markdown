@@ -606,6 +606,8 @@ https://developers.google.com/web/fundamentals/performance/optimizing-content-ef
 
 [https://blog.csdn.net/vincent_ling/article/details/51714691](https://blog.csdn.net/vincent_ling/article/details/51714691)
 
+**也可以简单的理解为，当前请求为跨域类型时是否在请求中协带cookie。**
+
 credentials 是Request接口的只读属性，用于表示用户代理是否应该在跨域请求的情况下从其他域发送cookies。这与XHR的withCredentials 标志相似，不同的是有三个可选值（后者是两个）：
 
 * omit: 从不发送cookies.
