@@ -93,41 +93,195 @@ UMD模块是指那些既可以作为模块使用（通过导入）又可以作�
 ### CommonJS
 
  CommonJS规范规定，每个模块内部，module变量代表当前模块。这个变量是一个对象，它的exports属性（即module.exports）是对外的接口。**加载某个模块，其实是加载该模块的module.exports属性。**
- 
- 
- 
- 既然要通用，怎么办呢？那就先判断是否支持node.js的模块，存在就使用node.js；再判断是否支持AMD（define是否存在），存在则使用AMD的方式加载。这就是所谓的UMD。
 
 
 
-```javascript
-((root, factory) => {
-  if (typeof define === 'function' && define.amd) {
-    //AMD
-    define(['jquery'], factory);
-  } else if (typeof exports === 'object') {
-    //CommonJS
-    var $ = requie('jquery');
-    module.exports = factory($);
-  } else {
-    //都不是，浏览器全局定义
-    root.testModule = factory(root.jQuery);
-  }
-})(this, ($) => {
-  //do something...  这里是真正的函数体
-});
+
+
+```tsx
+/**
+ Module {
+  id: '.',
+  exports: {},
+  parent: null,
+  filename: '/1.js',
+  loaded: false,
+  children: [],
+  paths:
+   [ 
+     '/node_modules' ] 
+ }
+ */
 ```
+
+1. 每个js文件一创建，都有一个var exports = module.exports = {};，使exports和module.exports都指向一个空对象。
+2. module是全局内置对象，exports是被var创建的局部对象。
+3. module.exports和exports所指向的内存地址相同
+   **(exports 是指向的 module.exports 的引用)**
+
+
+
+我们来看一个例子：
+
+```tsx
+// 2.js
+exports.id = 'exports的id';  
+exports.id2 = 'exports的id2';  
+exports.func = function(){  
+    console.log('exports的函数');
+};
+exports.func2 = function() {  
+    console.log('exports的函数2');
+};
+module.exports = {  
+    id: 'module.exports的id',
+    func:function(){
+        console.log('module.exports的函数');
+    }
+
+};
+```
+
+```tsx
+// 3.js
+var a = require('./2.js');  
+// 当属性和函数在module.exports都有定义时：
+console.log(a.id);  // module.exports的id  
+console.log(a.func()); // module.exports的函数
+
+// 当属性在module.exports没有定义，函数在module.exports有定义
+console.log(a.id2);  // undefined  
+console.log(a.func());  // module.exports的函数
+
+// 当函数在module.exports没有定义，属性在module.exports有定义
+console.log(a.id);        // module.exports的id  
+console.log(a.func2());    // 报错了 TypeError: a.func2 is not a function  
+```
+
+1. module.exports像是exports的大哥，当module.exports以{}整体导出时会覆盖exports的属性和方法，
+2. 注意，若只是将属性/方法挂载在module.exports./exports.上时，exports.id=1和module.exports.id=100，module.exports.id=function(){}和exports.id=function(){}，最后id的值取决于exports.id和module.exports.id的顺序，谁在后，就是最后的值
+3. 若exports和module.exports同时赋值时，exports所使用的属性和方法必须出现在module.exports，若属性没有在module.exports中定义的话，出现undefined，若方法没有在module.exports中定义，会抛出TypeError错误。
+
+
+
+#### require.context
+
+ require.context
+
+[https://juejin.im/post/6844903583113019405#heading-0](https://juejin.im/post/6844903583113019405#heading-0)
+
+
+可以使用 require.context() 方法来创建自己的（模块）上下文，这个方法有 3 个参数：
+
+- 要搜索的文件夹目录
+- 是否还应该搜索它的子目录，
+- 以及一个匹配文件的正则表达式。
+
+```tsx
+require.context(directory, useSubdirectories = false, regExp = /^\.\//)
  
+require.context("./test", false, /\.test\.js$/);
+//（创建了）一个包含了 test 文件夹（不包含子目录）下面的、所有文件名以 `.test.js` 结尾的、能被 require 请求到的文件的上下文。
  
- 
- 
+require.context("../", true, /\.stories\.js$/);
+//（创建了）一个包含了父级文件夹（包含子目录）下面，所有文件名以 `.stories.js` 结尾的文件的上下文。
+```
+
+**require.context模块导出（返回）一个（require）函数**，这个函数可以接收一个参数：request 函数–这里的 request 应该是指在 require() 语句中的表达式
+
+
+
+导出的方法有 3 个属性： resolve, keys, id。
+
+- resolve 是一个函数，它返回请求被解析后得到的模块 id。
+- keys 也是一个函数，它返回一个数组，由所有可能被上下文模块处理的请求组成。
+- id 是上下文模块里面所包含的模块 id. 它可能在你使用 module.hot.accept 的时候被用到
+
+
+
+#### require源码粗读
+
+[https://github.com/CommanderXL/biu-blog/issues/24](https://github.com/CommanderXL/biu-blog/issues/24)
+
+
+在我们的node.js程序当中，我们使用require这个看起来是全局(后面会解释为什么看起来是全局的)的方法去加载其他模块。
+
+
+```
+const util = require('./util')
+```
+
+首先我们来看下关于这个方法，node.js内部是如何定义的：
+
+```tsx
+Module.prototype.require = function () {
+  assert(path, 'missing path');
+  assert(typeof path === 'string', 'path must be a string');
+  // 实际上是调用Module._load方法
+  return Module._load(path, this, /* isMain */ false);
+}
+
+Module._load = function (request, parent, isMain) {
+  .....
+
+  // 获取文件名
+  var filename = Module._resolveFilename(request, parent, isMain);
+
+  // _cache缓存的模块
+  var cachedModule = Module._cache[filename];
+  if (cachedModule) {
+    updateChildren(parent, cachedModule, true);
+    return cachedModule.exports;
+  }
+
+  // 如果是nativeModule模块
+  if (NativeModule.nonInternalExists(filename)) {
+    debug('load native module %s', request);
+    return NativeModule.require(filename);
+  }
+
+  // Don't call updateChildren(), Module constructor already does.
+  // 初始化一个新的module
+  var module = new Module(filename, parent);
+
+  if (isMain) {
+    process.mainModule = module;
+    module.id = '.';
+  }
+
+  // 加载模块前，就将这个模块缓存起来。注意node.js的模块加载系统是如何避免循环依赖的
+  Module._cache[filename] = module;
+
+  // 加载module
+  tryModuleLoad(module, filename);
+
+  // 将module.exports导出的内容返回
+  return module.exports;
+}
+```
+
+Module._load方法是一个内部的方法，主要是:
+
+* 根据你传入的代表模块路径的字符串来查找相应的模块路径;
+* 根据找到的模块路径来做缓存;
+* 进而去加载对应的模块。
+
+
+
+
+
+
+
+
+
+
  #### 模块的加载机制
- 
+
  **CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。** 这点与ES6模块化有重大差异
- 
- 
+
+
  例子：
- 
+
  ```javascript
  // lib.js
 var counter = 3;
@@ -138,8 +292,8 @@ module.exports = {
   counter: counter,
   incCounter: incCounter,
 };
-```
- 
+ ```
+
  上面代码输出内部变量counter和改写这个变量的内部方法incCounter。
 
 
@@ -200,3 +354,13 @@ CommonJS规范主要用于服务端编程，加载模块是同步的，这并不
 
 **ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，完全可以取代 CommonJS 和 AMD 规范，成为浏览器和服务器通用的模块解决方案。**
 
+
+
+
+
+### ESmodule和CommonJS互转
+
+[https://www.zhihu.com/question/288322186](https://www.zhihu.com/question/288322186)
+
+
+道理上,ES module转成CommonJS,其default导出只能映射到module.exports.default上不能映射到CommonJS传统的module.exports上,因为ES module可以同时有命名导出,你让module.exports既是一个导出值,又是一个namespace object。

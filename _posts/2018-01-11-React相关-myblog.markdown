@@ -973,9 +973,7 @@ config.disabled = true
 
 
 
-
-
-## 新版react
+## React 16
 
 
 
@@ -1979,6 +1977,31 @@ setState(prevState => {
 ```
 
 
+
+
+
+## React 18
+
+
+
+### **useTransition**
+
+[https://juejin.cn/post/7038402899860258847](https://juejin.cn/post/7038402899860258847)
+
+[https://reactjs.org/docs/concurrent-mode-patterns.html](https://reactjs.org/docs/concurrent-mode-patterns.html)
+
+使用 **useTransition** 时，**react** 会以 **Concurrent** 模式来协调 **fiber tree**。**Concurrent** 模式下，**协调**过程是**并行可中断**的，**渲染进程**不会长时间被阻塞，使得用户操作可以及时得到响应，极大提升了用户体验。
+
+
+
+
+
+
+
+对比**防抖 - debounce**、**节流 - throttle**，**useTransition** 有如下优势:
+
+- 更新协调过程是**可中断**的，**渲染引擎**不会长时间被**阻塞**，用户可以及时得到响应；
+- 不需要开发人员去做额外的考虑，整个优化过程交给 **react** 和**浏览器**即可；
 
 
 

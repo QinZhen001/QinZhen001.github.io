@@ -236,7 +236,15 @@ git revert
 
 **适用场景： 如果我们想撤销之前的某一版本，但是又想保留该目标版本后面的版本，记录下这整个版本变动流程，就可以用这种方法。**
 
-------
+
+
+
+
+### git status
+
+git status 命令用于查看在你上次提交之后是否有对文件进行再次修改。
+
+
 
 
 
@@ -808,6 +816,41 @@ cherry-pick是Git里对commit操作很好的一个指令，比如想把test分�
 
 
 
+
+
+### --porcelain
+
+[https://stackoverflow.com/questions/6976473/what-does-the-term-porcelain-mean-in-git](https://stackoverflow.com/questions/6976473/what-does-the-term-porcelain-mean-in-git)
+
+More importantly, the term "porcelain" applies to [high-level commands](https://schacon.github.io/git/git.html#_high_level_commands_porcelain), with output:
+
+- **meant to be readable by human**
+- **not meant to be parsed**
+- **susceptible to changes/evolutions**
+
+That is key: if you script, you should use if possible [*plumbing* commands](https://schacon.github.io/git/git.html#_low_level_commands_plumbing), with stable outputs. Not porcelain commands.
+
+However, **you can use the output of a porcelain command which has a `--porcelain` option in script** (see below), like:
+
+```
+git status --porcelain
+git push --porcelain
+git blame --porcelain
+```
+
+> Although git includes its own **porcelain layer**, its low-level commands are sufficient to support development of alternative porcelains.
+>
+> 尽管git包含了自己的瓷器层，但它的低级命令足以支持替代瓷器(porcelain)的开发。
+>
+> The interface (input, output, set of options and the semantics) to these **low-level commands are meant to be a lot more stable** than Porcelain level commands, because **these commands are primarily for scripted use**.
+> The interface to Porcelain commands on the other hand are subject to change in order to improve the end user experience.
+
+
+
+
+
+
+
 ## Git 原理
 
 https://jingsam.github.io/2018/06/03/git-objects.html
@@ -862,6 +905,61 @@ Hotfix branches? [hotfix/]
 ```
 
 
+
+
+
+
+
+## node 脚本
+
+```tsx
+/**
+ * 不满足条件，抛出错误
+ * @param {*} cond
+ * @param {string} message
+ * @returns {asserts cond}
+ */
+function invariant(cond, message) {
+  if (!cond) throw new Error(message);
+}
+```
+
+
+
+
+
+### 检查工作区是否提交
+
+```tsx
+function ensureCleanWorkingDirectory() {
+  let status = execSync(`git status --porcelain`).toString().trim();
+  let lines = status.split("\n");
+  invariant(
+    lines.every(line => line === "" || line.startsWith("?")),
+    "Working directory is not clean. Please commit or stash your changes."
+  );
+}
+```
+
+
+
+如果存在未commit的文件
+
+```basic
+➜  front-end-demo git:(master) ✗ git status --porcelain
+ M src/pages/index.ts
+ M src/router/index.tsx
+?? src/pages/other/
+```
+
+如果所有文件都commit
+
+```basic
+➜  front-end-demo git:(master) git status --porcelain                       
+➜  front-end-demo git:(master) 
+```
+
+执行结果为空
 
 
 
@@ -1204,6 +1302,10 @@ ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
 
 
 ### [commitlint](https://github.com/conventional-changelog/commitlint)
+
+[https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
+
+
 
 
 
