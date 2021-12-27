@@ -1,12 +1,11 @@
-layout:     post
-title:      "js重要基础"
-date:       2018-05-01 23:12:00
-author:     "Qz"
-header-img: "img/post-bg-2015.jpg"
-catalog: true
-tags:
-
-    - JavaScript
+    layout:     post
+    title:      "js重要基础"
+    date:       2018-05-01 23:12:00
+    author:     "Qz"
+    header-img: "img/post-bg-2015.jpg"
+    catalog: true
+    tags:
+        - JavaScript
 
 > “Yeah It's on. ”
 
@@ -860,6 +859,42 @@ false && false || alert(1)
 
 
 **当同时存在多个||时，从左到右，一一执行上述规则。**
+
+
+
+
+
+### 屏蔽属性
+
+一条赋值语句引出的思考：
+
+`myObject.foo = "bar";`
+
+如果myObject 对象中包含名为foo 的普通数据访问属性，这条赋值语句只会修改已有的属性值。
+
+如果foo 不是直接存在于myObject 中，[[Prototype]] 链就会被遍历，类似[[Get]] 操作。如果原型链上找不到foo，foo 就会被直接添加到myObject 上。然而，如果foo 存在于原型链上层，赋值语句myObject.foo = "bar" 的行为就会有些不同
+
+如果属性名foo 既出现在myObject 中也出现在myObject 的[[Prototype]] 链上层， 那么就会发生屏蔽。
+
+myObject 中包含的foo 属性会屏蔽原型链上层的所有foo 属性，因为myObject.foo 总是会选择原型链中最底层的foo 属性。
+
+
+
+----
+
+下面我们分析一下如果foo 不直接存在于myObject 中而是存在于原型链上层时myObject.foo = "bar" 会出现的三种情况。
+
+* 如果在[[Prototype]] 链上层存在名为foo 的普通数据访问属性并且没有被标记为只读（writable:false），那就会直接在myObject 中添加一个名为foo 的新属性，它是屏蔽属性。
+* 如果在[[Prototype]] 链上层存在foo，但是它被标记为只读（writable:false），那么无法修改已有属性或者在myObject 上创建屏蔽属性。如果运行在严格模式下，代码会抛出一个错误。否则，这条赋值语句会被忽略。总之，不会发生屏蔽。
+* 如果在[[Prototype]] 链上层存在foo 并且它是一个setter（参见第3 章），那就一定会调用这个setter。foo 不会被添加到（或者说屏蔽于）myObject，也不会重新定义foo 这个setter。
+
+[http://www.cnblogs.com/ziyunfei/archive/2012/10/31/2738728.html](http://www.cnblogs.com/ziyunfei/archive/2012/10/31/2738728.html)
+
+
+
+
+
+
 
 
 
@@ -4039,6 +4074,142 @@ $(document).height()
 
 
 在这个例子中允许拖动的高度应该是$(document).height() - $('#spig').height();
+
+
+
+
+
+### 获取DOM中所有图片
+
+[网页链接](https://blog.crimx.com/2017/03/09/get-all-images-in-dom-including-background/)
+
+
+获取 DOM 里的图片主要是在这几个地方里面找: 
+
+* `<img>` 元素
+* background-image CSS 属性
+* `<iframe>`。
+
+
+
+
+
+如果只想获取 `<img>` 的图片，有两种方式:
+直接获取所有 img 标签:
+
+```tsx
+function getImgs (doc) {
+  return Array.from(doc.getElementsByTagName('img'))
+    .map(img => ({
+      src: img.currentSrc, // 用 img.src 如果要本来的 src
+      width: img.naturalWidth,
+      height: img.naturalHeight
+    }))
+}
+
+
+getImgs(document)
+```
+
+还可以用 document.images:
+
+```tsx
+function getImgs (doc) {
+  return Array.from(doc.images)
+    .map(img => ({
+      src: img.currentSrc, // img.src if you want the origin
+      width: img.naturalWidth,
+      height: img.naturalHeight
+    }))
+}
+
+getImgs(document)
+```
+
+
+
+background-image
+
+获得背景图片需要查看所有 DOM 节点的 background-image 属性:
+
+```tsx
+function getBgImgs (doc) {
+  const srcChecker = /url\(\s*?['"]?\s*?(\S+?)\s*?["']?\s*?\)/i
+  return Array.from(
+    Array.from(doc.querySelectorAll('*'))
+      .reduce((collection, node) => {
+        let prop = window.getComputedStyle(node, null)
+          .getPropertyValue('background-image')
+        // match `url(...)`
+        let match = srcChecker.exec(prop)
+        if (match) {
+          collection.add(match[1])
+        }
+        return collection
+      }, new Set())
+  )
+}
+getBgImgs(document)
+```
+
+背景图片不能直接得到尺寸信息，如果需要的话要加载一遍。因为搜集的图片很有可能已经在浏览器缓存里，所以加载过程应该很快。
+
+```tsx
+function loadImg (src, timeout = 500) {
+  var imgPromise = new Promise((resolve, reject) => {
+    let img = new Image()
+    img.onload = () => {
+      resolve({
+        src: src,
+        width: img.naturalWidth,
+        height: img.naturalHeight
+      })
+    }
+    img.onerror = reject
+    img.src = src
+  })
+  var timer = new Promise((resolve, reject) => {
+    setTimeout(reject, timeout)
+  })
+  return Promise.race([imgPromise, timer])
+}
+function loadImgAll (imgList, timeout = 500) {
+  return new Promise((resolve, reject) => {
+    Promise.all(
+      imgList
+        .map(src => loadImg(src, timeout))
+        .map(p => p.catch(e => false))
+    ).then(results => resolve(results.filter(r => r)))
+  })
+}
+loadImgAll(getBgImgs(document)).then(imgs => console.log(imgs))
+```
+
+iframe：
+
+只需要递归遍历 iframe 的 document
+
+```tsx
+function searchIframes (doc) {
+  var imgList = []
+  doc.querySelectorAll('iframe')
+    .forEach(iframe => {
+      try {
+        iframeDoc = iframe.contentDocument || iframe.contentWindow.document
+        imgList = imgList.concat(getImgs(iframeDoc) || []) // or getBgImgs(iframeDoc)
+        imgList = imgList.concat(searchIframes(iframeDoc) || [])
+      } catch (e) {
+        // 直接忽略错误的 iframe (e.g. cross-origin)
+      }
+    })
+  return imgList
+}
+searchIframes(document)
+```
+
+最后整合在一起就可以了
+
+
 
 
 

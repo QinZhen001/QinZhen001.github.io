@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "input标签上传文件"
+title:      "input相关"
 date:       2019-09-11 11:59:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -11,8 +11,13 @@ tags:
 
 > “Yeah It's on. ”
 
+# 正文
 
-## 正文
+
+
+## 上传文件
+
+
 
 [https://juejin.im/post/5aacc64e6fb9a028c6757bab](https://juejin.im/post/5aacc64e6fb9a028c6757bab)
 
@@ -45,7 +50,7 @@ tags:
 
 * 将真正的`<input type="file" />`隐藏，使用自定义的button通过$refs去触发文件上传，实现自定义显示
 * 文件上传之后，处理完文件，将`<input type="file" />`的value设置为null，这样下次即使上传的是同一个文件，仍然会触发change事件
-*使用上述方法，点击取消文件被移除，但是不影响页面展示
+* 使用上述方法，点击取消文件被移除，但是不影响页面展示
 
 
 
@@ -57,13 +62,18 @@ tags:
 
 
 
+## 监听中文输入
 
+[https://juejin.cn/post/6844903950634713096](https://juejin.cn/post/6844903950634713096)
 
+compositionstart和compositionend
 
+> The compositionstart event is fired when a text composition system such as an `input method editor starts a new composition session`.For example, this event could be fired after a user starts entering a Chinese character using a Pinyin IME.
 
+> The compositionend event is fired when a text composition system such as an `input method editor completes or cancels the current composition session`.For example, this event could be fired after a user finishes entering a Chinese character using a Pinyin IME.
 
-
-
+- `positionstart` 事件,当用户使用拼音输入法开始输入汉字时，这个事件就会被触发。
+- `compositionend` 事件, 当文中文输入完成时, compositionend 事件将被触发。
 
 
 
