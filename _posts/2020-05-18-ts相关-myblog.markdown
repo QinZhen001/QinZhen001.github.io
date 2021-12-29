@@ -3626,3 +3626,34 @@ https://stackoverflow.com/questions/66020801/angular-error-the-left-hand-side-of
 The left-hand side of an assignment expression may not be an optional property
 
 解决的办法是 赋值之前先判断是否存在
+
+
+
+
+
+
+
+##  ts(5053)
+
+[https://stackoverflow.com/questions/49403410/why-declaration-can-not-be-used-together-with-isolatedmodules-in-typescript](https://stackoverflow.com/questions/49403410/why-declaration-can-not-be-used-together-with-isolatedmodules-in-typescript)
+
+[https://www.coder.work/article/1309192](https://www.coder.work/article/1309192https://www.coder.work/article/1309192)
+
+error TS5053: Option 'outFile' cannot be specified with option 'isolatedModules'.
+
+> The reason is for the same reason you can't use const enums in isolated modules: type information. Since **isolated modules compiles each file individually without the types of the files it depends on, any inferred type we would write to a declaration file would potentially be incorrect**, as their calculation would be missing information from the rest of the compilation. There is a limited subset of declaration emit where no types are inferred in the output which could be supported, however.
+
+
+
+In other words, `isolatedModules` does not provide enough type information for the creation of complete and accurate `*.d.ts` declaration files.
+
+换句话说，soldatedModules不提供足够的类型信息，以创建完整和准确的* .ts声明文件。
+
+
+
+建议：
+
+搞两个tsconfig
+
+The issue comments also have a suggested workaround, in which we have one `tsconfig` for compiling with isolated modules, and a second tsconfig for creating declaration files.
+
