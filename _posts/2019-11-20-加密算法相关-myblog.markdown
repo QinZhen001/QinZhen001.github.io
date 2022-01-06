@@ -1,18 +1,25 @@
 ---
 layout:     post
-title:      "在小程序请求中进行qqtea加密解密"
+title:      "加密算法相关"
 date:       2019-11-20 15:13:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - 微信小程序
+    - 算法
 ---
 
 > “Yeah It's on. ”
 
+# 正文
 
-## 正文
+
+
+
+
+## qqtea
+
+在小程序请求中进行qqtea加密解密
 
 最近爬了一个大坑，为了防止别人爬取数据，在小程序请求中进行qqtea加密解密，以二进制流的形式和后端进行交互
 
@@ -90,13 +97,72 @@ function uint8ArrayToString(arr) {
 
 
 
-## 补充 
+
+
+## Base64
+
+
+
+### btoa
+
+btoa() 方法用于创建一个 base-64 编码的字符串。
+
+[https://www.runoob.com/jsref/met-win-btoa.html](https://www.runoob.com/jsref/met-win-btoa.html)
+
+
+
+
+
+### crypto-js
+
+爬坑发现crypto-js的 Base64 加密 和 btoa 加密后的结果不一样
+
+经排查 是编码的问题
+
+正确的解决：
+
+[https://gist.github.com/joecliff/10948117](https://gist.github.com/joecliff/10948117)
+
+
+
+```tsx
+var CryptoJS = require("crypto-js");//replace thie with script tag in browser env
+
+//encrypt
+var rawStr = "hello world!";
+var wordArray = CryptoJS.enc.Utf8.parse(rawStr);
+var base64 = CryptoJS.enc.Base64.stringify(wordArray);
+console.log('encrypted:', base64);
+
+//decrypt
+var parsedWordArray = CryptoJS.enc.Base64.parse(base64);
+var parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+console.log("parsed:",parsedStr);
+```
+
+
+
+为了减少体积 我们可以不引入整个crypto-js
+
+```tsx
+import Base64 from "crypto-js/enc-base64";
+import Utf8 from "crypto-js/enc-utf8";
+```
+
+
+
+
+
+
+
+
+
+# 补充 
 
 
 这里就用到了大量arraybuffer的知识
 
-
-### arraybuffer
+## arraybuffer
 
 [http://es6.ruanyifeng.com/#docs/arraybuffer](http://es6.ruanyifeng.com/#docs/arraybuffer)
 

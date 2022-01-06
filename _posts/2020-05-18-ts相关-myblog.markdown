@@ -2102,6 +2102,14 @@ type ExtractActionCreaotrKey<T> = {
 
 
 
+### target
+
+* 使用目标版本 --target ES2016 会告诉编译器不要对 ES2016 的特性进行转换, 比如 ** 运算符.
+* 相似的, --target ES2017 会告诉编译器不要转换 ES2017 的特性, 比如 async/await.
+* --target ESNext 则对应最新的 [ES 提案特性](https://link.zhihu.com/?target=https%3A//github.com/tc39/proposals)的支持.
+
+
+
 ### noImplicitAny
 
 https://segmentfault.com/a/1190000019768261
@@ -2672,9 +2680,34 @@ if (isAxiosError(err)) {
 
 
 
+## tslib
+
+[https://github.com/microsoft/tslib](https://github.com/microsoft/tslib)
+
+This is a runtime library for [TypeScript](http://www.typescriptlang.org/) that contains all of the TypeScript helper functions.
+
+This library is primarily used by the `--importHelpers` flag in TypeScript.
 
 
 
+
+
+使用tslib后
+
+[https://mizchi.dev/202008081732-effect-by-tslib](https://mizchi.dev/202008081732-effect-by-tslib)
+
+target/importHelpers
+
+- es2019/true: 289B
+- es2019/false: 289B
+- es5/true: 4.7K
+- es5/false: 6.9K
+
+
+
+ES2019没有效果。
+
+如果在ES5 / ES2015中使用异步/等待，则会有效。
 
 
 
