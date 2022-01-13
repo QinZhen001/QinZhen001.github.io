@@ -329,6 +329,134 @@ HTTP1.1 不支持 `header` 数据的压缩，HTTP/2.0 使用 `HPACK` 算法对 `
 
 
 
+## Protobuf
+
+[https://developers.google.com/protocol-buffers](https://developers.google.com/protocol-buffers)
+
+Protocol buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data.
+
+协议缓冲区是一种语言无关、平台无关的可扩展机制，用于序列化结构化数据。
+
+[Google](https://zh.wikipedia.org/wiki/Google)最初开发了Protocol Buffers用于内部使用。Protocol Buffers的设计目标是简单和性能。特别地，它被设计地与XML相比更小且更快。
+
+Protocol Buffers在Google内被广泛用来存储和交换各种类型的结构化数据。在Google，它被当作一个[RPC](https://zh.wikipedia.org/wiki/远程过程调用)系统的基础，并被用于几乎所有的跨服务器通信。
+
+
+
+### 优缺点 
+
+[https://www.cnblogs.com/niuben/p/14212711.html](https://www.cnblogs.com/niuben/p/14212711.html)
+
+优点：
+
+* 性能好/效率高
+* 有代码生成机制
+* 支持向后兼容和向前兼容
+* 支持多种编程语言
+
+缺点：
+
+* 二进制格式导致可读性差
+* 缺乏自描述
+* 通用性差
+
+### npm 包
+
+[npm 包 protobufjs](https://www.npmjs.com/package/protobufjs)
+
+protobuf.js is a pure JavaScript implementation with TypeScript support for node.js and the browser. It's easy to use, blazingly fast and works out of the box with .proto files
+
+protobuf.js是一个纯JavaScript实现，支持node.js和浏览器的TypeScript。它很容易使用，非常快，并且可以用。proto文件开箱即用
+
+
+
+----
+
+结合npm scripts 
+
+```tsx
+  "scripts": {
+    "protojs": "pbjs -r apaas -t json-module -w commonjs -o src/protobuf/index.js  src/protobuf/messages/*.proto",
+    "protots": "pbjs -t static-module src/protobuf/messages/*.proto | pbts -o src/protobuf/index.d.ts -",
+    "proto": "run-s protojs protots"
+  },
+```
+
+
+
+### 例子：report上报
+
+```tsx
+// protobuf 编译出来的js
+import {
+  ApaasUserJoin,
+} from '../protobuf';
+
+
+export class ReportServiceV2  {
+  protected Uint8ToBase64(u8Arr: Uint8Array): string {
+    const CHUNK_SIZE = 0x8000; //arbitrary number
+    let index = 0;
+    const length = u8Arr.length;
+    let result = '';
+    let slice: any;
+    while (index < length) {
+      slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, length));
+      result += String.fromCharCode.apply(null, slice);
+      index += CHUNK_SIZE;
+    }
+    return btoa(result);
+  }
+  protected buildUserJoinPaylod(payloadParams: ReportUserParams): string {
+    let errMsg = ApaasUserJoin.verify(payloadParams);
+    if (errMsg) throw Error(errMsg);
+    let message = ApaasUserJoin.create(payloadParams);
+    let buffer = ApaasUserJoin.encode(message).finish();
+    return this.Uint8ToBase64(buffer);
+  }
+  protected buildBaseParams(id: number, src: string, payload: string): ReportParams {
+    const qos = this.qos;
+    const ts = Math.floor(new Date().getTime() / 1000);
+    const sign = md5(`payload=${payload}&src=${src}&ts=${ts}`);
+    return {
+      id,
+      src,
+      payload,
+      qos,
+      ts,
+      sign,
+      requestId: this.reportUserParams.uid + new Date().valueOf(),
+    };
+  }
+  protected buildUserJoinParams(
+    src: string,
+    payloadParams: ReportUserParams,
+    lts: number,
+    errorCode: number,
+  ): ReportParams {
+    const id = 9012;
+    payloadParams.lts = lts;
+    payloadParams.errorCode = errorCode;
+    const payload = this.buildUserJoinPaylod(payloadParams);
+    return this.buildBaseParams(id, src, payload);
+  }
+  async reportUserJoin(lts: number, errorCode: number) {
+    const res = await this.fetch({
+      path: `/v2/report`,
+      method: 'POST',
+      data: this.buildUserJoinParams('apaas', this.reportUserParams, lts, errorCode);,
+    });
+    return res.data;
+  }
+
+}
+
+```
+
+
+
+
+
 
 
 # 缓存
