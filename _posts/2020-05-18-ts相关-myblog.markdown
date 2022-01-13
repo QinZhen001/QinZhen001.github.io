@@ -16,6 +16,10 @@ tags:
 
 # 正文
 
+[深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/)
+
+
+
 
 
 ## interface
@@ -2326,6 +2330,38 @@ var x = fn(myElem); // x: string, :)
 ```
 
 *为什么*：TypeScript会选择*第一个匹配到的重载*当解析函数调用的时候。 当前面的重载比后面的“普通”，那么后面的被隐藏了不会被调用。
+
+
+
+
+
+
+
+
+
+### 限制class实例
+
+```tsx
+interface Crazy {
+  new (): {
+    hello: number;
+  };
+}
+```
+
+```tsx
+class CrazyClass implements Crazy {
+  constructor() {
+    return { hello: 123 };
+  }
+}
+
+// Because
+const crazy = new CrazyClass(); // crazy would be { hello:123 }
+
+```
+
+
 
 
 

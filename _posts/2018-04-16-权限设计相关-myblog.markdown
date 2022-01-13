@@ -1,12 +1,12 @@
 ---
 layout:     post
-title:      "vue应用的权限设计的思考"
+title:      "权限设计相关"
 date:       2018-04-16 16:24:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Vue
+    - Other
 ---
 
 > “Yeah It's on. ”
@@ -28,13 +28,13 @@ tags:
 
 ----------
 
-
-[https://refined-x.com/2017/11/28/Vue2.0%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/](https://refined-x.com/2017/11/28/Vue2.0%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/)
-
+[Vue2.0 用户权限控制解决方案](https://refined-x.com/2017/11/28/Vue2.0%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/)
 
 
 
 会话开始之初，先初始化一个只有登录路由的Vue实例，在根组件created钩子里将路由定向到登录页，用户登录成功后前端拿到用户token，设置axios实例统一为请求headers添加{"Authorization":token}实现用户鉴权，然后获取当前用户的权限数据，主要包括路由权限和资源权限，之后动态添加路由，生成菜单，实现权限指令和全局权限验证方法，并为axios实例添加请求拦截器，至此完成权限控制初始化。动态加载路由后，路由组件将随之加载并渲染，而后展现前端界面。
+
+
 
 为解决浏览器刷新路由重置的问题，拿到token后要将其保存到sessionStorage，根组件的created钩子负责检查本地是否已有token，如果有则无需登录直接用该token获取权限并初始化，如果token有效且当前路由有权访问，将加载路由组件并正确展现；若当前路由无权访问将按路由设置跳转404；如果token失效，后端应返回4xx状态码，前端统一为axios实例添加错误拦截器，遇到4xx状态码执行退出操作，清除sessionStorage数据并跳转到登录页，让用户重新登录。
 

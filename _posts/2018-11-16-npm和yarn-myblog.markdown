@@ -804,6 +804,24 @@ npm ERR! peerinvalid Peer gulp-cli-users@0.1.4 wants gulp@~2.3.0
 
 
 
+
+#### peerDependenciesMeta
+
+peerDependenciesMeta 用户安装您的软件包时，如果peerDependencies尚未安装中指定的软件包，npm将发出警告。该 peerDependenciesMeta字段用于向npm提供有关如何使用对等依赖项的更多信息。
+
+```tsx
+"peerDependenciesMeta": {
+    "soy-milk": {
+    "optional": true
+    }
+}
+```
+
+
+
+
+
+
 ### optionalDependencies
 
 可选依赖，如果有一些依赖包即使安装失败，项目仍然能够运行或者希望npm继续运行，就可以使用optionalDependencies。另外optionalDependencies会覆盖dependencies中的同名依赖包，所以不要在两个地方都写。
@@ -832,7 +850,7 @@ if (foo) {
 
 
 
-### bundledDependencies / bundleDependencies
+### bundledDependencies 
 
 打包依赖，bundledDependencies是一个包含依赖包名的数组对象，在发布时会将这个对象中的包打包到最终的发布包里。如：
 

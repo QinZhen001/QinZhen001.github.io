@@ -343,6 +343,39 @@ DNS 协议提供的是一种主机名到 IP 地址的转换服务，就是我们
 
 
 
+
+
+### DNS 预解析
+
+[网页链接](https://www.xuanfengge.com/dns-prefetching-analysis.html)
+
+DNS解析时间可能导致大量用户感知延迟，DNS解析所需的时间差异非常大，延迟范围可以从1ms（本地缓存结果）到普遍的几秒钟时间。所以利用DNS预解析是有意义的。
+
+DNS Prefetching
+
+DNS 请求需要的带宽非常小，但是延迟却有点高，**这点在手机网络上特别明显**。DNS预解析 能让延迟明显减少一些，例如用户点击链接时。在某些情况下，延迟能减少一秒钟。
+
+X-DNS-Prefetch-Control 头控制着浏览器的DNS预解析功能
+
+* on：启用DNS预解析。在浏览器支持DNS预解析的特性时及时不适用该标签浏览器依然会进行预解析。
+* off：关闭DNS预解析。这个属性在页面上的链接并不是由你控制的或是你根本不想向这些域名引导数据时非常有用。
+
+
+预解析的实现：
+
+1. 用meta信息来告知浏览器, 当前页面要做DNS预解析:`<meta http-equiv="x-dns-prefetch-control" content="on" />`
+2. 在页面header中使用link标签来强制对DNS预解析: `<link rel="dns-prefetch" href="http://bdimg.share.baidu.com" />`
+
+
+
+也可以通过在服务器端发送 X-DNS-Prefetch-Control 报头
+
+
+
+![](http://cdn.xuanfengge.com/wp-content/uploads/2017/05/sdfdsf.png)
+
+
+
 # 缓存相关
 
 
