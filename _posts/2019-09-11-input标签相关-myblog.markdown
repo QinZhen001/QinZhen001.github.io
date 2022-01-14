@@ -1,12 +1,12 @@
 ---
 layout:     post
-title:      "input相关"
+title:      "input标签相关"
 date:       2019-09-11 11:59:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - JavaScript
+    - Html
 ---
 
 > “Yeah It's on. ”

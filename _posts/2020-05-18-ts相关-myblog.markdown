@@ -1900,6 +1900,8 @@ const renderOption = (item:DataSourceType) => {
 
 [https://blog.csdn.net/yunfeihe233/article/details/108027882](https://blog.csdn.net/yunfeihe233/article/details/108027882)
 
+[what-does-the-as-const-mean](https://stackoverflow.com/questions/66993264/what-does-the-as-const-mean-in-typescript-and-what-is-its-use-case)
+
 **告诉 ts 在进行类型推断时告诉 ts，我是一个字面量类型，不要把我简化归约！**
 
 > TypeScript 3.4 introduces a new construct for literal values called *`const`* assertions. Its syntax is a type assertion with `const` in place of the type name (e.g. `123 as const`). When we construct new literal expressions with `const` assertions, we can signal to the language that
@@ -1908,27 +1910,13 @@ const renderOption = (item:DataSourceType) => {
 > - object literals get `readonly` properties
 > - array literals become `readonly` tuples
 >
-> 
->
 > 翻译
 >
 > - 表达式中的任何字面量类型都不应该被扩展；
-> - 对象字面量的属性，将使用 `readonly` 修饰；
+>- 对象字面量的属性，将使用 `readonly` 修饰；
 > - 数组字面量将变成 `readonly` 元组。
 
-
-
-
-
-
-
-
-
-
-
 例子;
-
-
 
 ```typescript
 // Type '"hello"'
