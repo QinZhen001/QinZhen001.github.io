@@ -4233,6 +4233,39 @@ searchIframes(document)
 
 
 
+### storage事件
+
+[同一浏览器打开两个同源页面引发的bug](https://mp.weixin.qq.com/s/al3vELqqVBtNXZMQ_K0fKw)
+
+💡HTML5 storage事件监听:当同源页面的某个页面修改了`localStorage`,其余的同源页面只要注册了`storage`事件，就会触发
+
+
+
+`Web Storage API`内建了一套事件通知机制，当存储区域的内容发生改变（包括`增加`、`修改`、`删除`数据）时，就会自动触发 `storage` 事件，并把它发送给所有感兴趣的`监听者`。因此，如果需要跟踪存储区域的改变，就需要在关心存储区域内容的页面监听`storage`事件。
+
+```tsx
+ window.addEventListener("storage", (e)=>{
+   // 获取 e 后做一系列判断操作
+ }, false);
+
+```
+
+实际上，这个事件`e`上还带有很多信息，可以对事件做精确的控制 👇。
+
+| 字段        |                         含义                         |
+| :---------- | :--------------------------------------------------: |
+| key         |                发生变化的 storageKey                 |
+| newValue    |                      变换后新值                      |
+| oldValue    |                      变换前原值                      |
+| storageArea |                    相关的变化对象                    |
+| url         | 触发变化的 URL，如果是 frameset 内，则是触发帧的 URL |
+
+
+
+
+
+
+
 
 
 

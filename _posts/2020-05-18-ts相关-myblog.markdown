@@ -2210,6 +2210,69 @@ function logMe(x: any) {
 
 
 
+### useDefineForClassFields
+
+[https://zhuanlan.zhihu.com/p/258906525](https://zhuanlan.zhihu.com/p/258906525)
+
+`useDefineForClassFields` 是 TypeScript 3.7.0 中新增的一个编译选项（详见 [PR](https://link.zhihu.com/?target=https%3A//github.com/microsoft/TypeScript/pull/33509)），启用后的作用是将 `class` 声明中的字段语义从 `[[Set]]` 变更到 `[[Define]]`。
+
+
+
+```ts
+class C {
+  foo = 100;
+  bar: string;
+}
+```
+
+这是长期以来很常见的一种 TS 字段声明方式，默认情况下它的[编译结果](https://link.zhihu.com/?target=https%3A//www.typescriptlang.org/play%3F%23code/MYGwhgzhAEDC0G8CwAoa0BmB7L0C80AjAAzEDcq6ARmAE4Bc0EALrQJYB2A5hSgL5A)如下：
+
+```ts
+class C {
+  constructor() {
+    this.foo = 100;
+  }
+}
+```
+
+当启用了 `useDefineForClassFields` 编译选项后它的[编译结果](https://link.zhihu.com/?target=https%3A//www.typescriptlang.org/play%3FuseDefineForClassFields%3Dtrue%23code/MYGwhgzhAEDC0G8CwAoa0BmB7L0C80AjAAzEDcq6ARmAE4Bc0EALrQJYB2A5hSgL5A)如下：
+
+```ts
+class C {
+  constructor() {
+    Object.defineProperty(this, 'foo', {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: 100
+    });
+    Object.defineProperty(this, 'bar', {
+      enumerable: true,
+      configurable: true,
+      writable: true,
+      value: void 0
+    });
+  }
+}
+```
+
+1. 字段声明的方式从 `=` 赋值的方式变更成了 `Object.defineProperty`
+2. 所有的字段声明都会生效，即使它没有指定默认值
+
+
+
+
+
+### experimentalDecorators
+
+[https://www.tslang.cn/docs/handbook/decorators.html](https://www.tslang.cn/docs/handbook/decorators.html)
+
+启用实验性的装饰器特性
+
+
+
+
+
 ## ts结合react
 
 
