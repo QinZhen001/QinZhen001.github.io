@@ -1719,6 +1719,9 @@ pointer-events:none
 3.  如果设定TRBL，并且父级没有设定position属性，仍旧以父级的左上角为原点进行定位(和absolute不同)
 
 
+
+
+
 #### 绝对定位
 
 若想把一个定位属性为absolute的元素定位于其父级元素内
@@ -1733,16 +1736,30 @@ pointer-events:none
 
 3. 所谓“已经定位”元素的含义是，position属性被设置。
 
-## 
+
 
 如果设定TRBL，并且父级设定position属性(无论是absolute还是relative)，则以父级的左上角为原点进行定位，位置由TRBL决 定。**如果父级有Padding属性，那么就以内容区域的左上角为原点，进行定位。（也就是说父级Padding会影响子元素定位）**
 
-
-
-#### absolute具有的属性
-
 如果设定TRBL，并且父级没有设定position属性，那么当前的absolute则以浏览器左上角为原始点进行定位，位置将由TRBL决定。
 <strong>父级的padding对其根本没有影响。</strong>
+
+
+
+**absolute和float的相似处：包裹性 和 高度欺骗**
+
+[网页链接](http://www.jianshu.com/p/a3da5e27d22b)
+
+
+
+#### 和z-index的关系
+
+* 让absolute元素覆盖正常文档流内元素（不用设z-index，自然覆盖）
+* 让后一个absolute元素覆盖前一个absolute元素（不用设z-index，只要在HTML端正确设置元素顺序即可）
+
+
+那什么时候需要设置z-index呢？当absolute元素覆盖另一个absolute元素，且HTML端不方便调整DOM的先后顺序时，需要设置z-index: 1。非常少见的情况下多个absolute交错覆盖，或者需要显示最高层次的模态对话框时，可以设置z-index > 1。
+
+
 
 
 
