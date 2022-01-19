@@ -35,7 +35,7 @@ document.write("Result: " + result);
 
 ### replace
 
-[https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#%E6%8C%87%E5%AE%9A%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#指定一个函数作为参数)
+[replace#指定一个函数作为参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#指定一个函数作为参数)
 
 
 
@@ -375,14 +375,14 @@ document.write(str.match(patt1));  //输出 .
 
 
 
-### ^ 和 [^指定字符串] 
+### ^ 和 ^指定字符串
 
 * ^ 指的是匹配字符串开始的位置
 * [^指定字符串] 指的是除指定字符串以外的其他字符串
 
 
 ```
-(^[0-9])+     //匹配有一至多个数字的字符串组合
+(^[0-9])+     // 匹配有一至多个数字的字符串组合
 [^[0-9]]+     // 匹配有一至多个不含数字的字符串组合
 ```
 
@@ -484,6 +484,18 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 非获取匹配，反向否定预查，与正向否定预查类似，只是方向相反。例如“(?<!95|98|NT|2000)Windows”能匹配“3.1Windows”中的“Windows”，但不能匹配“2000Windows”中的“Windows”。这个地方不正确，有问题 
 
 
+
+
+
+### 懒惰限定符
+
+| 代码/语法 | 说明                            |
+| :-------- | :------------------------------ |
+| *?        | 重复任意次，但尽可能少重复      |
+| +?        | 重复1次或更多次，但尽可能少重复 |
+| ??        | 重复0次或1次，但尽可能少重复    |
+| {n,m}?    | 重复n到m次，但尽可能少重复      |
+| {n,}?     | 重复n次以上，但尽可能少重复     |
 
 
 
