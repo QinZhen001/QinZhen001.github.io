@@ -3556,6 +3556,8 @@ function foo() {
 
 ## commonjs 与 esm 的区别
 
+[https://juejin.cn/post/6844904191840747533](https://juejin.cn/post/6844904191840747533)
+
 * commonjs输出拷贝
 * esm输出引用
 
@@ -3576,6 +3578,34 @@ esm 的 import/export 提升在正常情况下，使用起来跟 commonjs 没有
 
 
 
+
+
+
+### 实现乞丐版 ES Modules
+
+```tsx
+function my_require() {
+  var module = {
+    exports: {},
+  };
+  let counter = 1;
+
+  function add() {
+    return counter++;
+  }
+
+  module.exports = { counter: () => counter, add };
+  return module.exports;
+}
+
+
+// --------- test ---------------
+var obj = my_require();
+
+console.log(obj.counter()); // 1
+obj.add();
+console.log(obj.counter()); // 2
+```
 
 
 

@@ -258,6 +258,61 @@ Plugin 是用来扩展 Webpack 功能的，通过在构建流程里注入钩子�
 
 
 
+##  vite
+
+Vite是一种新型前端构建工具，能够显著提升前端开发体验。它主要由两部分组成：
+
+- 一个开发服务器，它基于 [原生 ES 模块](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) 提供了 [丰富的内建功能](https://vitejs.cn/guide/features.html)，如速度快到惊人的 [模块热更新（HMR）](https://vitejs.cn/guide/features.html#hot-module-replacement)。
+- 一套构建指令，它使用 [Rollup](https://rollupjs.org/) 打包你的代码，并且它是预配置的，可输出用于生产环境的高度优化过的静态资源。
+
+
+
+### 依赖预构建
+
+依赖大多为在开发时不会变动的纯 JavaScript。一些较大的依赖（例如有上百个模块的组件库）处理的代价也很高。依赖也通常会存在多种模块化格式（例如 ESM 或者 CommonJS）。Vite 将会使用 [esbuild](https://link.juejin.cn?target=https%3A%2F%2Fesbuild.github.io%2F) [预构建依赖](https://link.juejin.cn?target=https%3A%2F%2Fcn.vitejs.dev%2Fguide%2Fdep-pre-bundling.html)。Esbuild 使用 Go 编写，并且比以 JavaScript 编写的打包器预构建依赖快 10-100 倍。
+
+
+
+* CommonJS 和 UMD 兼容性: 开发阶段中，Vite 的开发服务器将所有代码视为原生 ES 模块
+
+* Vite 将有许多内部模块的 ESM 依赖关系转换为单个模块，以提高后续页面加载性能。
+
+  
+
+### **快速冷启动**
+
+只启动一台静态页面的服务器，对文件代码不打包，服务器会根据客户端的请求加载不同的模块处理（利用的是浏览器对esMoudle的原生支持），所以节省了webpack 那一套打包转化封装的逻辑。所以大型项目不会再出现热更新卡顿，起服务慢的情况
+
+
+
+
+
+### 缓存
+
+文件缓存：
+
+Vite 会将预构建的依赖缓存到`node_modules/.vite`。它根据几个源来决定是否需要重新运行预构建步骤:`package.json` 中的 `dependencies` 列表， package-lock等
+
+浏览器缓存：
+
+解析后的依赖请求会以 HTTP 头 `max-age=31536000,immutable` 强缓存，以提高在开发时的页面重载性能。一旦被缓存，这些请求将永远不会再到达开发服务器
+
+
+
+
+
+### webpack 和 vite 的区别
+
+* 本地开发环境webpack也是需要先打包，然后服务器运行的是打包后的文件，码量很大的项目就会有启服务很慢的现象
+* **Webpack 的热更新会以当前修改的文件为入口重新 build 打包**，所有涉及到的依赖也都会被重新加载一次。虽然webpack 也采用的是局部热更新并且是有缓存机制的，但是还是需要重新打包所以很大的代码项目是真的有卡顿的现象
+* vite 可以做到**快速冷启动**。只启动一台静态页面的服务器，对文件代码不打包，服务器会根据客户端的请求加载不同的模块处理（利用的是浏览器对esMoudle的原生支持）
+
+
+
+
+
+
+
 
 
 ## babel 

@@ -602,6 +602,23 @@ render() {
 
 
 
+### vue3 放弃了 Object.defineProperty
+
+Object.defineProperty存在的问题
+
+1. 不能监听**数组索引和长度的变更**
+2. 无法监听 **属性的添加和删除**
+3. 必须遍历对象的每个属性， 必须深层遍历嵌套的对象。`Object.defineProperty`是对对象属性的操作，所以需要对对象进行深度遍历去对属性进行操作。
+
+
+
+**为什么我们在使用vue2的时候，一样可以监听数组索引和长度的变更**? 
+
+我们只是说Object.defineProperty不能，并没说vue2.0不能。并不能说因为vue2.0使Object.defineProperty，vue2.0就不能监听数组内部属性的变化了。而vue2之所以能监听，是vue2.0对数组相关的方法或其他进行了重写。当然vue2.0中还是存在无法监听直接修改数组中某一项值和数组长度，如ar[0]=1, arr.length=12是无法监听的
+
+
+
+
 ### vue-cli-plugin-commitlint
 
 `vue-cli-plugin-commitlint` 是以 `vue` 插件的形式写的，可以执行 `vue add commitlint` 直接使用，如果不是 `vue` 的项目也可以根据下面的配置自行配置。

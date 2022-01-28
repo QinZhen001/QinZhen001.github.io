@@ -102,6 +102,57 @@ cookie对于哪个域是有效的。所有向该域发送的请求中都会包�
 
 
 
+### Cookie跨域
+
+假设服务端的域名是a.com，发送跨域请求的前端的域名是b.com，那么在b.com想a.com发送跨域请求时，是可以携带cookie的，但是这个cookie必须是域名为a.com下的cookie
+
+也就是说，b.com的前端发送的跨域请求携带的cookie，是目标页面所在域的cookie。
+
+所以带cookie跨域的前提是目标页面的cookie在本机存在，**跨域要携带的cookie必须是目标页面所在域的cookie**
+
+---
+
+
+
+* `b.com`向`a.com`发送跨域请求，是不可以把`b.com`域名下的cookie带上。
+
+* b.com通过JS在本机生成一个域名a.com的Cookie，或者a.com的服务端在发送响应时setCookie的domain为b.com。这两种做法都是行不通的，**因为设置cookie的domain可以设置为父域名和自身，但是不能设置其他域名和子域名，否则cookie设置不会成功。**
+
+  
+
+
+
+
+
+
+
+
+
+#### 如何跨域携带cookies
+
+[https://juejin.cn/post/6859939491994402824](https://juejin.cn/post/6859939491994402824)
+
+1. 服务端需要设置
+
+   ```
+   Access-Control-Allow-Credentials: true
+   Access-Control-Allow-Origin: [特定域名] // 不可以是*
+   复制代码
+   ```
+
+2. 客户端
+
+   XMLHttpRequest发请求需要设置withCredentials=true，fetch 发请求需要设置 credentials = include
+
+---
+
+1. 服务端是无法跨域设置cookie的（set-cookie），只能设置自身域名或者父域名的Cookie
+2. 前端是可以带cookie跨域的，前提是cookie是目标服务器所在域的cookie
+
+
+
+
+
 ## session
 
 **`Session`也非常简单，这货存储在我们的服务器上，就是在我们的服务器上保存用户的操作信息**

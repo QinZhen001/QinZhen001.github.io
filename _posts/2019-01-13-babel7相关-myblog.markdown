@@ -450,6 +450,29 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 
 
 
+##### useESModules
+
+[https://www.jiangruitao.com/babel/transform-runtime3/](https://www.jiangruitao.com/babel/transform-runtime3/)
+
+```tsx
+   [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": {
+          "version": 3,
+          "proposals": true
+        },
+        "useESModules": true
+      }
+    ],
+```
+
+该项用来设置是否使用ES6的模块化用法，取值是布尔值。默认是fasle，在用webpack一类的打包工具的时候，我们可以设置为true，以便做静态分析。
+
+
+
+
+
 
 #### @babel/plugin-proposal-decorators
 
@@ -459,9 +482,31 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 
 
 
+#### @babel/plugin-proposal-class-properties
+
+[https://babel.docschina.org/docs/en/babel-plugin-proposal-class-properties/](https://babel.docschina.org/docs/en/babel-plugin-proposal-class-properties/)
+
+##### loose
+
+`boolean`，默认为 `false`。
+
+当设置为 `true` 时，类属性将被编译为赋值表达式而不是 `Object.defineProperty`。
 
 
 
+
+
+#### @babel/plugin-proposal-decorators
+
+[https://babeljs.io/docs/en/babel-plugin-proposal-decorators](https://babeljs.io/docs/en/babel-plugin-proposal-decorators)
+
+##### legacy
+
+`boolean`, defaults to `false`.
+
+Use the legacy (stage 1) decorators syntax and behavior.
+
+#### 
 
 
 
@@ -786,7 +831,6 @@ module.exports = {
   ]
 }
 ```
-
 
 
 

@@ -316,6 +316,24 @@ Lightweight React bindings for MobX based on React 16.8 and Hooks
 
 
 
+## 配置babel
+
+```tsx
+
+"presets": [
+	// ...
+    ],
+"plugins": [
+    ["@babel/plugin-proposal-decorators", {"legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose" : true }]
+```
+
+
+
+
+
+
+
 ## **mobx6.0为什么移除装饰器**
 
 https://www.yuque.com/mosinng/blog/gmq6ra

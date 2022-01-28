@@ -609,9 +609,9 @@ padding的值是根据目标元素的width计算出来的，而inline， non-rep
 
 ## transition和animation的区别
 
-
-
-
+* transition关注的是CSS property的变化，property值和时间的关系是一个三次贝塞尔曲线。
+* CSS的`transition`只有两个状态：**开始状态** 和 **结束状态**；但`animation`可能是多个状态，有帧的概念
+* animation作用于元素本身而不是样式属性，可以使用关键帧的概念，应该说可以实现更自由的动画效果。
 
 
 
