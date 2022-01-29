@@ -2520,60 +2520,39 @@ let mySquare = createSquare(squareOptions);
 
 
 
+## webpack打包ts
+
+[https://juejin.cn/post/6844904160375078925](https://juejin.cn/post/6844904160375078925)
+
+目前大家常用的webpack打包ts主要为两种方案：
+
+1. ts-loader：将ts转为js，再使用babel将js转为低版本js；
+2. @babel/preset-typescript：它是直接移除TypeScript，转为JS，这使得它的编译速度飞快,并且只需要管理Babel一个编译器就行了。
 
 
 
+我们通常采取第二种方案，它比第一种快得多
 
 
 
+[TS 编译工具！从 ts-loader 到 Babel](https://juejin.cn/post/6954304242093932557)
 
-## 集成在Webpack
-
-```javascript
-npm install ts-loader --save-dev
-```
-
-
-基本webpack.config.js
-
-
-```javascript
-module.exports = {
-    entry: "./src/index.tsx",
-    output: {
-        filename: "bundle.js"
-    },
-    resolve: {
-        // Add '.ts' and '.tsx' as a resolvable extension.
-        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
-    },
-    module: {
-        loaders: [
-            // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'
-            { test: /\.tsx?$/, loader: "ts-loader" }
-        ]
-    }
-};
-```
-
-[或者awesome-typescript-loader](https://www.npmjs.com/package/awesome-typescript-loader)
-
-#### awesome-typescript-loader
-
-**Differences between ts-loader**
+>`ts-loader` 在内部是调用了 `TypeScript` 的官方编译器 -- `tsc`。所以，`ts-loader` 和 `tsc` 是共享 `tsconfig.json`。
 
 
 
+### awesome-typescript-loader
 
-awesome-typescript-loader loader was created mostly to speed-up compilation in my own projects. Some of them are quite big and I wanted to have full control on how my files are compiled. There are two major points:
+[https://blog.csdn.net/iamxuqianqian/article/details/116067093](https://blog.csdn.net/iamxuqianqian/article/details/116067093)
 
-1. atl has first-class integration with Babel and enables caching possibilities. This can be useful for those who use Typescript with Babel. When useBabel and useCache flags are enabled, typescript's emit will be transpiled with Babel and cached. So next time if source file (+environment) has the same checksum we can totally skip typescript's and babel's transpiling. This significantly reduces build time in this scenario.
-2. atl is able to fork type-checker and emitter to a separate process, which also speeds-up some development scenarios (e.g. react with react-hot-loader) So your webpack compilation will end earlier and you can explore compiled version in your browser while your files are typechecked.
+`awesome-typescript-loader` 的创建主要是为了加快项目中的编译速度。
 
----
+与`ts-loader`的主要区别：
 
-1. atl与Babel有一流的集成，可以实现缓存。这对于使用带有Babel的Typescript的人来说非常有用。当启用useBabel和useCache标志时，typescript的emit将使用Babel进行转换并缓存。所以下次如果源文件（+环境）具有相同的校验和，我们可以完全跳过typescript和babel的转换。这大大减少了此方案中的构建时间。
-2. atl能够将类型检查器和发射器分叉到一个单独的进程，这也加快了一些开发方案（例如与react-hot-loader的反应）所以你的webpack编译将提前结束，你可以在浏览器中探索编译版本你的文件是typechecked
+- 更适合与 `Babel` 集成，使用 `Babel` 的转义和缓存。
+- 不需要安装独立的插件，就可以把类型检查放在独立进程中。
+
+
 
 
 
@@ -2588,6 +2567,31 @@ awesome-typescript-loader loader was created mostly to speed-up compilation in m
 
 
 
+
+
+
+## Babel 7 处理 ts
+
+[@babel/preset-typescript](https://www.babeljs.cn/docs/babel-preset-typescript)
+
+- Babel 7 之前，是不支持 TS 的
+
+  编译流程是这样的：`TS > TS 编译器 > JS > Babel > JS (再次)`
+
+- Babel 7
+
+  实现了“只有一个 Javascript 编译器” 的梦想！通过允许 Babel 作为唯一的编译器来工作，就再也没必要利用一些复杂的 Webpack 魔法来管理、配置或者合并两个编译器。
+
+
+
+它移除了 `TypeScript`。
+
+是的，它将 `TypeScript` 全部转换为常规 `JavaScript`，然后再一如既往的操作。
+
+`Babel` 为什么在编译过程中剥离 `TypeScript`？
+
+1. 基于 `Babel` 的优秀的缓存和单文件散发架构，`Babel` + `TypeScript` 的组合套餐会提供了更快的编译。
+2. **而 类型检查 呢？** 那只在当你准备好的时候进行。
 
 
 
