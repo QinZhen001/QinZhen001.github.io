@@ -32,7 +32,7 @@ console.log(info); //{ a: 3, b: 2, c: 2, d: 1 }
 array.reduce(function(total, currentValue, currentIndex, arr), initialValue)
 
 * function(total,currentValue, index,arr) 必需。用于执行每个数组元素的函数。
-函数参数:
+  函数参数:
   * total	必需。初始值, 或者计算结束后的返回值。
   * currentValue	必需。当前元素
   * currentIndex	可选。当前元素的索引
@@ -1956,6 +1956,74 @@ number = Math.floor(number + eps);
 ```
 
 
+
+
+
+### 网络图片转换为 Blob 对象
+
+```tsx
+//将图片 URL 转换为 Blob 对象，此示例代码暂不支持在 Internet Explorer 上运行
+
+function canvasToDataURL(canvas, format, quality) {
+  return canvas.toDataURL(format || "image/jpeg", quality || 1.0);
+}
+
+function dataURLToBlob(dataurl) {
+  var arr = dataurl.split(",");
+  var mime = arr[0].match(/:(.*?);/)[1];
+  var bstr = atob(arr[1]);
+  var n = bstr.length;
+  var u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
+function imageToCanvas(src, cb) {
+  var canvas = document.createElement("CANVAS");
+  var ctx = canvas.getContext("2d");
+  var img = new Image();
+  img.src = src;
+  img.onload = function () {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    cb(canvas);
+  };
+}
+
+function imageToBlob(src, cb) {
+  imageToCanvas(src, function (canvas) {
+    cb(dataURLToBlob(canvasToDataURL(canvas)));
+  });
+}
+
+```
+
+
+
+
+
+### Blob 对象转换为图片url
+
+```tsx
+//将 Blob 对象转换为图片url
+function fileOrBlobToDataURL(obj, cb) {
+  var a = new FileReader();
+  a.readAsDataURL(obj);
+  a.onload = function (e) {
+    cb(e.target.result);
+  };
+}
+
+function blobToImageUrl(blob, cb) {
+  fileOrBlobToDataURL(blob, function (dataurl) {
+    cb(dataurl);
+  });
+}
+
+```
 
 
 

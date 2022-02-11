@@ -667,6 +667,10 @@ console.log(Test.bbb) // ok
 
 `unknown` 类型只能被赋值给 `any` 类型和 `unknown` 类型本身
 
+unknown which is the type-safe counterpart of any
+
+unknown 类型要安全得多，因为它迫使我们执行额外的类型检查来对变量执行操作。 (类型安全版本的`any`)
+
 
 
 ```js
@@ -1134,6 +1138,21 @@ type T6 = ReturnType<string>; // Error
 type T7 = ReturnType<Function>; // Error
 ```
 
+---
+
+```tsx
+function f1(s: string) {
+  return { a: 1, b: s };
+}
+
+
+type T14 = ReturnType<typeof f1>;  // { a: number, b: string }
+```
+
+
+
+
+
 
 
 #### 应用redux中的action
@@ -1228,6 +1247,8 @@ https://segmentfault.com/q/1010000015557807
 
 在条件类型语句中，可以用 infer 声明一个类型变量并且对它进行使用。
 
+**它一定是出现在条件类型中的**
+
 
 
 举个例子：
@@ -1272,7 +1293,28 @@ type AA = ParamType<string>;    // string
 
 
 
-## 泛型 generic
+## 泛型 
+
+
+
+
+
+### 反向推导
+
+例子：
+
+```tsx
+function create<T>(val: T): T {
+  return val;
+}
+let num: number;
+// 泛型没有传入 也能成功推导
+const c = create(num);
+```
+
+
+
+
 
 
 
@@ -2443,9 +2485,17 @@ interface Moment {
 
 注意我们没有让`b`成为可选的，因为签名的返回值类型不同。
 
+## 实现 vue3 的Ref 类型
+
+[https://juejin.cn/post/6844904126283776014](https://juejin.cn/post/6844904126283776014)
 
 
 
+主要是要支持嵌套：
+
+```tsx
+const count = ref(ref(ref(ref(2))))
+```
 
 
 
@@ -2520,6 +2570,28 @@ let mySquare = createSquare(squareOptions);
 
 
 
+### 索引签名
+
+当你声明一个索引签名时，所有明确的成员都必须符合索引签名
+
+```tsx
+interface Foo {
+  [key: string]: number;
+  x: number;
+  y: string; // ERROR 必须是number
+}
+
+
+interface Foo {
+  [key: number]: string;
+  2: number
+}
+
+const foo: Foo = ['1', '2', '3']; // OK
+```
+
+
+
 ## webpack打包ts
 
 [https://juejin.cn/post/6844904160375078925](https://juejin.cn/post/6844904160375078925)
@@ -2572,6 +2644,8 @@ let mySquare = createSquare(squareOptions);
 
 ## Babel 7 处理 ts
 
+[https://juejin.cn/post/6954304242093932557](https://juejin.cn/post/6954304242093932557)
+
 [@babel/preset-typescript](https://www.babeljs.cn/docs/babel-preset-typescript)
 
 - Babel 7 之前，是不支持 TS 的
@@ -2584,14 +2658,18 @@ let mySquare = createSquare(squareOptions);
 
 
 
-它移除了 `TypeScript`。
+**它移除了 `TypeScript`。**
 
-是的，它将 `TypeScript` 全部转换为常规 `JavaScript`，然后再一如既往的操作。
+**是的，它将 `TypeScript` 全部转换为常规 `JavaScript`，然后再一如既往的操作。**
 
 `Babel` 为什么在编译过程中剥离 `TypeScript`？
 
 1. 基于 `Babel` 的优秀的缓存和单文件散发架构，`Babel` + `TypeScript` 的组合套餐会提供了更快的编译。
 2. **而 类型检查 呢？** 那只在当你准备好的时候进行。
+
+
+
+**如果项目中有 `Babel`，安装 `@babel/preset-typescript`，配合 `tsc` 做类型检查。（这个是我们首选的）**
 
 
 

@@ -875,3 +875,36 @@ This package improves [`child_process`](https://nodejs.org/api/child_process.htm
 [https://www.npmjs.com/package/npm-run-all](https://www.npmjs.com/package/npm-run-all)
 
 A CLI tool to run multiple npm-scripts in parallel or sequential.
+
+
+
+
+
+### wait-on
+
+[https://www.npmjs.com/package/wait-on](https://www.npmjs.com/package/wait-on)
+
+wait for files, ports, sockets, http(s) resources
+
+wait-on is a cross-platform command line utility which will wait for files, ports, sockets, and http(s) resources to become available (or not available using reverse mode). Functionality is also available via a Node.js API. Cross-platform - runs everywhere Node.js runs (linux, unix, mac OS X, windows)
+
+
+
+
+
+### concurrently
+
+[https://www.npmjs.com/package/concurrently](https://www.npmjs.com/package/concurrently)
+
+Run multiple commands concurrently  (同时)
+
+---
+
+Remember to surround separate commands with quotes:
+
+```bash
+"start": "concurrently \"command1 arg\" \"command2 arg\""
+```
+
+记住要加引号
+

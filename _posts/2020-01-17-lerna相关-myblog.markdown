@@ -23,6 +23,12 @@ tags:
 
 [现代前端工程化-基于 Monorepo 的 lerna 详解(从原理到实战)]()
 
+[基于pnpm + lerna + typescript的最佳项目实践](https://mp.weixin.qq.com/s/cG67lITpFKM24p6P3JkJzg)
+
+[指令总览 (Commands)](http://www.febeacon.com/lerna-docs-zh-cn/routes/commands/)
+
+
+
 
 A tool for managing JavaScript projects with multiple packages.
 
@@ -142,8 +148,7 @@ Options
 
 
 
-
-### 固定模式
+#### 固定模式
 
 
 固定模式，通过lerna.json的版本进行版本管理。当你执行lerna publish命令时， 如果距离上次发布只修改了一个模块，将会更新对应模块的版本到新的版本号，然后你可以只发布修改的库。
@@ -163,8 +168,7 @@ Options
 
 这样纸并不好
 
-
-### 独立模式
+#### 独立模式
 
 
 独立模式，init的时候需要设置选项 --independent.
@@ -187,6 +191,18 @@ Options
 链接：https://www.jianshu.com/p/8b7e6025354b
 来源：简书
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+### lerna link
+
+[http://www.febeacon.com/lerna-docs-zh-cn/routes/commands/link.html](http://www.febeacon.com/lerna-docs-zh-cn/routes/commands/link.html)
+
+将当前 Lerna 仓库中相互依赖的所有 Lerna `packages`符号链接在一起。
+
+
 
 
 
