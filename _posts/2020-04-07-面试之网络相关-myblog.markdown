@@ -1132,6 +1132,30 @@ SYN Flood 属于**典型的 DoS/DDoS 攻击**。其攻击的原理很简单，�
 
 
 
+## CSP
+
+[https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
+
+**内容安全策略**( [CSP](https://developer.mozilla.org/en-US/docs/Glossary/CSP) ) 是附加的安全层，有助于检测和缓解某些类型的攻击，包括跨站点脚本 ( [XSS](https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting) ) 和数据注入攻击。这些攻击被用于从数据盗窃到站点破坏再到恶意软件分发的所有事情。
+
+
+
+例子：
+
+希望所有内容都来自网站自己的来源（这不包括子域。）
+
+```bash
+Content-Security-Policy: default-src 'self'
+```
+
+
+
+
+
+
+
+
+
 # 其他
 
 

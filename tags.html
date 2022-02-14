@@ -12,10 +12,11 @@ header-img: "img/tag-bg.jpg"
     top: -900px;
     width: 70px;
     height: 900px;
-    transition: all .5s ease-in;
+    transition: all 0.5s ease-in;
     opacity: 1;
-    background: url('/img/scroll-to-top.png') no-repeat;
+    background: url("/img/scroll-to-top.png") no-repeat;
     z-index: 2;
+    cursor: pointer;
   }
 
   @media (max-width: 800px) {
@@ -25,8 +26,10 @@ header-img: "img/tag-bg.jpg"
   }
 </style>
 <!-- Page Header -->
-<header class="intro-header"
-        style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')">
+<header
+  class="intro-header"
+  style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}')"
+>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -44,7 +47,7 @@ header-img: "img/tag-bg.jpg"
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <!-- 标签云 -->
-      <div id='tag_cloud' class="tags">
+      <div id="tag_cloud" class="tags">
         {% for tag in site.tags %}
         <a href="#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">{{ tag[0] }}</a>
         {% endfor %}
@@ -59,9 +62,9 @@ header-img: "img/tag-bg.jpg"
       <!-- 标签列表 -->
       {% for tag in site.tags %}
       <div class="one-tag-list">
-			  	<span class="fa fa-tag listing-seperator" id="{{ tag[0] }}">
-                    <span class="tag-text">{{ tag[0] }}</span>
-                </span>
+        <span class="fa fa-tag listing-seperator" id="{{ tag[0] }}">
+          <span class="tag-text">{{ tag[0] }}</span>
+        </span>
         {% for post in tag[1] %}
         <!-- <li class="listing-item">
         <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
@@ -69,27 +72,21 @@ header-img: "img/tag-bg.jpg"
         </li> -->
         <div class="post-preview">
           <a href="{{ post.url | prepend: site.baseurl }}">
-            <h2 class="post-title">
-              {{ post.title }}
-            </h2>
+            <h2 class="post-title">{{ post.title }}</h2>
             {% if post.subtitle %}
-            <h3 class="post-subtitle">
-              {{ post.subtitle }}
-            </h3>
+            <h3 class="post-subtitle">{{ post.subtitle }}</h3>
             {% endif %}
           </a>
           <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
         </div>
-        <hr>
+        <hr />
         {% endfor %}
       </div>
       {% endfor %}
-
     </div>
   </div>
   <div class="back-to-top"></div>
 </div>
-
 
 <script type="text/javascript" src="/js/jquery.min.js" defer></script>
 <script type="text/javascript" src="/js/scroll-to-top.js" defer></script>
