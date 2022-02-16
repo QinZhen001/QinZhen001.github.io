@@ -22,7 +22,19 @@ tags:
 
 
 
-##  [main](https://docs.npmjs.com/files/package.json#main)
+## browser，module，main
+
+[https://github.com/SunshowerC/blog/issues/8](https://github.com/SunshowerC/blog/issues/8)
+
+- `main` : 定义了 `npm` 包的入口文件，browser 环境和 node 环境均可使用
+- `module` : 定义 `npm` 包的 ESM 规范的入口文件，browser 环境和 node 环境均可使用
+- `browser` : 定义 `npm` 包在 browser 环境下的入口文件
+
+
+
+
+
+### [main](https://docs.npmjs.com/files/package.json#main)
 
 The main field is a module ID that is the primary entry point to your program. That is, if your package is named `foo`, and a user installs it, and then does `require("foo")`, then your main module’s exports object will be returned.
 

@@ -2172,6 +2172,18 @@ function logMe(x: any) {
 
 
 
+### noImplicitReturns
+
+[https://www.typescriptlang.org/tsconfig#noImplicitReturns](https://www.typescriptlang.org/tsconfig#noImplicitReturns)
+
+When enabled, TypeScript will check all code paths in a function to ensure they return a value.
+
+
+
+
+
+
+
 ### [声明文件（.d.ts）的使用](https://www.cnblogs.com/xpengp/p/12787239.html)
 
 1. 在ts文件中对引用的外部库做类型判断；
