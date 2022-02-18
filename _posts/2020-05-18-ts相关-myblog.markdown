@@ -2327,6 +2327,94 @@ class C {
 
 
 
+### esModuleInterop
+
+[https://zhuanlan.zhihu.com/p/148081795](https://zhuanlan.zhihu.com/p/148081795)
+
+改成 true 之后，TS 对于 import 的转译规则会发生一些变化（export 的规则不会变）：
+
+```tsx
+ // before
+ import React from 'react';
+ console.log(React);
+ // after 代码经过简化
+ var react = __importDefault(require('react'));
+ console.log(react['default']);
+
+
+ // before
+ import {Component} from 'react';
+ console.log(Component);
+ // after 代码经过简化
+ var react = require('react');
+ console.log(react.Component);
+ 
+ 
+ // before
+ import * as React from 'react';
+ console.log(React);
+ // after 代码经过简化
+ var react = _importStar(require('react'));
+ console.log(react);
+```
+
+可以看到，对于默认导入和 namespace（*）导入，TS 使用了两个 helper 函数来帮忙
+
+```tsx
+// 代码经过简化
+var __importDefault = function (mod) {
+  return mod && mod.__esModule ? mod : { default: mod };
+};
+
+var __importStar = function (mod) {
+  if (mod && mod.__esModule) {
+    return mod;
+  }
+
+  var result = {};
+  for (var k in mod) {
+    if (k !== "default" && mod.hasOwnProperty(k)) {
+      result[k] = mod[k]
+    }
+  }
+  result["default"] = mod;
+
+  return result;
+};
+
+```
+
+**首先看__importDefault**
+
+如果目标模块是 esm，就直接返回目标模块；否则将目标模块挂在一个对象的 defalut 上，返回该对象。
+
+**再看 __importStar**
+
+1. 如果目标模块是 esm，就直接返回目标模块。否则
+2. 将目标模块上所有的除了 default 以外的属性挪到 result 上
+3. 将目标模块自己挂到 result.default 上
+
+
+
+
+
+---
+
+**esm 导入 cjs 的问题：**
+
+**兼容问题的产生是因为 esm 有 default 这个概念，而 cjs 没有。任何导出的变量在 cjs 看来都是 module.exports 这个对象上的属性，esm 的 default 导出也只是 cjs 上的 module.exports.default 属性而已**
+
+
+> 目前很多常用的包是基于 cjs / UMD 开发的，而写前端代码一般是写 esm，所以常见的场景是 esm 导入 cjs 的库。但是由于 esm 和 cjs 存在概念上的差异，最大的差异点在于 esm 有 default 的概念而 cjs 没有，所以在 default 上会出问题。
+
+TS babel webpack 都有自己的一套处理机制来处理这个兼容问题，核心思想基本都是通过 default 属性的增添和读取
+
+
+
+
+
+
+
 ## ts结合react
 
 
