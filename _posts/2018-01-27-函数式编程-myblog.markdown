@@ -11,8 +11,16 @@ tags:
 
 > “Yeah It's on. ”
 
-
 ## 正文
+
+[函数式编程](https://www.zhihu.com/search?q=函数式编程&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A100284611})与命令式编程最大的不同其实在于：
+
+**函数式编程关心数据的映射，命令式编程关心解决问题的步骤**
+
+这里的映射就是数学上「函数」的概念——一种东西和另一种东西之间的对应关系。
+
+
+
 [https://juejin.im/post/6844903936378273799](https://juejin.im/post/6844903936378273799)
 
 [网页链接](http://www.ruanyifeng.com/blog/2017/02/fp-tutorial.html)
@@ -109,7 +117,7 @@ const newList = list.map(item => ({...item, type: 1, age:item.age + 1}));
 * 值（value）
 * 值的变形关系，也就是函数。
 下面我们使用代码，定义一个简单的范畴。
-```
+```tsx
 class Category {
   constructor(val) { 
     this.val = val; 
@@ -122,10 +130,6 @@ class Category {
 ```
 上面代码中，Category是一个类，也是一个容器，里面包含一个值（this.val）和一种变形关系（addOne）。你可能已经看出来了，这里的范畴，就是所有彼此之间相差1的数字。
 **注意，本文后面的部分，凡是提到"容器"的地方，全部都是指"范畴"。**
-
-
-
-
 
 **本质上，函数式编程只是范畴论的运算方法，跟数理逻辑、微积分、行列式是同一类东西，都是数学方法，只是碰巧它能用来写程序。**
 
@@ -230,24 +234,6 @@ class Functor {
 上面代码中，Functor是一个函子，它的map方法接受函数f作为参数，然后返回一个新的函子，里面包含的值是被f处理过的（f(this.val)）。
 
 **一般约定，函子的标志就是容器具有map方法。该方法将容器里面的每一个值，映射到另一个容器。**
-
-下面是一些用法的示例。
-```
-(new Functor(2)).map(function (two) {
-  return two + 2;
-});
-// Functor(4)
-
-(new Functor('flamethrowers')).map(function(s) {
-  return s.toUpperCase();
-});
-// Functor('FLAMETHROWERS')
-
-(new Functor('bombs')).map(_.concat(' away')).map(_.prop('length'));
-// Functor(10)
-```
-
-上面的例子说明，函数式编程里面的运算，都是通过函子完成，即运算不直接针对值，而是针对这个值的容器----函子。函子本身具有对外接口（map方法），各种函数就是运算符，通过接口接入容器，引发容器里面的值的变形。
 
 
 因此，**学习函数式编程，实际上就是学习函子的各种运算**。由于可以把运算方法封装在函子里面，所以又衍生出各种不同类型的函子，有多少种运算，就有多少种函子。函数式编程就变成了运用不同的函子，解决实际问题。
