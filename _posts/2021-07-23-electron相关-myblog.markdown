@@ -254,6 +254,10 @@ SASS_BINARY_SITE=http://npm.taobao.org/mirrors/node-sass
 
 
 
+> 也可以全局config设置  （亲测有用）
+
+npm config set ELECTRON_MIRROR http://npm.taobao.org/mirrors/electron/
+
 
 
 ## Tray 消失了
