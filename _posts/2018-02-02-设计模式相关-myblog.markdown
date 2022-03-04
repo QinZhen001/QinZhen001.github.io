@@ -665,7 +665,6 @@ http://www.runoob.com/design-pattern/decorator-pattern.html
 
 　**强调：兼容**
 
-
 ----------
 
 

@@ -211,6 +211,7 @@ sum.apply(null, [10, 20])这句代码将第一个参数置为null，第二个参
   let option = {
     bbb: "bbb"
   }
+  // 技巧：
   let origin = option["aaa"] || (option["aaa"] = {})
   origin.a = "ccc"
   console.log(origin, option)
@@ -222,13 +223,6 @@ sum.apply(null, [10, 20])这句代码将第一个参数置为null，第二个参
     bbb: "bbb"
   }
 ```
-
-
-
-
-一个非常好的技巧，记录一下
-
-**let origin = option["aaa"] || (option["aaa"] = {})**
 
 
 
