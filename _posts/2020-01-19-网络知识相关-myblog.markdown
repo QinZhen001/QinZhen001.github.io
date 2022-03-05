@@ -535,11 +535,61 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 
 
 
-
-
-
-
 # 补充
+
+
+
+
+
+## CDN
+
+[CDN 的工作原理](https://www.cloudflare.com/zh-cn/learning/cdn/what-is-a-cdn/)
+
+**内容分发网络**（英语：**C**ontent **D**elivery **N**etwork，缩写：**CDN**）是指一种透过[互联网](https://zh.wikipedia.org/wiki/互聯網)互相连接的电脑网络系统，利用最靠近每位用户的服务器，更快、更可靠地将音乐、图片、视频、应用程序及其他文件发送给用户，来提供高性能、可扩展性及低成本的网络内容传递给用户。
+
+### 使用 CDN 有什么好处
+
+1. **缩短网站加载时间** – 通过将内容分发到访问者附近的 CDN 服务器（以及其他优化措施），访问者体验到更快的页面加载时间。由于访问者更倾向于离开加载缓慢的网站，CDN 可以降低跳出率并增加人们在该网站上停留的时间。换句话说，网站速度越快，用户停留的时间越长。
+2. **减少带宽成本** – 网站托管的带宽消耗成本是网站的主要费用。通过缓存和其他优化，CDN 能够减少源服务器必须提供的数据量，从而降低网站所有者的托管成本。
+3. **增加内容可用性和冗余** – 大流量或硬件故障可能会扰乱正常的网站功能。由于 CDN 具有分布式特性，因此与许多源服务器相比，CDN 可以处理更多流量并更好地承受硬件故障。
+4. **改善网站安全性** – CDN 可以通过提供 [DDoS 缓解](https://www.cloudflare.com/learning/ddos/ddos-mitigation/)、安全证书的改进以及其他优化措施来提高安全性。
+
+
+
+
+
+### CDN 边缘服务器
+
+[CDN](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)边缘服务器是存在于网络逻辑极端或边缘的计算机。边缘服务器通常充当不同网络之间的连接。CDN 边缘服务器的主要目的是将内容存储在尽可能靠近发出请求的客户端计算机的位置，从而减少[延迟](https://www.cloudflare.com/learning/performance/glossary/what-is-latency/)并缩短页面加载时间。
+
+边缘服务器是一种提供网络入口点的边缘设备。其他边缘设备包括路由器和路由交换机。边缘设备通常放置在[Internet 交换点 (IxP)](https://www.cloudflare.com/learning/cdn/glossary/internet-exchange-point-ixp/)内，以允许不同的网络连接和共享传输。
+
+---
+
+[源服务器](https://www.cloudflare.com/learning/cdn/glossary/origin-server/)是在网络资产未使用 CDN 时接收所有 Internet 流量的网络服务器。使用没有 CDN 的源服务器意味着每个 Internet 请求都必须返回到该源服务器的物理位置，无论它位于世界的哪个位置。这会增加加载时间，这会增加服务器与请求客户端计算机的距离。
+
+CDN 边缘服务器将内容存储（[缓存](https://www.cloudflare.com/learning/cdn/what-is-caching/)）在战略位置，以减轻一台或多台源服务器的负载。通过将图像、HTML 和 JavaScript 文件（以及可能的其他内容）等静态资产尽可能靠近请求的客户端计算机，边缘服务器缓存能够减少加载 Web 资源所需的时间。使用 CDN 时，源服务器仍然具有重要功能，因为重要的[服务器端](https://www.cloudflare.com/learning/serverless/glossary/client-side-vs-server-side/)代码（例如用于身份验证的散列客户端凭据数据库）通常在源维护。
+
+
+
+
+
+典型的 CDN 高速缓存过程包含以下 4 个步骤：
+
+1. 当用户请求网页时，用户的请求被路由到 CDN 中最近的[边缘服务器](https://www.cloudflare.com/learning/cdn/glossary/edge-server/)。
+2. 边缘服务器接着向源站服务器请求用户请求的内容。
+3. 源站响应边缘服务器的请求。
+4. 最后，边缘服务器响应客户端。
+
+
+
+[CDN 性能](https://www.cloudflare.com/zh-cn/learning/cdn/performance/)
+
+CDN 与客户端的近距离价值是在向源站服务器发出初始请求之后体现出来的。一旦数据从源站服务器高速缓存到 CDN 网络中，来自客户端的每个后续请求都只需到达最近的边缘服务器即可。这意味着，如果最近的边缘服务器比源站服务器近，就能减少延迟，并且更快提供内容。
+
+
+
+
 
 
 
@@ -571,8 +621,6 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 
 跨域共享标准规范要求，对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的 HTTP 请求。
 
-### 
-
 #### 简单请求
 
 - 请求方法为`GET、HEAD、POST`时发的请求
@@ -581,21 +629,13 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 - 请求中的任意 XMLHttpRequestUpload 对象均没有注册任何事件监听器；
 - 请求中没有使用 ReadableStream 对象。
 
-#### 
-
 #### 复杂请求
 
 - 使用了下面任一 HTTP 方法，PUT/DELETE/CONNECT/OPTIONS/TRACE/PATCH
 - 人为设置了以下集合之外首部字段，即简单请求外的字段
 - Content-Type 的值不属于下列之一，即`application/x-www-form-urlencoded、multipart/form-data、text/plain`
 
-### 
-
 #### options 关键的请求头字段
-
-
-
-
 
 request header 的关键字段
 
@@ -772,7 +812,7 @@ Vary: Origin
 
 
 
-`bar.taobao.com`在发起同 URL 的请求就不会使用这份缓存了，因为`Origin`请求头变了。还有``标签发起的非 CORS 请求缓存下的响应头是：
+`bar.taobao.com`在发起同 URL 的请求就不会使用这份缓存了，因为`Origin`请求头变了。还有标签发起的非 CORS 请求缓存下的响应头是：
 
 
 

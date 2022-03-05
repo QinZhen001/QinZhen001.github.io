@@ -246,7 +246,6 @@ html { overflow: hidden; }
 
 在 PC 端， 窗体滚动高度可以使用 document.documentElement.scrollTop 获取，但是在移动端， 可能就要使用document.body.scrollTop获取。
 
-
 ----------
 
 **滚动条会占用容器的可用宽度或高度**
@@ -996,6 +995,26 @@ body {
   background-color: var(--1);
 }
 ```
+
+
+
+
+
+### flex布局
+
+弹性布局（flexible box）模块旨在提供一个更加有效的方式来布置，对齐和分布在容器之间的各项内容，即使它们的大小是未知或者动态变化的。
+
+弹性布局的主要思想是让容器有能力来改变项目的宽度和高度，以填满可用空间（主要是为了容纳所有类型的显示设备和屏幕尺寸）的能力。
+
+
+
+#### align-items 和align-content
+
+[demo](http://www.cnblogs.com/mysearchblog/p/5651671.html)
+
+都是写在容器元素上的属性 **align-items** align-items属性适用于所有的flex容器，它是用来设置每个flex元素在侧轴上的默认对齐方式
+
+**align-content** align-content属性只适用于**多行**的flex容器，并且当侧轴上有多余空间使flex容器内的flex线对齐,感觉这样翻译了之后还是略微有些抽象，不过有一个重点就是多行，
 
 
 
@@ -2182,7 +2201,9 @@ if (dpr >= 2) {
 
 
 
+### 动画帧数计算
 
+[动画帧数科学计算法](https://www.uisdc.com/css3-animation-calculate)
 
 
 
