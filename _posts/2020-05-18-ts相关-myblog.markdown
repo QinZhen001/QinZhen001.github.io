@@ -2329,7 +2329,7 @@ class C {
 
 ### esModuleInterop
 
-[https://zhuanlan.zhihu.com/p/148081795](https://zhuanlan.zhihu.com/p/148081795)
+[esModuleInterop 到底做了什么](https://zhuanlan.zhihu.com/p/148081795)
 
 改成 true 之后，TS 对于 import 的转译规则会发生一些变化（export 的规则不会变）：
 
@@ -2694,7 +2694,9 @@ const foo: Foo = ['1', '2', '3']; // OK
 
 ## webpack打包ts
 
-[https://juejin.cn/post/6844904160375078925](https://juejin.cn/post/6844904160375078925)
+[webpack打包ts的两种方案对比](https://juejin.cn/post/6844904160375078925)
+
+[TS 编译工具！从 ts-loader 到 Babel](https://juejin.cn/post/6954304242093932557)
 
 目前大家常用的webpack打包ts主要为两种方案：
 
