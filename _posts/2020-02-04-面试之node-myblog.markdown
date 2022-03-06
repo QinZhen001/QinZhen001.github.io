@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "前端之node"
+title:      "面试之node"
 date:       2020-02-04 17:50:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -15,7 +15,7 @@ tags:
 
 # 面试之Node
 
-[https://mp.weixin.qq.com/s?__biz=MzUxOTEzNjEwMQ==&mid=2247483676&idx=1&sn=10d2a069b52833eb324d4adbdab27a05&chksm=f9ff7716ce88fe00871f96dc55936a9b6c00a4ac5c727c687dc6cbc0b06bb83db5101fb97051&scene=21#wechat_redirect](https://mp.weixin.qq.com/s?__biz=MzUxOTEzNjEwMQ==&mid=2247483676&idx=1&sn=10d2a069b52833eb324d4adbdab27a05&chksm=f9ff7716ce88fe00871f96dc55936a9b6c00a4ac5c727c687dc6cbc0b06bb83db5101fb97051&scene=21#wechat_redirect)
+[nodejs 面试篇](https://mp.weixin.qq.com/s?__biz=MzUxOTEzNjEwMQ==&mid=2247483676&idx=1&sn=10d2a069b52833eb324d4adbdab27a05&chksm=f9ff7716ce88fe00871f96dc55936a9b6c00a4ac5c727c687dc6cbc0b06bb83db5101fb97051&scene=21#wechat_redirect)
 
 
 
