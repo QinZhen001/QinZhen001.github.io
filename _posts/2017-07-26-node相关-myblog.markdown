@@ -80,6 +80,13 @@ Node 自带了交互式解释器，可以执行以下任务：
 Node 的交互式解释器可以很好的调试 Javascript 代码。
 
 
+
+### Node.js事件循环
+
+[https://juejin.cn/post/6844904007270563848](https://juejin.cn/post/6844904007270563848)
+
+
+
 ### 事件驱动程序
 
 * Node.js 是单进程单线程应用程序，但是通过事件和回调支持并发，所以性能非常高。
@@ -345,6 +352,55 @@ http://localhost:8888/start?foo=bar&hello=world
                                             |
                          querystring.parse(queryString)["hello"]
 ```
+
+
+
+
+
+### **node 查看平台和架构**
+
+有的时候我们需要确保当前node使用的是x86架构
+
+使用命令
+
+```bash
+node -p "process"
+```
+
+输出
+
+```bash
+process {
+  version: 'v16.6.1',
+  versions: {
+    node: '16.6.1',
+    v8: '9.2.230.21-node.19',
+    uv: '1.42.0',
+    zlib: '1.2.11',
+    brotli: '1.0.9',
+    ares: '1.17.1',
+    modules: '93',
+    nghttp2: '1.44.0',
+    napi: '8',
+    llhttp: '6.0.2',
+    openssl: '1.1.1k',
+    cldr: '39.0',
+    icu: '69.1',
+    tz: '2021a',
+    unicode: '13.0'
+  },
+  arch: 'x64',  // 架构
+  platform: 'darwin',  // 平台
+  release: {
+    name: 'node',
+    sourceUrl: 'https://nodejs.org/download/release/v16.6.1/node-v16.6.1.tar.gz',
+    headersUrl: 'https://nodejs.org/download/release/v16.6.1/node-v16.6.1-headers.tar.gz'
+  },
+  ....
+}
+```
+
+
 
 
 
