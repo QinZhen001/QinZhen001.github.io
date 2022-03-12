@@ -443,9 +443,7 @@ Cache-Control: private, max-age=0, no-cache
 
 [网站链接](https://www.cnblogs.com/shixiaomiao1122/p/7591556.html)
 
-
-
-[https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#"no-cache"和"no-store")
+[使用 HTTP 缓存避免不必要的网络请求](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#"no-cache"和"no-store")
 
 [https://juejin.cn/post/6844903737538920462](https://juejin.cn/post/6844903737538920462)
 
@@ -696,7 +694,6 @@ xhr.send();
 ```
 
 **需要注意的是，当这个属性为true的时候，远程服务器也要作相应的处理。在响应头那里设置  Access-Control-Allow-Credentials: true 。如果没有这个设置的话，浏览器就会报错。**
-
 
 ----------
 

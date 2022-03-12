@@ -2371,7 +2371,7 @@ Component.setState()
 
 ### Hooks原理
 
-[https://react.iamkasong.com/hooks/create.html#%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98](https://react.iamkasong.com/hooks/create.html#%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98)
+[Hook数据结构](https://react.iamkasong.com/hooks/create.html#%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98)
 
 我们知道，`更新`产生的`update`对象会保存在`queue`中。
 
