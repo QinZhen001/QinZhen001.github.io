@@ -1762,7 +1762,7 @@ https://react.iamkasong.com/process/doubleBuffer.html#%E4%BB%80%E4%B9%88%E6%98%A
 
 ## Diff
 
-https://react.iamkasong.com/diff/prepare.html#diff%E7%9A%84%E7%93%B6%E9%A2%88%E4%BB%A5%E5%8F%8Areact%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9
+[ Diff的瓶颈以及React如何应对](https://react.iamkasong.com/diff/prepare.html#diff%E7%9A%84%E7%93%B6%E9%A2%88%E4%BB%A5%E5%8F%8Areact%E5%A6%82%E4%BD%95%E5%BA%94%E5%AF%B9)
 
 [https://zh-hans.reactjs.org/docs/reconciliation.html#the-diffing-algorithm](https://zh-hans.reactjs.org/docs/reconciliation.html#the-diffing-algorithm)
 
