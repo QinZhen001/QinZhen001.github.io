@@ -16,8 +16,7 @@ tags:
 
 [前端工程师手册](https://leohxj.gitbooks.io/front-end-database/content/html-and-css-basic/semantic-html.html)
 
-
-[https://yuchengkai.cn/docs/frontend/#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87](https://yuchengkai.cn/docs/frontend/#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87)
+[前端面试基础](https://yuchengkai.cn/docs/frontend/#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87)
 
 
 [20道大厂面试题等你查收](https://juejin.im/post/5d124a12f265da1b9163a28d?utm_source=gold_browser_extension)
