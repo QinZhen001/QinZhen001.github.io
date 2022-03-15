@@ -771,6 +771,18 @@ float、clear 和 vertical-align
 
 
 
+---
+
+
+
+CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint Setup and Paint` -> `Composite Layers`
+
+按照中文的意思大体是 查找并计算样式 -> 排布 -> 绘制 -> 组合层
+
+这上面的几个步骤有点相似于上文说到的重排一定致使重绘，而查询属性会强制发生重排。因此上文提到的重排重绘内容能够结合这里进行理解。
+
+因为`transform`是位于`Composite Layers`层，而`width`、`left`、`margin`等则是位于`Layout`层，在`Layout`层发生的改变一定致使`Paint Setup and Paint` -> `Composite Layers`，因此相对而言使用`transform`实现的动画效果确定比`left`这些更加流畅
+
 
 
 
