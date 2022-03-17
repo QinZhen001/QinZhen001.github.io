@@ -650,3 +650,148 @@ selectedText = selection.toString();
 document.execCommand('copy')
 ```
 
+
+
+### 大文件快速上传
+
+[怎么实现大文件快速上传？](https://juejin.cn/post/7074534222748188685)
+
+* 首先是选择上传的文件资源，接着就可以得到对应的文件对象 **File**，而 **File.prototype.slice** 方法可以实现资源的分块
+* 由于前端会将资源分块，然后单独发送请求，也就是说，原来1个文件对应 1 个上传请求，现在可能会变成1个文件对应 n 个上传请求，基于 Promise.allSettled 将这多个接口整合，上传完成在发送一个合并的请求，通知服务端进行合并。 
+* 后端合并时可通过 nodejs 中的读写流（readStream/writeStream），将所有切片的流通过管道（pipe）输入最终文件的流中。
+
+> 在发送请求资源时，前端会定好每个文件对应的序号，并将当前分块、序号以及文件 hash 等信息一起发送给服务端，服务端在进行合并时，通过序号进行依次合并即可。
+
+>  注意不要使用Promise.all  这样万一reject 会影响后面的任务 
+
+
+
+```tsx
+// 获取文件分块
+const getFileChunk = (file, chunkSize = DefualtChunkSize) => {
+  return new Promise((resovle) => {
+    let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+      chunks = Math.ceil(file.size / chunkSize),
+      currentChunk = 0,
+      spark = new SparkMD5.ArrayBuffer(),
+      fileReader = new FileReader();
+
+    fileReader.onload = function (e) {
+      console.log('read chunk nr', currentChunk + 1, 'of');
+
+      const chunk = e.target.result;
+      spark.append(chunk);
+      currentChunk++;
+
+      if (currentChunk < chunks) {
+        loadNext();
+      } else {
+        let fileHash = spark.end();
+        console.info('finished computed hash', fileHash);
+        resovle({ fileHash });
+      }
+    };
+
+    fileReader.onerror = function () {
+      console.warn('oops, something went wrong.');
+    };
+
+    function loadNext() {
+      let start = currentChunk * chunkSize,
+        end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+      let chunk = blobSlice.call(file, start, end);
+      fileChunkList.value.push({ chunk, size: chunk.size, name: currFile.value.name });
+      fileReader.readAsArrayBuffer(chunk);
+    }
+
+    loadNext();
+  });
+}
+```
+
+
+
+
+
+#### 秒传
+
+其实所谓的秒传就是不用传，在正式发起上传请求时，先发起一个检查请求，这个请求会携带对应的文件 hash 给服务端，服务端负责查找是否存在一模一样的文件 hash，如果存在此时直接复用这个文件资源即可，不需要前端在发起额外的上传请求.
+
+
+
+
+
+#### 断点续传
+
+断点续传其实就是让请求可中断，然后在接着上次中断的位置继续发送，此时要保存每个请求的实例对象，以便后期取消对应请求，并将取消的请求保存或者记录原始分块列表取消位置信息等，以便后期重新发起请求.
+
+**取消请求的几种方式**
+
+- 如果使用原生 **XHR** 可使用 `(new XMLHttpRequest()).abort()` 取消请求
+- 如果使用 **axios** 可使用 `new CancelToken(function (cancel) {})` 取消请求
+- 如果使用 **fetch** 可使用 `(new AbortController()).abort()` 取消请求
+
+
+
+### 扫码登录
+
+
+
+### 进程通信
+
+[进程之间有哪些通信方式](https://github.com/iamshuaidi/algo-basic/blob/master/%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95%EF%BC%9A%E8%BF%9B%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%A9%B6%E7%AB%9F%E6%9C%89%E5%93%AA%E4%BA%9B%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F%EF%BC%9F%E5%A6%82%E4%BD%95%E9%80%9A%E4%BF%A1%EF%BC%9F.md)
+
+**管道：**
+
+```bash
+mkfifo  test
+echo "this is a pipe" > test   // 写数据
+cat < test  // 读数据
+```
+
+**消息队列：**
+
+例如 a 进程要给 b 进程发送消息，只需要把消息放在对应的消息队列里就行了，b 进程需要的时候再去对应的 消息队列里取出来
+
+**共享内存:**
+
+系统加载一个进程的时候，分配给进程的内存并不是**实际物理内存**，而是**虚拟内存空间**。那么我们可以让两个进程各自拿出一块虚拟地址空间来，然后映射到相同的物理内存中，这样，两个进程虽然有着独立的虚拟内存空间，但有一部分却是映射到相同的物理内存，这就完成了**内存共享**机制了。
+
+**信号量:**
+
+信号量的本质就是一个计数器，用来实现进程之间的互斥与同步
+
+例如信号量的初始值是 1，然后 a 进程来访问**内存1**的时候，我们就把信号量的值设为 0，然后进程b 也要来访问**内存1**的时候，看到信号量的值为 0 就知道已经有进程在访问**内存1**了，这个时候进程 b 就会访问不了**内存1**。所以说，信号量也是进程之间的一种通信方式。
+
+**Socket:**
+
+那两个相隔几千里的进程能够进行通信吗？
+
+这个时候 Socket 这家伙就派上用场了
+
+
+
+### Socket通信原理
+
+[Socket通信原理](https://juejin.cn/post/6844904022567026695)
+
+**`Socket`**通信则是在双方**建立连接后**，可以**直接**进行**数据的传输**，在连接时可实现信息的**主动推送**，而**不需要**每次由**客户端**向服务器**发送请求**。
+
+socket又称套接字，在程序内部提供了与外界通信的端口，即端口通信。
+
+通过建立**`socket`**连接，可为通信双方的**数据传输提供通道**。socket的**主要特点**有**数据丢失率低**，**使用简单且易于移植**。
+
+简单来说，Socket提供了程序内部与外界通信的端口并为**通信双方**提供**数据传输通道**。
+
+
+
+Socket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议。
+
+
+
+### web rtc 的理解 
+
+
+
+
+
