@@ -28,6 +28,10 @@ electron 基于 node 和 chromium 做 js 逻辑的执行和页面渲染，并且
 
 
 
+缺点：性能比原生桌面应用要低，最终打包后的应用比原生应用大很多。
+
+
+
 
 
 ## Web Embeds
@@ -166,6 +170,22 @@ win.webContents.openDevTools()
 
 
 
+### webPreferences
+
+
+
+#### contextIsolation
+
+`contextIsolation` Boolean (可选) - 是否在独立 JavaScript 环境中运行 Electron API和指定的`preload` 脚本. 默认为 `true`。 `预加载`脚本所运行的上下文环境只能访问其自身专用的`文档`和全局`窗口`，其自身一系列内置的JavaScript (`Array`, `Object`, `JSON`, 等等) 也是如此，这些对于已加载的内容都是不可见的。 Electron API 将只在`预加载`脚本中可用，在已加载页面中不可用。 这个选项应被用于加载可能不被信任的远程内容时来确保加载的内容无法篡改`预加载`脚本和任何正在使用的Electron api。 该选项使用的是与[Chrome内容脚本](https://developer.chrome.com/extensions/content_scripts#execution-environment)相同的技术。 你可以在开发者工具Console选项卡内顶部组合框中选择 'Electron Isolated Context'条目来访问这个上下文。
+
+
+
+
+
+
+
+
+
 ## 上下文隔离
 
 [https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation](https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation)
@@ -222,6 +242,87 @@ IPC（Inter-[Process](https://baike.baidu.com/item/Process/1170280)[ Communicati
 vscode 是一个 electron 应用，窗口等功能的实现基于 electron
 
 [vscode 是怎么跑起来的](https://juejin.cn/post/6987420993568374797)
+
+
+
+## Electron 原理
+
+
+
+### 通信原理
+
+`ipcMain` 和 `ipcRenderer` 都是 `EventEmitter` 类的一个实例。`EventEmitter` 类是 `NodeJS` 事件的基础，它由 `NodeJS` 中的 `events` 模块导出。
+
+我们通过 `ipcMain`和`ipcRenderer` 的 `on、send` 进行监听和发送消息都是 `EventEmitter` 定义的相关接口。
+
+
+
+#### 渲染进程间通信
+
+`Electron`并没有提供渲染进程之间相互通信的方式，我们可以在主进程中建立一个消息中转站。
+
+渲染进程之间通信首先发送消息到主进程，主进程的中转站接收到消息后根据条件进行分发。
+
+
+
+#### 渲染进程数据共享
+
+在两个渲染进程间共享数据最简单的方法是使用浏览器中已经实现的` HTML5 API`。 其中比较好的方案是用` Storage API`， `localStorage，sessionStorage` 或者 `IndexedDB。`
+
+
+
+
+
+### 渲染进程打包和升级
+
+我们的大部分业务逻辑代码是在渲染进程完成的，在大部分情况下我们仅仅需要对渲染进程进行更新和升级而不需要改动主进程代码，我们渲染进程的打包实际上和一般的`web`项目打包没有太大差别，使用`webpack`打包即可。
+
+打包完成的`html`和`js`文件，我们一般要上传到我们的前端静态资源服务器下，然后告知服务端我们的渲染进程有代码更新，这里可以说成渲染进程单独的升级。
+
+和壳的升级不同，渲染进程的升级仅仅是静态资源服务器上`html`和`js`文件的更新，而不需要重新下载更新客户端，这样我们每次启动程序的时候检测到离线包有更新，即可直接刷新读取最新版本的静态资源文件，即使在程序运行过程中要强制更新，我们的程序只需要强制刷新页面读取最新的静态资源即可，这样的升级对用户是非常友好的。
+
+这里注意，一旦我们这样配置，就意味着渲染进程和主进程打包升级的完全分离，我们在启动主窗口时读取的文件就不应该再是本地文件，而是打包完成后放在静态资源服务器的文件。
+
+
+
+
+
+
+
+### 主进程打包
+
+主进程，即将整个程序打包成可运行的客户端程序，常用的打包方案一般有两种，`electron-packager`和`electron-builder`。
+
+这里我推荐使用`electron-builder`，它不仅拥有方便的配置 `protocol` 的功能、内置的 `Auto Update`、简单的配置 `package.json` 便能完成整个打包工作，用户体验非常不错。而且`electron-builder`不仅能直接将应用打包成`exe app`等可执行程序，还能打包成`msi dmg`等安装包格式。
+
+
+
+
+
+### Node.js 集成到 Chromium
+
+如何将 `Node.js` 和 `Chromiums` 整合？
+
+`Node.js` 事件循环基于 [libuv](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Flibuv%2Flibuv)，但 `Chromium` 基于 [message_pump](https://link.juejin.cn?target=https%3A%2F%2Fchromium.googlesource.com%2Fchromium%2Fchromium%2F%2B%2Fmaster%2Fbase%2Fmessage_pump.h)。
+
+解决这个问题的的主要思路有两种：
+
+- 1.将 `Chromium` 集成到 `Node.js`：用 `libuv` 实现 `message_pump`。
+- 2.将 `Node.js` 集成到 `Chromium` 。
+
+
+
+第一种方案，[NW.js](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fnwjs%2Fnw.js) 就是这么做的。`Electron` 前期也是这样尝试的，结果发现在渲染进程里实现比较容易，但是在主进程里却很麻烦，因为各个系统的 `GUI` 实现都不同，`Mac` 是 `NSRunLoop`，`Linux` 是 `glib`，不仅工程量十分浩大，而且一些边界情况处理起来也十分棘手。
+
+
+
+所以采取将 `Node.js` 集成到 `Chromium` 中：
+
+`Electron` 起了一个新的安全线程去轮询 `backend_fd`，当 `Node.js` 有一个新的事件后，通过 `PostTask` 转发到 `Chromium` 的事件循环中，这样就实现了 `Electron` 的事件融合。
+
+> `libuv` 引入了 `backend_fd` 的概念，相当于 `libuv` 轮询事件的文件描述符，这样就可以通过轮询 `backend_fd` 来得到 `libuv` 的一个新事件了
+
+
 
 
 
