@@ -1161,6 +1161,21 @@ git pull
 
 
 
+## 解决检测文件名大小写修改
+
+问题：本地仓库我已经将文件全部更改成为了大写驼峰，但是git远端仓库里面一直都是小写，git status也是显示没有变更操作。
+
+```basic
+// 执行命令
+git config core.ignorecase false
+```
+
+通过这个命令把忽略大小写关掉
+
+
+
+
+
 ### merge 还是 rebase
 
 [https://juejin.im/post/5dbe7a476fb9a0207f1035d0](https://juejin.im/post/5dbe7a476fb9a0207f1035d0)
