@@ -256,6 +256,28 @@ element.addEventListener('custome',function(){
 element.dispatchEvent(eve)
 ```
 
+
+
+## 编译器和解释器
+
+[编译器和解析器：V8如何执行一段JavaScript代码的](https://blog.poetries.top/browser-working-principle/guide/part3/lesson14.html#%E7%BC%96%E8%AF%91%E5%99%A8%E5%92%8C%E8%A7%A3%E9%87%8A%E5%99%A8)
+
+
+
+机器码所占用的空间远远超过了字节码，所以使用字节码可以减少系统的内存使用。
+
+---
+
+生成字节码之后，接下来就要进入执行阶段了。
+
+通常，如果有一段第一次执行的字节码，解释器 Ignition 会逐条解释执行。在执行字节码的过程中，如果发现有热点代码（HotSpot），比如一段代码被重复执行多次，这种就称为热点代码，那么后台的编译器 TurboFan 就会把该段热点的字节码编译为高效的机器码，然后当再次执行这段被优化的代码时，只需要执行编译后的机器码就可以了，这样就大大提升了代码的执行效率。
+
+> 其实字节码配合解释器和编译器是最近一段时间很火的技术，比如 Java 和 Python 的虚拟机也都是基于这种技术实现的，我们把这种技术称为即时编译（JIT）
+
+
+
+
+
 ## 面向对象类
 
 ### new运算符
