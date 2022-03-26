@@ -577,7 +577,6 @@ Webpack 在寻找相对路径的文件时会以 context 为根目录，context �
 
 ## external
 
-
 [详细的讲解](https://www.tangshuang.net/3343.html)
 
 
@@ -1314,47 +1313,6 @@ whenever a module reexports all exports (regardless if used or unused) need to b
 
 
 
-
-## externals
-
-[https://www.jianshu.com/p/283b17d17b3c](https://www.jianshu.com/p/283b17d17b3c)
-
-**webpack 中的 externals 配置提供了不从 bundle 中引用依赖的方式**。
-
-
-
-我们可以将一些JS文件存储在 `CDN` 上(减少 `Webpack`打包出来的 `js` 体积)，在 `index.html` 中通过 `<script>` 标签引入，如:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    <div id="root">root</div>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-</body>
-</html>
-```
-
-我们希望在使用时，仍然可以通过 `import` 的方式去引用(如 `import $ from 'jquery'`)，并且希望 `webpack` 不会对其进行打包，此时就可以配置 `externals`。
-
-```js
-//webpack.config.js
-module.exports = {
-    //...
-    externals: {
-        //jquery通过script引入之后，全局中即有了 jQuery 变量
-        'jquery': 'jQuery'
-    }
-}
-```
-
-这样做的目的就是将不怎么需要更新的第三方库脱离webpack打包，不被打入bundle中，从而减少打包时间，但又不影响运用第三方库的方式，例如import方式等。
 
 ### externals和libraryTarget的关系
 

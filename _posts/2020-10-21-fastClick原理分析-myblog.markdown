@@ -27,8 +27,6 @@ tags:
 
 **fastClick 在 `touchend` 阶段 调用 `event.preventDefault`，然后通过 `document.createEvent` 创建一个 `MouseEvents`，然后 通过 `eventTarget.dispatchEvent` 触发对应目标元素上绑定的 `click` 事件**
 
-### 
-
 
 
 ### notNeeded
@@ -122,5 +120,4 @@ FastClick.prototype.sendClick = function(targetElement, event) {
 #### stopPropagation 和 stopImmediatePropagation 的区别
 
 `event.stopPropagation` 阻止捕获和冒泡阶段中当前事件的进一步传播。如果有多个相同类型事件的事件监听函数绑定到同一个元素，当该类型的事件触发时，它们会按照被添加的顺序执行。如果其中某个监听函数执行 `event.stopImmediatePropagation` 方法，则当前元素剩下的监听函数将不会被执行
-
 
