@@ -1320,6 +1320,39 @@ for (let item of iterable) {
 
 
 
+#### 手写symbol
+
+[https://github.com/mqyqingfeng/Blog/issues/87](https://github.com/mqyqingfeng/Blog/issues/87)
+
+```tsx
+function SymbolPolyfill(description) {
+  // 不能使用new
+  if (this instanceof SymbolPolyfill) {
+    throw new TypeError('Symbol is not a constructor')
+  }
+
+  const descStr = description == undefined ? undefined : String(description)
+
+  const symbol = Object.create(null)
+
+  Object.defineProperties(symbol, {
+    __Description__: {
+      value: descStr,
+      writable: false,
+      enumerable: false,
+      configurable: false,
+    },
+  })
+
+  // 返回的是一个新对象，两个对象之间，只要引用不同，就不会相同
+  return symbol
+}
+```
+
+
+
+
+
 
 
 
