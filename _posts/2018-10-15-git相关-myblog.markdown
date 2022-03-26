@@ -1290,6 +1290,21 @@ ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
 
 
 
+###  error: some local refs could not be updated
+
+ 'git remote prune origin' to remove any old, conflicting branches
+
+```bash
+// 执行
+git remote prune origin
+```
+
+
+
+
+
+
+
 
 
 ### 利用github pages部署vue项目白屏
@@ -1311,6 +1326,12 @@ ssh-keygen -R [xxx.xxx.xxx.xxx](http://xxx.xxx.xxx.xxx/) (服务器ip地址)
 
 
 我哭了吗，记录到这里了
+
+
+
+
+
+
 
 
 

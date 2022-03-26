@@ -560,7 +560,7 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 
 ### CDN 边缘服务器
 
-[CDN](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)边缘服务器是存在于网络逻辑极端或边缘的计算机。边缘服务器通常充当不同网络之间的连接。CDN 边缘服务器的主要目的是将内容存储在尽可能靠近发出请求的客户端计算机的位置，从而减少[延迟](https://www.cloudflare.com/learning/performance/glossary/what-is-latency/)并缩短页面加载时间。
+[CDN](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)边缘服务器是存在于网络逻辑极端或边缘的计算机。边缘服务器通常充当不同网络之间的连接**。CDN 边缘服务器的主要目的是将内容存储在尽可能靠近发出请求的客户端计算机的位置，从而减少[延迟](https://www.cloudflare.com/learning/performance/glossary/what-is-latency/)并缩短页面加载时间。**
 
 边缘服务器是一种提供网络入口点的边缘设备。其他边缘设备包括路由器和路由交换机。边缘设备通常放置在[Internet 交换点 (IxP)](https://www.cloudflare.com/learning/cdn/glossary/internet-exchange-point-ixp/)内，以允许不同的网络连接和共享传输。
 
@@ -583,9 +583,24 @@ CDN 边缘服务器将内容存储（[缓存](https://www.cloudflare.com/learnin
 
 
 
-[CDN 性能](https://www.cloudflare.com/zh-cn/learning/cdn/performance/)
+### [CDN 性能](https://www.cloudflare.com/zh-cn/learning/cdn/performance/)
 
 CDN 与客户端的近距离价值是在向源站服务器发出初始请求之后体现出来的。一旦数据从源站服务器高速缓存到 CDN 网络中，来自客户端的每个后续请求都只需到达最近的边缘服务器即可。这意味着，如果最近的边缘服务器比源站服务器近，就能减少延迟，并且更快提供内容。
+
+
+
+### CDN回源
+
+回源指您通过客户端请求访问资源时，如果CDN节点上未缓存该资源，或者您部署预热任务给CDN节点时，CDN节点会回源站获取资源。
+
+1. 当CDN节点没有缓存用户请求的内容时，会回源请求资源。
+2. 当CDN节点上缓存的内容已过期时，会回源请求资源。
+
+
+
+### CDN缓存多久更新
+
+CDN节点的缓存内容不是实时更新的，只有当缓存内容到期后才能回源请求最新的内容并更新节点缓存。您可以通过设置缓存过期时间规则或者提交刷新请求来实现缓存内容的更新。
 
 
 
