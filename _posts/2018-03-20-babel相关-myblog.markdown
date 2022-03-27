@@ -739,6 +739,17 @@ babel-plugin-transform-runtime和babel-runtime
 字面意思就能看出来，一个是转化的包（插件），一个是充满polyfill的包。
 
 
+
+### 环境区分
+
+> The env key will be taken from process.env.BABEL_ENV, when this is not available then it uses process.env.NODE_ENV if even that is not available then it defaults to "development".
+
+env会取`process.env.BABEL_ENV`的值，如果这个变量没有设置，会取`process.env.NODE_ENV`的值，如果也没有提供，默认值是`"development"`。
+
+
+
+
+
 ### Generator
 
 [https://www.jianshu.com/p/92639e681e2a](https://www.jianshu.com/p/92639e681e2a)
