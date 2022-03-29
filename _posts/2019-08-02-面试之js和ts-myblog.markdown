@@ -4740,12 +4740,7 @@ function Child4(){
 Child4.prototype = Parent4.prototype
 ```
 
-```
-var s5 = new Child4()
-var s6 = new Child4()
-console.log(s5 instanceof Child4,s5 instanceof Parent4)
-//true true
-```
+
 
 **缺点：无法区分对象是由子类直接实例化还是父类直接实例化**
 
@@ -4758,7 +4753,7 @@ function Parent5(){
     this.play = [1,2,3]
 }
 function Child5(){
-    Parent4.call(this)
+    Parent5.call(this)
     this.type = 'child5'
 }
 Child5.prototype = Object.create(Parent5.prototype)
@@ -4766,6 +4761,104 @@ Child5.prototype.constructor = Child5
 ```
 
 **牛逼啊！！！**
+
+
+
+### class继承转es5
+
+`Babel`转换 `Class`是转换成什么继承的方法
+
+```tsx
+class A {
+	aaa(){
+    	console.log(1111)
+    }	
+  
+  bbb(){
+    	console.log(2222)
+    }
+}
+
+class B extends A {
+}
+```
+
+转换后：
+
+```tsx
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== 'function' && superClass !== null) {
+    throw new TypeError('Super expression must either be null or a function')
+  }
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: { value: subClass, writable: true, configurable: true }
+  })
+  Object.defineProperty(subClass, 'prototype', { writable: false })
+  if (superClass) _setPrototypeOf(subClass, superClass)
+}
+
+function _createSuper(Derived) {
+  var hasNativeReflectConstruct = _isNativeReflectConstruct()
+  return function _createSuperInternal() {
+    var Super = _getPrototypeOf(Derived),
+      result
+    if (hasNativeReflectConstruct) {
+      var NewTarget = _getPrototypeOf(this).constructor
+      result = Reflect.construct(Super, arguments, NewTarget)
+    } else {
+      result = Super.apply(this, arguments)
+    }
+    return _possibleConstructorReturn(this, result)
+  }
+}
+
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps)
+  if (staticProps) _defineProperties(Constructor, staticProps)
+  Object.defineProperty(Constructor, 'prototype', { writable: false })
+  return Constructor
+}
+
+var A = /*#__PURE__*/ (function () {
+  function A() {
+    _classCallCheck(this, A)
+  }
+
+  _createClass(A, [
+    {
+      key: 'aaa',
+      value: function aaa() {
+        console.log(1111)
+      }
+    },
+    {
+      key: 'bbb',
+      value: function bbb() {
+        console.log(2222)
+      }
+    }
+  ])
+
+  return A
+})()
+
+var B = /*#__PURE__*/ (function (_A) {
+  _inherits(B, _A)
+
+  var _super = _createSuper(B)
+
+  function B() {
+    _classCallCheck(this, B)
+
+    return _super.apply(this, arguments)
+  }
+
+  return _createClass(B)
+})(A)
+
+```
 
 
 
