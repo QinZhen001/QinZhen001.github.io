@@ -1215,7 +1215,62 @@ AOT (Ahead-Of-Time - 预先编译)    代表 C/C++  java     **(注意java的特
 
 
 
-## 
+## JSBridge
+
+[H5和app之间如何通信](https://juejin.cn/post/6945007689990832141)
+
+[深入浅出JSBridge：从原理到使用](https://juejin.cn/post/6936814903021797389#heading-4)
+
+JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Native 之间的桥梁，它的核心是 构建 Native 和非 Native 间消息通信的通道，而且是 双向通信的通道。
+
+
+
+所谓 双向通信的通道:
+
+- JS 向 Native 发送消息 : 调用相关功能、通知 Native 当前 JS 的相关状态等。
+- Native 向 JS 发送消息 : 回溯调用结果、消息推送、通知 JS 当前 Native 的状态等。
+
+
+
+---
+
+**Native->Web**
+
+
+
+Android 4.4之后提供了**evaluateJavascript**来执行JS代码，并且可以获取返回值执行回调：
+
+```java
+String jsCode = String.format("window.showWebDialog('%s')", text);
+webView.evaluateJavascript(jsCode, new ValueCallback<String>() {
+  @Override
+  public void onReceiveValue(String value) {
+
+  }
+});
+复制代码
+```
+
+iOS的UIWebView使用**stringByEvaluatingJavaScriptFromString**：
+
+```objective-c
+NSString *jsStr = @"执行的JS代码";
+[webView stringByEvaluatingJavaScriptFromString:jsStr];
+```
+
+
+
+Web->Native
+
+注入 API 和 拦截 URL SCHEME
+
+
+
+
+
+
+
+
 
 
 

@@ -188,50 +188,8 @@ console.log(b);
 
 
 
-## Webpack
-
-* webpack 是 module bundle
-* gulp 是 tast runner
-* Rollup 是在 Webpack 流行后出现的替代品。Rollup 在用于打包 JavaScript 库时比 Webpack 更加有优势，因为其打包出来的代码更小更快。 但功能不够完善，很多场景都找不到现成的解决方案。
 
 
-
-### Webpack原理
-
-本质上，webpack 是一个现代 JavaScript 应用程序的静态模块打包器(module bundler)。当 webpack 处理应用程序时，它会递归地构建一个依赖关系图(dependency graph)，其中包含应用程序需要的每个模块，然后将所有这些模块打包成一个或多个 bundle。
-
-
-
-### 模块化解决了前端的哪些痛点
-
-* 命名冲突
-* 文件依赖
-* 代码复用
-
-### hash、chunkhash和contenthash的区别
-
-
-
-
-
-### webpack 的 loader 和 plugin 区别
-
-loader 用于对模块的源代码进行转换。loader 可以使你在 import 或"加载"模块时预处理文件。因此，loader 类似于其他构建工具中“任务(task)”，并提供了处理前端构建步骤的强大方法。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript，或将内联图像转换为 data URL。loader 甚至允许你直接在 JavaScript 模块中 import CSS文件！
-因为 webpack 本身只能处理 JavaScript，如果要处理其他类型的文件，就需要使用 loader 进行转换，loader 本身就是一个函数，接受源文件为参数，返回转换的结果。
-
-
-
-Plugin 是用来扩展 Webpack 功能的，通过在构建流程里注入钩子实现，它给 Webpack 带来了很大的灵活性。
-通过plugin（插件）webpack可以实 loader 所不能完成的复杂功能，使用 plugin 丰富的自定义 API 以及生命周期事件，可以控制 webpack 打包流程的每个环节，实现对 webpack 的自定义功能扩展。
-
-
-
-
-
-作者：sunshine小小倩
-链接：https://juejin.im/post/5c8bb79e6fb9a04a006fe79a
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
 
@@ -734,6 +692,10 @@ const getFileChunk = (file, chunkSize = DefualtChunkSize) => {
 
 
 ### 扫码登录
+
+
+
+
 
 
 
