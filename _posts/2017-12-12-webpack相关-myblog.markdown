@@ -1652,23 +1652,21 @@ Webpack 5 adds a new feature called "Module Federation", which allows multiple w
 
 Webpack 5增加了一个名为“模块联合”的新特性，它允许多个Webpack构建一起工作。从运行时的角度来看，来自多个构建的模块将表现为一个巨大的连接模块图。从开发人员的角度来看，可以从指定的远程构建中导入模块，并以最小的限制使用它们。
 
-
-
 [https://juejin.cn/post/6847902220298649607](https://juejin.cn/post/6847902220298649607)
 
 webpack 5引入联邦模式是为了**更好的共享代码**。 在此之前，我们共享代码一般用npm发包来解决。 npm发包需要经历构建，发布，引用三阶段，而联邦模块可以**直接引用其他应用代码**,实现热插拔效果。对比npm的方式更加简洁、快速、方便。
 
 
 
-假设我们有app1，app2两个应用，端口分别为3001，3002。 app1应用要想引用app2里面的js，直接用script标签即可。
+联邦模块和微前端的关系：因为expose这个属性即可以暴露单个组件，也可以把整个应用暴露出去。同时由于share属性存在，技术栈必须一致。所以加上路由，可以用来实现single-spa这种模式的微前端。
 
-例如app1应用里面index.html引入app2应用remoteEntry.js
+使用场景：新建专门的组件应用服务来管理所有组件和应用，其他业务层只需要根据自己业务所需载入对应的组件和功能模块即可。模块管理统一管理，代码质量高，搭建速度快。特别适用矩阵app，或者可视化页面搭建等场景。
 
-```html
- <head>
-    <script src="http://localhost:3002/remoteEntry.js"></script>
-  </head>
-```
+
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f716494c298941e5bcb4874256d83dba~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
+
+
 
 
 

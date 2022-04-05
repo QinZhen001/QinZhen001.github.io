@@ -398,12 +398,11 @@ var upperCaseName = computed(() =>
 );
 
 // change 是  { newValue, oldValue }   可以拿到新旧值
-var disposer = upperCaseName.observe(change => console.log(change.newValue));
+var disposer = upperCaseName.observe({ newValue, oldValue } => console.log(newValue,oldValue));
 // 该函数返回一个 disposer 函数，当调用时可以取消观察者。
 
 name.set("Dave");
 // 输出: 'DAVE'
-
 ```
 
 
@@ -423,6 +422,22 @@ name.set("Dave");
 [https://cn.mobx.js.org/refguide/reaction.html](https://cn.mobx.js.org/refguide/reaction.html)
 
 粗略地讲，reaction 是 `computed(expression).observe(action(sideEffect))` 或 `autorun(() => action(sideEffect)(expression))` 的语法糖。
+
+
+
+
+
+## MobXProviderContext
+
+为什么需要MobXProviderContext？不可以用React 的 Context吗？
+
+[https://github.com/mobxjs/mobx-react/issues/689](https://github.com/mobxjs/mobx-react/issues/689)
+
+The `MobXProviderContext` is only useful for code using `inject` and migrating to hooks. That way you can mix both in a single app and share the same context. If you have your own Context, you can forget about the one exported from the package :)
+
+
+
+
 
 
 
@@ -469,4 +484,40 @@ ExtendObservable 用来向已存在的目标对象添加 observable 属性。 �
 ```
 extendObservable(target, properties, decorators?, options?)
 ```
+
+
+
+
+
+
+
+# 补充
+
+
+
+## Redux vs Mobx
+
+[https://juejin.cn/post/6844903466029023246](https://juejin.cn/post/6844903466029023246)
+
+
+
+Redux ：
+
+* 数据流流动很自然，因为任何 dispatch 都会导致广播，需要依据对象引用是否变化来控制更新粒度。
+* 有时间回溯的特征，可以增强业务的可预测性与错误定位能力。
+* 对 typescript 支持困难
+* 有中间件机制
+* 使用纯函数修改状态
+* JavaScript对象
+
+Mobx:
+
+* 数据流流动不自然，只有用到的数据才会引发绑定，局部精确更新，但免去了粒度控制烦恼。
+* 没有时间回溯能力，因为数据只有一份引用。
+* 完美支持 typescript
+* 没有中间件机制
+* 可观察对象 （是包裹的对象）
+* Mobx 使用了 Object.defineProperty 拦截 getter 和 setter
+
+**前端数据流不太复杂的情况，使用 Mobx，因为更加清晰，也便于维护；如果前端数据流极度复杂，建议谨慎使用 Redux，通过中间件减缓巨大业务复杂度**
 

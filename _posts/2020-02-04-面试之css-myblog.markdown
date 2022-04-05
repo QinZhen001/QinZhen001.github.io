@@ -802,9 +802,15 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 - 显式合成
 - 隐式合成
 
-### 
+
 
 ### 显式合成
+
+[层叠上下文相关](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
+
+我们假定用户正面向（浏览器）视窗或网页，而 HTML 元素沿着其相对于用户的一条虚构的 z 轴排开，**层叠上下文**就是对这些 HTML 元素的一个三维构想。众 HTML 元素基于其元素属性按照优先级顺序占据这个空间。
+
+
 
 拥有 **层叠上下文** 的节点。
 
@@ -824,7 +830,7 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 
 比如一个 div，你只个他设置了 100 * 100 的大小，而你在里面放置了很多内容，那么超出的文字部分就会被裁剪。如果你设置了滚动条，那么滚动条也会被单独提升为一个图层。
 
-### 
+
 
 ### **隐式合成**
 

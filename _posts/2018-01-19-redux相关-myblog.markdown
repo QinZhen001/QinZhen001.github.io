@@ -679,8 +679,6 @@ export const addToCart = productId => (dispatch, getState) => {
 
 redux-undo是一个reducer增强组件,它提供了undoable函数,这个函数接收已经存在的reducer和配置对象,使用undo函数增强已经存在的reducer.
 
-### 
-
 ```js
  // Redux utility functions 
 import { combineReducers } from 'redux';
@@ -704,8 +702,6 @@ combineReducers({
 
 **现在你必须使用state.present获取当前的state
 获取所有过去的state使用state.past.**
-
-### 
 
 **Undo/Redo**
 
@@ -893,5 +889,4 @@ let newAction = bindActionCreators(oldActionCreator,dispatch)
 * reducer 本质上是根据 action.type 来更新 state 并返回 nextState 的函数
 * reducer 必须返回值，否则 nextState 即为 undefined
 * 实际上，state 就是所有 reducer 返回值的汇总
-
 
