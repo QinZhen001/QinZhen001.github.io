@@ -312,15 +312,9 @@ module.exports = (api) => {
 
 
 
-
-
-
-
 ## preset
 
 通过使用或创建一个 preset 即可轻松使用一组插件。
-
-
 
 
 
@@ -341,7 +335,7 @@ babel-preset-env 的工作方式类似 babel-preset-latest，唯一不同的就�
 配置语法和 Autoprefixer 一样......
 
 
-```
+```tsx
 "babel": {
   "presets": [
     [

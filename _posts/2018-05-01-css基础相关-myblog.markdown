@@ -309,31 +309,15 @@ box-sizing：content-box | border-box
 继承性：无
 
 #### content-box：
-padding和border不被包含在定义的width和height之内。对象的实际宽度等于设置的width值和border、padding之和，即 ( Element width = width + border + padding )
+**padding和border不被包含在定义的width和height之内。**对象的实际宽度等于设置的width值和border、padding之和，即 ( Element width =  设置的width + border + padding )
 
 此属性表现为标准模式下的盒模型。
 
 
 #### border-box：
-padding和border被包含在定义的width和height之内。对象的实际宽度就等于设置的width值，即使定义有border和padding也不会改变对象的实际宽度，即 ( Element width = width )
+**padding和border被包含在定义的width和height之内。**对象的实际宽度就等于设置的width值，即使定义有border和padding也不会改变对象的实际宽度，即 ( Element width = 设置的width )
 
 此属性表现为怪异模式下的盒模型。
-
-**示例：**
-
-```css
-content-box:
-.test1{ box-sizing:content-box; width:200px; padding:10px; border:15px solid #eee; }
-```
-
-![enter description here][1]
-
-```css
-border-box:
-.test2{ box-sizing:border-box; width:200px; padding:10px; border:15px solid #eee; }
-```
-
-![enter description here][2]
 
 
 
@@ -346,14 +330,6 @@ border-box:
 
 * childNodes是正统属性   亲生的   比较讲究   事无巨细  都要返回来  
 * children是野孩子   它返回来的就只有DOM元素了  其他的文字啥的   都不返回   
-
-
-
-
-
-
-
-
 
 
 
