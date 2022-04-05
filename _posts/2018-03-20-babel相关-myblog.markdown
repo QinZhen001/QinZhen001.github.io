@@ -21,18 +21,10 @@ tags:
 
 [https://juejin.im/post/6844903602822053895#heading-3](https://juejin.im/post/6844903602822053895#heading-3)
 
-
-
 babel可以将当前运行平台(浏览器、node服务器)尚不支持的下一代或几代js语法编译为当前支持的js语法版本，比如可以把es6 es7和es8的js代码编译为es5的代码。
-
-
 
 * **plugin: babel的插件，在6.x版本之后babel必需要配合插件来进行工作**
 * **preset: babel插件集合的预设，包含某一部分的插件plugin**
-
-
-
-
 
 
 
@@ -101,8 +93,6 @@ babelrc: false}).code;
 
 
 将按如下顺序执行：stage-2、react 然后是 es2015。
-
-
 
 >这主要的是为了确保向后兼容，因为大多数用户将 "es2015" 排在 "stage-0" 之前。
 
@@ -275,39 +265,11 @@ require('antd/lib/button/style');
 
 
 
-
-
-
-
-
-
-
-
-
-
-###  [babel-plugin-dynamic-import-node](https://github.com/airbnb/babel-plugin-dynamic-import-node) 
-
-
-
- https://github.com/airbnb/babel-plugin-dynamic-import-node 
-
-
-
- Babel plugin to transpile `import()` to a deferred `require()`,  
-
-
-
-
-
 ### babel-plugin-transform-remove-console
 
 [https://www.npmjs.com/package/babel-plugin-transform-remove-console](https://www.npmjs.com/package/babel-plugin-transform-remove-console)
 
 This plugin removes all `console.*` calls.
-
-
-
-
 
 ## config
 
@@ -316,8 +278,6 @@ This plugin removes all `console.*` calls.
 
 
 ### 区分环境
-
-
 
 ```js
 module.exports = (api) => {

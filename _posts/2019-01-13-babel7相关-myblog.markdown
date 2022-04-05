@@ -299,29 +299,7 @@ regenerator-runtime是generator以及async/await的运行时依赖
 
 这个插件会在编译时将所有使用**「辅助方法」**的地方从**「自己维护一份」**改为从`@babel/runtime`中引入。
 
-
-
-所以我们需要将`@babel/plugin-transform-runtime`置为`devDependence`，因为他在编译时使用。
-
-将`@babel/runtime`置为`dependence`，因为他在运行时使用。
-
-
-
-
-
-
-
 ### plugin
-
-
-
-
-
-
-
-
-
-
 
 
 #### @babel/plugin-transform-runtime
@@ -470,17 +448,9 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 该项用来设置是否使用ES6的模块化用法，取值是布尔值。默认是fasle，在用webpack一类的打包工具的时候，我们可以设置为true，以便做静态分析。
 
 
-
-
-
-
 #### @babel/plugin-proposal-decorators
 
-
-
 [https://babeljs.io/docs/en/babel-plugin-proposal-decorators](https://babeljs.io/docs/en/babel-plugin-proposal-decorators)
-
-
 
 #### @babel/plugin-proposal-class-properties
 
@@ -505,12 +475,6 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 `boolean`, defaults to `false`.
 
 Use the legacy (stage 1) decorators syntax and behavior.
-
-#### 
-
-
-
-
 
 ### use strict
 [https://blog.csdn.net/qq_40259641/article/details/84106252](https://blog.csdn.net/qq_40259641/article/details/84106252)
@@ -660,10 +624,6 @@ module.exports = {
 #### 构建库或是 Web Component 时的 Polyfills
 
 当使用 Vue CLI 来[构建一个库或是 Web Component](https://cli.vuejs.org/zh/guide/build-targets.html) 时，推荐给 `@vue/babel-preset-app` 传入 `useBuiltIns: false` 选项。这能够确保你的库或是组件不包含不必要的 polyfills。通常来说，打包 polyfills 应当是最终使用你的库的应用的责任。
-
-
-
- 
 
 
 
