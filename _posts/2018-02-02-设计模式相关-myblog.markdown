@@ -688,4 +688,76 @@ http://www.runoob.com/design-pattern/decorator-pattern.html
 
 
 
+# IOC（Inverse Of Control）
+
+[https://juejin.cn/post/6844903750843236366](https://juejin.cn/post/6844903750843236366)
+
+**IOC 架构的好处是不需要手动创建对象和根据依赖关系传入不同对象的构造器中，一切都是自动扫描并创建、注入的。**
+
+
+
+`IoC` 的全称叫做 `Inversion of Control`，可翻译为为「**控制反转**」或「**依赖倒置**」，它主要包含了三个准则：
+
+1. 高层次的模块不应该依赖于低层次的模块，它们都应该依赖于抽象
+2. 抽象不应该依赖于具体实现，具体实现应该依赖于抽象
+3. **面向接口编程** 而不要面向实现编程
+
+
+
+
+
+# 依赖注入
+
+所谓的依赖注入，简单来说就是把高层模块所依赖的模块通过传参的方式把依赖「注入」到模块内部
+
+```tsx
+// app.js
+class App {
+    constructor(options) {
+        this.options = options;
+        this.router = options.router;
+        this.track = options.track;
+
+        this.init();
+    }
+
+    init() {
+        window.addEventListener('DOMContentLoaded', () => {
+            this.router.to('home');
+            this.track.tracking();
+            this.options.onReady();
+        });
+    }
+}
+
+// index.js
+import App from 'path/to/App';
+import Router from './modules/Router';
+import Track from './modules/Track';
+
+new App({
+    router: new Router(),
+    track: new Track(),
+    onReady() {
+        // do something here...
+    },
+});
+
+```
+
+别的例子：
+
+比如对象A需要操作数据库，以前我们总是要在A中自己编写代码来获得一个Connection对象，有了 spring我们就只需要告诉spring，A中需要一个Connection，至于这个Connection怎么构造，何时构造，A不需要知道。在系统运行时，spring会在适当的时候制造一个Connection，然后像打针一样，注射到A当中，这样就完成了对各个对象之间关系的控制。A需要依赖 Connection才能正常运行，而这个Connection是由spring注入到A中的，依赖注入的名字就这么来的。
+
+
+
+
+
+
+
+# AOP
+
+面向切面编程
+
+**AOP 的好处是可以把一些通用逻辑分离到切面中，保持业务逻辑的存粹性，这样切面逻辑可以复用，还可以动态的增删**
 
