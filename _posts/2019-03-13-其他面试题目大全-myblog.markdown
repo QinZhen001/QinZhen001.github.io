@@ -191,7 +191,7 @@ console.log(b);
 
 
 
-
+## webpack
 
 
 
@@ -206,10 +206,45 @@ console.log(b);
 
 
 
+### webpack 代码混淆
 
-### webpack 做代码混淆是怎么做的
 
 
+
+
+### webpack里 tree-shaking的条件
+
+* es module
+* 无用代码
+*  开发的第三方库可以在package.json设置  "sideEffects": false
+
+
+
+"side effect(副作用)" 的定义是，在导入时会执行特殊行为的代码，而不是仅仅暴露一个 export 或多个 export。
+
+举例说明，例如 polyfill，它影响全局作用域，并且通常不提供 export。
+
+
+
+
+
+### Import 方式对 Tree-shaking 的影响
+
+**import \* as 的效果和 import {} 解构的效果是一样的：都是先取到 import 的对象，再基于对象上的属性是否被使用来进行标注。**
+
+**export default 对象被 import 后，挂在 default 上的属性和方法，如果通过引入default且调用default.A，其他方法例如default.A即使没有被调用，也无法被 tree-shaking。**
+
+**所以我们在组织模块文件时，应当尽可能避免 export default {A, B, C} 的写法。**
+
+
+
+
+
+### webpack Tree-shaking 的执行时机
+
+mode 为 "production"  生产环境打包，静态编译的时候。
+
+ 
 
 
 

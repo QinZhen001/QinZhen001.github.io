@@ -437,9 +437,19 @@ let unusable: void = undefined;
 
 [https://www.zhihu.com/question/354601204/answer/888668879](https://www.zhihu.com/question/354601204/answer/888668879)
 
+[https://mp.weixin.qq.com/s/PpumNz-3lhJZ4zIUZzbnNg](https://mp.weixin.qq.com/s/PpumNz-3lhJZ4zIUZzbnNg)
+
+`never` 是值集为空的集合。因为集合里面没有值，所以 `never` 类型就不能被赋值，包括 `any` 类型的值（这听起来很绕）。也就是说 `never` 类型代表**永远不会发生的类型，或者话句话说是一个**底层类型的概念。
 
 
-> never的主要作用就是充当Typescript类型系统里的[Bottom Type](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Bottom_type) (Typescript还有个top type unknown和即是top也是bottom的any)
+
+
+
+> never的主要作用就是充当Typescript类型系统里的[Bottom Type](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Bottom_type)
+>
+>  top type  =>  unknown
+>
+> 即是top也是bottom  =>   any
 
 
 
@@ -544,6 +554,12 @@ type Foo = string | number | boolean;
 
 
 `controlFlowAnalysisWithNever` 方法总是穷尽了 Foo 的所有可能类型。 通过这个示例，我们可以得出一个结论：**使用 never 避免出现新增了联合类型没有对应的实现，目的就是写出类型绝对安全的代码。**
+
+
+
+### 为什么需要 never 
+
+
 
 
 
