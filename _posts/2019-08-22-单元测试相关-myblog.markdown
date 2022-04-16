@@ -165,6 +165,51 @@ You can provide an optional propertyMatchers object argument, which has asymmetr
 
 
 
+### toMatchInlineSnapshot
+
+[内联快照](https://jestjs.io/zh-Hans/docs/snapshot-testing)
+
+内联快照和普通快照(`.snap` 文件)表现一致，只是会将快照值自动写会源代码中。 这意味着你可以从自动生成的快照中受益，并且不用切换到额外生成的快照文件中保证值的正确性。
+
+```tsx
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="https://example.com">Example Site</Link>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot();
+});
+```
+
+下次运行Jest时，`tree` 会被重新评估，此次的快照会被当作一个参数传递到 `toMatchInlineSnapshot`:
+
+```tsx
+it('renders correctly', () => {
+  const tree = renderer
+    .create(<Link page="https://example.com">Example Site</Link>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot(`
+<a
+  className="normal"
+  href="https://example.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  Example Site
+</a>
+`);
+});
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
