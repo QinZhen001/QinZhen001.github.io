@@ -768,10 +768,6 @@ var attr = true && 0 && "aaa";
 
 
 
-
-
-
-
 ```
 // => 100
 var attr = 100 || 12;
@@ -859,6 +855,55 @@ false && false || alert(1)
 
 
 **当同时存在多个||时，从左到右，一一执行上述规则。**
+
+
+
+
+
+### Array.reduce
+
+[Array.reduce](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce)
+
+
+
+#### [按顺序运行 Promise](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#按顺序运行_promise)
+
+```tsx
+ * @param {array} arr - promise arr  非Promise也可以Promise.resolve转化一下
+ * @return {Object} promise object
+ */
+function runPromiseInSequence(arr, input) {
+  return arr.reduce(
+    (promiseChain, currentFunction) => promiseChain.then(currentFunction),
+    Promise.resolve(input)
+  )
+}
+```
+
+
+
+
+
+#### 数组切割
+
+```tsx
+function chunk(arr = [], size = 1) {
+  return arr.reduce(
+    (t, v) => {
+      t[t.length - 1].length === size ? t.push([v]) : t[t.length - 1].push(v);
+      return t
+    },
+    [[]]
+  );
+}
+```
+
+
+
+```tsx
+const res = chunk(["a", "b", "c", "d", "e", "f", "g"], 3);
+// [['a','b','c'],['d','e','f'],['g']]
+```
 
 
 

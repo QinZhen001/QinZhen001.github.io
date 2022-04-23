@@ -1297,9 +1297,23 @@ type AA = ParamType<string>;    // string
 
 
 
+### Awaitable
 
+https://github.com/microsoft/TypeScript/issues/31394
 
+```tsx
+type Awaitable<T> = T | PromiseLike<T>
+```
 
+```tsx
+async function logAnswer(getAnswer: () => Awaitable<number>): Promise<void> {
+  const answer = await getAnswer();
+  console.log(answer);
+}
+
+logAnswer(() => 42);
+logAnswer(() => Promise.resolve(42));
+```
 
 
 
