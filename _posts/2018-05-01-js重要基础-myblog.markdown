@@ -4313,6 +4313,20 @@ searchIframes(document)
 
 
 
+### event中的offsetX触发到子元素
+
+event中的offsetX 会触发到子元素中
+
+应该怎么解决？
+
+* 在事件捕获阶段处理，阻止冒泡。 e.stopPropagation(); e.preventDefault();
+* 判断元素 e.target === 父元素 时候获取
+* 用 event.pageX - xxx.getBoundingClientRect().left 代替
+
+
+
+
+
 
 
 ## V8引擎

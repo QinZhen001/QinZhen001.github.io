@@ -417,6 +417,20 @@ nodeIntegration 和 contextIsolation 都要设置缺一不可
 
 
 
+## 无法校验开发者
+
+[What should I do about com.apple.quarantine?](https://superuser.com/questions/28384/what-should-i-do-about-com-apple-quarantine)
+
+解决
+
+```bash
+xattr -dr com.apple.quarantine **/*
+```
+
+
+
+
+
 
 
 # 跨端的通用原理
