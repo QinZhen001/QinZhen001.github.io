@@ -433,6 +433,24 @@ let unusable: void = undefined;
 
 
 
+## enum
+
+
+
+### enums compile on *.d.ts
+
+[https://stackoverflow.com/questions/38553097/how-to-import-an-enum](https://stackoverflow.com/questions/38553097/how-to-import-an-enum)
+
+[TypeScript中如何使用自己在d.ts中定义的enum？](https://www.zhihu.com/question/464165657)
+
+ **结论：.d.ts 中定义的东西不会进入到运行时，你应该只在 .ts 中定义一遍**
+
+
+
+
+
+
+
 ## Never
 
 [https://www.zhihu.com/question/354601204/answer/888668879](https://www.zhihu.com/question/354601204/answer/888668879)
@@ -722,6 +740,26 @@ console.log(Test.bbb) // ok
 
 
 **仅当在你需要写一个`d.ts`文件时才使用这个指令。**
+
+
+
+## type
+
+
+
+### import/export type
+
+[导入/导出](https://jkchao.github.io/typescript-book-chinese/new/typescript-3.8.html#%E4%BB%85%E4%BB%85%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E5%A3%B0%E6%98%8E)
+
+`import type` 仅仅导入被用于类型注解或声明的声明语句，它总是会被完全删除，因此在运行时将不会留下任何代码。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
+
+
+
+
+
+
+
+
 
 
 
@@ -1750,29 +1788,6 @@ declare module "UUU" {
 
 
 
-## Record & Dictionary & Many
-
-这几个语法糖是从 `lodash` 的 types 源码中学到的，平时工作中的使用频率还挺高。
-
-```tsx
-type Record<K extends keyof any, T> = {
-    [P in K]: T;
-};
-
-interface Dictionary<T> {
-  [index: string]: T;
-};
-
-interface NumericDictionary<T> {
-  [index: number]: T;
-};
-
-const data:Dictionary<number> = {
-  a: 3,
-  b: 4
-}
-```
-
 
 
 ## class
@@ -2574,6 +2589,29 @@ type GetMutations<Module> = Module extends { mutations: infer M } ? M : never
 ```
 
 
+
+### Record & Dictionary & Many
+
+这几个语法糖是从 `lodash` 的 types 源码中学到的，平时工作中的使用频率还挺高。
+
+```tsx
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+
+interface Dictionary<T> {
+  [index: string]: T;
+};
+
+interface NumericDictionary<T> {
+  [index: number]: T;
+};
+
+const data:Dictionary<number> = {
+  a: 3,
+  b: 4
+}
+```
 
 
 
