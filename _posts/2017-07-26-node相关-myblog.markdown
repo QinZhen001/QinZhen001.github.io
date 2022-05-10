@@ -809,6 +809,37 @@ nodemon **does not require any changes** to your code or method of development. 
 
 
 
+### 查看芯片arch架构
+
+```bash
+node -p process.arch
+// x64
+```
+
+切换x64架构
+
+```bash
+arch -x86_64 zsh
+```
+
+
+
+
+
+### 杀掉进程
+
+```bash
+lsof -i :8001
+// 查找对应端口的进程
+```
+
+```bash
+kill xxx
+// xxx 为pid
+```
+
+
+
 
 
 

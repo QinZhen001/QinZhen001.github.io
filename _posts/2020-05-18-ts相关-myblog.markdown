@@ -403,6 +403,45 @@ f("Coding Cat"); // ok
 
 
 
+
+
+## enum
+
+枚举是组织收集有关联变量的一种方式
+
+
+
+### const enum
+
+获得性能提升的一个小技巧是使用常量枚举：
+
+```tsx
+const enum Tristate {
+  False,
+  True,
+  Unknown
+}
+
+const lie = Tristate.False;
+```
+
+将会被编译成：
+
+```tsx
+let lie = 0;
+```
+
+编译器将会：
+
+- 内联枚举的任何用法（`0` 而不是 `Tristate.False`）；
+- 不会为枚举类型编译成任何 JavaScript（在这个例子中，运行时没有 `Tristate` 变量），因为它使用内联语法。
+
+
+
+
+
+
+
 ##  void 
 
 
@@ -2229,6 +2268,32 @@ type ExtractActionCreaotrKey<T> = {
 * 使用目标版本 --target ES2016 会告诉编译器不要对 ES2016 的特性进行转换, 比如 ** 运算符.
 * 相似的, --target ES2017 会告诉编译器不要转换 ES2017 的特性, 比如 async/await.
 * --target ESNext 则对应最新的 [ES 提案特性](https://link.zhihu.com/?target=https%3A//github.com/tc39/proposals)的支持.
+
+
+
+### isolatedModules
+
+[https://www.typescriptlang.org/tsconfig#isolatedModules](https://www.typescriptlang.org/tsconfig#isolatedModules)
+
+While you can use TypeScript to produce JavaScript code from TypeScript code, it’s also common to use other transpilers such as [Babel](https://babeljs.io/) to do this. However, other transpilers only operate on a single file at a time, which means they can’t apply code transforms that depend on understanding the full type system. This restriction also applies to TypeScript’s `ts.transpileModule` API which is used by some build tools.
+
+These limitations can cause runtime problems with some TypeScript features like `const enum`s and `namespace`s. Setting the `isolatedModules` flag tells TypeScript to warn you if you write certain code that can’t be correctly interpreted by a single-file transpilation process.
+
+
+
+### skipLibCheck
+
+[https://www.typescriptlang.org/tsconfig#skipLibCheck](https://www.typescriptlang.org/tsconfig#skipLibCheck)
+
+Skip type checking of declaration files.
+
+This can save time during compilation at the expense of type-system accuracy. For example, two libraries could define two copies of the same `type` in an inconsistent way. Rather than doing a full check of all `d.ts` files, TypeScript will type check the code you specifically refer to in your app’s source code.
+
+
+
+Another possibility is when you are migrating between TypeScript releases and the changes cause breakages in node_modules and the JS standard libraries which you do not want to deal with during the TypeScript update.
+
+
 
 
 
