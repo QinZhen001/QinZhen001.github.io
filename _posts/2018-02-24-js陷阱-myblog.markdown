@@ -292,4 +292,22 @@ function defineReactive(obj, key, customSetter) {
 
 
 
+### 条件中的递减
 
+```tsx
+const _retry = (info, num) => {
+  if (!num) {
+    return reject(info);
+  }
+
+  setTimeout(() => {
+    fn(...args).then(
+      (res) => resolve(res),
+      // (rej) => _retry(rej, num--) 这种写法传进_retry的num还是原来的num
+      (rej) => _retry(rej, --num) // 正确写法
+    );
+  }, interval);
+};
+```
+
+**总结：在递归函数中递减 正确写法是 --num 而不是 num--**
