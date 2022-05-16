@@ -2599,6 +2599,16 @@ style: React.CSSProperties;
 
 
 
+## quicktype
+
+[https://quicktype.io/](https://quicktype.io/)
+
+Convert JSON into gorgeous, typesafe code in any language.
+
+
+
+
+
 
 
 # 补充
@@ -3719,6 +3729,22 @@ function f(Param: typeof A) {
    new Param();
 }
 ```
+
+
+
+
+
+## ts(1205)
+
+Re-exporting a type when the '--isolatedModules' flag is provided requires using 'export type'
+
+[https://github.com/microsoft/TypeScript/issues/28481](https://github.com/microsoft/TypeScript/issues/28481)
+
+export 只需要一次就行了
+
+
+
+
 
 
 
