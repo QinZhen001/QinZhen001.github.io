@@ -11,8 +11,17 @@ tags:
 
 > “Yeah It's on. ”
 
-
 # 正文
+
+[前端监控SDK开发分享](https://mp.weixin.qq.com/s/1RNw1W2AgAylcd7Gindm4w)
+
+前端监控系统最核心的首要是收集客户端的相关数据：
+
+性能相关：首屏性能
+
+错误相关：接口错误，js执行错误，资源加载错误（css，js，静态资源）
+
+
 
 
 

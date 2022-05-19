@@ -786,9 +786,6 @@ keep-alive需要其包裹的组件有name属性，
 * 优化字体
 * 其他垂直领域的性能优化
 
-### 性能监控
-最后，你可能需要一个性能检测工具来持续监视网站的性能。
-
 
 
 ### 时间切(Time Slicing)
@@ -914,15 +911,9 @@ function ts (gen) {
 
 ### Timeline 面板概览
 
-
-
 [ https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool ]( https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool )
 
-
-
 **火焰图**。 CPU 堆叠追踪的可视化。
-
-
 
 您可以在**火焰图**上看到一到三条垂直的虚线。
 
@@ -934,21 +925,15 @@ function ts (gen) {
 
    
 
-
-
 > 当所有js同步代码执行完毕，触发 DOMContentLoaded 
 >
 > 等待html的所有资源都加载完成才会触发，这些资源包括css、js、图片视频等，触发 load 
 
 
 
-
-
 ### **DOMContentLoaded**
 
 [ https://zhuanlan.zhihu.com/p/43282197 ]( https://zhuanlan.zhihu.com/p/43282197 )
-
-
 
 ```html
 <html lang="en">
