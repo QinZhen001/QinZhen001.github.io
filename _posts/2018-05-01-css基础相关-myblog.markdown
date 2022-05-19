@@ -44,18 +44,53 @@ p.text{
 </body>
 ```
 
-
-
 p.text  意思是选择p标签的类名为text的元素
-
-
-
-
 
 注意点:     
 
 *  选择器之间没有任何的连接符号      
 *   选择器可以是标签名称,也可以是id、class名称   
+
+
+
+#### 属性选择器
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/Attribute_selectors](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Attribute_selectors)
+
+CSS **属性选择器**通过已经存在的属性名或属性值匹配元素。
+
+```css
+/* 存在title属性的<a> 元素 */
+a[title] {
+  color: purple;
+}
+
+/* 存在href属性并且属性值匹配"https://example.org"的<a> 元素 */
+a[href="https://example.org"] {
+  color: green;
+}
+
+/* 存在href属性并且属性值包含"example"的<a> 元素 */
+a[href*="example"] {
+  font-size: 2em;
+}
+
+/* 存在href属性并且属性值结尾是".org"的<a> 元素 */
+a[href$=".org"] {
+  font-style: italic;
+}
+
+/* 存在class属性并且属性值包含以空格分隔的"logo"的<a>元素 */
+a[class~="logo"] {
+  padding: 2px;
+}
+```
+
+
+
+
+
+
 
 
 
@@ -71,11 +106,17 @@ p.text  意思是选择p标签的类名为text的元素
 
 
 
+
+
+### 
+
+
+
+
+
+
+
 ### 伪类相关
-
-
-
-
 
 #### hover伪类操纵
 

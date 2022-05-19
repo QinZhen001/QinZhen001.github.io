@@ -104,6 +104,28 @@ Storybook在你的应用程序之外运行，所以你可以独立开发UI组件
 
 
 
+### **Webpack 5 support**
+
+[https://storybook.js.org/blog/storybook-for-webpack-5/](https://storybook.js.org/blog/storybook-for-webpack-5/)
+
+The Webpack 5 upgrade is Storybook's most upvoted  Github issue. Since 6.2 is a minor release, Webpack 4 is still the default builder. But you can start using Webpack 5 by opting in.
+
+For a fresh Storybook install:
+
+```bash
+npx sb init --builder webpack5
+```
+
+For an existing Storybook, upgrade to the latest version, add `@storybook/builder-webpack5`, and set the `core.builder` configuration in `.storybook/main.js` ([full instructions](https://gist.github.com/shilman/8856ea1786dcd247139b47b270912324#upgrade)).
+
+
+
+
+
+
+
+
+
 ## 问题
 
 
