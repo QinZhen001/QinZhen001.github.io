@@ -121,7 +121,9 @@ First paint time 的概念W3C并没有定义，因为是存在争议的。
 
 
 
-## js代码错误
+## js运行错误
+
+window.onerror | unhandledrejection | console.error | 以及框架自带的监听函数
 
 ```js
   window.addEventListener('error', function(e) {
@@ -140,15 +142,7 @@ First paint time 的概念W3C并没有定义，因为是存在争议的。
   })
 ```
 
-
-
-
-
-
-
-
-
-## 监听unhandledrejection
+监听unhandledrejection
 
 当[`Promise`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise) 被 `reject` 且没有 `reject` 处理器的时候，会触发 `unhandledrejection` 事件
 
@@ -160,11 +154,69 @@ window.addEventListener('unhandledrejection', (e) => {
 
 
 
+注意：
+
+* 一是`onerror`会获取不到跨域的`script`错误，解决方案也很简单：为跨域的`script`标签设置`crossorigin`属性，并且需要静态服务器为当前资源设置`CORS`响应头。
+* 二是代码压缩后的报错信息需要通过`sourceMap`文件解析出源代码对应的行列和错误信息，`sourceMap`本身是一种数据结构，存储了源代码和压缩代码的关系数据，通过解析库能够很轻松转换它们。但如何自动化管理和操作`sourceMap`文件才是前端监控系统核心需要解决的问题。这里就需要结合企业内部的静态资源发布系统和前端监控系统，来解决低效率的手动打包上传问题。
 
 
 
 
 
+## 微信小程序
+
+通过重写它的部分全局函数和相关`API`我们能获取到：网络请求、错误信息、设备和版本信息等。由于微信小程序的加载流程是由微信`APP`控制的，`js`等资源也被微信内部托管，因此和`web`不同，我们没有办法获取到`web`中`performance`能获取到的页面和资源加载信息。
+
+
+
+
+
+### App和Component
+
+通过重写全局的`App`函数，绑定`onError`方法监听错误，重写它的`onShow`方法执行小程序启动时`SDK`需要的逻辑。通过重写`Component`的`onShow`方法，可以在页面组件切换时执行我们的路径收集和执行上报等逻辑。
+
+```tsx
+// SDK初始化函数
+init(){
+    this.appMethod = App;
+    this.componentMethod = Component;
+    const ctx = this;
+    //重写微信小程序Component
+    Component = (opts) => {
+      overrideComponent(opts, ctx);
+      ctx.componentMethod(opts);
+    };
+    //重写微信小程序App
+    App = (app) => {
+      overrideApp(app, ctx);
+      ctx.appMethod(app);
+    };
+}  
+
+//注意ctx是sdk的this
+overrideComponent(opts, ctx) => {
+  const compOnShow = opts.methods.onShow;
+  opts.methods.onShow = function(){
+    // do something
+    //注意这里的this是实际调用方
+    compOnShow.apply(this, arguments)
+  }
+})
+
+overrideApp(app, ctx) => {
+  const _onError = app.onError || function () {};
+  const _onShow = app.onShow || function () {};
+  app.onError = function (err) {
+    reportError(err, ctx);
+    return _onError.apply(this, arguments);
+  };
+  app.onShow = function () {
+    //do something
+    return _onShow.apply(this, arguments);
+  };
+})
+
+```
 
 
 
