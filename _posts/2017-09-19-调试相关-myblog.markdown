@@ -111,6 +111,16 @@ Chrome 会记录最后插入的 5 个元素，分别以 `$0` ~ `$4` 的方式在
 
 
 
+## 打印window上带“-” 的对象
+
+我们假设window上有一个 xxx-yyy 对象
+
+我们直接 xxx-yyy 是访问不到的   **（ - 的影响）**
+
+**正确： window["xxx-yyy"]**
+
+[![Xipy36.md.jpg](https://s1.ax1x.com/2022/05/24/Xipy36.md.jpg)](https://imgtu.com/i/Xipy36)
+
 
 
 ## 查看所有元素位置和大小
@@ -144,13 +154,7 @@ html * {
 
 
 
-
-
-
-
-
-
-## react调试
+# react调试
 
 [React调试利器：React DevTools](https://juejin.cn/post/6877546408925200391)
 
