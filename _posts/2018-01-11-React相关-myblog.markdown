@@ -901,6 +901,27 @@ ReactDOM.findDOMNode(Btn).style.color = 'red'
 
 
 
+###  [ReactNode vs ReactElement](https://stackoverflow.com/questions/58123398/when-to-use-jsx-element-vs-reactnode-vs-reactelement)
+
+```tsx
+type ReactText = string | number;
+type ReactChild = ReactElement | ReactText;
+
+type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
+
+interface ReactElement<P = any, T extends string | JSXElementConstructor<any> = string | JSXElementConstructor<any>> {
+        type: T;
+        props: P;
+        key: Key | null;
+    }
+```
+
+
+
+ReactNode 是包括ReactElement 同时可以为null
+
+
+
 
 
 ## 动画

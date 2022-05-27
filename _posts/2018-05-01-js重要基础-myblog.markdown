@@ -937,7 +937,38 @@ myObject 中包含的foo 属性会屏蔽原型链上层的所有foo 属性，因
 
 
 
+### Object的keys的顺序
 
+[JS中Object的keys是无序的吗](https://mp.weixin.qq.com/s/EpTOLCxNJlHO1kMBOS7NkA)
+
+```ts
+const objWithStrings = {
+  "002": "002",
+  c: "c",
+  2: "1",
+  b: "b",
+  1: "1",
+  [Symbol("second")]: "second",
+  "001": "001",
+};
+
+console.log(Reflect.ownKeys(objWithStrings)); 
+console.log(Object.keys(objWithStrings)); 
+console.log(Object.getOwnPropertyNames(objWithStrings));
+```
+
+输出：
+
+```tsx
+['1', '2', '002', 'c', 'b', '001', Symbol(second)]
+['1', '2', '002', 'c', 'b', '001']
+['1', '2', '002', 'c', 'b', '001']
+```
+
+总结：
+
+1. 在 ES6 之前 Object 的键值对是无序的；
+2. 在 ES6 之后 Object 的键值对按照自然数、非自然数和 Symbol 进行排序，自然数是按照大小升序进行排序，其他两种都是按照插入的时间顺序进行排序。
 
 
 

@@ -1882,25 +1882,9 @@ In this example, the export `b` can be removed in production mode.
 
 [https://juejin.im/post/6844903888319954952](https://juejin.im/post/6844903888319954952)
 
-
-
-![](https://user-gold-cdn.xitu.io/2019/7/11/16be0d655244d397?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
-
-
-
 ```
 import被转化成了__webpack_require__.e(/*! import() */ 0)
 ```
-
-
-
-`__webpack_require__.e`就是requireEnsure
-
-
-
-![](https://user-gold-cdn.xitu.io/2019/7/11/16be0df85e18743c?imageslim)
-
-
 
 代码可能有点眼花，看下来无非就是做了这么一件事情。
 
@@ -1926,10 +1910,11 @@ __webpack_require__.e(/*! import() */ 0)
 
 **这里就有两个问题？**
 
- 
-
 1. **`__webpack_require__` 是根据我们之前传入的 `modules` 来获取 `module` 的，但是，在 `__webpack_require__.e` 中并没有看到有对 `modules` 执行操作的代码。那 `modules` 到底是什么时候被更新的呢？**
+
 2. `promise` 把 `resolve` 和 `reject` 全部存入了 `installedChunks` 中， 并没有在获取异步chunk成功的`onload` 回调中执行 `resolve`，那么，`resolve` 是什么时候被执行的呢?
+
+   
 
 # 问题
 

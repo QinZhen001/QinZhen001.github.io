@@ -618,3 +618,13 @@ componentDidMount呢？
 **render、componentDidMount顺序：**
 底层子组件--子组件--子组件--...--顶层父组件
 
+
+
+
+
+### setState 同步还是异步
+
+[https://zhuanlan.zhihu.com/p/350332132](https://zhuanlan.zhihu.com/p/350332132)
+
+只要你进入了 `react` 的调度流程，那就是异步的。只要你没有进入 `react` 的调度流程，那就是同步的。什么东西不会进入 `react` 的调度流程？ `setTimeout` `setInterval` ，直接在 `DOM` 上绑定原生事件等。这些都不会走 `React` 的调度流程，你在这种情况下调用 `setState` ，那这次 `setState` 就是同步的。 否则就是异步的。
+
