@@ -157,6 +157,24 @@ NFT的全称是Non Fungible Token，也就是非同质化代币，非同质化�
 
 
 
+## **比特币**
+
+**比特币**（英语：Bitcoin[[注 4\]](https://zh.wikipedia.org/wiki/比特币#cite_note-9)，缩写：BTC 或 XBT）是一种基于去中心化，采用[点对点](https://zh.wikipedia.org/wiki/點對點)网络与[共识主动性](https://zh.wikipedia.org/wiki/共识主动性)，[开放源代码](https://zh.wikipedia.org/wiki/開放原始碼)，以[区块链](https://zh.wikipedia.org/wiki/区块链)作为底层技术的[加密货币](https://zh.wikipedia.org/wiki/加密貨幣)[[6\]](https://zh.wikipedia.org/wiki/比特币#cite_note-10)，比特币由[中本聪](https://zh.wikipedia.org/wiki/中本聪)（网名于2008年10月31日发表论文[[7\]](https://zh.wikipedia.org/wiki/比特币#cite_note-12)，2009年1月3日，创世区块诞生。在某些国家、[央行](https://zh.wikipedia.org/wiki/央行)、政府机关、学术界则将比特币视为[虚拟商品](https://zh.wikipedia.org/wiki/虛擬商品)，而不认为是货币[[8\]](https://zh.wikipedia.org/wiki/比特币#cite_note-13)。[货币金融学](https://zh.wikipedia.org/wiki/貨幣經濟學)认为货币具有[交易介质](https://zh.wikipedia.org/wiki/交易媒介)、[记账单位](https://zh.wikipedia.org/w/index.php?title=記賬單位&action=edit&redlink=1)、[价值储藏](https://zh.wikipedia.org/w/index.php?title=價值儲藏&action=edit&redlink=1)三种基本职能，但由于其高度波动性因此不具有后两种基本职能从而不是货币。
+
+
+
+
+
+## 区块链
+
+[区块链](https://zh.wikipedia.org/wiki/区块链)（Blockchain）是比特币的一个重要概念，该概念在中本聪的白皮书中提出，区块链是一串使用密码学方法相关系产生的资料块（称为“区块”，block）。新增的资料块总能链接到上一个区块，即整条区块链的尾部。比特币点对点网络将所有的交易历史都存储在“区块链”（blockchain）中，所以区块链可以看作记录着比特币交易的账本。区块链是一群分散的客户端节点，并由所有参与者组成的[分布式数据库](https://zh.wikipedia.org/wiki/分散式資料庫)，是对所有比特币交易历史的记录
+
+
+
+
+
+
+
 
 
 # 副业

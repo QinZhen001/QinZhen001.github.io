@@ -1779,6 +1779,10 @@ In this example, the export `b` can be removed in production mode.
 
 ## 热更新原理
 
+[webpack的热更新原理](https://juejin.cn/post/7038767740059926565)
+
+[Webpack HMR 原理解析](https://zhuanlan.zhihu.com/p/30669007)
+
 [https://juejin.cn/post/7038767740059926565](https://juejin.cn/post/7038767740059926565)
 
 [https://juejin.cn/post/6844904008432222215#heading-0](https://juejin.cn/post/6844904008432222215#heading-0)
@@ -1791,6 +1795,66 @@ In this example, the export `b` can be removed in production mode.
 
 - `hash` : `webpack`重新编辑打包后的新`hash`值 。
 - `ok` : 进行`reloadApp`热更新检查 。
+
+
+
+HMR 成功与否的关键步骤，HotModulePlugin 将会对新旧模块进行对比，决定是否更新模块，在决定更新模块后，检查模块之间的依赖关系，更新模块的同时更新模块间的依赖引用。
+
+
+
+热更新会修改webpack.config.js的entry配置
+
+```tsx
+{ entry:
+    { index: 
+        [
+            // 获取的clientEntry
+            'xxx/node_modules/webpack-dev-server/client/index.js?http://localhost:8080',
+            // 获取的hotEntry
+            'xxx/node_modules/webpack/hot/dev-server.js',
+            // 开发配置的入口
+            './src/index.js'
+    	],
+    },
+}      
+```
+
+在入口默默增加了 2 个文件，那就意味会一同打包到`bundle`文件中去，也就是线上运行时。
+
+
+
+```tsx
+// webpack-dev-server/client/index.js
+var socket = require('./socket');
+var onSocketMessage = {
+    hash: function hash(_hash) {
+        // 更新currentHash值
+        status.currentHash = _hash;
+    },
+    ok: function ok() {
+        sendMessage('Ok');
+        // 进行更新检查等操作
+        reloadApp(options, status);
+    },
+};
+// 连接服务地址socketUrl，?http://localhost:8080，本地服务地址
+socket(socketUrl, onSocketMessage);
+
+function reloadApp() {
+	if (hot) {
+        log.info('[WDS] App hot update...');
+        
+        // hotEmitter其实就是EventEmitter的实例
+        var hotEmitter = require('webpack/hot/emitter');
+        hotEmitter.emit('webpackHotUpdate', currentHash);
+    } 
+}
+
+```
+
+热更新检查事件是调用`reloadApp`方法。比较奇怪的是，这个方法又利用`node.js`的`EventEmitter`，发出`webpackHotUpdate`消息。这是为什么？为什么不直接进行检查更新呢？
+
+个人理解就是为了更好的维护代码，以及职责划分的更明确。`websocket`仅仅用于客户端（浏览器）和服务端进行通信。而真正做事情的活还是交回给了`webpack`。
 
 
 
