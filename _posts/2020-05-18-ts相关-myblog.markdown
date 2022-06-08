@@ -4214,3 +4214,63 @@ In other words, `isolatedModules` does not provide enough type information for t
 
 The issue comments also have a suggested workaround, in which we have one `tsconfig` for compiling with isolated modules, and a second tsconfig for creating declaration files.
 
+
+
+## ts(7061)
+
+[https://bobbyhadz.com/blog/typescript-mapped-type-may-not-declare-properties-or-methods](https://bobbyhadz.com/blog/typescript-mapped-type-may-not-declare-properties-or-methods)
+
+A mapped type may not declare properties or methods.ts(7061)
+
+```tsx
+type EmailStatuses = 'Read' | 'Unread' | 'Draft'
+
+// tip: 注意下面两个的区别
+type StatusFromUnion = {
+  [key in EmailStatuses]: string
+}
+
+type StatusFromUnion1 = {
+  [key in keyof EmailStatuses]: string
+}
+```
+
+
+
+[https://stackoverflow.com/questions/67390147/ts1170-error-with-mapped-type-when-a-new-property-is-added](https://stackoverflow.com/questions/67390147/ts1170-error-with-mapped-type-when-a-new-property-is-added)
+
+`{[K in XXX]: YYY}` does not allow additional properties.
+
+```tsx
+enum A {
+  FOO = 0,
+  BAR = 1,
+  BAZ = 2,
+}
+
+// Error
+type B = {
+  length: number
+  [key in A]: number
+}
+
+// Success
+type B1 = {
+  [key in A]: number
+} & { length: number }
+
+
+// Or 
+type B = {
+    [key in A | "length"]: number;  // 这里可以推断  （不一定都是number）
+}
+```
+
+
+
+
+
+
+
+
+
