@@ -351,185 +351,6 @@ module.exports = (api) => {
 
 
 
-### babel-preset-env
-
-babel-preset-env 是一个新的 preset，可以根据配置的目标运行环境（environment）自动启用需要的 babel 插件。
-
-
-
-目前我们写 javascript 代码时，需要使用 N 个 preset，比如：babel-preset-es2015、babel-preset-es2016。es2015 可以把 ES6 代码编译为 ES5，es2016 可以把 ES2016 代码编译为 ES6。babel-preset-latest 可以编译 stage 4 进度的 ECMAScript 代码。
-
-问题是我们几乎每个项目中都使用了非常多的 preset，包括不必要的。例如很多浏览器支持 ES6 的 generator，如果我们使用 babel-preset-es2015 的话，generator 函数就会被编译成 ES5 代码。
-
-babel-preset-env 的工作方式类似 babel-preset-latest，唯一不同的就是 babel-preset-env 会根据配置的 env 只编译那些还不支持的特性。
-
-使用这个插件，你讲再也不需要使用 es20xx presets 了。
-
-配置语法和 Autoprefixer 一样......
-
-
-```tsx
-"babel": {
-  "presets": [
-    [
-      "env",
-      {
-        "targets": {
-          "browsers": ["last 2 versions", "ie >= 7"]
-        }
-      }
-    ]
-  ]
-},
-```
-
-
-
-注意：
-
-**preset-env会转换语法，也就是我们看到的箭头函数、const一类。**
-**如果进一步需要转换内置对象、实例方法，那就得用polyfill, 这就需要你做一点配置了**
-
-
-
-
-
-
-
-
-
-### useBuiltIns
-
-[https://www.babeljs.cn/docs/babel-preset-env#usebuiltins](https://www.babeljs.cn/docs/babel-preset-env#usebuiltins)
-
-preset-env 中的 useBuiltIns 配置
-
-```json
-{
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "useBuiltIns": "entry"
-      }
-    ]
-  ]
-}
-```
-
-`"usage"` | `"entry"` | `false`, defaults to `false`.
-
-This option configures how `@babel/preset-env` handles polyfills.
-
-When either the `usage` or `entry` options are used, `@babel/preset-env` will add direct references to `core-js` modules as bare imports (or requires). This means `core-js` will be resolved relative to the file itself and needs to be accessible.
-
-Since `@babel/polyfill` was deprecated in 7.4.0, we recommend directly adding `core-js` and setting the version via the [`corejs`](https://www.babeljs.cn/docs/babel-preset-env#corejs) option.
-
-
-
-
-
-#### useBuiltIns: 'entry'
-
-This option enables a new plugin that replaces the `import "core-js/stable";` and `import "regenerator-runtime/runtime"` statements (or `require("core-js")` and `require("regenerator-runtime/runtime")`) with individual requires to different `core-js` entry points based on environment.
-
-提供一个新插件代替core-js/stable 和 regenerator-runtime/runtime
-
-
-
-根据配置的浏览器兼容，引入浏览器不兼容的 `polyfill`。需要在入口文件手动添加 `import '@babel/polyfill'`，会自动根据 `browserslist` 替换成浏览器不兼容的所有 `polyfill`。
-
-
-
-<details open="" style="box-sizing: border-box; border: 0px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-weight: 400; font-stretch: inherit; line-height: inherit; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; color: rgb(36, 41, 46); letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;"><div id="details-content"><table style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px 0px 16px; padding: 0px; vertical-align: baseline; border-collapse: collapse; border-spacing: 0px; display: block; overflow: auto; width: 697px;"><thead style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline;"><tr style="box-sizing: border-box; border-width: 1px 0px 0px; border-top-style: solid; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: rgb(223, 226, 229); border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image: initial; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; background-color: transparent;"><th style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: 600; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; background-color: inherit; color: inherit;">Version</th><th style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: 600; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; background-color: inherit; color: inherit;">Changes</th></tr></thead><tbody style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline;"><tr style="box-sizing: border-box; border-width: 1px 0px 0px; border-top-style: solid; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: rgb(223, 226, 229); border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image: initial; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; background-color: transparent;"><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;"><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">v7.4.0</code></td><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;">It replaces<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">"core-js/stable"</code><span>&nbsp;</span>and<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">"regenerator-runtime/runtime"</code><span>&nbsp;</span>entry imports</td></tr><tr style="box-sizing: border-box; border-width: 1px 0px 0px; border-top-style: solid; border-right-style: initial; border-bottom-style: initial; border-left-style: initial; border-top-color: rgb(223, 226, 229); border-right-color: initial; border-bottom-color: initial; border-left-color: initial; border-image: initial; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 0px; vertical-align: baseline; background-color: rgb(246, 248, 250);"><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;"><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">v7.0.0</code></td><td style="box-sizing: border-box; border: 1px solid rgb(223, 226, 229); font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px; padding: 6px 13px; vertical-align: baseline; color: inherit;">It replaces<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-size: 13.6px; margin: 0px; padding: 3.2px 6.4px; vertical-align: baseline; background-color: rgba(27, 31, 35, 0.05); border-radius: 3px; color: rgb(57, 57, 57); word-break: normal;">"@babel/polyfill"</code><span>&nbsp;</span>entry imports</td></tr></tbody></table><p style="box-sizing: border-box; border: 0px; font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-size: 16px; margin: 0px 0px 1em; padding: 0px; vertical-align: baseline;"></p></div></details>
-
-
-
-
-**In**
-
-```js
-import "core-js";
-```
-
-**Out (different based on environment)**
-
-```js
-import "core-js/modules/es.string.pad-start";
-import "core-js/modules/es.string.pad-end";
-```
-
-
-
-
-
-#### useBuiltIns: 'usage'
-
-Adds specific imports for polyfills when they are used in each file. We take advantage of the fact that a bundler will load the same polyfill only once.
-
-为每一个文件添加特定的import，这样只会填充一次相同的依赖
-
-
-
-**In**
-
-a.js
-
-```js
-var a = new Promise();
-Copy
-```
-
-b.js
-
-```js
-var b = new Map();
-Copy
-```
-
-**Out (if environment doesn't support it)**
-
-a.js
-
-```js
-import "core-js/modules/es.promise";
-var a = new Promise();
-Copy
-```
-
-b.js
-
-```js
-import "core-js/modules/es.map";
-var b = new Map();
-Copy
-```
-
-**Out (if environment supports it)**
-
-a.js
-
-```js
-var a = new Promise();
-Copy
-```
-
-b.js
-
-```js
-var b = new Map();
-```
-
-
-
-#### useBuiltIns: false
-
-Don't add polyfills automatically per file, and don't transform `import "core-js"` or `import "@babel/polyfill"` to individual polyfills.
-
-
-
-
-
 ## polyfill
 
 **语法转换只是将高版本的语法转换成低版本的，但是新的内置函数、实例方法无法转换**。这时，就需要使用 polyfill，顾名思义，polyfill的中文意思是垫片，所谓垫片就是垫平不同浏览器或者不同环境下的差异，让新的内置函数、实例方法等在低版本浏览器中也可以使用。
@@ -668,55 +489,6 @@ import "regenerator-runtime/runtime";
 
 
 
-
-
-
-## stage
-
-#### stage-0
-
-
-它包含stage-1, stage-2以及stage-3的所有功能，同时还另外支持如下两个功能插件：
-
-* transform-do-expressions
-* transform-function-bind
-
-
-#### stage-1
-stage-1除了包含stage-2和stage-3，还包含了下面4个插件：
-
-
-* transform-class-constructor-call (Deprecated)
-* transform-class-properties
-* transform-decorators – disabled pending proposal update
-* transform-export-extensions
-
-
-
-#### stage-2
-
-stage-2它除了覆盖stage-3的所有功能，还支持如下两个插件：
-
-* syntax-trailing-function-commas
-* transform-object-reset-spread
-
-
-#### stage-3
-它支持大名鼎鼎的async和await
-
-
-总的来说，它包含如下两个插件:
-
-* transform-async-to-generator
-* transform-exponentiation-operator
-
-
-
-
-
-
-
-
 ## 补充
 因为babel编译es6到es5的过程中，babel-plugin-transform-runtime这个插件会自动polyfill es5不支持的特性，这些polyfill包就是在babel-runtime这个包里，**所以babel-runtime需要安装在dependency而不是devDependency**。
 
@@ -756,41 +528,6 @@ Generator 的中文名称是生成器，它是ECMAScript6中提供的新特性�
 
 
 
-### "modules": false
-
-
-
-.babelrc 文件 ["env", {"modules": false}]配置是什么作用的配置？
-
-```javascript
-{
-  "presets": [
-    ["env", {
-      "modules": false
-    }],
-    "stage-2"
-  ],
-  "plugins": ["transform-runtime"],
-  "env": {
-    "test": {
-      "presets": ["env", "stage-2"],
-      "plugins": ["transform-es2015-modules-commonjs", "dynamic-import-node"]
-    }
-  }
-}
-```
-
-
-modules 字段配置 Babel 对 ES6 模块的相应处理。
-Babel 默认是将ES6模块语法转化为CommonJS规范写法，配置为modules:false则不转化。
-
-
-**如果使用了 Webpack 且配置为modules:false，Webpack 会进行 tree shaking，去除一些无用代码。**
-
-
-
-
-
 ### 项目开发配置
 
 [https://juejin.cn/post/6984020141746946084](https://juejin.cn/post/6984020141746946084)
@@ -816,15 +553,18 @@ Babel 默认是将ES6模块语法转化为CommonJS规范写法，配置为module
     [
       "@babel/plugin-transform-runtime",
       {
-        "corejs": false // 默认值，即使如此依然需要 yarn add @babel/runtime
+        "corejs": false // 默认值（所以可不写），即使如此依然需要 yarn add @babel/runtime
       }
     ]
   ]
 }
 ```
 
-
 ### 类库开发
+
+[https://blog.meathill.com/js/babel-preset-env-and-babel-plugin-transform-runtime.html](https://blog.meathill.com/js/babel-preset-env-and-babel-plugin-transform-runtime.html)
+
+库类项目也推荐使用 `@babel/plugin-transform-runtime`，因为库项目通常会面临另一个问题。如果我们直接导入 core-js 作 polyfill 的话，像 `Promise`，`Set`，`Map` 这样的全局对象就会被覆盖。对于一般的应用而言，问题不大；但如果是库，你无法预期其它开发者会在什么情况下使用你的库，很可能他的目标平台都支持这些新语法元素，不希望转译污染。
 
 ```tsx
 {
@@ -849,6 +589,8 @@ Babel 默认是将ES6模块语法转化为CommonJS规范写法，配置为module
 ## 总结
 * 具体项目还是需要使用 babel-polyfill，只使用 babel-runtime 的话，实例方法不能正常工作（例如 "foobar".includes("foo")）；
 * JavaScript 库和工具可以使用 babel-runtime，在实际项目中使用这些库和工具，需要该项目本身提供 polyfill；
+
+
 
 ### babel 发展规律
 
