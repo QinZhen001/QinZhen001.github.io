@@ -42,8 +42,6 @@ tags:
 
 
 
-[https://ssr.vuejs.org/zh/guide/structure.html#%E9%81%BF%E5%85%8D%E7%8A%B6%E6%80%81%E5%8D%95%E4%BE%8B](https://ssr.vuejs.org/zh/guide/structure.html#避免状态单例)
-
 
 
 当编写纯客户端 (client-only) 代码时，我们习惯于每次在新的上下文中对代码进行取值。但是，Node.js 服务器是一个长期运行的进程。当我们的代码进入该进程时，它将进行一次取值并留存在内存中。这意味着如果创建一个单例对象，它将在每个传入的请求之间共享。
@@ -86,7 +84,7 @@ module.exports = function createApp (context) {
 
 ### 数据预取存储容器 (Data Store)
 
-[https://ssr.vuejs.org/zh/guide/data.html#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%8F%96%E5%AD%98%E5%82%A8%E5%AE%B9%E5%99%A8-data-store](https://ssr.vuejs.org/zh/guide/data.html#数据预取存储容器-data-store)
+[数据预取存储容器](https://ssr.vuejs.org/zh/guide/data.html#数据预取存储容器-data-store)
 
 
 
