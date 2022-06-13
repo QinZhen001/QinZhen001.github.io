@@ -287,6 +287,12 @@ PSI（Perceptual Speed Index，感知速度指数）是提升用户体验的重�
 
 
 
+
+
+
+
+
+
 ### 动画优化
 
 css3 动画是优化的重中之重
@@ -1006,6 +1012,30 @@ function ts (gen) {
 
 
 
+
+
+### 骨架屏
+
+[网页链接](https://juejin.im/post/5b79a2786fb9a01a18267362?utm_source=gold_browser_extension)
+
+首屏渲染时间(FCP)因为首屏需要请求更多内容，比原来多了更多HTTP的往返时间(RTT)，这造成了白屏，如果白屏时间过长，用户体验会大打折扣，如果用户网速差，则FCP会更长。
+
+由此引申出一系列的优化方法，骨架屏也因此被提出。
+
+
+
+生成骨架屏的方法:
+
+* 手写HTML、CSS的方式为目标页定制骨架屏 [骨架屏的样式实现参考 CodePen](https://codepen.io/janily/pen/rGqQgJ)
+* 使用图片作为骨架屏； 简单暴力，让UI同学花点功夫吧哈哈；小米商城的移动端页面采用的就是这个方法，它是使用了一个Base64的图片来作为骨架屏。
+* 自动生成并自动插入静态骨架屏  (page-skeleton-webpack-plugin)  (vue-skeleton-webpack-plugin)
+
+vue-skeleton-webpack-plugin，它将插入骨架屏的方式由手动改为自动，原理在构建时使用 Vue 预渲染功能，将骨架屏组件的渲染结果 HTML 片段插入 HTML 页面模版的挂载点中，将样式内联到 head 标签中。这个插件可以给单页面的不同路由设置不同的骨架屏，也可以给多页面设置，同时为了开发时调试方便，会将骨架屏作为路由写入router中，可谓是相当体贴了。
+
+
+
+
+
 ### 光栅化
 
 Rasterization
@@ -1014,9 +1044,13 @@ Rasterization
 
 [https://blog.csdn.net/u010356727/article/details/50594401](https://blog.csdn.net/u010356727/article/details/50594401)
 
+[页面的渲染](https://www.jynxio.com/article/7.html)
+
 光栅化是将几何数据经过一系列变换后最终转换为像素，从而呈现在显示设备上的过程
 
 光栅化的本质是坐标变换、几何离散化
 
+----
 
+光栅化线程负责将图块转换为位图，渲染进程的内部有不止一个光栅化线程，每个光栅化线程一次可以处理一个图块，同时使用多个光栅化线程可以提高光栅化的效率。最后，光栅化线程会将生成的位图存储在 GPU 的内存中。
 

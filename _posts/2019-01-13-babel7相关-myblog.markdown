@@ -17,6 +17,8 @@ tags:
 
 [https://juejin.cn/post/6956224866312060942](https://juejin.cn/post/6956224866312060942)
 
+[Babel 7 相关](https://www.jynxio.com/article/11.html)
+
 babel 6 存在的问题
 
 - es 的标准每年都在变，现在的 stage-0 可能很快就 stage-2 了，那 preset 怎么维护，要不要跟着变，用户怎么知道这个 stage-x 都支持什么特性？
@@ -291,6 +293,8 @@ regenerator-runtime是generator以及async/await的运行时依赖
 
 ### **@babel/runtime**
 
+**需要放到dependencies**
+
 `@babel/runtime`包含了`Babel`所有**「辅助方法」**以及`regenerator-runtime`。
 
 单纯引入`@babel/runtime`还不行，因为`Babel`不知道何时引用`@babel/runtime`中的**「辅助方法」**。
@@ -298,6 +302,38 @@ regenerator-runtime是generator以及async/await的运行时依赖
 所以，还需要引入`@babel/plugin-transform-runtime`。
 
 这个插件会在编译时将所有使用**「辅助方法」**的地方从**「自己维护一份」**改为从`@babel/runtime`中引入。
+
+
+
+#### @babel/runtime-corejs 2/3
+
+* **@babel/runtime-corejs2**
+
+它是 `@babel/runtime` 的升级版，它不仅仅包含 `@babel/runtime` 的所有内容，还包含 2 号主版本的 `core-js` 。
+
+2 号主版本的 `core-js` 只支持全局变量（如 `Promise` ）和静态属性（如 `Array.from` ），不支持实例属性（如 `Array.prototype.includes` ）。
+
+
+
+* **@babel/runtime-corejs3**
+
+它是 `@babel/runtime` 的升级版，它不仅仅包含 `@babel/runtime` 的所有内容，还包含 3 号主版本的 `core-js` 。
+
+3 号主版本的 `core-js` 不仅支持全局变量（如 `Promise` ）和静态属性（如 `Array.from` ），还支持实例属性（如 `Array.prototype.includes` ）。
+
+
+
+**和corejs的区别**
+
+使用 `core-js@3` 来 polyfill，会全局引入缺少的 API，例如 `require("core-js/modules/es.promise.js")`。有时候开发工具库，希望避免 polyfill 污染全局变量。这时候可以不使用  `core-js@3` 来 polyfill，转而使用 `@babel/runtime-corejs3`，`@babel/runtime-corejs3` 相当于 `@babel/runtime` + 不污染环境的 `core-js@3`。
+
+
+
+
+
+
+
+
 
 ### plugin
 
@@ -569,6 +605,10 @@ Adds specific imports for polyfills when they are used in each file. We take adv
 
 
 Babel 会检查所有代码，以便查找在目标环境中缺失的功能，然后仅仅把需要的 polyfill 包含进来。
+
+
+
+
 
 
 
