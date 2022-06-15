@@ -1946,6 +1946,12 @@ function reloadApp() {
 
 [https://juejin.im/post/6844903888319954952](https://juejin.im/post/6844903888319954952)
 
+[https://juejin.cn/post/7087488024883232799](https://juejin.cn/post/7087488024883232799)
+
+采用JSONP的思路，首先，将动态引入模块单独打成一个js文件；其次，在import执行时创建script标签传入src为引入模块地址；从而实现动态加载的效果，注意，JSONP必然是异步的，所以必须要结合Promise；
+
+
+
 ```
 import被转化成了__webpack_require__.e(/*! import() */ 0)
 ```
@@ -1970,6 +1976,8 @@ __webpack_require__.e(/*! import() */ 0)
 
 这里直接调用了 `__webpack_require__` 去加载我们的 `异步模块` 。
 
+promise已经resolve，此时异步模块的代码已经在`modules`上了，所以可以直接加载。
+
 
 
 **这里就有两个问题？**
@@ -1977,6 +1985,133 @@ __webpack_require__.e(/*! import() */ 0)
 1. **`__webpack_require__` 是根据我们之前传入的 `modules` 来获取 `module` 的，但是，在 `__webpack_require__.e` 中并没有看到有对 `modules` 执行操作的代码。那 `modules` 到底是什么时候被更新的呢？**
 
 2. `promise` 把 `resolve` 和 `reject` 全部存入了 `installedChunks` 中， 并没有在获取异步chunk成功的`onload` 回调中执行 `resolve`，那么，`resolve` 是什么时候被执行的呢?
+
+
+
+上面两个问题 我们可以从**webpackJsonpCallback**找到答案
+
+```tsx
+function webpackJsonpCallback(data) {
+        // chunkid
+	var chunkIds = data[0];
+       // chunkid对应的模块
+	var moreModules = data[1]
+	var moduleId, chunkId, i = 0, resolves = [];
+
+
+	for(;i < chunkIds.length; i++) {
+		chunkId = chunkIds[i];
+		if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
+                        // 收集chunk对应的resolve方法
+			resolves.push(installedChunks[chunkId][0]);
+		}
+                // 标记该chunk已经加载
+		installedChunks[chunkId] = 0;
+	}
+	for(moduleId in moreModules) {
+		if(Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
+                         // 添加chunk模块，到全局modules对象中
+			modules[moduleId] = moreModules[moduleId];
+		}
+	}
+	if(parentJsonpFunction) parentJsonpFunction(data)
+
+         // 依次执行chunk对应promise的resolve方法
+	while(resolves.length) {
+		resolves.shift()();
+	}
+};
+```
+
+- 收集chunk对应的resolve方法, 前面执行`__webpack_require__.e`时放在了`installedChunks[chunkId]`里
+- 将异步chunk下的所有模块 添加到 全局modules
+- 依次执行chunk对应promise的resolve方法
+
+
+
+
+
+----
+
+
+
+详细版本：
+
+```tsx
+__webpack_require__.e = function requireEnsure(chunkId) {
+	var promises = []
+
+	var installedChunkData = installedChunks[chunkId];
+
+        // 如果这个chunk已经加载过了 就不需要加载了
+	if(installedChunkData !== 0) { // 0 means "already installed"
+		if(installedChunkData) {
+			promises.push(installedChunkData[2]);
+		} else {
+
+                        // 为这个chunk创建一个promise
+			var promise = new Promise(function(resolve, reject) {
+                               // 记录这个chunk对应promise的resolve和reject方法
+				installedChunkData = installedChunks[chunkId] = [resolve, reject];
+			});
+
+                         // promises数组里添加这个chunk对应的promise
+			promises.push(installedChunkData[2] = promise)
+
+                        // ============== 动态创建script =================
+			var script = document.createElement('script');
+			var onScriptComplete
+			script.charset = 'utf-8';
+			script.timeout = 120;
+			if (__webpack_require__.nc) {
+				script.setAttribute("nonce", __webpack_require__.nc);
+			}
+			script.src = jsonpScriptSrc(chunkId)
+			// create error before stack unwound to get useful stacktrace later
+			var error = new Error();
+                        // =================================================
+
+			onScriptComplete = function (event) {
+				// avoid mem leaks in IE.
+				script.onerror = script.onload = null;
+				clearTimeout(timeout);
+				var chunk = installedChunks[chunkId];
+				if(chunk !== 0) {
+					if(chunk) {
+						var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+						var realSrc = event && event.target && event.target.src;
+						error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
+						error.name = 'ChunkLoadError';
+						error.type = errorType;
+						error.request = realSrc;
+						chunk[1](error);
+					}
+					installedChunks[chunkId] = undefined;
+				}
+			};
+			var timeout = setTimeout(function(){
+				onScriptComplete({ type: 'timeout', target: script });
+			}, 120000);
+			script.onerror = script.onload = onScriptComplete;
+			document.head.appendChild(script);
+		}
+	}
+	return Promise.all(promises);
+};
+
+```
+
+- 如果chunk没有被加载过，会为这个chunk`创建一个promise对象`
+- 将promise对象存在`promises数组`中
+- 将promise的`resolve 和 reject`存在`installedChunks[chunkId]`中
+
+
+
+
+
+![](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4ef4ee3b49a8473a870421ed1201b98e~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp?)
+
+
 
 
 

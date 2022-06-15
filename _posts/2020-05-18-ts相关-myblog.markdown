@@ -282,6 +282,22 @@ type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
 
 这里会自动把联合类型展开并分配，`${'cart'}/${'add' | 'remove'}` 会被推断成 `'cart/add' | 'cart/remove'`，不过由于我们传入的是 `keyof GetMutations<Module>` 它还有可能是 `symbol | number` 类型，所以用 `Keys & string` 来取其中的 `string` 类型
 
+
+
+### | 运算符
+
+
+
+联合类型（Union Types）表示取值可以为多种类型中的⼀种，联合类型使⽤ | 分隔每个类型。联合类型通常与 null 或 undefined ⼀起使⽤
+
+```typescript
+const fn = (info: strong | null | undefined) => {}
+```
+
+
+
+
+
 ### ?. 运算符
 
 ?.用来判断左侧的表达式是否是 null | undefined，如果是则会停止表达式运行，可以减少我们大量的&&运算。
