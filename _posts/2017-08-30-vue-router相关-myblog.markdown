@@ -23,7 +23,7 @@ tags:
 
 hash模式：
 
-* 可以改变URL，但不会触发页面重新加载（hash的改变会记录在window.hisotry中）因此并不算是一次http请求，所以这种模式不利于SEO优化
+* 可以改变URL，但不会触发页面重新加载（hash的改变会记录在window.hisotry中）**因此并不算是一次http请求，所以这种模式不利于SEO优化**
 * 只能修改#后面的部分，因此只能跳转与当前URL同文档的URL
 * 只能通过字符串改变URL
 * 通过window.onhashchange监听hash的改变，借此实现无刷新跳转的功能。
@@ -32,20 +32,33 @@ hash模式：
 
 history模式：
 
+* **history 模式改变 url 的方式会导致浏览器向服务器发送请求 （我们需要在服务器端做处理：如果匹配不到任何静态资源，则应该始终返回同一个 html 页面）**
 * 新的URL可以是与当前URL同源的任意 URL，也可以与当前URL一样，但是这样会把重复的一次操作记录到栈中
 * 通过参数stateObject可以添加任意类型的数据到记录中
 * 可额外设置title属性供后续使用
-* 通过pushState、replaceState实现无刷新跳转的功能。 **（这种方式URL的改变属于http请求，因此会重新请求服务器，这也使得我们必须在服务端配置好地址，否则会出现404，为确保不出问题，最好在项目中配置404页面）**
+* **通过pushState、replaceState实现无刷新跳转的功能。**  它们分别可以添加和修改历史记录条目
 
 
 
-存在一个问题
+**回车刷新： hash 可以加载到hash值对应页面 ； history一般就是404掉了**
+
+
+
+### 存在问题
+
+#### 404
 
 ​    当应用通过vue-router跳转到某个页面后，因为此时是前端路由控制页面跳转，虽然url改变，但是页面只是内容改变，并没有重新请求，所以这套流程没有任何问题。但是，如果在当前的页面刷新一下，此时会重新发起请求，如果nginx没有匹配到当前url，就会出现404的页面。
 
-​    那为什么hash模式不会出现这个问题呢
+那为什么hash模式不会出现这个问题呢
 
 ​    上文已讲，hash虽然可以改变URL，但不会被包括在HTTP请求中。它被用来指导浏览器动作，并不影响服务器端，因此，改变hash并没有改变url，所以页面路径还是之前的路径，nginx不会拦截。 因此，切记在使用history模式时，需要服务端允许地址可访问，否则就会出现404的尴尬场景。
+
+
+
+#### hash模式实现锚点
+
+js动态获取hash值，然后再根据hash值获得dom对象。最后，用js进行平缓过渡。
 
 
 
@@ -59,7 +72,7 @@ history模式：
 
 
 
-## 路由组件(`RouteComponent`)
+### 路由组件(`RouteComponent`)
 
  [https://juejin.im/post/6880529850159874062?utm_source=gold_browser_extension](https://juejin.im/post/6880529850159874062?utm_source=gold_browser_extension)
 
