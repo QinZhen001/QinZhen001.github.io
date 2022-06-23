@@ -2411,9 +2411,16 @@ afterEnter() {
 
 
 
+### Dark Mode
 
+[Using Tailwind CSS to style your site in dark mode.](https://v2.tailwindcss.com/docs/dark-mode)
 
+有两种实现方式：
 
+* class （可以手动切换）
+* media （根据系统判断）@media (prefers-color-scheme)
+
+[@media (prefers-color-scheme)](https://codepen.io/jonneal/pen/vzPwWo/)
 
 
 

@@ -2322,6 +2322,16 @@ type ExtractActionCreaotrKey<T> = {
 
 
 
+### jsx
+
+[https://www.typescriptlang.org/docs/handbook/jsx.html](https://www.typescriptlang.org/docs/handbook/jsx.html)
+
+TypeScript ships with three JSX modes: `preserve`, `react`, and `react-native`
+
+
+
+
+
 ### isolatedModules
 
 [https://www.typescriptlang.org/tsconfig#isolatedModules](https://www.typescriptlang.org/tsconfig#isolatedModules)

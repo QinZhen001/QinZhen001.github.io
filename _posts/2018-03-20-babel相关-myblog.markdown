@@ -560,6 +560,12 @@ Generator 的中文名称是生成器，它是ECMAScript6中提供的新特性�
 }
 ```
 
+[corejs 相关](https://github.com/zloirock/core-js#installation)
+
+**tip： core-js 作为 dependencies**
+
+
+
 ### 类库开发
 
 [https://blog.meathill.com/js/babel-preset-env-and-babel-plugin-transform-runtime.html](https://blog.meathill.com/js/babel-preset-env-and-babel-plugin-transform-runtime.html)
