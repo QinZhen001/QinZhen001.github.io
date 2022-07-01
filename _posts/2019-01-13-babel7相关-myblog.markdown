@@ -269,9 +269,25 @@ import "core-js/modules/es7.string.pad-end";
 
 
 
+### @babel/preset-react
+
+[https://babeljs.io/docs/en/babel-preset-react](https://babeljs.io/docs/en/babel-preset-react)
+
+This preset always includes the following plugins:
+
+- [@babel/plugin-syntax-jsx](https://babeljs.io/docs/en/babel-plugin-syntax-jsx)
+- [@babel/plugin-transform-react-jsx](https://babeljs.io/docs/en/babel-plugin-transform-react-jsx)
+- [@babel/plugin-transform-react-display-name](https://babeljs.io/docs/en/babel-plugin-transform-react-display-name)
 
 
 
+#### runtime
+
+```
+classic | automatic, defaults to classic
+```
+
+`automatic` auto imports the functions that JSX transpiles to. `classic` does not automatic import anything.
 
 
 
