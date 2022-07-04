@@ -470,6 +470,58 @@ grep test *file
 
 
 
+
+
+### file
+
+该命令用来识别文件类型，也可用来辨别一些文件的编码格式。它是通过查看文件的头部信息来获取文件类型，而不是像Windows通过扩展名来确定文件类型的。
+
+```\
+$ file main.c 
+main.c: C source, ASCII text
+```
+
+```bash
+$ file README.md 
+README.md: UTF-8 Unicode text
+```
+
+```bash
+file librte_runtime_nodejs.node
+librte_runtime_nodejs.node: Mach-O 64-bit dynamically linked shared library arm64
+```
+
+file 可以查看.node文件的arch架构
+
+
+
+
+
+### zip 和 unzip
+
+[https://www.runoob.com/linux/linux-comm-unzip.html](https://www.runoob.com/linux/linux-comm-unzip.html)
+
+```bash
+zip -r myfile.zip ./*
+将当前目录下的所有文件和文件夹全部压缩成myfile.zip文件,－r表示递归压缩子目录下所有文件.
+```
+
+
+
+#### zip文件不需要外层包裹
+
+```bash
+zip -r app.zip * .[^.]*
+```
+
+这样app.zip解压后就会直接平铺在当前文件夹
+
+**但是mac的双击解压会有默认操作，还是会在外层包裹一层，但实际上这个命令已经生效了。**
+
+
+
+
+
 ### echo命令
 
 echo命令的功能是在显示器上显示一段文字，一般起到一个提示的作用。
@@ -478,6 +530,14 @@ echo命令的功能是在显示器上显示一段文字，一般起到一个提�
 该命令的一般格式为： echo [ -n ] 字符串
 
 其中选项n表示输出文字后不换行；字符串能加引号，也能不加引号。用echo命令输出加引号的字符串时，将字符串原样输出；用echo命令输出不加引号的字符串时，将字符串中的各个单词作为字符串输出，各字符串之间用一个空格分割。
+
+
+
+#### [echo $0](https://superuser.com/questions/1445395/how-does-echo-0-work)
+
+$0 is the name of the running process. If you use it inside of a shell then it will return the name of the shell. If you use it inside of a script, it will be the name of the script.
+
+
 
 
 ### $HOME
