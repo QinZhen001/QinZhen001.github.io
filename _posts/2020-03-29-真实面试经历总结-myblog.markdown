@@ -11,203 +11,19 @@ tags:
 
 > “Yeah It's on. ”
 
-# 前序
 
 
+# 大厂
 
 
 
-# 斗游
-
-
-
-## 一面
-
-
-
-> 斗游是斗鱼投资的，专门做海外直播的
-
-
-
-* vue相关的基础知识
-* vue的双向绑定
-* 移动端和pc分别如何做屏幕适配
-*  ......
-
-
-
-一道笔试题目 (写完微信发过去，视频面试现场写)
-
-
-
-function lottery(whiteList, participant){}
-
-
-
-* whiteList:类型字符串数组,意义是表示从其他系统中计算出来的活跃用户，如果这批用户参与抽奖，则必定让他中奖。长度不超过1万
-
-* participant:类型字符串数组,意义是表示此次活动中真正参与抽奖的用户，长度约是10万。
-
-  
-
-  函数希望从participant返回两个2万个用户，表示中奖用户，优先选取whiteList上的用户，若不在whiteList上，对participant 剩余的随机 选取即可。
-
-
-
-------
-
-
-
-一开始版本
-
-```js
-function  lottery(whiteList,  participant){
-  let set1 = new Set(whiteList)
-  let set2 = new Set(participant)
-  let num = 0
-  let res = [] 
-  for(let item of set2.values()){
-    if(set1.has(item.value)){
-        res.push(item.value)
-        set2.delete(item.value)
-        num++
-    }
-  }
-  let lest = 20000 - num
-
-  // 随机取剩下
-  getLes(lest)  
-
-
-  return res 
- }
-```
-
-
-
-
-
--------
-
-
-
-优化后
-
-
-
-```js
-//如果这批用户参与抽奖，则必定让他中奖。 (也就whiteList不一定在participant)
-  function lottery(whiteList, participant) {
-    let set2 = new Set(participant)
-    let num = 0
-    let res = []
-    for (let item of whiteList) {
-      if (set2.has(item)) {
-        res.push(item)
-        num++
-        // 为了不影响后面的抽奖运算 还是要delete 
-        set2.delete(item)
-      }
-    }
-    let lest = 20000 - num
-    // 随机取剩下
-    let otherArr = getLes(lest, set2)
-    return res.concat(otherArr)
-  }
-```
-
-
-
-
-
-
-
-## 二面
-
-
-
-* 并行和并发的区别 ？node进程接受多个请求是并行还是并发？node开启多个进程（fork）？
-* 图片相关？png  jpg webp 特点？ 哪个压缩率更好一点？为什么？
-* 前端请求的一些异常？你的500错误是谁返回给你的（*Nginx*）（xml）？如果没有Nginx直接在服务器部署你获取的错误是谁返回给你的（浏览器底层）？
-* node I/o 相关？ 其源码（c++那部分）？
-* 一个新闻页有 图片 列表 文字 评论 如何更快的渲染？
-* 浏览器原理（渲染引擎 和 js引擎）？哪些东西会阻塞页面的正常渲染？
-* 进程和线程的区别？
-
-
-
-一道算法题目
-
-
-
-数字1-n的n张牌，打乱，写一个算法让他回归有序状态  （洗牌算法）
-
-* 快速排序 （nlogn）（比较排序）
-
-* 桶排序 （n）（非比较排序）   （数字n的那张牌肯定在n位置）
-
-
-
-> 考察：非比较排序
-
-
-
-
-
-
-
-# 深信服
-
-
-
-## 一面
-
-> 已拿到offer没去
-
-基础
-
-* cookie和localStorage的区别
-* **一个post请求如何跨域？不涉及后端，纯前端实现可以吗？**   （form表单）
-* 一个串行的promise如何实现
-* Js如何区分数组和对象
-
-微信小程序
-
-* 小程序如何调试
-* 你的小程序工作流
-* 你的小程序怎么兼容
-* 你做的小程序框架的一些细节
-
-vue
-
-* vue通信机制 （`$emit`,`$on`,eventbus,vuex）
-* 何时用vuex？ 何时父子组件通信？
-
-调试技巧
-
-* 问很多日常开发中的调试技巧
-* 有一个弹窗，时而出现，时而消失，如何定位bug？   （调式的一些技巧，动态改写标签，指定标签状态actived，focus，source面板）
-* 如何设置断点条件，查看调用栈
-
-
-
-一些css基础问题
-
-接触过3d吗
-
-接触过地图相关开发吗
-
-最近的一些学习
-
-
-
-
-
-# 字节跳动
-
-## 一面
+## 字节跳动
 
 > 宇宙条，面试要求极高，考察算法，会一直追问知道你答不出来为止
+
+### 商业化一面
+
+> 第一次面大厂 算法能力不足 挂了
 
 基础
 
@@ -234,8 +50,6 @@ vue
 
 第一题 字符串处理 （5-10 分钟）
 
-
-
 123456 -> 123,456  
 
 12345678.123 -> 12,345,678.123
@@ -260,160 +74,248 @@ instanceof到底能不能区分Object和Array?
 
 **答案是可以的。**
 
-
-
 ```js
-  let obj = {
-        aaa: "aaa"
-    }
+ let obj = {
+    aaa: "aaa"
+  }
+console.log(obj instanceof Object) // true 
+console.log(obj instanceof Array) // false 
 
-    console.log("111", obj instanceof Object)
-    console.log("222", obj instanceof Array)
+let obj = []
+console.log(obj instanceof Object) // true 
+console.log(obj instanceof Array) // true 
 ```
+
+**用 instanceof Array 来区分**
+
 
 
 [浅谈script标签的defer和async](https://segmentfault.com/a/1190000006778717)
-
-
 
 async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但async是js谁下载完谁就立即执行，会阻塞html解析，defer是html解析完成后才按顺序执行下载的js 
 
 
 
-# 追一科技
+### 互娱影像一面
 
-一家c轮做人工智能的公司，前端对node要求高，问框架原理问的很细很深
+* webpack 深挖 => webpack5 新特性  => webpack5 联邦模块？ =》 这个是怎么实现的？ 
+* redux 和 mobx 的区别  =》 原理上有什么不一样  =》 redux 和 mobx 怎么实现数据的响应式 =》 Object.defineProxy  和 Proxy => Object.defineProxy 的局限性 => Proxy的局限性 => Proxy 有什么不好的地方
 
-## 一面
+* 跨域 =>  JSONP 的局限性 =>  CORS 配置
+* csrf 攻击 token怎么解决的  =》 cookie 不能跨域  =》 保证cookie的安全性  samesite  （应该是想问Referer 一时间没想起。。。）
+* 层叠上下文 =》 开发中有遇见层叠上下文的问题嘛
+* 组件库的全局弹出窗组件怎么实现 （挂载到根节点 z-index++） =>  z-index增加的时机 （挂载时还是显示时）
+* flex 和 grid 布局 =》 flex basic:1 代表什么意思
+* babel 原理 =》babel-plugin-transform-runtime 和 babel-runtime 分别是用来做什么的 =》  babel 除了做js语法兼容你还能想到有别的玩法嘛  （创造新的语法）
 
-* 链表和数组区别？真实应用场景 （偏后端）（卧槽）
-* diff细节？dom树更新怎么比较的？比较顺序？（是否component是否普通标签是否相同标签）同层对比？如果只是属性变了怎么更新？patchChildren？key的作用？
-* vue diff具体的实现？双端比较？
-* vue数据的响应式？
-* vue-router 两种模式？hash模式后端可以拿到#吗？
-* 垃圾回收机制？引用计数和标记清除的区别？在最顶级作用域 a引用b b引用a 怎么进行垃圾回收？**v8最新的垃圾回收机制？**
-* vue的nextTrick是怎么实现的（降级，根据当前环境选择）？为什么要要优先使用微任务来实现nextTrick？
-* session和cookie的关系？
+---
 
-* Https 的加密模式 （混合加密）？怎么获取密匙？
+手写题：
 
+实现一个Promise.all()
 
+//tip: 考虑arr里面非Promise的情况
 
 
 
-链表的应用：
+a[s6[sd]cd21[ere]]  => 展开
 
 
 
-链表插入删除效率极高，达到O(1)。对于不需要搜索但变动频繁且无法预知数量上限的数据，比如内存池、操作系统的进程管理、网络通信协议栈的trunk管理等等等等，都需要用到链表
+#### 全局弹窗组件
 
+[ z-index 的相关控制](https://github.com/ElemeFE/element/blob/dev/src/utils/popup/index.js)
 
 
 
+PopupManager.nextZIndex 的相关逻辑
 
+z-index增加的时机? 
 
+答案：是在现实前
 
-# 晓教育
+```tsx
+// openModal 的时候zIndex已经准备好了
+// 调用外面 会进行z-index++ 的操作
+openModal: function(id, zIndex, dom, modalClass, modalFade)
+// 函数内部 appendChild(modalDom)  显示dom
+```
 
 
 
-## 一面
+PopupManager
 
+```tsx
+Object.defineProperty(PopupManager, 'zIndex', {
+  configurable: true,
+  get() {
+    if (!hasInitZIndex) {
+      zIndex = zIndex || (Vue.prototype.$ELEMENT || {}).zIndex || 2000;
+      hasInitZIndex = true;
+    }
+    return zIndex;
+  },
+  set(value) {
+    zIndex = value;
+  }
+});
+```
 
 
-基础：
 
-* 垂直居中一个元素
-* position元素怎么确定定位
-* 盒模型
-* 缓存（请求返回200 的时候的缓存）
-* copy一个对象？深拷贝？**怎么深拷贝一个函数？**
-* 常用状态码
 
-vue
 
-（问很多vue的问题，偏应用，问原理比较少）
 
-* vue实现一个类似react的hoc高阶组件
-* element的表单验证怎么做的？(form)（源码）
-* inject和provide
-* `$attr和$listen`   （子组件怎么拿到一个父组件的xxx 不通过props传递）
-* 组件间通信
-* watch的原理？怎么更新的？（user watcher）
 
-node
+算法题目最重要的思路，要考虑边界，要覆盖所有case，其次才是bug free（这个不一定要做到）
 
-* node微任务 宏任务执行顺序
-* koa的中间件机制？洋葱模型？
-* 怎么写一个转发请求的中间件？
-* 链接数据库
-* 用过哪些中间件
-* 定时任务
-* 爬虫怎么爬数据 （流程）
-* node里面怎么发起网络请求
+```tsx
+function myPromiseAll(fns = []) {
+  if (fns.length == 0) {
+    // tip: 空数组直接返回
+    return Promise.resolve(fns);
+  }
+  let result = [];
+  let count = 0;
+  return new Promise((resolve, reject) => {
+    fns.forEach((item, index) => {
+      if (!(item instanceof Promise)) {
+        // tip: 转Promise
+        item = Promise.resolve(item);
+      }
+      item.then(
+        (res) => {
+          result[index] = res;
+          count++;
+          if (count == fns.length) {
+            return resolve(result);
+          }
+        },
+        (rej) => {
+          return reject(rej);
+        }
+      );
+    });
+  });
+}
+```
 
-gulp
 
-* gulp.watch和node原生watch对比
 
+### 互娱影像二面
 
+* 主要是针对简历上的东西深入去挖
+* 从工程化的角度怎么保证代码质量  =>  前端规范可以做哪些事情
+* m3u8播放器 (这块答得不是很好  m3u8文件为什么不能自动update )  =》 双播放器方案会不会有性能上面的问题
+* commonjs可以tree-shaking吗？=> side-effect 和 tree-shaking 的关系
+* webpack做过哪些东西
+* sdk的分层架构设计
+* mobx 和 redux 的区别
+* 怎么样写一个高质量的sdk
+* log 怎么上报的 => 怎么分析定位error
 
+手写题:
 
+```
+// 控制并发
+maxRequest(fns,max)
+```
 
-## 二面
+* 二叉树蛇形打印
 
 
 
-前端知识
+### 互娱影像三面
 
-* 如何进行图表的错误监控？
-* 长列表优化 （recycle view 适用于card固定高度）？如果card高度不固定，聊天场景，1w条聊天信息怎么搞？（首屏渲染 分页 减少dom操作 fragment）
-* 问了一些具体业务场景的设计方案
+* 吹水
+* 项目介绍 项目成长 个人经历 个人成长 个人规划
+* 视频聊天的延时 （300ms以内）
+* 推拉流 => rtmp => ios 的推拉流的坑
 
-后端知识
 
-* 10亿条url 8g内存 无限大磁盘 如何去重url （url对应的资源不同就是不同url 可能不同url对应同一个资源，不能借助数据库）（找到url对应资源进行算法签名。。。来区分不同url）
-* 说一下可以提取文件特征的加密算法 （MD5 。。。。sha。。。）
 
-算法
+### 国际化电商加面
 
-* 说一下快速排序的实现？怎么优化快速排序？  
+> 影像团队offer没审批下来  只能转到国际化电商团队加面一轮
 
+* 吹水
+* 你看中的三个能力  （技术之外的）
+* 项目介绍 项目成长 个人经历 个人成长 个人规划。。。
 
 
-----
 
+手写题
 
+```tsx
+// 重试机制
+function retry(fn, num, interval) {
+  // todo
+}
 
-优化快速排序：
 
-* 选择数组中间的元素作为基准
-* 当数组长度较小的时候才用插入排序之类
+// ------------  test  -----------------------
+const request = (url) => {
+  return fetch(url);
+};
 
------
+const myRetry = retry(request, 5, 1000);
 
+myRetry("https://api.github.com/users").then(
+  (res) => {
+    console.log("res", res);
+  },
+  (rej) => {
+    console.log("rej", rej);
+  }
+);
+```
 
+```tsx
+function retry(fn, num, interval) {
+  // transform fn to Promise
+  return (...args) => {
+    return new Promise((resolve, reject) => {
+      const _retry = (info, num) => {
+        if (!num) {
+          return reject(info);
+        }
 
-如何进行图表的错误监控？ （尝试回答）
+        setTimeout(() => {
+          fn(...args).then(
+            (res) => resolve(res),
+            (rej) => _retry(rej, --num)
+          );
+        }, interval);
+      };
 
+      return fn(...args).then(
+        (res) => resolve(res),
+        (rej) => {
+          _retry(rej, --num);
+        }
+      );
+    });
+  };
+}
+```
 
 
-通常图表使用echarts库，错误大概率是两种情况，渲染的dom错误，图表对应的数据源不对
 
 
 
-* 针对渲染的dom错误，我们可以监听dom，使用MutationObserver，观察图表是否正常渲染
-* 针对图表对应的数据源错误，我们直接监听数据，看是否为空，是否满足图表所需的数据格式
 
 
 
 
 
-# 阿里
 
+## 阿里
 
+面试官会对着一个问题不断深挖，促使你不断地优化你回答的方案
 
-## 盒马一面(笔试)
+盒马hr最多接受**三年两跳**，遂只能中止盒马的面试流程，没有达到最后一面，GG **（据了解不同团队的hr要求不一样 别的团队并没有这个限制）**
+
+### 盒马一面(笔试)
 
 > 两道笔试题，一小时内完成
 
@@ -725,13 +627,7 @@ lazy3.forEach((v) => {
 })
 ```
 
-
-
-
-
-
-
-##  盒马二面 (电话 同事面)  
+### 盒马二面 (电话 同事面)  
 
 > 40分钟左右
 
@@ -739,8 +635,8 @@ lazy3.forEach((v) => {
 
 * git rebase  和 git merge 
 * npm包每个数字代表什么意思 (xx.xxx.xx)  （如何发包）
-* 你项目的依赖库是写死的还是动态版本？(写死的版本号真的是固定的吗？)如何保证依赖库不出错？  （npm的知识）
-* 实现一个深拷贝 （对date Regex的处理 map解决循环引用）
+* 你项目的依赖库是写死的还是动态版本？(写死的版本号真的是固定的吗？)  如何保证依赖库不出错？  （npm的知识 package-lock.json）
+* 实现一个深拷贝 （对date Regex的处理 set解决循环引用）
 * JSON.parse(JSON.stringify(obj))实现深拷贝的问题？如让 JSON.parse(JSON.stringify(obj))深拷贝循环引用不报错？
 * 判断一个函数是不是async函数
 * 判断一个对象是不是数组
@@ -751,17 +647,9 @@ lazy3.forEach((v) => {
 * 工程化做过哪些东西？对webpack的理解。
 * promise.then(res=>{},rej=>{}).catch(err=>{})  这里catch方式捕获错误和 rej捕获错误的区别是？
 
-
-
-
-
 考察的问题都比较有代表性，下面探究一些没有答出来的问题。
 
-
-
-### 深拷贝循环引用不报错
-
-
+#### 深拷贝循环引用不报错
 
 **让 JSON.parse(JSON.stringify(obj))深拷贝循环引用不报错**
 
@@ -813,9 +701,7 @@ console.log(res)
 
 如果该参数是一个函数，则在序列化过程中，被序列化的值的每个属性都会经过该函数的转换和处理；如果该参数是一个数组，则只有包含在这个数组中的属性名才会被序列化到最终的 JSON 字符串中；如果该参数为 null 或者未提供，则对象所有的属性都会被序列化。
 
-
-
-### Promise.catch的优势
+#### Promise.catch的优势
 
 [https://www.css3.io/promise-catch-vs-reject.html](https://www.css3.io/promise-catch-vs-reject.html)
 
@@ -827,13 +713,9 @@ console.log(res)
 
 
 
-----
-
 
 
 还有一个区别：**throw不能用于异步调用中**
-
-
 
 如下代码所示，catch回调是**不执行的**
 
@@ -882,16 +764,16 @@ p2.catch(function(e) {
 
   p2.then(res => {
     console.log("res", res)
-    throw 'oh, no!'
+    throw '111'
   }, rej => {
     console.log("rej", rej)
-    throw 'oh, no!'
+    throw '222'
   }).catch(function (e) {
-    console.log('11111',e); // "oh, no!"   // 成功捕获
+    console.log(e); // "111"   // 成功捕获
   })
 ```
 
-如果throw不跟在then后面，无法捕获then中抛出的错误
+如果catch不跟在then后面，无法捕获then中抛出的错误
 
 ```js
   var p2 = new Promise(function (resolve, reject) {
@@ -913,17 +795,9 @@ p2.catch(function(e) {
 
 `.catch` 不必是立即的。它可能在一个或多个 `.then` 之后出现。
 
-
-
-
-
-
-
-### npm pacakge的版本控制规范
+#### pacakge的版本控制规范
 
 以当前版本为1.0.0为例子，遵循以下规范：
-
-
 
 | 更新情况                         | 位置   | version |
 | -------------------------------- | ------ | ------- |
@@ -931,11 +805,7 @@ p2.catch(function(e) {
 | 新增向后兼容的新特性             | 第二位 | 1.1.0   |
 | 进行了破坏性地无法向后兼容的更改 | 第一位 | 2.0.0   |
 
-
-
 包的版本信息里会出现`^~`符号
-
-
 
 例如
 
@@ -951,7 +821,7 @@ p2.catch(function(e) {
 
 
 
-### 不同版本的npm 
+不同版本的npm 
 
 * npm 2 在安装依赖包时，采用简单的递归安装方法。
 * npm 3  扁平结构
@@ -961,17 +831,21 @@ p2.catch(function(e) {
 
 这只是最简单的例子，实际的工程项目中，依赖树不可避免地会有很多层级，很多依赖包，其中会有很多同名但版本不同的包存在于不同的依赖层级，对这些复杂的情况, npm 3 都会在安装时遍历整个依赖树，计算出最合理的文件夹安装方式，使得所有被重复依赖的包都可以去重安装。
 
-
-
 package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 json 的结构，会发现与 node_modules 目录的文件层级结构是一一对应的。
 
 
 
+#### pacakge写死的版本号真的是固定的吗
+
+假如我们依赖roadhog，roadhog又依赖模块A、B等，我们安装roadhog时，npm会自动帮我们安装好roadhog依赖的模块A、B等。我们把roadhog锁死了，但是其引用的A模块仍用的是^括号写法（即没有锁死版本），所以假如A模块更新了，仍可能会出现问题
+
+所以我们要**对整个依赖树做锁定**，那**前后编译出来的应用版本就不会存在两次安装版本不一的问题**了。
+
+　　这就引出了我们的 `package-lock.json 文件`。它的产生就是来**对整个依赖树进行版本固定的（锁死）**
 
 
-### 判断async函数
 
-
+#### 判断async函数
 
 ```js
   async function test() {
@@ -995,9 +869,7 @@ package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 
 
 
 
-
-
-### node stream
+#### node stream
 
 流（stream）是 Node.js 中处理流式数据的抽象接口。 `stream` 模块用于构建实现了流接口的对象。
 
@@ -1012,15 +884,9 @@ package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 
 
 
 
-
-
-
-
 流是一种处理读写文件、网络通信或任何端到端信息交换的有效方式。
 
 [可写流](http://nodejs.cn/s/9JUnJ8)和[可读流](http://nodejs.cn/s/YuDKX1)都会在内部的缓冲器中存储数据
-
-
 
 
 
@@ -1046,7 +912,6 @@ server.listen(8000);
 使用文件读取这段代码语法上并没有什么问题，但是如果data.txt文件非常大的话，到了几百M，在响应大量用户并发请求的时候，程序可能会消耗大量的内存，这样可能造成用户连接缓慢的问题。而且并发请求过大的话，服务器内存开销也会很大。这时候我们来看一下用`stream`实现。
 
 ```js
-
 const server = http.createServer(function (req, res) {
     const fileName = path.resolve(__dirname, 'data.txt');
     let stream = fs.createReadStream(fileName);  // 这一行有改动
@@ -1060,13 +925,9 @@ server.listen(8000);
 
 
 
-
-
-### node如何做到主进程和子进程共享一个端口
+#### node如何做到主进程和子进程共享一个端口
 
 [https://zhuanlan.zhihu.com/p/112597848](https://zhuanlan.zhihu.com/p/112597848)
-
-
 
 
 
@@ -1101,23 +962,13 @@ Master 通过 cluster.fork() 这个方法创建的，本质上还是使用的 ch
 
 如何多个进程监听同一个端口
 
-
-
 fork()
-
-
 
 其实我们只要在绑定端口号（bind函数）之后，监听端口号之前（listen函数），用fork（）函数生成子进程，这样子进程就可以克隆父进程，达到监听同一个端口的目的。
 
 
 
----
-
-
-
 [https://programtip.com/zh/art-28719](https://programtip.com/zh/art-28719)
-
-
 
 ```js
 const cluster = require('cluster');
@@ -1156,13 +1007,7 @@ if (cluster.isMaster) {
 
 5. **子进程的listen函数并没有监听端口，它在listen时将端口和地址等信息发送给主进程，由主进程进行监听**。主进程在收到accept事件时，产生连接socket，并把它发送给子进程。子进程直接通过该socket跟client端进行通信
 
-
-
-
-
-
-
-### Socket是什么
+#### Socket是什么
 
 [https://www.jianshu.com/p/01b9a454de5a](https://www.jianshu.com/p/01b9a454de5a)
 
@@ -1184,9 +1029,7 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 
 
-
-
-## 盒马三面 (电话 同事面)
+### 盒马三面 (电话 同事面)
 
 > 50分钟左右，已过
 
@@ -1194,14 +1037,12 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 * 一个tab页面渲染大量数据。 （虚拟列表）
 * 虚拟列表滚动时，item还没加载出来时白屏如何处理？ （骨架屏幕）
 * 虚拟列表滚动条不准确如何处理？ （隐藏原生滚动条，实现自定义滚动条）
-*  **长度为100w的数组，数组每一项是长度64位的字符串，找到其中的最大的那一个   （top K 算法）**
+* **长度为100w的数组，数组每一项是长度64位的字符串，找到其中的最大的那一个   （top K 算法）**
 * **微信小程序双线程架构的优势和特点？**
 
 
 
-
-
-### 找到大数组中的最大的数
+#### 找到大数组中的最大的数
 
 [leetcode 上的解法](https://leetcode-cn.com/problems/zui-xiao-de-kge-shu-lcof/solution/tu-jie-top-k-wen-ti-de-liang-chong-jie-fa-you-lie-/)
 
@@ -1231,53 +1072,201 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 
 
-
-
-### 微信小程序双线程架构的优势和特点
+#### 微信小程序双线程架构的优势和特点
 
 与传统的浏览器Web页面最大区别在于，小程序的是基于 双线程 模型的，在这种架构中，**小程序的渲染层使用 WebView 作为渲染载体，而逻辑层则由独立的 JsCore 线程运行 JS 脚本，双方并不具备数据直接共享的通道，因此渲染层和逻辑层的通信要由 Native 的 JSBrigde 做中转。**
 
 
 
+### lazada一面
+
+* 错误异常监控。资源加载失败怎么监控  => 跨域js的 error 怎么监控。
+* jsbridge 原理 => jsbridge安全性问题  =>  js 通过jsbridge发送多个消息传到app（url scheme），app只收到了一个，怎么解决？ 
+* react hooks => useMeno是什么 => 怎么实现的   => 写过哪些自定义hooks
+* 多个库依赖不同版本base库 比如1.0  2.0 ， 该怎么办？
+* css tree 怎么附着在 dom tree 上面生成render tree =>  css附着过程的查找方式 dfs 还是 bfs ？
+* let const 转es5 最终代码是怎么样的？
+* 小程序 setData 优化。 observer怎么实现？
+* m3u8 前端播放器你做了哪些工作？？ 断网续播怎么实现 => seek到正确位置？video.js播放器在移动端会有哪些坑？
+* 工作流优化做了哪些工具？有指标吗？
+* babel-preset-env 的坑
+* babel-runtime 是要放在 dependencies 还是 devDependencies
+
+#### ES6 的 let 实现原理
+
+```tsx
+var funcs = [];
+for (let i = 0; i < 10; i++) {
+  funcs[i] = function () {
+    console.log(i);
+  };
+}
+funcs[0](); // 0
+```
+
+babel 编译之后的 es5 代码（polyfill）
+
+```tsx
+var funcs = [];
+
+var _loop = function _loop(i) {
+  funcs[i] = function () {
+    console.log(i);
+  };
+};
+
+for (var i = 0; i < 10; i++) {
+  _loop(i);
+}
+funcs[0](); // 0
+```
+
+**其实我们根据 babel 编译之后的结果可以看得出来 let 是借助闭包和函数作用域来实现块级作用域的效果的** 
+
+在不同的情况下 let 的编译结果是不一样的
+
+
+
+#### babel-runtime
+
+https://babeljs.io/docs/en/babel-runtime/
+
+babel-runtime 在sdk 或者第三库中只需要放devDependencies，但在最终的一些项目，比如页面打包，要放dependencies中
+
+
+
+#### css查找流程
+
+浏览器CSS匹配从右到左进行查找  (查找时采用bfs算法 => 可以拿到所有匹配的子节点)
 
 
 
 
 
+----
+
+手写题：
+
+deepClone() 深拷贝对象
 
 
 
+写一个定时器
+
+tip：pause 之后能够再次start
+
+```
+class Timer{
+	start(){}
+	pause(){}
+	cancel(){}
+}
+```
+
+解决
+
+```tsx
+class Timer {
+  constructor(num) {
+    this.num = num;
+    this.timer = null;
+    this.hasStarted = false;
+  }
+  start() {
+    if (this.hasStarted) {
+      return;
+    }
+    this.hasStarted = true;
+    if (this.timer) {
+      // 处理pause之后再start
+      clearInterval(this.timer);
+    }
+    this.timer = setInterval(() => {
+      if (this.num < 0 || !this.hasStarted) {
+        return;
+      }
+      console.log(this.num);
+      this.num--;
+    }, 1000);
+  }
+  pause() {
+    if (!this.hasStarted) {
+      return;
+    }
+    this.hasStarted = false;
+  }
+  cancel() {
+    if (!this.hasStarted) {
+      return;
+    }
+    this.hasStarted = false;
+    this.num = 0
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+}
+```
+
+测试
+
+```tsx
+let t = new Timer(100);
+t.start();
+setTimeout(() => {
+  t.pause();
+}, 5000);
+setTimeout(() => {
+  t.start();
+}, 9000);
+setTimeout(() => {
+  t.cancel();
+}, 20000);
+```
 
 
 
+### 阿里laza二面
 
-### 总结
+> 对项目的描述 难点 重点 梳理不清楚 表达不清晰 导致了最终gg
 
-**总结：面试官会对着一个问题不断深挖，促使你不断地优化你回答的方案**
+* 主要简历
+* m3u8 和 mp4 的区别
+* 刷新页面随机颜色不能重复     "#123434"  =>   hash冲突
+* webpack4 => webpack5   有什么变化
+* webpack5 tree-shaking 需要配置什么
+* immutable 做了什么
+* **rxjs** 做了什么
+* apaas 分层架构
+* npm 发的包 线上出了问题 怎么办？ 除了降级
 
-## 中止
+#### immutable
 
-阿里hr最多接受**三年两跳**，遂只能中止面试流程，没有达到主管面，GG了。。
+[https://juejin.cn/post/6863832173703593997]( https://juejin.cn/post/6863832173703593997)
+
+**immutable**数据一种利用`结构共享`形成的`持久化数据结构`，一旦有部分被修改，那么将会返回一个全新的对象，并且原来相同的节点会直接共享。
+
+每次修改一个 immutable 对象时都会创建一个新的不可变的对象，在新对象上操作并 不会影响到原对象的数据。
+
+#### m3u8 和 mp4 的区别
+
+m3u8是苹果公司推出的视频播放标准，编码格式采用UTF-8；mp4是有动态图像专家组MPEG制定的一种用于音频、视频信息的压缩编码标准。m3u8只是个文本文件，存储媒体文件路径，mp4是封装好的h264或h265媒体文件。
+
+## 腾讯
 
 
 
-
-
-# 腾讯
-
-
-
-## pcg一面
+### pcg一面
 
 > 基础面
 
-### 常见状态码
-
-* 100 
-* 200
-* 301 302 304   **（临时重定向，永久重定向的表现有什么不一样）**
-* 400 401 403  404  （401 403 的区别）
-* 500 503
+* 常见状态码 100 200 301 302 304   **（临时重定向，永久重定向的表现有什么不一样）**400 401 403  404  （401 403 的区别）500 503
+* flex布局 grid布局
+* 给你设计稿 怎么拆分页面 组件 布局
+* 对单元测试了解
+* 对ts的了解
+* 对vue3的了解
 
 
 
@@ -1297,7 +1286,9 @@ http状态码301和302的区别
 
 这种情况下，如果不做重定向，则用户收藏夹或搜索引擎数据库中旧地址只能让访问客户得到一个404页面错误信息，访问流量白白丧失；再者某些注册了多个域名的网站，也需要通过重定向让访问这些域名的用户自动跳转到主站点等。
 
-### vue 的 computed 的原理
+
+
+#### vue 的 computed 的原理
 
 [https://juejin.cn/post/6844904200539734023](https://juejin.cn/post/6844904200539734023)
 
@@ -1474,42 +1465,15 @@ data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
 
 
 
-
-
-
-
-### 判断一个东西是不是对象
+#### 判断一个东西是不是对象
 
 * Object.prototype.toString()
 * instanceof 原理
 * typeof  弊端
 
-### CSS基础
-
-* flex布局 grid布局
-* 给你设计稿 怎么拆分页面 组件 布局
 
 
-
-### 对单测试的了解
-
-。。。
-
-
-
-### 对ts的了解
-
-。。。
-
-
-
-### vue3
-
-对vue3的理解
-
-
-
-### 深挖简历
+#### 深挖简历
 
 * loc 依赖反转为什么用 有什么用 还是会打包进sdk吗 （sdk相关）
 
@@ -1521,7 +1485,9 @@ data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
 
    
 
-## pcg二面
+### pcg二面
+
+> 总结：描述具体项目的时候组织语言欠缺一点清晰，不能把一件事讲的非常清楚，没有很好地突出自己所做的东西的难点，和岗位的匹配度不够
 
 主要是对简历的一些深入了解，对项目的考察
 
@@ -1530,15 +1496,9 @@ data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
 * 技术思考
 * ...
 
-### 总结
-
-描述具体项目的时候组织语言欠缺一点清晰，不能把一件事讲的非常清楚，没有很好地突出自己所做的东西的难点，和岗位的匹配度不够
 
 
-
-
-
-## 商业直播一面
+### 商业直播一面
 
 > 主要还是一些常规的基础面试 
 >
@@ -1554,12 +1514,6 @@ data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
 * virtual dom 和 virtual dom diff 
 * https相关
 * 4点15分 分针和时针的夹角  =>  3点和4点之间的夹角 30°  =>   4点15分 时针会偏移数字4  30° * 1/4 = 7.5°  => 一共 37.5 °
-
-
-
-
-
-### 手写题
 
 
 
@@ -1721,9 +1675,7 @@ console.log('res', res)
 
 
 
-
-
-## 商业直播二面
+### 商业直播二面
 
 > 时间：40min+
 
@@ -1743,7 +1695,7 @@ cdn的原理？当资源一上传的cdn它就一定能在最近的节点获取�
 
 你搭建的工作流 在开发时和编译时分别做了哪些处理？
 
-
+对pwa的了解
 
 
 
@@ -1907,17 +1859,11 @@ canvas缺点：
 
 **给你一个网站如何具体设计缓存策略？**
 
-
-
 不要对变化的资源添加较短的max-age
 
 如果对缓存使用恰当，能够为你的网站提升不少性能。但如果使用错误，也同样会给你的网站带来灾难。
 
-
-
 index.html 不设置缓存 no-store
-
-
 
 
 
@@ -1931,21 +1877,7 @@ Service Worker 是浏览器在后台独立于网页运行的脚本，它打开�
 
 [https://zhuanlan.zhihu.com/p/28113197](https://zhuanlan.zhihu.com/p/28113197)
 
-
-
-
-
-
-
-#### pwa
-
-......
-
-
-
-
-
-## 商业直播三面
+### 商业直播三面
 
 - pc端网站扫码登录的整个流程。（pc端网站显示二维码后轮询登录结果，手机扫码登录...认证服务器返回token）
 - 除了轮询还有别的什么方式吗？ （webstock 和 http2）
@@ -2050,16 +1982,16 @@ server {
 
 > ```bash
 > server {
->     listen 443 ssl http2;
+>  listen 443 ssl http2;
 > 
->     # ...
+>  # ...
 > 
->     root /var/www/html;
+>  root /var/www/html;
 > 
->     location = / {
->         proxy_pass http://upstream;
->         http2_push_preload on;
->     }
+>  location = / {
+>      proxy_pass http://upstream;
+>      http2_push_preload on;
+>  }
 > }
 > ```
 
@@ -2069,154 +2001,330 @@ server {
 
 
 
+# 中小厂 
 
 
 
 
 
+## 斗游
+
+
+
+### 一面
+
+> 斗游是斗鱼投资的，专门做海外直播的
+
+* vue相关的基础知识
+* vue的双向绑定
+* 移动端和pc分别如何做屏幕适配
+* ......
+
+
+
+一道笔试题目 (写完微信发过去，视频面试现场写)
+
+function lottery(whiteList, participant){}
+
+* whiteList:类型字符串数组,意义是表示从其他系统中计算出来的活跃用户，如果这批用户参与抽奖，则必定让他中奖。长度不超过1万
+
+* participant:类型字符串数组,意义是表示此次活动中真正参与抽奖的用户，长度约是10万。
+
+  
+
+  函数希望从participant返回两个2万个用户，表示中奖用户，优先选取whiteList上的用户，若不在whiteList上，对participant 剩余的随机 选取即可。
+
+
+
+------
+
+
+
+一开始版本
+
+```js
+function  lottery(whiteList,  participant){
+  let set1 = new Set(whiteList)
+  let set2 = new Set(participant)
+  let num = 0
+  let res = [] 
+  for(let item of set2.values()){
+    if(set1.has(item.value)){
+        res.push(item.value)
+        set2.delete(item.value)
+        num++
+    }
+  }
+  let lest = 20000 - num
+
+  // 随机取剩下
+  getLes(lest)  
+
+
+  return res 
+ }
+```
+
+优化后
+
+```js
+//如果这批用户参与抽奖，则必定让他中奖。 (也就whiteList不一定在participant)
+  function lottery(whiteList, participant) {
+    let set2 = new Set(participant)
+    let num = 0
+    let res = []
+    for (let item of whiteList) {
+      if (set2.has(item)) {
+        res.push(item)
+        num++
+        // 为了不影响后面的抽奖运算 还是要delete 
+        set2.delete(item)
+      }
+    }
+    let lest = 20000 - num
+    // 随机取剩下
+    let otherArr = getLes(lest, set2)
+    return res.concat(otherArr)
+  }
+```
+
+### 二面
+
+* 并行和并发的区别 ？node进程接受多个请求是并行还是并发？node开启多个进程（fork）？
+* 图片相关？png  jpg webp 特点？ 哪个压缩率更好一点？为什么？
+* 前端请求的一些异常？你的500错误是谁返回给你的（*Nginx*）（xml）？如果没有Nginx直接在服务器部署你获取的错误是谁返回给你的（浏览器底层）？
+* node I/o 相关？ 其源码（c++那部分）？
+* 一个新闻页有 图片 列表 文字 评论 如何更快的渲染？
+* 浏览器原理（渲染引擎 和 js引擎）？哪些东西会阻塞页面的正常渲染？
+* 进程和线程的区别？
+
+
+
+一道算法题目：
+
+数字1-n的n张牌，打乱，写一个算法让他回归有序状态  （洗牌算法）
+
+* 快速排序 （nlogn）（比较排序）
+
+* 桶排序 （n）（非比较排序）   （数字n的那张牌肯定在n位置）
+
+> 考察：非比较排序
+
+
+
+## 深信服
+
+> 已拿到offer没去
+
+### 一面
+
+基础
+
+* cookie和localStorage的区别
+* **一个post请求如何跨域？不涉及后端，纯前端实现可以吗？**   （form表单）
+* 一个串行的promise如何实现
+* Js如何区分数组和对象
+
+微信小程序
+
+* 小程序如何调试
+* 你的小程序工作流
+* 你的小程序怎么兼容
+* 你做的小程序框架的一些细节
+
+vue
+
+* vue通信机制 （`$emit`,`$on`,eventbus,vuex）
+* 何时用vuex？ 何时父子组件通信？
+
+调试技巧
+
+* 问很多日常开发中的调试技巧
+* 有一个弹窗，时而出现，时而消失，如何定位bug？   （调式的一些技巧，动态改写标签，指定标签状态actived，focus，source面板）
+* 如何设置断点条件，查看调用栈
+
+
+
+一些css基础问题
+
+接触过3d吗
+
+接触过地图相关开发吗
+
+最近的一些学习
+
+
+
+#### form表单跨域
+
+[表单可以跨域吗](https://github.com/frontend9/fe9-interview/issues/1)
+
+form提交是不会携带cookie
+
+没办法设置一个hidden的表单项，然后通过js拿到其他domain的cookie，因为cookie是基于域的，无法访问其他域的cookie，所以浏览器认为form提交到某个域，是无法利用浏览器和这个域之间建立的cookie和cookie中的session的，故而，浏览器没有限制表单提交的跨域问题。
+
+**form表单提交的结果js是无法拿到,所以没有去限制.**
+
+
+
+## 追一科技
+
+一家c轮做人工智能的公司，前端对node要求高，问框架原理问的很细很深
+
+### 一面
+
+* 链表和数组区别？真实应用场景 （偏后端）（卧槽）
+* diff细节？dom树更新怎么比较的？比较顺序？（是否component是否普通标签是否相同标签）同层对比？如果只是属性变了怎么更新？patchChildren？key的作用？
+* vue diff具体的实现？双端比较？
+* vue数据的响应式？
+* vue-router 两种模式？hash模式后端可以拿到#吗？
+* 垃圾回收机制？引用计数和标记清除的区别？在最顶级作用域 a引用b b引用a 怎么进行垃圾回收？**v8最新的垃圾回收机制？**
+* vue的nextTrick是怎么实现的（降级，根据当前环境选择）？为什么要要优先使用微任务来实现nextTrick？
+* session和cookie的关系？
+
+* Https 的加密模式 （混合加密）？怎么获取密匙？
 
 
 
 
 
+#### hash模式后端可以拿到#吗
+
+hash 虽然出现URL中，但不会被包含在HTTP请求中，对后端完全没有影响
 
 
 
 
 
+#### 链表的应用
+
+[https://juejin.cn/post/6844903946222321671](https://juejin.cn/post/6844903946222321671)
+
+链表与数组最大的不同就在于删除、插入的性能优势，插入、删除的时间复杂度只有O(1)
+
+对于不需要搜索但变动频繁且无法预知数量上限的数据，比如内存池、操作系统的进程管理、网络通信协议栈的trunk管理等等等等，都需要用到链表
 
 
 
+应用场景：
+
+**单向链表**
+
+撤销功能,这种操作最多见于各种文本、图形编辑器中,撤销重做在编辑器场景下属于家常便饭,单向链表由于良好的删除特性在这个场景很适用
+
+实现图、hashMap等一些高级数据结构
+
+---
+
+**双向链表**
+
+* 编辑器的「undo/redo」操作
 
 
 
+## 晓教育 （星火）
+
+### 一面
+
+基础：
+
+* 垂直居中一个元素
+* position元素怎么确定定位
+* 盒模型
+* 缓存（请求返回200 的时候的缓存）
+* copy一个对象？深拷贝？**怎么深拷贝一个函数？**
+* 常用状态码
+
+vue
+
+（问很多vue的问题，偏应用，问原理比较少）
+
+* vue实现一个类似react的hoc高阶组件
+* element的表单验证怎么做的？(form)（源码）
+* inject和provide
+* `$attr和$listen`   （子组件怎么拿到一个父组件的xxx 不通过props传递）
+* 组件间通信
+* watch的原理？怎么更新的？（user watcher）
+
+node
+
+* node微任务 宏任务执行顺序
+* koa的中间件机制？洋葱模型？
+* 怎么写一个转发请求的中间件？
+* 链接数据库
+* 用过哪些中间件
+* 定时任务
+* 爬虫怎么爬数据 （流程）
+* node里面怎么发起网络请求
+
+gulp
+
+* gulp.watch和node原生watch对比
+
+### 二面
+
+前端知识
+
+* 如何进行图表的错误监控？
+* 长列表优化 （recycle view 适用于card固定高度）？如果card高度不固定，聊天场景，1w条聊天信息怎么搞？（首屏渲染 分页 减少dom操作 fragment）
+* 问了一些具体业务场景的设计方案
+
+后端知识
+
+* 10亿条url 8g内存 无限大磁盘 如何去重url （url对应的资源不同就是不同url 可能不同url对应同一个资源，不能借助数据库）（找到url对应资源进行算法签名。。。来区分不同url）
+* 说一下可以提取文件特征的加密算法 （MD5 。。。。sha。。。）
+
+算法
+
+* 说一下快速排序的实现？怎么优化快速排序？  
+
+----
 
 
 
+优化快速排序：
+
+* 选择数组中间的元素作为基准
+* 当数组长度较小的时候才用插入排序之类
+
+-----
 
 
 
+如何进行图表的错误监控？ （尝试回答）
+
+通常图表使用echarts库，错误大概率是两种情况，渲染的dom错误，图表对应的数据源不对
+
+* 针对渲染的dom错误，我们可以监听dom，使用MutationObserver，观察图表是否正常渲染
+* 针对图表对应的数据源错误，我们直接监听数据，看是否为空，是否满足图表所需的数据格式
 
 
 
-# 富途
+## 富途
 
-大型证券公司，美国上市
+大型证券公司，腾讯投资，美国上市
 
-
-
-## 富途一面
+### 富途一面
 
 > 时长：一个半小时  对基础的考察非常的深
 
-### 闭包
-
-闭包是什么？
-
-闭包的作用？
-
-哪些场景会用到闭包 =>  回调函数，compose,缓存 
-
-
-
-### even loop
-
-浏览器的事件循环
-
-node的事件循环
-
-node事件循环和浏览器事件循环的区别
-
-node后来版本的事件循环 相比 之前版本的事件循环做了哪些变动
-
-
-
-
-
-
-
-### url
-
-输入一个url到最终页面展示的详细过程
-
-在这个过程中我们可以做的优化手段
-
-
-
-
-
-### 安全
-
-* xss
-* csrf
-* ddos
-* http中间人攻击
-
-怎么样做可以避免这些安全问题
-
-### promise
-
-你对promise的理解
-
-### webpack
-
-webpack是什么 => 模块打包器
-
-webpack打包原理 => entry => 构建依赖图谱 => loader处理对应文件
-
-webpack 的loader和plugin是什么?有什么区别
-
-怎么样写一个webpack-loader
-
-treeshaking是什么
-
-treeshaking在什么时候执行的 => 编译时
-
-对webpack5的了解 => hard-source-webpack-plugin
-
-
-
-### http
-
-http和https的区别
-
-对http2的了解
-
-
-
-### vue
-
-vue 的diff过程  => patch => patchChildren => diff 双指针对比
-
-isSameNode 怎么判断的  =>  key是否相等 && type是否相等 ...
-
-computed 和 watcher 的区别  
-
-computed 为什么初始化的时候不会去计算值 => dirty => 不会去调用
-
-
-
-
-
-### jwt
-
-jwt是什么  => **这是一套无状态的验证机制**
-
-
-
-**使用 JWT 的劣势**
-
-* **JWT 的最大缺点是无法作废已颁布的令牌**：由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。
-* **严重依赖于秘钥**：`JWT` 的生成与解析过程都需要依赖于秘钥(`Secret`)，且都以硬编码的方式存在于系统中(也有放在外部配置文件中的)。如果秘钥不小心泄露，系统的安全性将受到威胁。
-* **冗余的数据开销**：一个 `JWT` 签名的大小要远比一个 `Session` ID 长很多，如果对有效载荷(`payload`)中的数据不做有效控制，其长度会成几何倍数增长，且在每一次请求时都需要负担额外的网络开销。如果放在 Local Storage，**则可能受到 `XSS` 攻击**。
-
-
-
-
-
-
-
-
+* 闭包是什么？闭包的作用？哪些场景会用到闭包 =>  回调函数，compose,缓存 
+
+* event loop？浏览器的事件循环？node的事件循环？node事件循环和浏览器事件循环的区别？node后来版本的事件循环 相比 之前版本的事件循环做了哪些变动？
+* 输入一个url到最终页面展示的详细过程？在这个过程中我们可以做的优化手段？
+* 网络安全相关 （xss csrf ddos http中间人攻击）？ 怎么样做可以避免这些安全问题？
+* 你对promise的理解
+* webpack是什么 => 模块打包器？  webpack打包原理 => entry => 构建依赖图谱 => loader处理对应文件
+* webpack 的loader和plugin是什么?有什么区别
+* 怎么样写一个webpack-loader
+* treeshaking是什么？ treeshaking在什么时候执行的 => 编译时
+* 对webpack5的了解 => hard-source-webpack-plugin 。。。  更好的缓存 环境区分 更好的hash算法 静态资源处理
+* http和https的区别？对http2的了解？
+* vue 的diff过程  => patch => patchChildren => diff 双指针对比 ？  isSameNode 怎么判断的  =>  key是否相等 && type是否相等 ...
+
+* computed 和 watcher 的区别  ？ computed 为什么初始化的时候不会去计算值 => dirty => 不会去调用
+
+* jwt是什么  => **这是一套无状态的验证机制**
 
 ### 手写题
 
@@ -2258,17 +2366,21 @@ jwt是什么  => **这是一套无状态的验证机制**
 
 
 
+#### **使用 JWT 的劣势**
+
+* **JWT 的最大缺点是无法作废已颁布的令牌**：由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。
+* **严重依赖于秘钥**：`JWT` 的生成与解析过程都需要依赖于秘钥(`Secret`)，且都以硬编码的方式存在于系统中(也有放在外部配置文件中的)。如果秘钥不小心泄露，系统的安全性将受到威胁。
+* **冗余的数据开销**：一个 `JWT` 签名的大小要远比一个 `Session` ID 长很多，如果对有效载荷(`payload`)中的数据不做有效控制，其长度会成几何倍数增长，且在每一次请求时都需要负担额外的网络开销。如果放在 Local Storage，**则可能受到 `XSS` 攻击**。
 
 
-## 富途二面
+
+### 富途二面
 
 > 5道手写题 
 >
 > 时间：80min左右
 
-
-
-### 油漆题目
+#### 油漆题目
 
 > 没答出来
 
@@ -2304,11 +2416,7 @@ jwt是什么  => **这是一套无状态的验证机制**
 
 所以 红桶的“红蓝比” == 蓝桶的“蓝红比”
 
-
-
-
-
-### 移动零
+#### 移动零
 
 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
 
@@ -2362,11 +2470,7 @@ var moveZeroes = function (nums) {
 
 双指针...
 
-
-
-
-
-### 扑克牌
+#### 扑克牌
 
 52张牌（不要大王小王），抽两张牌是同颜色的概率？
 
@@ -2374,11 +2478,7 @@ var moveZeroes = function (nums) {
 
 26/52 * 25/51 *2 
 
-
-
-
-
-### 猴子吃桃
+#### 猴子吃桃
 
 一堆桃子，一群猴子，猴子吃桃，每只猴子吃3个桃子还剩下59个桃子。每只猴子吃5个桃子，最后一个猴子分不到5个桃子。问有多少个桃子？有多少只猴子
 
@@ -2394,15 +2494,7 @@ x - 5(y-1) < 5  (0,1,2,3,4)
 解得：。。。。 三个解
 ```
 
-
-
-
-
-
-
-### 类似税率的阶梯计算
-
-
+#### 类似税率的阶梯计算
 
 ```
 /*用户在平台上进行交易，需要交平台使用费。
@@ -2437,7 +2529,7 @@ x - 5(y-1) < 5  (0,1,2,3,4)
 
 
 
-## 富途三面
+### 富途三面
 
 * 节流防抖
 * http缓存
@@ -2445,7 +2537,7 @@ x - 5(y-1) < 5  (0,1,2,3,4)
 
 
 
-### 挑水卖钱
+#### 挑水卖钱
 
 有一人有240公斤水，他想运往干旱地区赚钱。他每次最多携带80公斤，并且每前进一公里须耗水1公斤（均匀耗水）。假设水的价格在出发地为0，以后，与运输路程成正比，（即在10公里处为10元/公斤，在20公里处为20元/公斤......），又假设他必须安全返回，请问，他最多可赚多少钱？
 
@@ -2455,11 +2547,7 @@ x - 5(y-1) < 5  (0,1,2,3,4)
 
 答案：2400
 
-
-
-
-
-### 两岸打电话
+#### 两岸打电话
 
 河两岸各有60w人和40w人，一天内会产生100w通电话，每通电话都是随机打的，问跨河打的有多少
 
@@ -2475,9 +2563,7 @@ x - 5(y-1) < 5  (0,1,2,3,4)
 
 40%
 
-
-
-### 移动零
+#### 移动零
 
 给定一个整数数组，请设计一个算法，将所有的0移到末尾，同时保持非0元素的相对位置。比如给定数组[0,6,9,0,22]，输出应该为[6,9,22,0,0] 
 
@@ -2512,61 +2598,24 @@ console.log('res', res)
 
 
 
-
-
-
-
-
-
-# 声网
+## 声网
 
 提供音视频服务，to D 
 
+### 声网一面
 
+* vue组件里面的data实际是放在组件内部还是全局？组件内部。
 
+* vue为什么data不放到全局？全局的话 diff会从root组件开始，非常消耗性能
 
+* 对ts的了解？获取函数的返回类型 =>  **returnType**
 
-## 声网一面
+* vue 和 react 的区别
+* 对redux的了解 
+* 有自己写过hook吗
 
-
-
-### vue
-
-vue组件里面的data实际是放在组件内部还是全局？
-
-组件内部。
-
-为什么data不放到全局？
-
-全局的话 diff会从root组件开始，非常消耗性能
-
-
-
-### ts
-
-对ts的了解
-
-获取函数的返回类型 =>  **returnType**
-
-
-
-
-
-### react
-
-vue 和 react 的区别
-
-对redux的了解 
-
-有自己写过hook吗
-
-
-
-### webpack
-
-我打包一个ui库，给vue框架使用，这个ui框会用vue上的一些api，但最终打包的时候我不希望vue打包进这个ui框架里面，该怎么做？
-
-使用externals。
+* webpack相关。我打包一个ui库，给vue框架使用，这个ui框会用vue上的一些api，但最终打包的时候我不希望vue打包进这个ui框架里面，该怎么做？使用externals。
+* webpack的打包流程 => entry入口 建立依赖图谱 => loader => 打包生命周期中触发plugin
 
 [https://webpack.docschina.org/configuration/externals/#root](https://webpack.docschina.org/configuration/externals/#root)
 
@@ -2591,59 +2640,17 @@ import $ from 'jquery';
 $('.my-element').animate(/* ... */);
 ```
 
+* 场景设计相关。 历史记录 聊天框  同级组件 修改聊天框的子组件input  => 按发送按钮 => 聊天框出现新的消息。vue会怎么进行更新？
 
-
-----
-
-
-
-* webpack的打包流程 => entry入口 建立依赖图谱 => loader => 打包生命周期中触发plugin
-
-
-
-
-
-
-
-### 场景
-
-历史记录 聊天框  同级组件
-
-修改聊天框的子组件input  => 按发送按钮 => 聊天框出现新的消息
-
-vue会怎么进行更新？
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 声网二面
+### 声网二面
 
 * 对 monorepo 多包单仓库开发模式的了解
 * 有了解过lerna吗？
-* ui库 storebook
+* ui库 storybook
 * 看过哪些源码 (vue axios koa2)
 * 你们通用组件的开发流程？
 
-
-
-### 场景
+#### 场景设计
 
 要对所有的console.log上报，不能改变原console.log的写法，你会怎么做？
 
@@ -2668,9 +2675,11 @@ console.log = function(...args){
 
 除了localstorage还有别的更好的解决方案没？
 
-没了。。。
+[IndexedDB](https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API)
 
-### 手写
+
+
+手写题：
 
 获取1000个不重复的6位数
 
@@ -2714,11 +2723,9 @@ function getRandom() {
 * jest
 * react-test-library
 
-----
 
 
-
-### 前端日志上报
+#### 前端日志上报
 
 [前端日志上报](https://www.shymean.com/article/%E5%A6%82%E4%BD%95%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E6%89%93%E6%97%A5%E5%BF%97)
 
@@ -2729,7 +2736,11 @@ function getRandom() {
 
 
 
-当页面刷新的时候，页面卸载的时候，可能还在请求中，异步的XMLHttpRequest不能保证日志一定上报成功。该怎么做？
+**当页面刷新的时候，页面卸载的时候，可能还在请求中，异步的XMLHttpRequest不能保证日志一定上报成功。该怎么做？**
+
+[发送同步的ajax请求](https://juejin.cn/post/6844903790575878157)
+
+这种方式虽然有效，但是用户需要**等待**请求结束才可以关闭页面。对用户的体验不好。
 
 
 
@@ -2790,15 +2801,7 @@ function log(msg, sampling = 1){
 }
 ```
 
-
-
-
-
-
-
-
-
-### Vue  globalHandleError
+#### Vue  globalHandleError
 
 > 非面试题，纯学习用
 
@@ -2829,29 +2832,13 @@ function logError (err, vm, info) {
 }
 ```
 
+#### hash 算法 
 
-
-
-
-
-
-
-
-### hash 算法 
-
-面试后自己查找资料
-
-
-
-#### 什么是hash算法
+什么是hash算法
 
 **哈希算法将任意长度的二进制值映射为较短的固定长度的二进制值，这个小的二进制值称为哈希值。哈希值是一段数据唯一且极其紧凑的数值表示形式。**
 
-
-
-
-
-#### [解决哈希冲突的常用方法分析](https://www.jianshu.com/p/4d3cb99d7580)
+[解决哈希冲突的常用方法分析](https://www.jianshu.com/p/4d3cb99d7580)
 
 链地址法（拉链法）
 
@@ -2879,19 +2866,15 @@ function logError (err, vm, info) {
 
 
 
-
-
-
-
-再哈希法
+* 再哈希法
 
 就是同时构造多个不同的哈希函数：
  Hi = RHi(key)   i= 1,2,3 ... k;
  当H1 = RH1(key)  发生冲突时，再用H2 = RH2(key) 进行计算，直到冲突不再产生，这种方法不易产生聚集，但是增加了计算时间。
 
+---
 
-
-#### 一致性Hash算法
+一致性Hash算法
 
 [https://juejin.cn/post/6844903750860013576](https://juejin.cn/post/6844903750860013576)
 
@@ -2931,6 +2914,36 @@ function logError (err, vm, info) {
 
 
 
+## 迅雷
+
+### 迅雷一面
+
+* 主要是针对简历上的项目问
+
+
+
+手写题：
+
+* getNumber(min,max)  
+* 对getNumber做单元测试
+
+
+
+getNumber要求左闭右闭区间
+
+```tsx
+function getNumber(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+```
+
+单元测试test
+
+例子：getNumber(1,3) =>  1,2,3
+
+* getNumber返回值x   min <= x <= max
+* 在大量getNumber运行中 保证每一值获取到的概率差不多
+* 在大量getNumber运行中 保证每一值都能获取到
 
 
 
@@ -2938,48 +2951,553 @@ function logError (err, vm, info) {
 
 
 
+## ones
 
+复临科技
 
+###  一面
 
-# 2020年
-
-2020是非常艰难的一年，受疫情影响，很多中小型公司倒闭，很多人二月份只有几天的工资。
-
-对于我来说，疫情期间可以远程面试，是一个跳槽的绝好机会。
-
-就我感觉疫情对整个大环境是有冲击的，但是对互联网it行业来说影响并没有想象中的大。
-
-我持续面试了一个半月，总共面了7 8家公司，拿到了4个offer左右，最终选择的是晓教育的offer做线上教育。
+* 算法 dp 找出两个字符串的最长公共子串的动态转移方程 （用途: git diff 文件diff）
+* 设计模式 （常见的设计模式有哪些）
+* 数据结构 （map 底层是怎么实现的）（hash表）
+* https  手机要抓https的包该怎么办？（手机要安装证书）=> 证书有什么用？
+* data更新时 vue 和 react 怎么去更新view的？ 两者有什么差异
+* html怎么最终渲染到浏览器屏幕上的
+* 项目。。。
 
 
 
 ----
 
-当时想法： 拘泥于广州，不想搬家，后来回头来看确实这个决定有点草率
+两个字符串的最长公共子串的动态转移方程
+
+`dp[i][j]`表示 str1[0…i] 与 str2[0…j] 的最长公共子串的长度。
 
 
 
-# 2021年
+矩阵 dp 的第一列 `dp[0…m-1][0]`.对于 某个位置（i，0）如果str1[i]==str2[0],则`dp[i][0]=1`,否则`dp[i][0]=0`
+矩阵 dp 的第一行 `dp[0][0…n-1]`.对于 某个位置（0，j）如果str1[0]==str2[j],则`dp[0][j]=1`,否则`dp[0][j]=0`
 
-> 2021.2.22
+其他位置：
 
-2021年手上有三家比较好的offer
+str1[i]==str2[j],`dp[i][j]=dp[i-1][j-1]+1`;
 
-富途： 工资最低 性价比不高 （拒绝）
-
-腾讯：pcg 看点部门 此部门风评不好 感觉做的东西不是自己喜欢 可能也就是螺丝工 （狠下心来拒绝）
-
-声网：ad视频会议相关吧 to D  以及 low code 低代码平台 （接受）
+str1[i]!=str2[j]则`dp[i][j]=0`
 
 
 
-分析一下心理的想法，深圳腾讯并不比声网base高多少，腾讯感觉应该会很辛苦，深圳南山那块房租3k左右生活成本高，声网base可以广州，感觉声网的舞台也足够当前的自己成长，感觉没必要只是为了腾讯的title镀金，另外一个原因的话是我在晓教育的base偏低，银行流水拉胯，遵循内心的想法还是想在广州稳定下来。遂最终选择声网的offer
+
+
+## 灵雀云
+
+ 前端用vue 和 angular 技术栈
+
+### 一面 
+
+* 为什么需要Promise =>  Promise 和 async/await 的区别 =>  怎么实现async/await （利用generator yield）=> 能具体说一下嘛？ （说不出来 gg）
+
+* 数组循环的方法  （基础for，for...of，forEach） =>  for...of可以遍历对象吗？ **（不可以 内含iterator的才可以 这里答错了）** =》 哪一个循环的方式性能最好 （基础for循序） =>  为什么呢？
+* forEach 为什么性能差？ =>  forEach 算函数式编程吗 =>  说一下对函数式编程的理解
+* css 动画 和 js动画的区别 => js动画采用setInterval实现，同时去改变data，动画会卡吗？为什么？（会 先执行同步任务在进行异步任务）=> css 动画中同时去改变data，动画会卡吗？（不会）
+* 重排和重绘的区别 => transform 会导致重排和重绘吗
+
+* 同时setState两次会怎么样 =>  **为什么setTimeout中的 setState 没办法合并**
+* 如何实现connect  (react-redux)
+* react 的 useRef，ref 有什么作用  （拿到dom节点， 回调 Refs更精细地控制何时 refs 被设置和解除 ，拿到子组件的dom节点）
+
+[回调 Refs](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html#callback-refs)
+
+手写题两道：
+
+```tsx
+// 用性能尽可能好的方法展开高阶数组并去重、按升序排序
+function flatAndSort(arr) {
+    // your code here  老题目就不做了
+    // 升级：可以不用循环去实现数组扁平化吗 =>   arr.toString()
+}
+
+const array3 = [0, [1, 2], 10, [3, 7, 10], [[4, 5, 0], 6]]
+console.log(flatAndSort(array3))
+```
+
+```tsx
+/**
+ * 灵雀云前端面试题：版本号排序
+ * 实现 sortVersions 函数，使测试用例能够返回正确的结果
+ */
+const versions = ['2.01', '1.10', '1.9.10', '1.10.2', '2.0', '1'];
+
+function sortVersions(versions) {
+    versions.sort((a, b) => {
+        let arr1 = a.split('.')
+        let arr2 = b.split('.')
+        while (arr1.length < 3) {
+            arr1.push('0')
+        }
+        while (arr2.length < 3) {
+            arr2.push('0')
+        }
+        let main = parseInt(arr1[0]) - parseInt(arr2[0])
+        let middle = parseInt(arr1[1]) - parseInt(arr2[1])
+        let last = parseInt(arr1[2]) - parseInt(arr2[2])
+
+        return main || middle || last
+    })
+
+    return versions
+}
+
+
+console.log(sortVersions(versions));
+// ["1","1.9.10","1.10","1.10.2","2.0","2.01"]
+```
 
 
 
-## 2022年
+#### 实现async/await
 
-计划：继续留在声网
+[手写async await的最简实现](https://juejin.cn/post/6844904102053281806)
+
+我们可以利用yield 实现 async/await
+
+```tsx
+function generatorToAsync(generatorFunc) {
+  return (...args) => {
+    const gen = generatorFunc.apply(this, ...args);
+    return new Promise((resolve, reject) => {
+      const step = (key, arg) => {
+        let generatorResult;
+        try {
+          generatorResult = gen[key](arg);
+        } catch (error) {
+          return reject(error);
+        }
+        const { value, done } = generatorResult;
+        if (done) {
+          return resolve(value);
+        } else {
+          return Promise.resolve(value).then(
+            (val) => {
+              step("next", val);
+            },
+            (err) => {
+              return reject(err);
+            }
+          );
+        }
+      };
+
+      step("next");
+    });
+  };
+}
+```
+
+测试：
+
+```tsx
+const getData = () => new Promise((resolve) => setTimeout(() => resolve("data"), 1000));
+
+function* testG() {
+  // await被编译成了yield
+  const data = yield getData();
+  console.log("data: ", data);
+  const data2 = yield getData();
+  console.log("data2: ", data2);
+  return "success";
+}
+
+const testGAsync = generatorToAsync(testG)
+testGAsync().then(res=>console.log(111,res))
+```
+
+generatorToAsync这个函数，这是babel编译async函数的核心，当然在babel中，generator函数也被编译成了一个很原始的形式，本文我们直接以generator替代
+
+#### yield 知识点
+
+[https://es6.ruanyifeng.com/#docs/generator](https://es6.ruanyifeng.com/#docs/generator)
+
+`yield`表达式本身没有返回值，或者说总是返回`undefined`。`next`方法可以带一个参数，该参数就会被当作上一个`yield`表达式的返回值。
+
+#### JS 各种循环性能对比
+
+[JS 各种循环性能对比](https://segmentfault.com/a/1190000023046119)
+
+性能:
+**普通 for 循环 > forEach > for of > map > for in**
+
+#### Iterator 相关
+
+[https://es6.ruanyifeng.com/#docs/iterator](https://es6.ruanyifeng.com/#docs/iterator)
+
+**ES6 创造了一种新的遍历命令`for...of`循环，Iterator 接口主要供`for...of`消费。**
+
+ES6 规定，默认的 Iterator 接口部署在数据结构的`Symbol.iterator`属性，或者说，一个数据结构只要具有`Symbol.iterator`属性，就可以认为是“可遍历的”（iterable）。
+
+`Symbol.iterator`属性本身是一个函数，就是当前数据结构默认的遍历器生成函数。执行这个函数，就会返回一个遍历器。至于属性名`Symbol.iterator`，它是一个表达式，返回`Symbol`对象的`iterator`属性，这是一个预定义好的、类型为 Symbol 的特殊值，所以要放在方括号内
+
+```tsx
+const obj = {
+  [Symbol.iterator] : function () {
+    return {
+      next: function () {
+        return {
+          value: 1,
+          done: true
+        };
+      }
+    };
+  }
+};
+
+```
+
+上面代码中，对象`obj`是可遍历的（iterable），因为具有`Symbol.iterator`属性。
+
+
+
+原生具备 Iterator 接口的数据结构如下。
+
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的 arguments 对象
+- NodeList 对象
+
+**tip：Object 不能被 for..of 遍历**
+
+#### css动画和js动画区别
+
+* JS动画（[逐帧动画](https://www.zhihu.com/search?q=逐帧动画&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A1627856428})）
+
+在js动画是逐帧动画，是在时间帧上逐帧绘制帧内容，由于是一帧一帧的话，所以他的可操作性很高，几乎可以完成任何你想要的动画形式。但是由于逐帧动画的帧序列内容不一样，会增加制作负担，且资源占有比较大。
+
+**缺点：js是单线程的脚本语言，当js在浏览器主线程运行时，主线程还有其他需要运行的js脚本、样式、计算、布局、交互等一系列任务，对其干扰线程可能出现阻塞，造成丢帧的情况。**
+
+* css3（补间动画）
+
+制作方法简单方便。只需确定第一帧和最后一帧的关键位置即可，两个关键帧之间帧的内容由Composite线程自动生成，不需要人为处理。当然也可以多次添加[关键帧](https://www.zhihu.com/search?q=关键帧&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A1627856428})的位置。**css动画更为流畅。**
+
+**因为只设置几个关键帧的位置，所以在进行动画控制的时候时比较弱的。不能够在半路暂停动画，或者在动画过程中不能对其进行一些操作等。**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 外企
+
+
+
+## 福里斯
+
+一家做区块链的外企
+
+### 一面
+
+* es6新语法  (map 和 weakmap 区别) （箭头函数有没有arguements对象）=》 weakmap的实际应用 
+* 浏览器事件循环  =>  node事件循环和浏览器事件循环有区别吗 => 微任务和宏任务
+* js 垃圾回收机制  （新生代 老生代）
+* 浏览器渲染原理 => 生成css tree 和 dom tree的过程是并行的吗 （是并行的）
+* v8原理 =》 怎么执行js的 （解析器 解释器 热代码 优化和反优化 JIT）
+* babel 原理 =》 transform，ast处理 ，generate
+* 缓存相关 => 哪些request header 和缓存有关 =>  什么时候会触发 304 
+* http2的特点 =》 什么是队头阻塞 =》 为什么http1.1这种会有队头阻塞 =》 有没有使用node支持过http2
+* 层叠上下文相关 =》 合成层 渲染层 =》 如果一个元素z-index设置很大 还是被其他元素盖住怎么排查
+* 浏览器内存泄漏 =>  node 内存泄漏
+* node 利用多核cpu性能
+* 父元素高度塌陷怎么恢复  => 清除浮动 => 除了清除浮动还能有别的方式吗
+* 盒模型的理解
+* 常见的布局 =》 flex，grid 布局
+* 适配 h5 和 pc （@media）
+* vue的响应式原理  =》  对viewModel的理解 =》 v-model 的实现
+* Object.defineProprty => proxy
+* vue的diff算法 =》 双数组对比 （前前 后后 交叉）=》 diff的时间复杂度  O(n)
+* 对virtual dom的理解
+* weback4 => webpack5  => webpack5 新特性
+* vite 和 webpack 的区别 =>   vite的原理
+* 那个项目成长最多介绍一下 =》 做了哪些东西让你成长 
+* 平时有没有去关注请求的数量 时序 大小之类
+* 对区块链的理解 
+* 对比特币的理解
+
+### 二面
+
+> （跪了 分析大概率是技术之外的因素 比如英语 比如有更合适的人）
+
+* https 的安全性体现在哪？ => 非对称加密为什么会比对称加密更慢？
+* 最近在看什么书
+* 英语能力
+* 项目中的挑战
+* 项目中的成长
+
+#### **为什么非对称加密比对称加密慢**
+
+这是因为对称加密主要的运算是**位运算**，比如**AES**，速度非常快，如果使用硬件计算，速度会更快。
+
+非对称加密计算一般都比较复杂，比如 RSA，**它里面涉及到大数运算**（大数乘法、大数模）等等运算。（公钥加密后只能用私钥解密，反过来，私钥加密后也只能用公钥解密，公钥可以任意分发而私钥保密。）
+
+密码的大小：对称加密不会增加密码的大小（渐近），但非对称加密会。
+
+
+
+
+
+## Binance
+
+币安（币圈头部最大公司）（已拿offer要去迪拜 犹豫再三拒绝了）
+
+### 一面
+
+* **组件库 全局引入 和 局部引入的问题  => 按需引入组件（babel-import 和 node-import）**
+* tree shaking 相关
+* 浏览器缓存 （强缓存 和 协商缓存）
+* html缓存 => html需要缓存吗？  => 如何干掉html的缓存 （nginx 配置）
+* lerna相关 =>  如果包体过多怎么办 ?  => lerna 第一次install速度过慢
+* 小程序 和 jsbridge的区别
+* 栅格布局 => flex 和 grid 布局 => 如何实现 2 * 2 布局
+* webpack 中 loader和plugin 的区别  => webpack排除依赖 （externals）
+* __webpack_require__ 实现原理
+* 什么是 ast => 介绍一下做的ast工具
+* react相关 => 常见的hooks => useEffect相关 => useMemo 和 useCallback 
+* react 的diff过程
+* 如何实现改变一个对象的属性同时去修改dom元素上的值  (Object.defineProprty)
+* 如何实现一个简单的reducx  => connect 怎么实现的
+
+手写题：
+
+* 节流防抖
+
+### 二面
+
+* 非技术 （给自己三个tag便签 最近在看什么书 在看什么文章 分享一下最近印象深刻的学习内容）
+* react 的 setState 运行机制 =>  为什么在setTimeouot里面的setState是同步执行的？
+* react 的 hooks 为什么要保证一定的顺序 不可以写到if里面
+* webpack打包过程 =>  webpack 动态 import 原理   => 动态import的module 怎么插到webpack 的 modules中
+* webpack的路径查找过程  （npm 相对路径 绝对路径）
+* webpack 的 hmr 热更新原理  （[WebSockets](https://stackoverflow.com/questions/57768951/webpack-dev-server-and-websockets)）  =>   说一下具体细节
+* 。。。
+
+
+
+手写题三道：
+
+* useCountdown(num) 实现倒计时
+
+实现：利用setInterval
+
+```tsx
+function useCountdown(num) {
+  const [total, setTotal] = useState(num);
+  useEffect(() => {
+    let timer = setInterval(() => {
+      setTotal((cur) => {
+        // 利用setState函数形式拿到最新值
+        if (cur <= 0) {
+          clearInterval(timer);
+          return 0;
+        }
+        return cur - 1;
+      });
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return total;
+}
+```
+
+setInterval 并不是严格间隔一秒钟的，有什么优化方案吗？
+
+
+
+实现：在requestAnimationFrame中用两次Date差异对比
+
+```tsx
+function useCountdown(num) {
+  const [total, setTotal] = useState(num);
+  const [date, setDate] = useState(+new Date());
+  useEffect(() => {
+    const calc = () => {
+      let nowDate = +new Date();
+      let temp = 60 * 1000 - (nowDate - date);
+      if (temp < 0) {
+        return;
+      }
+      setTotal(parseInt(temp / 1000));
+      requestAnimationFrame(calc);
+    };
+    requestAnimationFrame(calc);
+  }, []);
+
+  return total;
+}
+```
+
+
+
+
+
+* add 和 remove class
+
+  [https://codepen.io/liximomo/pen/zpjXwV?editors=1111](https://codepen.io/liximomo/pen/zpjXwV?editors=1111)
+
+```tsx
+ element.classList.remove('run-animation')
+ setTimeout(()=>{
+    element.classList.add('run-animation')
+ },0) 
+```
+
+为什么需要setTimeout? Promise.then为什么不行？**如果不延时能实现嘛？**
+
+
+
+*  consumeTasks(tasks, limit) 控制并发
+
+```tsx
+/**
+ * create a async function that would be completed after certain seconds
+ */
+function createTask(n, second) {
+  return () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`finish task ${n}`);
+        resolve();
+      }, second * 1000);
+    });
+  };
+}
+
+/**
+ * Run the tasks collection of functions in parallel, but runs a maximum of limit async operations at a time.
+ *
+ * @param {*} coll A collection of async functions to run. Each async function can complete with any number of optional result values.
+ * @param {*} limit The maximum number of async operations at a time.
+ */
+async function consumeTasks(tasks, limit) {
+  return new Promise((resolve, reject) => {
+    let result = new Array(tasks.length);
+    let finished = new Array(tasks.length).fill(false);
+    let cur = 0;
+
+    const next = () => {
+      let task = tasks.shift();
+      task().then(
+        (res) => {
+          result[cur] = res;
+          finished[cur] = true;
+          cur++;
+          if (!finished.includes(false)) {
+            return resolve(result);
+          }
+          if (tasks.length) {
+            next();
+          }
+        },
+        (rej) => {
+          cur++;
+          reject(rej);
+        }
+      );
+    };
+
+    for (let i = 0; i < limit; i++) {
+      next();
+    }
+  });
+}
+const input = [3, 1, 3, 10, 2, 2, 1, 4].map((t, i) => createTask(i + 1, t));
+const res = consumeTasks(input, 2);
+console.log(res);
+// with the given input, output should be: 2 1 3 5 6 7 4 8
+
+```
+
+### 三面
+
+* 有遇见过内存泄漏的情况吗 =>  怎么样定位有没有存在内存泄漏 => 哪些情况会导致内存泄漏
+* 如何定位有性能问题的组件？
+* 长列表优化 => 虚拟列表 => 虚拟列表的key可以复用吗，当元素移出屏幕外（不可以）=> 虚拟列表滚动的时候保证底下的item平滑移动 （transform）=>   列表如何在一定的区域滚动 （外部一个wrapper 内部overflow：scrollY） => 。。。
+
+* 首屏有一个k线图组件还有一些别的组件，怎么让k线图最快显示 （类似FMP了） （别的组件动态加载，k线图组件直接加载，请求的优先级最高，同时用一些策略减少白屏时间）
+* k线图组件通过WebStock不断接受数据js计算让后去渲染，怎么样让渲染更流畅？ （web worker 处理复杂计算 requestAnimationFrame css硬件加速 canvas）
+* **canvas为什么快？ =>  canvas的优化手段** （离屏渲染 局部渲染）
+
+* 有一个上层sdk依赖另外一个底层sdk，怎么保证上层sdk执行时底层sdk已经加载好了呢，底层sdk不能打包进上层sdk （webpack [externals](https://webpack.js.org/configuration/externals/) + peerDependencies） =>  如果底层sdk是CDN的方式，怎么办？ （相当于自己实现类`webpack__require__`的东进西  require的同时 把module export等传入 同时内部有控制逻辑 实现一套类webpack runtime）
+* 有一个sdk（适配web 和 pc）希望打包只有web api的版本和pc api的版本  （设置两个entry：web entry 和 pc entry）=》 你这么说的是代码拆的比较干净的情况，如果有胶水层，或者同构代码的形式拆不干净怎么办 （类似umi的解决方案 搞一个parser解析器 拆不干净的代码可以用注释包裹 用parser分析解析处理）
+* 写过webpack plugin没 （没有了解原理，写过babel的plugin） => 介绍一下怎么写一个babel的plugin
+* 小程序性能优化手段 => wss 为什么执行效率高？
+* **什么是动态规划？  =>   0-1 背包问题 的 动态转移方程**
+
+* **英语水平怎么样 （哭了 以后得练）**
+* 你想要在团队内推广一个新技术怎么去做？ （ab test 灰度 小范围给到用户，收集指标数据，用数据说话）
+* 你在团队里的角色 （核心 技术攻坚）
+* 除了web 还有什么技术擅长  
+* 怎么去学习一项新技术？ 有没有做过技术分享？
+
+
+
+
+
+
+
+## Brix 电鸭平台
+
+> 平台对个人进行了解 在推给相应的企业
+
+* 深挖项目
+
+* 前端性能优化 （运行时 编译时）
+* vue响应式 和 mobx响应式的区别
+* 写过哪些自定义hooks
+* react diff 过程 =>  很深的组件 setState 怎么跳过对比 
+* vue 和 react的区别
+* h5 和 app 通信 => url schme  =>  **如果url的长度过长怎么办？**
+* 前端安全问题  => csrf 和 xss  => **怎么触发csrf**  => cookies 同源策略
+* 英语能力怎么样
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2993,6 +3511,10 @@ function logError (err, vm, info) {
 
 
 
+**后端能力 和 英语能力 格外的重要**
+
+基本上所有好的公司都需要前端有一定的后端能力 也就是 大前端方向。**（今后一定得补上这个）**
+
 
 
 
@@ -3000,6 +3522,8 @@ function logError (err, vm, info) {
 
 
 # 总结
+
+**第一轮偏重前端基础，第二轮偏重项目设计还有简历细节，第三轮主要是针对某一方向深入挖掘和有点压力面得感觉。**
 
 
 
@@ -3015,4 +3539,52 @@ function logError (err, vm, info) {
 经过几家面试下来，也大概清楚自己在市场的位置 
 
 hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情，毕竟工作经验不够（按理来说工作时间越长工资越高）
+
+
+
+## 2020年
+
+2020是非常艰难的一年，受疫情影响，很多中小型公司倒闭，很多人二月份只有几天的工资。
+
+对于我来说，疫情期间可以远程面试，是一个跳槽的绝好机会。
+
+就我感觉疫情对整个大环境是有冲击的，但是对互联网it行业来说影响并没有想象中的大。
+
+我持续面试了一个半月，总共面了7 8家公司，拿到了4个offer左右，最终选择的是晓教育的offer做线上教育。
+
+----
+
+当时想法： 拘泥于广州，不想搬家，后来回头来看确实这个决定有点草率
+
+
+
+## 2021年
+
+> 2021.2.22
+
+2021年手上有三家比较好的offer
+
+富途： 工资最低 性价比不高 （拒绝后 加薪2k）
+
+腾讯：pcg 看点部门 此部门风评不好 感觉做的东西不是自己喜欢 可能也就是螺丝工 （狠下心来拒绝）
+
+声网：ad视频会议相关吧 to D  以及 low code 低代码平台 （接受）
+
+
+
+分析一下心理的想法，深圳腾讯并不比声网base高多少，腾讯感觉应该会很辛苦，深圳南山那块房租3k左右生活成本高，声网base可以广州，感觉声网的舞台也足够当前的自己成长，感觉没必要只是为了腾讯的title镀金
+
+另外一个原因的话是我在晓教育的base偏低，银行流水拉胯，遵循内心的想法还是想在广州稳定下来。
+
+遂最终选择声网的offer
+
+
+
+## 2022年
+
+疫情的影响，上海封城两个多月，国内经济大环境太差，大厂纷纷裁员。
+
+面试情况：字节面试通过但hr面试后offer审批没有下来，外企基本都需要英语口语交流能力（挂在了英语方面，以后得加强英语学习），币圈拿了币安的offer（总包100w人民币多）但最终拒绝了（需要出国迪拜家里人不同意，怕安全问题）
+
+遂最终选择继续苟在声网
 

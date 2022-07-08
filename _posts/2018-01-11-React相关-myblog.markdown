@@ -2156,6 +2156,48 @@ ReactDOM.render(
 
 
 
+### ComponentType and ReactType and ElementType
+
+[React.ComponentType<Props> ](https://flow.org/en/docs/react/types/#toc-react-componenttype)
+
+This is a union of a class component or a stateless functional component. This is the type you want to use for functions that receive or return React components such as higher-order components or other utilities.
+
+```tsx
+type Props = {
+  foo: number,
+  bar: number,
+};
+
+function createMyElement<C: React.ComponentType<Props>>(
+  Component: C,
+): React.Element<C> {
+  return <Component foo={1} bar={2} />;
+}
+```
+
+---
+
+'ReactType' is deprecated.ts(6385)
+
+ReactType 被干掉了 不建议使用
+
+---
+
+ElementType
+
+Similar to [`React.ComponentType`](https://flow.org/en/docs/react/types/#toc-react-componenttype) except it also includes JSX intrinsics (strings).
+
+```tsx
+type ElementType =
+  | string
+  | React.ComponentType<any>;
+
+```
+
+
+
+
+
 ## react-scripts
 
 
