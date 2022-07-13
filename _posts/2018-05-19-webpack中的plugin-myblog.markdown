@@ -663,6 +663,7 @@ Or, in case of just a from with the default destination, you can also use a {Str
 ```
 
 
+
 ### BundleAnalyzerPlugin 
 
 使用交互式可缩放树形图可视化webpack输出文件的大小。
@@ -683,8 +684,17 @@ This module will help you:
 
 
 
+ [And the best thing is it supports minified bundles! It parses them to get real size of bundled modules. And it also shows their gzipped sizes!](https://stackoverflow.com/questions/71495401/what-are-the-numbers-in-the-file-names-in-next-bundle-analyzer)
 
-And the best thing is it supports minified bundles! It parses them to get real size of bundled modules. And it also shows their gzipped sizes!
+
+
+`webpack-bundle-analyzer` reports three values for sizes. `defaultSizes` can be used to control which of these is shown by default. The different reported sizes are:
+
+> - **`stat`** This is the "input" size of your files, before any transformations like minification. It is called "stat size" because it's obtained from Webpack's [stats object](https://webpack.js.org/configuration/stats/).
+> - **`parsed`** This is the "output" size of your files. If you're using a Webpack plugin such as Uglify, then this value will reflect the minified size of your code.
+> - **`gzip`** This is the size of running the parsed bundles/modules through gzip compression.
+
+
 
 
 

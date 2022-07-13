@@ -1092,6 +1092,114 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 * babel-preset-env 的坑
 * babel-runtime 是要放在 dependencies 还是 devDependencies
 
+
+
+#### 监控资源加载失败
+
+[使用 window.addEventListener 捕获阶段](http://www.alloyteam.com/2021/01/15358/)
+
+[脚本错误量极致优化-监控上报与Script error](https://github.com/joeyguo/blog/issues/13)
+
+[聊聊前端监控](https://juejin.cn/post/6867773840768909326)
+
+**`window.onerror` 是通过在冒泡阶段捕获错误，所以无法捕获资源错误。**
+
+**冒泡虽不行，但捕获可以**！我们可以通过捕获的方式全局监控加载失败的错误，虽然这也监控到了脚本错误，但通过判断便可以筛选出加载失败的错误。
+
+----
+
+**那么如果区分脚本错误还是资源错误呢？我们可以通过 `instanceof` 区分，脚本错误参数对象 `instanceof` `ErrorEvent`，而资源错误的参数对象 `instanceof` `Event`。**
+
+`ErrorEvent` 继承于 `Event` ，所以不管是脚本错误还是资源错误的参数对象，它们都 `instanceof` `Event`，所以，需要先判断脚本错误。
+
+```ts
+/**
+ * @param event 事件名
+ * @param function 回调函数
+ * @param useCapture 回调函数是否在捕获阶段执行，默认是false，在冒泡阶段执行
+ */
+window.addEventListener('error', (event) => {
+  if (event instanceof ErrorEvent) {
+    console.log('脚本错误')
+  } else if (event instanceof Event) {
+    console.log('资源错误')
+  }
+}, true);
+
+```
+
+
+
+#### 监控跨域js的 error 
+
+对于不同源的脚本报错，无法捕获到详细错误信息，只会显示 `Script Error`
+
+
+
+解决：
+
+* 同源化 （将js文件与html文件放到同一域名下）
+* 跨源资源共享机制( CORS )  （为页面上script标签添加crossorigin属性）
+
+
+
+#### 区分浏览器关闭和刷新
+
+这个其实在绝大部分情况下都是没必要区分开的。
+
+[硬是要区分只能通过时间差](https://blog.csdn.net/weixin_42333548/article/details/113661038)
+
+```
+页面加载时只执行onload
+页面关闭时先执行onbeforeunload，最后onunload
+页面刷新时先执行onbeforeunload，然后onunload，最后onload。
+```
+
+我们可以在离开页面是判断 or 进入页面时判断
+
+举个例子：
+
+这里用进入页面时判断  （判断是刷新 还是 重新进入页面）
+
+```tsx
+const now = new Date().getTime();
+const leaveTime = parseInt(localStorage.getItem('leaveTime'), 10);
+const refresh = (now - leaveTime) <= 5000;
+alert(refresh ? '刷新' : '重新登陆');
+window.onunload = () => {
+     window.localStorage.setItem('leaveTime', new Date().getTime());
+};
+
+```
+
+
+
+
+
+
+
+
+
+---
+
+扩展知识：
+
+**visibilitychange**事件是浏览器新添加的一个事件，当浏览器的某个标签页切换到后台，或从后台切换到前台时就会触发该消息
+
+```tsx
+  document.addEventListener("visibilitychange", function (event) {
+        if (document.visibilityState === "visible") {
+          console.log('visible',event);
+        } else {
+         console.log('hidden',event);
+        }
+      });
+```
+
+
+
+
+
 #### ES6 的 let 实现原理
 
 ```tsx
