@@ -908,3 +908,13 @@ Remember to surround separate commands with quotes:
 
 记住要加引号
 
+
+
+### rimraf
+
+[https://www.npmjs.com/package/rimraf](https://www.npmjs.com/package/rimraf)
+
+```
+The UNIX command rm -rf for node.
+```
+

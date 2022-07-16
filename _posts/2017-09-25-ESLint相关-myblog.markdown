@@ -205,16 +205,7 @@ module.exports = {
 
 运行 eslint --init 之后，.eslintrc 文件会在你的文件夹中自动创建。你可以在 .eslintrc 文件中看到许多像这样的规则：
 
-
-
-
-
-
-
-
-
-
-### no-new
+#### no-new
 
 [网页链接](http://eslint.org/docs/rules/no-new)
 
@@ -259,13 +250,7 @@ new Vue({
 })
 ```
 
-
-
-
-
-
-
-### no-case-declarations
+#### no-case-declarations
 
 [https://eslint.org/docs/rules/no-case-declarations](https://eslint.org/docs/rules/no-case-declarations)
 
@@ -296,6 +281,24 @@ switch (foo) {
 大概是指上面`case 1`里的`x`在`case 2`里也会影响，所以要用`{}`包起来，防止`x`提升到整个`switch`语句。
 
 
+
+
+
+### Command Line Interface
+
+[https://eslint.org/docs/latest/user-guide/command-line-interface](https://eslint.org/docs/latest/user-guide/command-line-interface)
+
+
+
+#### --quiet
+
+This option allows you to disable reporting on warnings. If you enable this option, only errors are reported by ESLint.
+
+不展示warnings只展示errors
+
+```bash
+npx eslint --quiet file.js
+```
 
 
 
