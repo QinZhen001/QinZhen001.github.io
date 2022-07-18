@@ -15,18 +15,14 @@ tags:
 >今天是3月22号,闲得蛋疼，逛了逛掘金，发现有关vue组件库，猛然想起自己一直想要做个ui组件库，这就开始了折腾之旅
 
 
-## 正文
+
+# 正文
 
 [ue cli3 库模式搭建组件库并发布到 npm](https://juejin.im/post/5bbab9de5188255c8c0cb0e3)
 
-
-
 [用vue-cli3从0打造一个完整的UI库](https://juejin.im/post/5c934511f265da60d82dc7ab)
 
-
-
 [vue-cli 3.0 构建目标：库](https://cli.vuejs.org/zh/guide/build-targets.html#%E5%BA%94%E7%94%A8)
-
 
 [自己的组件库](https://github.com/QinZhen001/qz-ui)
 
@@ -295,8 +291,28 @@ config
 
 
 
+# 补充
 
 
+
+## 支持 Tree Shaking
+
+当我们引入一个ui库使用其中某些组件时，我们是没必要引入整个ui库的(体积太大了)，这就要求我们的ui库支持Tree Shaking 同时使用者配合着 [babel-plugin-import](https://github.com/umijs/babel-plugin-import) 一起使用
+
+[webpack打包一个按需引入的vue组件库](https://juejin.cn/post/7061060609940406308)
+
+最关键是 在webpack.config.js中 entry
+
+```tsx
+// 定义每个组件的入口 
+entry: {
+    'navbar': './src/components/navbar/index.js',
+    'navbar.min': './src/components/navbar/index.js',
+    'test-lib': './src/index.js',
+    'test-lib.min': './src/index.js'
+    
+  },
+```
 
 
 

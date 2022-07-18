@@ -315,6 +315,27 @@ console.log(counter); // 3
 上面代码说明，counter输出以后，lib.js模块内部的变化就影响不到counter了。这是因为counter是一个原始类型的值，会被缓存。除非写成一个函数，才能得到内部变动后的值。
 
 
+
+#### commonjs vs commonjs2
+
+[https://www.css3.io/commonjs-vs-commonjs2.html](https://www.css3.io/commonjs-vs-commonjs2.html)
+
+[What is commonjs2](https://github.com/webpack/webpack/issues/1114)
+
+
+CommonJs spec defines only `exports`. But `module.exports` is used by node.js and many other CommonJs implementations.
+
+`commonjs` mean pure CommonJs
+`commonjs2` also includes the `module.exports` stuff.
+
+
+
+commonjs 规范只定义了exports，而 module.exports是nodejs对commonjs的实现，实现往往会在满足规范前提下作些扩展，我们这里把这种实现称为了commonjs2.
+
+
+
+
+
 ### ES6 模块与 CommonJS 模块的差异
 
 

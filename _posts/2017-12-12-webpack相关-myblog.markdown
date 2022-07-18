@@ -238,6 +238,20 @@ new ExtractTextPlugin({
 })
 ```
 
+
+
+
+
+## publicPath
+
+[Webpack中publicPath详解](https://juejin.cn/post/6844903601060446221)
+
+静态资源最终访问路径 = output.publicPath + 资源loader或插件等配置路径
+
+
+
+
+
 ## watch
 
 ```javascript
@@ -2122,9 +2136,83 @@ webpack根据webpack.config.js中的入口文件，在入口文件里识别模�
 
 
 
-
-
 同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。**webpack会对各种模块进行语法分析，并做转换编译**
+
+
+
+
+
+
+
+## 打包成es module 和 common 的区别
+
+[Webpack 打包commonjs 和esmodule 模块的产物对比](https://juejin.cn/post/7093428816785670152)
+
+`esmodule` 在挂载属性的时候只定义了 `get` 。
+
+```tsx
+__webpack_require__.d = (exports, definition) => {
+  for (var key in definition) {
+    if (
+      __webpack_require__.o(definition, key) &&
+      !__webpack_require__.o(exports, key)
+    ) {
+      Object.defineProperty(exports, key, {
+        enumerable: true,
+        get: definition[key],
+      });
+    }
+  }
+};
+
+```
+
+---
+
+两个的打包产物对比：
+
+```tsx
+// commonjs
+var __webpack_modules__ = {
+        "./src/commonjs/add.js": (module, exports) => {
+            console.log("add开始引入");
+            module.exports.add = (a, b) => {
+                return a + b;
+            };
+            exports.PI = 3.14;
+        },
+    };
+
+//esmodule
+var __webpack_modules__ = {
+        "./src/esmodule/add.js": (
+            __unused_webpack_module,
+            __webpack_exports__,
+            __webpack_require__
+        ) => {
+            __webpack_require__.r(__webpack_exports__);// 标识该模块是 esmodule
+            __webpack_require__.d(__webpack_exports__, {// 将该模块里的属性、方法挂到 __webpack_exports__ 上
+                add: () => add,
+                PI: () => PI,
+                default: () => __WEBPACK_DEFAULT_EXPORT__,
+            });
+            console.log("add开始引入");
+            const add = (a, b) => {
+                return a + b;
+            };
+            const PI = 3.14;
+            const test = 3;
+            const __WEBPACK_DEFAULT_EXPORT__ = test;
+        },
+    };
+
+```
+
+简单对比了下 `commonjs` 和 `esmodule` 模块的产物，其中 `commonjs` 比较简单，就是普通的导出对象和解构对象。但对于 `esmodule` 的话，导出的每一个属性会映射到一个函数，因此值是可以动态改变的。
+
+此外 `require` 会按我们代码中的顺序执行，但 `import` 会被提升到代码最前边首先执行。
+
+
 
 
 
