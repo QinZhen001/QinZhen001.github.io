@@ -19,7 +19,9 @@ tags:
 
 [ESLint - 守住优雅的护城河](https://juejin.im/post/6886265504378388487?utm_source=gold_browser_extension)
 
+> 是一个开源的 JavaScript 的 linting 工具，使用 [espree](https://link.zhihu.com/?target=https%3A//github.com/eslint/espree) 将 JavaScript 代码解析成抽象语法树 (AST)，然后通过AST 来分析我们代码，从而给予我们两种提示：
 
+ 
 
 **ESLint是一个用来识别 ECMAScript 并且按照规则给出报告的代码检测工具，使用它可以避免低级错误和统一代码的风格。**
 
@@ -114,29 +116,6 @@ eslint报错  `Parsing error: Unexpected token =`
 
 
 
-### 规则 Configuration
-
-运行 eslint --init 之后，.eslintrc 文件会在你的文件夹中自动创建。你可以在 .eslintrc 文件中看到许多像这样的规则：
-
-```json
-{
-    "rules": {
-        "semi": ["error", "always"],
-        "quotes": ["error", "double"]
-    }
-}
-```
-
-
-
-"semi" 和 "quotes" 是 ESLint 中 规则 的名称。第一个值是错误级别，可以使下面的值之一：
-
-
-
-* "off" or 0 - 关闭规则
-* "warn" or 1 - 将规则视为一个警告（不会影响退出码）
-* "error" or 2 - 将规则视为一个错误 (退出码为1)
-
 
 
 ### Specifying Environments
@@ -202,8 +181,28 @@ module.exports = {
 
 ### Configuration
 
+[https://eslint.org/docs/latest/user-guide/getting-started](https://eslint.org/docs/latest/user-guide/getting-started)
 
 运行 eslint --init 之后，.eslintrc 文件会在你的文件夹中自动创建。你可以在 .eslintrc 文件中看到许多像这样的规则：
+
+```json
+{
+    "rules": {
+        "semi": ["error", "always"],
+        "quotes": ["error", "double"]
+    }
+}
+```
+
+- `"off"` or `0` - turn the rule off
+- `"warn"` or `1` - turn the rule on as a warning (doesn’t affect exit code)
+- `"error"` or `2` - turn the rule on as an error (exit code will be 1)
+
+
+
+
+
+
 
 #### no-new
 
@@ -290,6 +289,34 @@ switch (foo) {
 
 
 
+### --init
+
+[https://eslint.org/docs/latest/user-guide/command-line-interface#--init](https://eslint.org/docs/latest/user-guide/command-line-interface#--init)
+
+当我们弄好eslint配置文件后
+
+执行：
+
+```
+eslint --init
+```
+
+This option will run `npm init @eslint/config` to start config initialization wizard. It’s designed to help new users quickly create .eslintrc file by answering a few questions, choosing a popular style guide.
+
+The resulting configuration file will be created in the current directory.
+
+
+
+[How would you like to use ESLint?](https://dev.to/devdammak/setting-up-eslint-in-your-javascript-project-with-vs-code-2amf)
+
+- **To check syntax only** => it helps you correct your syntax and make sure it conform to standard.
+- **To check syntax and find problems** => to help you check for syntax correctness and also help to find any problems in your code base
+- **To check syntax, find problems, and enforce code style**_ => to help you check for syntax, find problem and enforce style, enforcing style means to conforms to a particular coding standard such as Airbnb, Google and other Standard coding style. But I always go for the last option the one with syntax, find problems and enforce code style
+
+
+
+
+
 #### --quiet
 
 This option allows you to disable reporting on warnings. If you enable this option, only errors are reported by ESLint.
@@ -307,6 +334,12 @@ npx eslint --quiet file.js
 
 
 ## 补充
+
+
+
+### vs code 插件
+
+[https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
 
 
@@ -421,4 +454,51 @@ eslint src/** --fix
     ]
   }
 ```
+
+
+
+### ESLint 结合 Prettier
+
+[搞懂 ESLint 和 Prettier](https://zhuanlan.zhihu.com/p/80574300)
+
+[https://juejin.cn/post/6924568874700505102](https://juejin.cn/post/6924568874700505102)
+
+
+
+ESLint 主要解决了两类问题
+
+- 代码质量规则 (code-quality rules)
+
+- 代码风格规则 (code-formatting rules)
+
+**Prettier 接管了两个问题其中的代码格式的问题，而使用 Prettier + ESLint 就完完全全解决了两个问题**。
+
+```
+npm install --save-dev eslint prettier eslint-config-prettier eslint-plugin-prettier
+```
+
+
+
+[官方的推荐配置](https://www.npmjs.com/package/eslint-plugin-prettier)
+
+项目根目录添加 .eslintrc.js 和 .prettierrc
+
+```
+// .eslintrc.js
+{
+  "extends": ["plugin:prettier/recommended"]
+}
+// .prettierrc
+{
+  "singleQuote": true
+}
+```
+
+
+
+
+
+### **eslint-config-** 比较
+
+[https://zenn.dev/tapioca/articles/5685d794f6452b](https://zenn.dev/tapioca/articles/5685d794f6452b)
 
