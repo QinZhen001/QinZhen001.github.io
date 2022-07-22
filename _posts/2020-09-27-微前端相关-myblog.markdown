@@ -175,3 +175,19 @@ iframe 方案的一些弊端：
 
 
 
+## 从**single-spa**到**qiankun**
+
+[https://mp.weixin.qq.com/s/ylkY9HWTQKPlbDb2M33YWQ](https://mp.weixin.qq.com/s/ylkY9HWTQKPlbDb2M33YWQ)
+
+相比于`single-spa`，`qiankun`他解决了JS沙盒环境，不需要我们自己去进行处理。在`single-spa`的开发过程中，我们需要自己手动的去写调用子应用JS的方法，而`qiankun`不需要，乾坤只需要你传入响应的apps的配置即可，会帮助我们去加载。
+
+
+
+qiankun：
+
+- **基于 single-spa** 封装，提供了更加开箱即用的 API。
+- **技术栈无关**，任意技术栈的应用均可 使用/接入，不论是 React/Vue/Angular/JQuery 还是其他等框架。
+- **HTML Entry 接入方式**，让你接入微应用像使用 iframe 一样简单。
+- **样式隔离**，确保微应用之间样式互相不干扰。
+- **JS 沙箱**，确保微应用之间 全局变量/事件 不冲突。
+- **资源预加载**，在浏览器空闲时间预加载未打开的微应用资源，加速微应用打开速度。
