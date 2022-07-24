@@ -238,9 +238,27 @@ function render(){
 目前，Canvas 中使用到最多的 API，非 drawImage 莫属了。（当然也有例外，你如果要用 Canvas 写图表，自然是半句也不会用到了）。
 
 drawImage 方法的格式如下所示：
-	
-
+```tsx
 context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+```
+
+**注意：image 需要是已经onload的图片**
+
+举个例子：
+
+```tsx
+ const canvas = document.querySelector("#my-canvas");
+ const ctx = canvas.getContext("2d");
+ const img = document.createElement("img");
+ img.src = "http://www.htmq.com/canvas/images/drawImage002.png";
+ img.onload = (e) => {
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+```
+
+
+
+
 
 
 
@@ -651,6 +669,39 @@ ctx.beginPath();
 ctx.moveTo(0,100);
 ctx.lineTo(400, 100);
 ctx.stroke();
+```
+
+
+
+
+
+### 实现图片镜像
+
+[https://www.zhangxinxu.com/wordpress/2018/03/canvas-image-element-mirror-animation/](https://www.zhangxinxu.com/wordpress/2018/03/canvas-image-element-mirror-animation/)
+
+Canvas的坐标变换系和CSS不一样，因此，如果我们想实现居中翻转效果，需要在翻转之前将目标元素的中心点移动到变换轴上。
+
+举个例子：
+
+```tsx
+const canvas = document.querySelector("#my-canvas");
+const context = canvas.getContext("2d");
+const img = document.createElement("img");
+img.src = "http://www.htmq.com/canvas/images/drawImage002.png";
+img.onload = (e) => {
+      // 缩放比例 （镜面翻转）
+      const value = -1;
+      // 清除画布内容
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      // 调整坐标
+      context.translate((canvas.width - canvas.width * value) / 2, 0);
+      // 调整缩放
+      context.scale(value, 1);
+      // 绘制此时图片
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+      // 坐标参考还原
+      context.setTransform(1, 0, 0, 1, 0, 0);
+    };
 ```
 
 
