@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "短小精悍的js代码"
+title:      "短小精悍的js基础代码"
 date:       2017-12-17 22:02:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -12,9 +12,355 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+
+# 正文
 
 [https://mp.weixin.qq.com/s/MMUQWlDOqpLLWDy9F-RZ7A](https://mp.weixin.qq.com/s/MMUQWlDOqpLLWDy9F-RZ7A)
+[https://www.30secondsofcode.org/list](https://www.30secondsofcode.org/list)
+
+
+
+## Object
+
+### 对象浅复制
+
+```javascript
+    function extend(dst, obj) {
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                dst[i] = obj[i]
+            }
+        }
+    }
+```
+
+### 对象浅对比
+
+```js
+function shallowEqual(object1, object2) {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    if (object1[key] !== object2[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+```
+
+### 去除对象中某些键值对
+
+```javascript
+const {pwd,...data} = obj //去除密码这一项
+
+剩下的data就是去除了pwd的数据
+```
+
+### 创建一个纯(pure)对象
+
+你可以创建一个100%的纯对象，他不从Object中继承任何属性或则方法（比如，constructor，toString()等等）。
+
+```javascript
+const pureObject = Object.create(null);
+console.log(pureObject); //=> {}
+console.log(pureObject.constructor); //=> undefined
+console.log(pureObject.toString); //=> undefined
+console.log(pureObject.hasOwnProperty); //=> undefined
+```
+
+
+
+
+
+## Array
+
+[25个你不得不知道的数组reduce高级用法](https://juejin.cn/post/6844904063729926152)
+
+### 数组分割
+
+```javascript
+function Chunk(arr = [], size = 1) {
+  return arr.length
+    ? arr.reduce(
+        (t, v) => (t[t.length - 1].length === size ? t.push([v]) : t[t.length - 1].push(v), t),
+        [[]],
+      )
+    : [];
+}
+
+const arr = [1, 2, 3, 4, 5];
+Chunk(arr, 2); // [[1, 2], [3, 4], [5]]
+```
+
+
+
+### 数组过滤
+
+```javascript
+function Difference(arr = [], oarr = []) {
+    return arr.reduce((t, v) => (!oarr.includes(v) && t.push(v), t), []);
+}
+
+
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [2, 3, 6]
+Difference(arr1, arr2); // [1, 4, 5]
+
+```
+
+
+
+### 数组扁平
+
+```javascript
+function Flat(arr = []) {
+    return arr.reduce((t, v) => t.concat(Array.isArray(v) ? Flat(v) : v), [])
+}
+
+
+const arr = [0, 1, [2, 3], [4, 5, [6, 7]], [8, [9, 10, [11, 12]]]];
+Flat(arr); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+```
+
+### 数组去重
+
+```javascript
+function Uniq(arr = []) {
+    return arr.reduce((t, v) => t.includes(v) ? t : [...t, v], []);
+}
+
+
+const arr = [2, 1, 0, 3, 2, 1, 2];
+Uniq(arr); // [2, 1, 0, 3]
+
+
+```
+
+### Set去除数组的重复元素
+
+**注意：只能用于拥有基本类型的数组**
+
+```javascript
+let arr = [1,2,3,3];
+let unique = [...new Set(arr)];
+```
+
+### 将数组拆成一个对象
+
+> (键:id 值:数组item)
+
+```javascript
+products.reduce((obj, product) => {
+                    obj[product.id] = product
+                    return obj
+                }, {})
+```
+
+### Array.prototype.slice.call
+
+我们知道，Array.prototype.slice.call(arguments)能将具有length属性的对象转成数组，除了IE下的节点集合（因为ie下的dom对象是以com对象的形式实现的，js对象与com对象不能进行转换）
+
+```javascript
+ var a={length:2,0:'first',1:'second'};
+ Array.prototype.slice.call(a);//  ["first", "second"]
+  
+ var a={length:2};
+ Array.prototype.slice.call(a);//  [undefined, undefined]
+```
+
+slice有两个用法，一个是String.slice,一个是Array.slice，第一个返回的是字符串，第二个返回的是数组，这里我们看第2个
+
+### 数组的对象解构
+
+数组也可以对象解构，可以方便的获取数组的第n个值
+
+```javascript
+const csvFileLine = '1997,John Doe,US,john@doe.com,New York';
+const { 2: country, 4: state } = csvFileLine.split(',');
+
+country			// US
+state			// New Yourk
+```
+
+### 从后向前遍历数组
+
+```js
+let deps = [1,2,3,4,5,6,7]    
+let i = deps.length
+while (i--) {
+   console.log(deps[i]) 
+}
+```
+
+### 拥有复杂数据类型的数组去重
+
+```javascript
+  let arr = [1, 2, 3, 3, true, true, [2, 2], [2, 2], [1, 2, [3, 4]], [1, 2, [3, 4]], {name: 'aaa'}, {father: 'fff'}, {name: 'aaa'}];
+
+  function unique(arr) {
+    var hash = {};
+    return arr.filter(function (element) {
+      var key = JSON.stringify(element);
+      return hash.hasOwnProperty(key) ? false : (hash[key] = true)
+    });
+  }
+
+  console.log(unique(arr))
+```
+
+
+
+## is 系列
+
+### isJson
+
+```javascript
+function isJson(str) {
+    const start = str.match(/^\s*(\[|\{)/);
+    const end = {'[': /]\s*$/, '{': /}\s*$/};
+    return start && end[start[1]].test(str);
+}
+
+没有g全局标志,那么start[0]保存的是完整的匹配,start[1]保存的是第一个括号里捕获的字串
+```
+
+
+
+### isObject
+
+**注意此方法没有仔细区分是数组还是对象**
+
+```javascript
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+```
+
+Check for plain object  （这个仔细区分数组还是对象）
+
+```js
+function isObject(val) {
+  return Object == val.constructor;
+}
+```
+
+
+
+### isFunction 
+
+```javascript
+function isFunction(source) {
+     return '[object Function]' === Object.prototype.toString.call(source);
+ };
+```
+
+
+### isFirefox
+
+```javascript
+const isFirefox = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+```
+
+
+
+### isPromise 
+
+判断对象是否为Promise   
+
+```javascript
+function isPromise (val) {
+  return val && typeof val.then === 'function'
+}
+```
+
+**这个方法不适用于async函数**
+**这个方法不适用于async函数**
+**这个方法不适用于async函数**
+
+重要的事情说三遍，由于错用了这个方法，导致框架的执行流程出现偏差，查找了两个小时才发现。
+
+**这个方法也不适用返回Promise对象的函数**
+
+
+例子：
+
+```javascript
+  function test() {
+    return new Promise((resolve, reject) => {
+      resolve("asdasd")
+    })
+  }
+  
+  
+  console.log(test.then) //undefined  (很明显就存在then)
+```
+
+
+
+### isAsyncFunction
+
+判断函数是否是async函数
+
+```javascript
+function isAsyncFunction(fn) {
+  return Object.prototype.toString.call(fn) === "[object AsyncFunction]"
+}
+```
+
+
+另外一种方法：
+
+```javascript
+根据
+fn.constructor.name === "AsyncFunction"
+ 
+来判断
+```
+
+
+
+###  isElement
+
+[https://www.w3school.com.cn/jsref/prop_node_nodetype.asp](https://www.w3school.com.cn/jsref/prop_node_nodetype.asp)
+
+```javascript
+function isElement(value) {
+  return (
+    typeof HTMLElement === 'object' ? value instanceof HTMLElement : //DOM2
+      value && typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName==="string"
+  );
+}
+```
+
+
+
+nodeType 属性返回以数字值返回指定节点的节点类型。
+
+
+* 如果节点是元素节点，则 nodeType 属性将返回 1。
+* 如果节点是属性节点，则 nodeType 属性将返回 2。
+
+
+
+
+
+
+
+
+
+## Other
+
+
+
+
 
 
 ### 统计字符串中相同字符出现的次数
@@ -183,42 +529,6 @@ const anagrams = str => {
 3. [str, str\[1] + str[0]] : [str] 把字符串转化为数组
 4. 最后数组用map 把当前letter和其他部分拼接起来扔进叠加器acc里
 
-### Set去除数组的重复元素
-
-**注意：只能用于拥有基本类型的数组**
-
-```javascript
-let arr = [1,2,3,3];
-let unique = [...new Set(arr)];
-```
-
-
-### 拥有复杂数据类型的数组去重
-```javascript
-  let arr = [1, 2, 3, 3, true, true, [2, 2], [2, 2], [1, 2, [3, 4]], [1, 2, [3, 4]], {name: 'aaa'}, {father: 'fff'}, {name: 'aaa'}];
-
-  function unique(arr) {
-    var hash = {};
-    return arr.filter(function (element) {
-      var key = JSON.stringify(element);
-      return hash.hasOwnProperty(key) ? false : (hash[key] = true)
-    });
-  }
-
-  console.log(unique(arr))
-```
-
-### isJson
-```javascript
-function isJson(str) {
-    const start = str.match(/^\s*(\[|\{)/);
-    const end = {'[': /]\s*$/, '{': /}\s*$/};
-    return start && end[start[1]].test(str);
-}
-
-没有g全局标志,那么start[0]保存的是完整的匹配,start[1]保存的是第一个括号里捕获的字串
-```
-
 
 ### 自定义callback函数
 ```javascript
@@ -226,14 +536,6 @@ function isJson(str) {
     let result = "result" //result可以是任意类型的数据
     let getProducts = (cb, timeout) => setTimeout(() => cb(result), timeout || TIMEOUT)
     getProducts(result => console.log(result)) //console.log可以是任意处理result的函数
-```
-
-### 将数组拆成一个对象(键:id 值:数组item)
-```javascript
-products.reduce((obj, product) => {
-                    obj[product.id] = product
-                    return obj
-                }, {})
 ```
 
 
@@ -268,42 +570,6 @@ const isIOS = UA && /iphone|ipad|ipod|ios/.test(UA)
 const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 
 ```
-### 对象浅复制
-```javascript
-    function extend(dst, obj) {
-        for (var i in obj) {
-            if (obj.hasOwnProperty(i)) {
-                dst[i] = obj[i]
-            }
-        }
-    }
-```
-
-
-
-### 对象浅对比
-
-```js
-function shallowEqual(object1, object2) {
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (let key of keys1) {
-    if (object1[key] !== object2[key]) {
-      return false;
-    }
-  }
-
-  return true;
-}
-```
-
-
-
 
 
 ### 对className的一些操作
@@ -368,119 +634,66 @@ function toggleClass(obj, cls) {
 
 
 
-### isObject
-**注意此方法没有仔细区分是数组还是对象**
+
+
+### pipeAsyncFunctions
+
+Performs left-to-right function composition for asynchronous functions.
+
+
+为异步函数执行从左到右的函数组合。
+
 
 ```javascript
-function isObject (obj) {
-  return obj !== null && typeof obj === 'object'
-}
+  const pipeAsyncFunctions = (...fns) => arg => fns.reduce((p, f) => p.then(f), Promise.resolve(arg))
 ```
 
-Check for plain object  （这个仔细区分数组还是对象）
-
-```js
-function isObject(val) {
-  return Object == val.constructor;
-}
-```
-
-
-
-### isFunction 
 
 ```javascript
-function isFunction(source) {
-     return '[object Function]' === Object.prototype.toString.call(source);
- };
+  const sum = pipeAsyncFunctions(
+    x => x + 1,
+    x => new Promise(resolve => setTimeout(() => resolve(x + 2), 1000)),
+    x => x + 3,
+    async x => (await x) + 4
+  )
+
+
+  sum(5).then(res => {
+    console.log("111", res)
+  })
 ```
 
 
-### isFirefox
-```javascript
-const isFirefox = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-```
 
+### promisify 
 
+Converts an asynchronous function to return a promise.
 
-### isPromise 
+>In Node 8+, you can use util.promisify
 
-判断对象是否为Promise   
+将异步函数转换为返回承诺。
 
-```javascript
-function isPromise (val) {
-  return val && typeof val.then === 'function'
-}
-```
-
-**这个方法不适用于async函数**
-**这个方法不适用于async函数**
-**这个方法不适用于async函数**
-
-重要的事情说三遍，由于错用了这个方法，导致框架的执行流程出现偏差，查找了两个小时才发现。
-
-**这个方法也不适用返回Promise对象的函数**
-
-
-例子：
 
 ```javascript
-  function test() {
-    return new Promise((resolve, reject) => {
-      resolve("asdasd")
-    })
-  }
-  
-  
-  console.log(test.then) //undefined  (很明显就存在then)
+  const promisify = func => (...args) =>
+    new Promise((resolve, reject) =>
+      func(...args, (err, result) => (err ? reject(err) : resolve(result)))
+    );
 ```
-
-
-
-### isAsyncFunction
-
-判断函数是否是async函数
 
 ```javascript
-function isAsyncFunction(fn) {
-  return Object.prototype.toString.call(fn) === "[object AsyncFunction]"
-}
+  const delay = promisify((d, cb) => setTimeout(cb, d));
+
+  delay(2000).then(() => console.log('Hi!')); // // Promise resolves after 2s
 ```
 
 
-另外一种方法：
 
-```javascript
-根据
-fn.constructor.name === "AsyncFunction"
- 
-来判断
-```
 
 
 ### 如何判定一个脚本已经执行完毕
+
 暂无很好方法 有空在寻找
-
-
-### 去除对象中某些键值对
-```javascript
-const {pwd,...data} = obj //去除密码这一项
-
-剩下的data就是去除了pwd的数据
-```
-
-
-### Array.prototype.slice.call(arguments)
-我们知道，Array.prototype.slice.call(arguments)能将具有length属性的对象转成数组，除了IE下的节点集合（因为ie下的dom对象是以com对象的形式实现的，js对象与com对象不能进行转换）
-
-```javascript
- var a={length:2,0:'first',1:'second'};
- Array.prototype.slice.call(a);//  ["first", "second"]
-  
- var a={length:2};
- Array.prototype.slice.call(a);//  [undefined, undefined]
-```
-slice有两个用法，一个是String.slice,一个是Array.slice，第一个返回的是字符串，第二个返回的是数组，这里我们看第2个
 
 
 
@@ -517,36 +730,6 @@ slice有两个用法，一个是String.slice,一个是Array.slice，第一个返
 `await Promise.all([anAsyncCall(), thisIsAlsoAsync(), oneMore()])`
 
 
-### 创建一个纯(pure)对象
-你可以创建一个100%的纯对象，他不从Object中继承任何属性或则方法（比如，constructor，toString()等等）。
-```javascript
-const pureObject = Object.create(null);
-console.log(pureObject); //=> {}
-console.log(pureObject.constructor); //=> undefined
-console.log(pureObject.toString); //=> undefined
-console.log(pureObject.hasOwnProperty); //=> undefined
-```
-
-### 平铺多维数组
-使用Spread操作，可以很容易去平铺嵌套多维数组：
-```javascript
-const arr = [11, [22, 33], [44, 55], 66];
-const flatArr = [].concat(...arr); //=> [11, 22, 33, 44, 55, 66]
-```
-
-
-可惜，上面的方法仅仅适用于二维数组。不过，通过递归，我们可以平铺任意维度的嵌套数组。
-```javascript
-function flattenArray(arr) {
-  const flattened = [].concat(...arr);
-  return flattened.some(item => Array.isArray(item)) ? 
-    flattenArray(flattened) : flattened;
-}
-
-const arr = [11, [22, 33], [44, [55, 66, [77, [88]], 99]]];
-const flatArr = flattenArray(arr); 
-//=> [11, 22, 33, 44, 55, 66, 77, 88, 99]
-```
 
 
 ###  使用对象解构来处理数组
@@ -572,11 +755,6 @@ const [, city, zipCode] = ADDRESS.match(CITY_ZIP_CODE_REGEX) || [];
 saveCityZipCode(city, zipCode);
 
 ```
-
-
-### Array.prototype.slice.call(arguments)
-可以将 类数组 转化为真正的数组
-**面试中常常问到此**
 
 
 ### P标签段首空两格
@@ -612,12 +790,6 @@ mround = function (r) {
 因为 位移运算只用于整数，如果带小数的数据参与位移运算会被取整 移动0位其实并没有移动，只是取整了
 
 
-### 将二维数组转为一维数组
-```javascript
-    let arr = [[1, 2], [3, 4, 5]]
-    let result = Array.prototype.concat.apply([], arr)
-    console.log(result)  // [1, 2, 3, 4, 5]
-```
 
 
 ### 检测HTML字符串和ID字符串
@@ -626,20 +798,6 @@ mround = function (r) {
 
 ```javascript
 var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/
-```
-
-
-
-### 多维数组降为一维数组
-```javascript
-  let arr = [1, [2], [3, 5, [12, 6, [123, 34], 123,], 34, [34, 35], [1]]]
-  let flattenDeep = (arr) => Array.isArray(arr) ?
-      arr.reduce((total, curVal) => [...flattenDeep(total), ...flattenDeep(curVal)], []) :
-      [arr]
-
-
-  console.log(flattenDeep(arr))
-  //[1, 2, 3, 5, 12, 6, 123, 34, 123, 34, 34, 35, 1]  
 ```
 
 
@@ -823,28 +981,6 @@ const [post, comments] = getFullPost();
 ```
 
 
-### 数组的对象解构
-数组也可以对象解构，可以方便的获取数组的第n个值
-```javascript
-const csvFileLine = '1997,John Doe,US,john@doe.com,New York';
-const { 2: country, 4: state } = csvFileLine.split(',');
-
-country			// US
-state			// New Yourk
-```
-
-### 使用解构删除不必要属性
-有时候你不希望保留某些对象属性，也许是因为它们包含敏感信息或仅仅是太大了（just too big）。你可能会枚举整个对象然后删除它们，但实际上只需要简单的将这些无用属性赋值给变量，然后把想要保留的有用部分作为剩余参数就可以了。
-
-
-下面的代码里，我们希望删除_internal和tooBig参数。我们可以把它们赋值给internal和tooBig变量，然后在cleanObject中存储剩下的属性以备后用。
-
-```javascript
-let {_internal, tooBig, ...cleanObject} = {el1: '1', _internal:"secret", tooBig:{}, el2: '2', el3: '3'};
-
-console.log(cleanObject);                         // {el1: '1', el2: '2', el3: '3'}
-
-```
 
 ### 将url中query转为一个对象
 实现效果 
@@ -890,12 +1026,6 @@ const createNodeFromString = (htmlString) => {
   // Change this to div.childNodes to support multiple top-level nodes
   return div.firstChild;
 };
-```
-
-### 类数组转换成数组
-类数组对象没有数组方法 无法调用slice 所以要使用call()
-```javascript
- const copyArr = [].slice.call(document.querySelectorAll('style'))
 ```
 
 
@@ -950,11 +1080,6 @@ function normalizeMap (map) {
 ```
 
 
-
-
-
-### 把arguments转换成一个真正的数组
-var args = Array.prototype.slice.call(arguments);
 
 
 ### new操作符和apply,bind同时使用
@@ -1084,9 +1209,9 @@ document.addEventListener('keydown', function(event){
 
 
 
-### 按循序执行 Promise 任务 (结合reduce)
+### 按循序执行 Promise 任务 
 
-
+(结合reduce)
 
 ```javascript
 /**
@@ -1327,8 +1452,9 @@ async function getAdListByRequest(data = {}) {
 
 
 
+### hasOwnProperty 
 
-### 不要用点.或者方括号[ ]判断对象中是否有某属性
+不要用点.或者方括号 [ ] 判断对象中是否有某属性
 
 举一个错误的例子
 
@@ -1415,29 +1541,6 @@ const firstTwoMax = ary(Math.max, 2);
 [[2, 6, 'a'], [6, 4, 8], [10]].map(x => firstTwoMax(...x)); // [6, 6, 10]
 
 ```
-
-
-
-###  isElement
-
-[https://www.w3school.com.cn/jsref/prop_node_nodetype.asp](https://www.w3school.com.cn/jsref/prop_node_nodetype.asp)
-
-```javascript
-function isElement(value) {
-  return (
-    typeof HTMLElement === 'object' ? value instanceof HTMLElement : //DOM2
-      value && typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName==="string"
-  );
-}
-```
-
-
-
-nodeType 属性返回以数字值返回指定节点的节点类型。
-
-
-* 如果节点是元素节点，则 nodeType 属性将返回 1。
-* 如果节点是属性节点，则 nodeType 属性将返回 2。
 
 
 
@@ -1553,29 +1656,6 @@ Function.prototype.getName = function(){
 
 
 
-
-### 类数组对象转成数组
-
-
-```javascript
-/**
- * Convert an Array-like object to a real Array.
- */
-function toArray (list, start) {
-  start = start || 0;
-  var i = list.length - start;
-  var ret = new Array(i);
-  while (i--) {
-    ret[i] = list[i + start];
-  }
-  return ret
-}
-```
-
-
-
-
-
 ### +new Date()
 
 [https://www.cnblogs.com/zhengziheng/p/9734196.html](https://www.cnblogs.com/zhengziheng/p/9734196.html)
@@ -1592,15 +1672,7 @@ function toArray (list, start) {
 
 
 
-
-
-
-
-
-
 ### 一个同步流只调用一次函数
-
-
 
 ```js
 /**
@@ -1695,18 +1767,6 @@ class ClipboardAction {
 
 
 
-
-### 从后向前遍历数组
-
-
-
-```js
-let deps = [1,2,3,4,5,6,7]    
-let i = deps.length
-while (i--) {
-   console.log(deps[i]) 
-}
-```
 
 
 
