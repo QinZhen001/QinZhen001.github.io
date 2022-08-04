@@ -334,6 +334,45 @@ commonjs 规范只定义了exports，而 module.exports是nodejs对commonjs的�
 
 
 
+### __esModule 的作用
+
+[简要说明 Webpack 和 TypeScript 编译器对__esModule的处理方式](https://toyobayashi.github.io/2020/06/29/ESModule/)
+
+**`__esModule` 是用来兼容 ES 模块导入 CommonJS 模块默认导出方案**
+
+CommonJS 的 `module.exports` 没法对应 ES 模块
+
+然后为了解决这个问题，不知道是 JS 圈子里的谁最先提出了 `__esModule` 这个解决方案，现在市面上的打包器都非常默契地遵守了这个约定。
+
+表面上看就是把一个导出对象标识为一个 ES 模块：
+
+```javascript
+exports.__esModule = true
+```
+
+或
+
+```tsx
+Object.defineProperty(exports, '__esModule', { value: true })
+```
+
+Webpack 会根据 __esModule 标识来自动处理 CommonJS 的模块导出对象，兼容 ES 模块中的导入。
+
+
+
+
+
+
+
+
+
+## 总结
+
+CommonJS规范主要用于服务端编程，加载模块是同步的，这并不适合在浏览器环境，因为同步意味着阻塞加载，浏览器资源是异步加载的，因此有了AMD CMD解决方案。
+
+
+**ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，完全可以取代 CommonJS 和 AMD 规范，成为浏览器和服务器通用的模块解决方案。**
+
 
 
 ### ES6 模块与 CommonJS 模块的差异
@@ -368,15 +407,6 @@ ES6 模块的运行机制与 CommonJS 不一样。**ES6 模块是动态引用，
 
 
 
-## 总结
-
-CommonJS规范主要用于服务端编程，加载模块是同步的，这并不适合在浏览器环境，因为同步意味着阻塞加载，浏览器资源是异步加载的，因此有了AMD CMD解决方案。
-
-
-**ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，完全可以取代 CommonJS 和 AMD 规范，成为浏览器和服务器通用的模块解决方案。**
-
-
-
 
 
 ### ESmodule和CommonJS互转
@@ -385,3 +415,10 @@ CommonJS规范主要用于服务端编程，加载模块是同步的，这并不
 
 
 道理上,ES module转成CommonJS,其default导出只能映射到module.exports.default上不能映射到CommonJS传统的module.exports上,因为ES module可以同时有命名导出,你让module.exports既是一个导出值,又是一个namespace object。
+
+
+
+
+
+
+

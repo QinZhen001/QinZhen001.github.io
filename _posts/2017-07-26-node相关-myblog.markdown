@@ -760,23 +760,29 @@ Node.js的应用是通过javascript开发的，然后直接在Google的变态V8�
 
 
 
+### tsc 和 ts-node
 
+[What's the difference between tsc (TypeScript compiler) and ts-node?](https://stackoverflow.com/questions/51448376/whats-the-difference-between-tsc-typescript-compiler-and-ts-node)
+
+The main difference is that `tsc` transpile all the file **according to your tsconfig**.
+
+Instead, `ts-node` will start from the entry file and transpile the file step by step through the tree **based on the import/export**.
+
+
+
+
+
+Most common practice is that `tsc` is used for production build and `ts-node` for development purposes running in `--watch` mode along with `nodemon`.
 
 
 
 ### CLI
 
-
-
 > CLI，全称是 command-line interface，也就是命令行界面。
-
-
 
 前端脚手架 CLI，是一个命令行工具，它的出现主要解决这几个问题：
 
-  
-
-
+ 
 
 - 减少重复性工作
 - 规范项目开发目录结构
@@ -787,25 +793,29 @@ Node.js的应用是通过javascript开发的，然后直接在Google的变态V8�
 
 
 
-
-
 ### 服务器部署
-
-
 
 **node启动服务的时候只有监听内网IP才可以供外网访问**
 
 
 
-
-
-#### nodemon相关
+### nodemon
 
 For use during development of a node.js based application.
 
 nodemon will watch the files in the directory in which nodemon was started, and if any files change, nodemon will automatically restart your node application.
 
 nodemon **does not require any changes** to your code or method of development. nodemon simply wraps your node application and keeps an eye on any files that have changed. Remember that nodemon is a replacement wrapper for node, think of it as replacing the word "node" on the command line when you run your script.
+
+
+
+### nodemon 结合 typescript
+
+[nodemon实现Typescript项目热更新](https://juejin.cn/post/6844903999947145223)
+
+最好的方案：
+
+nodemon + ts-node
 
 
 
