@@ -2661,6 +2661,57 @@ TS babel webpack 都有自己的一套处理机制来处理这个兼容问题，
 
 
 
+### references
+
+[https://www.tslang.cn/docs/handbook/project-references.html](https://www.tslang.cn/docs/handbook/project-references.html)
+
+`tsconfig.json`增加了一个新的顶层属性`references`。它是一个对象的数组，指明要引用的工程：
+
+```tsx
+{
+    "compilerOptions": {
+        // The usual
+    },
+    "references": [
+        { "path": "../src" }
+    ]
+}
+```
+
+每个引用的`path`属性都可以指向到包含`tsconfig.json`文件的目录，或者直接指向到配置文件本身（名字是任意的）。
+
+- 导入引用工程中的模块实际加载的是它*输出*的声明文件（`.d.ts`）。
+- 如果引用的工程生成一个`outFile`，那么这个输出文件的`.d.ts`文件里的声明对于当前工程是可见的。
+- 构建模式（后文）会根据需要自动地构建引用的工程。
+
+
+
+
+
+### strict
+
+["Strict Mode" TypeScript config options](https://dev.to/jsdev/strict-mode-typescript-j8p)
+
+Before we begin, replace this in the config:
+
+```tsx
+  "strict": true,
+```
+
+with these guys:
+
+```tsx
+  "noImplicitAny": true,
+  "noImplicitThis": true,
+  "alwaysStrict": true,
+  "strictBindCallApply": true,
+  "strictNullChecks": true,
+  "strictFunctionTypes": true,
+  "strictPropertyInitialization": true,
+```
+
+
+
 
 
 ## ts结合react
@@ -4325,6 +4376,8 @@ type B = {
     [key in A | "length"]: number;  // 这里可以推断  （不一定都是number）
 }
 ```
+
+
 
 
 

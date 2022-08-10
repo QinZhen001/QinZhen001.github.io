@@ -927,3 +927,29 @@ The UNIX command rm -rf for node.
 [https://www.npmjs.com/package/cp-cli](https://www.npmjs.com/package/cp-cli)
 
 The [UNIX command](https://en.wikipedia.org/wiki/Cp_(Unix)) `cp` for Node.js which is useful for cross platform support.
+
+
+
+### rvm
+
+>  **非npm库**
+
+[https://rvm.io/rubies/default](https://rvm.io/rubies/default)
+
+Ruby 的版本管理库
+
+```bash
+$ rvm --default use 2.1.1
+
+$ ruby -v
+
+ruby 2.1.1p76 (2014-02-24 revision 45161) [x86_64-darwin12.0]
+```
+
+tip： 一定要 --default
+
+```
+// 查看当前ruby版本
+rvm current
+```
+
