@@ -4297,6 +4297,30 @@ The left-hand side of an assignment expression may not be an optional property
 
 
 
+## ts(2250)
+
+Property 'includes' does not exist on type 'any[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2016' or later.
+
+
+
+solve:
+
+[https://stackoverflow.com/questions/51811239/ts2339-property-includes-does-not-exist-on-type-string](https://stackoverflow.com/questions/51811239/ts2339-property-includes-does-not-exist-on-type-string)
+
+You should add es2016 or es7 `lib` complierOptions in tsconfig.json. Default TypeScript doesn't support some es6 polyfill functions
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "lib": [
+       "dom",
+       "es7"
+    ]
+  }
+}
+```
+
 
 
 

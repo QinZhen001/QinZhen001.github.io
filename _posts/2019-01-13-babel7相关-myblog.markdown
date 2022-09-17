@@ -353,8 +353,9 @@ regenerator-runtime是generator以及async/await的运行时依赖
 
 ### plugin
 
-
 #### @babel/plugin-transform-runtime
+
+[@babel/plugin-transform-runtime 到底是什么](https://zhuanlan.zhihu.com/p/147083132)
 
 @babel/plugin-transform-runtime的作用是提供统一的模块化的helper，那什么是helper，我们举个例子：
 
@@ -368,7 +369,12 @@ regenerator-runtime是generator以及async/await的运行时依赖
 ```
 npm install --save @babel/runtime @babel/plugin-transform-runtime
 ```
+**执行完👆🏻上面命令后 @babel/runtime 会装在 dependencies   而 @babel/plugin-transform-runtime 会装在 devDependencies 中**
+
+
+
 然后就只需要在.babelrc中写上：
+
 ```javascript
 {
   "presets": [
@@ -480,6 +486,16 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 
 
 
+**总结：**
+
+babel 在转译的过程中，对 syntax 的处理可能会使用到 helper 函数，对 api 的处理会引入 polyfill。
+
+默认情况下，babel 在每个需要使用 helper 的地方都会定义一个 helper，导致最终的产物里有大量重复的 helper；引入 polyfill 时会直接修改全局变量及其原型，造成原型污染。
+
+@babel/plugin-transform-runtime 的作用是将 helper 和 polyfill 都改为从一个统一的地方引入，并且引入的对象和全局变量是完全隔离的
+
+
+
 ##### useESModules
 
 [https://www.jiangruitao.com/babel/transform-runtime3/](https://www.jiangruitao.com/babel/transform-runtime3/)
@@ -498,6 +514,12 @@ var _context;var isHas = (0, _includes.default)(_context = [1, 2, 3]).c
 ```
 
 该项用来设置是否使用ES6的模块化用法，取值是布尔值。默认是fasle，在用webpack一类的打包工具的时候，我们可以设置为true，以便做静态分析。
+
+
+
+
+
+
 
 
 #### @babel/plugin-proposal-decorators

@@ -88,6 +88,37 @@ Electron Builder 是一个完备的Electron应用打包和分发解决方案，�
 
 
 
+## electron-reload
+
+[https://www.npmjs.com/package/electron-reload](https://www.npmjs.com/package/electron-reload)
+
+This is (*hopefully*) the simplest way to load contents of all active [`BrowserWindow`s](https://github.com/atom/electron/blob/master/docs/api/browser-window.md) within electron when the source files are changed.
+
+```tsx
+if (isDev) {
+  require('electron-reload')(__dirname, {
+    electron: path.resolve(
+      __dirname,
+      process.platform === 'win32'
+        ? '../node_modules/electron/dist/electron.exe'
+        : '../node_modules/.bin/electron'
+    ),
+  });
+}
+```
+
+
+
+## electron-react-ts
+
+[https://github.com/sprout2000/electron-react-ts](https://github.com/sprout2000/electron-react-ts)
+
+An [Electron](https://www.electronjs.org/) boilerplate with hot reloading for [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/).
+
+
+
+
+
 
 
 ## 调试渲染进程

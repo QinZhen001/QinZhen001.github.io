@@ -200,3 +200,27 @@ Conversely, some files are always ignored:
 
 
 
+## unpkg
+
+[https://segmentfault.com/a/1190000016365409](https://segmentfault.com/a/1190000016365409)
+
+```1c
+# jquery
+{
+  "unpkg": "dist/jquery.js"
+}
+```
+
+正常情况下，访问 `jquery` 的发布文件通过 `https://unpkg.com/jquery@3.3.1/dist/jquery.js`，当你使用省略的 url `https://unpkg.com/jquery` 时，便会按照如下的方式获取文件：
+
+```
+# [latestVersion] 指最新版本号，pkg 指 package.json
+
+# 定义了 unpkg 属性时
+https://unpkg.com/jquery@[latestVersion]/[pkg.unpkg]
+
+# 未定义 unpkg 属性时，将回退到 main 属性
+https://unpkg.com/jquery@[latestVersion]/[pkg.main] 
+
+```
+

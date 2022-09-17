@@ -953,3 +953,11 @@ tip： 一定要 --default
 rvm current
 ```
 
+
+
+# just-scripts
+
+[https://microsoft.github.io/just/scripts/](https://microsoft.github.io/just/scripts/)
+
+Unlike other build libraries, Just strives to be useful from the beginning. You can choose to write your own tasks that call other Node.js tools like TypeScript, jest, and webpack. However, Just includes some script functions to get you up and running immediately.
+

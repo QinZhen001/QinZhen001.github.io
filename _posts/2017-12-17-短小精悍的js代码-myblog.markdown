@@ -2085,6 +2085,57 @@ function blobToImageUrl(blob, cb) {
 
 
 
+### Location change
+
+[on location changed event / on url changed event](https://dirask.com/posts/DKeyZj)
+
+监听浏览器的url改变
+
+1. when URL is changed in the browser address bar by the user, the whole page is reloaded and there are executed two operations: unload and load page - it is just opening a new page - we can use `onload` event to do some stuff (check [this article](https://dirask.com/posts/JavaScript-load-events-order-for-window-document-dom-body-and-elements-VjvPaD)),
+2. when `location` is changed by History API (`pushState`, `replaceState`, `popState`) in the source code, the page is not reloaded.
+   In this case, API doesn't provide any `locationchange` event - it is necessary to trigger some events manually after the operation
+
+```tsx
+(function () {
+  var pushState = history.pushState;
+  var replaceState = history.replaceState;
+
+  history.pushState = function () {
+    pushState.apply(history, arguments);
+    window.dispatchEvent(new Event("pushstate"));
+    window.dispatchEvent(new Event("locationchange"));
+  };
+
+  history.replaceState = function () {
+    // 这里 arguments 和别的不一致
+    replaceState.apply(history, arguments);
+    window.dispatchEvent(new Event("replacestate"));
+    window.dispatchEvent(new Event("locationchange"));
+  };
+
+  window.addEventListener("popstate", function () {
+    window.dispatchEvent(new Event("locationchange",{detail:"detail"}));
+  });
+})();
+```
+
+使用：
+
+```tsx
+// Usage example:
+window.addEventListener("locationchange", function () {
+  // 没法办法获取一致的参数 我们可以在这里获取 url
+  var url = window.location.href;
+  console.log("onlocationchange event occurred! ",url); 
+});
+```
+
+
+
+
+
+
+
 
 
 
