@@ -3730,18 +3730,10 @@ Promise.all中任何一个Promise出现错误的时候都会执行reject，导�
 
 
 
-
-
 * 把单个promise中的reject操作换成resolve(new Error("xxx"))
 * 在单个promise函数执行时catch错误
 * 引入Promise.allSettled
 * 第三方库promise-transaction
-
-
-
-
-
-
 
 ```js
 // 在单个promise函数执行时catch错误
@@ -3794,7 +3786,65 @@ Promise.all中任何一个Promise出现错误的时候都会执行reject，导�
 
 
 
+### 中断 Promise
 
+[https://juejin.cn/post/6847902216028848141](https://juejin.cn/post/6847902216028848141)
+
+Promise 有个缺点就是一旦创建就无法取消，所以本质上 Promise 是无法被终止的
+
+中断调用链：
+
+```tsx
+somePromise
+  .then(() => {})
+  .then(() => {
+    // 终止 Promise 链
+    return new Promise((resolve, reject) => {});
+    // 下面的 then、catch 和 finally 都不执行
+  })
+  .then(() => console.log("then"))
+  .then(() => console.log("then1"))
+  .then(() => console.log("then2"))
+  .catch(() => console.log("catch"))
+  .finally(() => console.log("finally"));
+
+```
+
+
+
+
+
+### **abortWrapper**
+
+利用 Promise 封装中断请求
+
+```tsx
+function abortWrapper(p1) {
+  let abort;
+  let p2 = new Promise((resolve, reject) => {
+    abort = reject;
+  });
+  let p = Promise.race([p1, p2]);
+  p.abort = abort;
+  return p;
+}
+```
+
+例子：
+
+```tsx
+const request = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    // 模拟请求 10s长时间才能获取数据
+    resolve({ data: "data" });
+  }, 10000);
+});
+
+const req = abortWrapper(request);
+req.then((res) => console.log(res)).catch((e) => console.error(e));
+// 这里可以是用户主动点击
+setTimeout(() => req.abort("用户手动终止请求"), 2000);
+```
 
 
 

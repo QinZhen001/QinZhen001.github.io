@@ -705,6 +705,43 @@ module.exports = {
 
 
 
+
+
+
+
+### esm 打包
+
+1. 配置`@babel/preset-env`的`modules`选项为`false`，关闭模块转换；
+2. 配置`@babel/plugin-transform-runtime`的`useESModules`选项为`true`，使用`ES module`形式引入`helper`函数。
+
+```tsx
+module.exports = {
+  presets: [
+    [
+      '@babel/env',
+      {
+        modules: false, // 关闭模块转换
+      },
+    ],
+    '@babel/typescript',
+    '@babel/react',
+  ],
+  plugins: [
+    '@babel/proposal-class-properties',
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        useESModules: true, // 使用esm形式的helper
+      },
+    ],
+  ],
+};
+```
+
+
+
+
+
 ## 大坑
 
 ### presets
@@ -749,36 +786,6 @@ This package has been deprecated
   ],
   "plugins": [
     "@babel/plugin-transform-strict-mode"
-  ]
-}
-```
-
-
-
->这里又坑了好久
-
-
-最终这个插件还是没办法正常使用
-
-
-换成babel6，使用babel6的插件也不行。
-
-
-使用gulp-remove-use-strict也不行。
-
-----
-
-**最终解决办法：**
-
-
-**由于一些原因还是使用了babel6，增加了配置"modules": false**
-
-[https://segmentfault.com/q/1010000013533162](https://segmentfault.com/q/1010000013533162)
-
-```javascript
-{
-  presets: [
-    ["env", { "modules": false }]
   ]
 }
 ```

@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "构建自己的vue ui库"
+title:      "构建ui组件库"
 date:       2019-03-22 15:51:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -27,51 +27,31 @@ tags:
 [自己的组件库](https://github.com/QinZhen001/qz-ui)
 
 
----
-
-文件的目录
-
-* examples 使用案例，用于做成静态页面展示
-* packages 组件编写的地方
-* lib  打包后的库，用于扔上npm 
+### 
 
 
 
+# 补充
 
----
 
 
-### vue-cli3.0 构建目标：库
-
+## vue-cli3.0 构建库
 
 在库模式中，Vue 是外置的。这意味着包中不会有 Vue，即便你在代码中导入了 Vue。如果这个库会通过一个打包器使用，它将尝试通过打包器以依赖的方式加载 Vue；否则就会回退到一个全局的 Vue 变量。
 
 
 你可以通过下面的命令将一个单独的入口构建为一个库：
 
-```
+```bash
 vue-cli-service build --target lib --name myLib [entry]
 ```
 
 
 在 Web Components 模式中，Vue 是外置的。这意味着包中不会有 Vue，即便你在代码中导入了 Vue。这里的包会假设在页面中已经有一个可用的全局变量 Vue。
 
-### Git Hook
-@vue/cli-service 也会安装 yorkie，它会让你在 package.json 的 gitHooks 字段中方便地指定 Git hook：
 
 
-
-```javascript
-{
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  }
-}
-```
-
-
-
-### vue.config.js
+## vue.config.js
 
 >cli3 提供一个可选的 vue.config.js 配置文件。如果这个文件存在则他会被自动加载，所有的对项目和webpack的配置，都在这个文件中。
 
@@ -131,8 +111,8 @@ module.exports = {
 }
 ```
 
+## webpack-chain
 
-### webpack-chain
 [https://segmentfault.com/a/1190000017547171?utm_source=tag-newest](https://segmentfault.com/a/1190000017547171?utm_source=tag-newest)
 
 
@@ -246,8 +226,6 @@ const config = require('./webpack.core');
 module.exports = config.toConfig();
 ```
 
-#### 速记方法
-
 存在许多简写方法，用于 使用与简写方法名称相同的键在 ChainedMap 设置一个值
 例如, devServer.hot 是一个速记方法, 因此它可以用作:
 
@@ -287,21 +265,32 @@ config
 
 
 
-
-
-
-
-# 补充
-
-
-
 ## 支持 Tree Shaking
 
-当我们引入一个ui库使用其中某些组件时，我们是没必要引入整个ui库的(体积太大了)，这就要求我们的ui库支持Tree Shaking 同时使用者配合着 [babel-plugin-import](https://github.com/umijs/babel-plugin-import) 一起使用
+[https://juejin.cn/post/7045172831272828936](https://juejin.cn/post/7045172831272828936)
+
+需要支持tree-shaking，那么你的组件库就必须时基于ESM编写的，但如果如果是cjs，那就要借助babel插件实现
+
+package.json
+
+```tsx
+"main": "lib/index.js",  // cjs模块的入口
+"module": "es/index.js", // esm的入口
+```
+
+一般的组件库都会配置这两个入口，同时支持cjs和esm两种模块，具体决定用哪种，其实是和你的源代码使用哪种模块绑定的，你用esm语法写代码，那么就会去加载module入口文件，反之亦然。
+
+* ESM 打包：
+
+​	详情见webpack相关blog文章
+
+* CJS打包：
+
+配合着 [babel-plugin-import](https://github.com/umijs/babel-plugin-import) 一起使用
 
 [webpack打包一个按需引入的vue组件库](https://juejin.cn/post/7061060609940406308)
 
-最关键是 在webpack.config.js中 entry
+最关键是 在webpack.config.js中 entry   
 
 ```tsx
 // 定义每个组件的入口 
@@ -310,11 +299,31 @@ entry: {
     'navbar.min': './src/components/navbar/index.js',
     'test-lib': './src/index.js',
     'test-lib.min': './src/index.js'
-    
+    // .... 
   },
 ```
 
+也可以自己写一个方法
 
+```tsx
+const getEntry = () => {
+  const result = {};
+  const componentsPath = path.resolve(SRC_PATH, "./components");
+  const res = fs.readdirSync(componentsPath);
+  res.forEach((item) => {
+    result[item] = path.resolve(componentsPath, item, "./index.tsx");
+  });
+  console.log(Object.keys(result).length + " components packing!")
+  console.log(result);
+  return result;
+};
+```
+
+让后设置
+
+```tsx
+entry: getEntry()
+```
 
 
 

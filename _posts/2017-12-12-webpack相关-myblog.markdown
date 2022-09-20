@@ -1386,6 +1386,63 @@ rollup有着更好的`tree-shaking`对应开发类库属实好用的
 
 
 
+## esm打包
+
+[https://webpack.js.org/configuration/output/#module-definition-systems](https://webpack.js.org/configuration/output/#module-definition-systems)
+
+Output ES Module.
+
+```tsx
+module.exports = {
+  // …
+  experiments: {
+    outputModule: true,
+  },
+  output: {
+    library: {
+      // do not specify a `name` here
+      type: 'module',
+    },
+  },
+};
+
+```
+
+
+
+还需要 babel的配置
+
+1. 配置`@babel/preset-env`的`modules`选项为`false`，关闭模块转换；
+2. 配置`@babel/plugin-transform-runtime`的`useESModules`选项为`true`，使用`ES module`形式引入`helper`函数。
+
+```tsx
+module.exports = {
+  presets: [
+    [
+      '@babel/env',
+      {
+        modules: false, // 关闭模块转换
+      },
+    ],
+    '@babel/typescript',
+    '@babel/react',
+  ],
+  plugins: [
+    '@babel/proposal-class-properties',
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        useESModules: true, // 使用esm形式的helper
+      },
+    ],
+  ],
+};
+```
+
+
+
+
+
 
 
 
@@ -1548,6 +1605,8 @@ cross-env模块下，它划分出前后两个环境，后一句的环境没有�
 ## webpack术语表
 
 [https://webpack.docschina.org/glossary/](https://webpack.docschina.org/glossary/)
+
+
 
 ## vendors
 
@@ -2144,7 +2203,7 @@ webpack根据webpack.config.js中的入口文件，在入口文件里识别模�
 
 
 
-## 打包成es module 和 common 的区别
+## 打包成es module 和 cjs 的区别
 
 [Webpack 打包commonjs 和esmodule 模块的产物对比](https://juejin.cn/post/7093428816785670152)
 
