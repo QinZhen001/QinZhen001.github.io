@@ -318,6 +318,14 @@ You can generate the required JSON file for this tool by running
 
 
 
+###   vue sfc
+
+[https://sfc.vuejs.org/](https://sfc.vuejs.org/)
+
+vue 单文件组件吧编译结果
+
+
+
 ## 性能
 
 
