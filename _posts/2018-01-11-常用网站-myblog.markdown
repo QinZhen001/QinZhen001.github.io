@@ -322,7 +322,17 @@ You can generate the required JSON file for this tool by running
 
 [https://sfc.vuejs.org/](https://sfc.vuejs.org/)
 
-vue 单文件组件吧编译结果
+vue 单文件组件的编译结果
+
+
+
+### fake API for testing 
+
+[https://jsonplaceholder.typicode.com/](https://jsonplaceholder.typicode.com/)
+
+测试用的api接口
+
+
 
 
 
