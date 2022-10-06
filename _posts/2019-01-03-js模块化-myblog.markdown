@@ -422,3 +422,32 @@ ES6 模块的运行机制与 CommonJS 不一样。**ES6 模块是动态引用，
 
 
 
+### export-default-thing vs  thing-as-default
+
+[https://jakearchibald.com/2021/export-default-thing-vs-thing-as-default/](https://jakearchibald.com/2021/export-default-thing-vs-thing-as-default/)
+
+```tsx
+// These give you a live reference to the exported thing(s):
+import { thing } from './module.js';
+import { thing as otherName } from './module.js';
+import * as module from './module.js';
+const module = await import('./module.js');
+// This assigns the current value of the export to a new identifier:
+let { thing } = await import('./module.js');
+
+// These export a live reference: (是链接 thing 改变  import thing 的值也会变)
+export { thing };
+export { thing as otherName };
+export { thing as default };
+export default function thing() {}
+// These export the current value: （是当前值 thing 改变 import thing 的值不会变）
+export default thing;
+export default 'hello!';
+```
+
+To sum up:
+
+规则仅仅适用于 export string   （function 等不适用）
+
+
+
