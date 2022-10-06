@@ -955,7 +955,27 @@ rvm current
 
 
 
-# just-scripts
+
+
+### only-allow
+
+[https://www.npmjs.com/package/only-allow](https://www.npmjs.com/package/only-allow)
+
+> Force a specific package manager to be used on a project
+
+If you want to force [pnpm](https://pnpm.js.org/), add:
+
+```tsx
+{
+  "scripts": {
+    "preinstall": "npx only-allow pnpm"
+  }
+}
+```
+
+
+
+### just-scripts
 
 [https://microsoft.github.io/just/scripts/](https://microsoft.github.io/just/scripts/)
 
