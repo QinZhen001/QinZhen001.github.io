@@ -204,7 +204,7 @@ Conversely, some files are always ignored:
 
 [https://segmentfault.com/a/1190000016365409](https://segmentfault.com/a/1190000016365409)
 
-```1c
+```tsx
 # jquery
 {
   "unpkg": "dist/jquery.js"
@@ -224,3 +224,19 @@ https://unpkg.com/jquery@[latestVersion]/[pkg.main]
 
 ```
 
+
+
+## style
+
+声明当前模块包含 `style` 部分，并指定入口文件。
+
+The `"style"` attribute in package.json is useful for importing CSS packages. Here's a way to utilize it.
+
+支持的工具：
+
+- [parcelify](https://link.segmentfault.com/?enc=0WKMFN82MOhU1CUInBvoJQ%3D%3D.UsAH7%2BU5%2B7udWs3HY7UPrlvAtUQVzeJU%2BSMUdg8X6TBIU4KVXxmJWBiKcbAIbxTP)
+- [npm-less](https://link.segmentfault.com/?enc=0RzrvLLJjRK7bMUysKTTDw%3D%3D.M1kxOXwpvdmcPBPWtgyNkDitpknYhdTsqqF7tfQVx2nT04EjTGgMCqP2g%2BrgSsUl)
+- [rework-npm](https://link.segmentfault.com/?enc=3YVnlmke5HFVFg7vJT5XYQ%3D%3D.7cb2O0SwMLh9LjwC6%2Bi35Z%2FTtRy1XqQw7Ijb%2F8gF3ROKwSvyDS8bk1CU5XcRwj%2BR)
+- [npm-css](https://link.segmentfault.com/?enc=bEn2U12d5TtLF7S%2BF%2FU82g%3D%3D.EQx4nAZuK1ccc%2FGsPXUGFXO91zfp4twadrtw47XKTY8XfXH1ww7FD%2BEWC6oYq6oa)
+
+详细参考 [Package.json "style" Attribute](https://link.segmentfault.com/?enc=%2FIfDOKxRCWfKW1YmFKsljg%3D%3D.lfNf7g6nQm88xvMHJ2vKkxUVqPUZAIvU71f80JT%2Bv7M%2FDg4yFMDEpZiQwbK9f4xvhr2YHw%2FZ61ruZcsngoFL8A%3D%3D), [istf-spec](https://link.segmentfault.com/?enc=Ii0IZ%2FDCODRN%2FYep5reDiQ%3D%3D.nw0k4UxJrKyg74oORMBk1IlkmW%2B1myf1pL91CBoSPw5%2B9JYTnwm0LeLVn3uuIMuQ).

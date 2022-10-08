@@ -475,6 +475,14 @@ Runs the following loaders in a worker pool.
 
 
 
+### svgr/webpack
+
+[https://react-svgr.com/docs/webpack/](https://react-svgr.com/docs/webpack/)
+
+SVGR provides an official [webpack.js](https://webpack.js.org/) loader to import SVG as React components.
+
+
+
 
 
 
