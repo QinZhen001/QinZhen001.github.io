@@ -633,21 +633,3 @@ Object.defineProperty存在的问题
 
 
 
-
-### Component provided template
-
-当我们使用 template 代替 render 函数的时候：
-
-option but runtime compilation is not supported in this build of Vue. Configure your bundler to alias "vue" to "vue/dist/vue.esm-bundler.js". 
-
-要选择带有编译器的vue版本
-
-```tsx
-// vite.config.js
- resolve:{
-    alias:{
-      'vue': 'vue/dist/vue.esm-bundler.js'
-    }
- },
-```
-

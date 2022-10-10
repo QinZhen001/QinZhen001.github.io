@@ -451,3 +451,26 @@ To sum up:
 
 
 
+### script type importmap 
+
+[What's script type importmap used for?](https://stackoverflow.com/questions/70902863/whats-script-type-importmap-used-for)
+
+`import-maps` 使用 Json 的形式来定义浏览器中的全局模块：
+
+```tsx
+<script type="importmap">
+{
+  "imports": {
+   "moment": "/node_modules/moment/src/moment.js",
+    "lodash": "/node_modules/lodash-es/lodash.js"
+  }
+}
+</script>
+```
+
+有了上面的 `importmap` 定义， 可以在浏览器环境中这样使用全局模块：
+
+```tsx
+import * as _loadash from 'loadash'; // 自动加载 /libs/loadash/index.js
+```
+
