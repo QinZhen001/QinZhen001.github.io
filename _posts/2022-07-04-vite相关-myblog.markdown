@@ -276,3 +276,25 @@ option but runtime compilation is not supported in this build of Vue. Configure 
  },
 ```
 
+
+
+
+
+## Can css be styleInjected in library mode?
+
+[https://github.com/vitejs/vite/issues/1579](https://github.com/vitejs/vite/issues/1579)
+
+The problem is injecting the style assumes a DOM environment which will make the library SSR-incompatible.
+
+If you only have minimal css, the easiest way is to simply use inline styles.
+
+
+
+
+
+我们可以使用一个插件
+
+**[vite-plugin-css-injected-by-js](https://github.com/Marco-Prontera/vite-plugin-css-injected-by-js)**
+
+A Vite plugin that takes the CSS and adds it to the page through the JS. For those who want a single JS file.
+

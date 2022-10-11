@@ -240,3 +240,31 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 - [npm-css](https://link.segmentfault.com/?enc=bEn2U12d5TtLF7S%2BF%2FU82g%3D%3D.EQx4nAZuK1ccc%2FGsPXUGFXO91zfp4twadrtw47XKTY8XfXH1ww7FD%2BEWC6oYq6oa)
 
 详细参考 [Package.json "style" Attribute](https://link.segmentfault.com/?enc=%2FIfDOKxRCWfKW1YmFKsljg%3D%3D.lfNf7g6nQm88xvMHJ2vKkxUVqPUZAIvU71f80JT%2Bv7M%2FDg4yFMDEpZiQwbK9f4xvhr2YHw%2FZ61ruZcsngoFL8A%3D%3D), [istf-spec](https://link.segmentfault.com/?enc=Ii0IZ%2FDCODRN%2FYep5reDiQ%3D%3D.nw0k4UxJrKyg74oORMBk1IlkmW%2B1myf1pL91CBoSPw5%2B9JYTnwm0LeLVn3uuIMuQ).
+
+
+
+
+
+## exports
+
+[https://www.cnblogs.com/taohuaya/p/15573719.html](https://www.cnblogs.com/taohuaya/p/15573719.html)
+
+提供了一种方法来为不同的环境和 `JavaScript` 风格公开您的包模块，同时限制对其内部部分的访问。
+
+```
+// package.json
+{
+  "name": "my-lib",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/my-lib.umd.cjs",
+  "module": "./dist/my-lib.js",
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.js",
+      "require": "./dist/my-lib.umd.cjs"
+    }
+  }
+}
+```
+

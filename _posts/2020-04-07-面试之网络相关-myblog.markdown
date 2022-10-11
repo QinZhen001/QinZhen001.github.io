@@ -460,7 +460,7 @@ X-DNS-Prefetch-Control 头控制着浏览器的DNS预解析功能
 
 # 缓存相关
 
-
+[循序漸進理解 HTTP Cache 機制](https://blog.techbridge.cc/2017/06/17/cache-introduction/)
 
 
 

@@ -2426,6 +2426,41 @@ afterEnter() {
 
 
 
+### 代替 autoprefixer
+
+现在基本使用 `postcss-preset-env` 插件 来代替 `autoprefixer` 插件
+
+[https://github.com/csstools/postcss-preset-env](https://github.com/csstools/postcss-preset-env)
+
+PostCSS Preset Env 可以将现代 CSS 转换为大多数浏览器可以理解的内容，并根据目标浏览器或运行时环境确定所需的 polyfill
+
+
+
+browsers :
+
+The `browsers` option determines which polyfills are required based upon the browsers you are supporting.
+
+[PostCSS Preset Env](https://github.com/csstools/postcss-preset-env) supports any standard [browserslist](https://github.com/browserslist/browserslist#readme) configuration, which can be a `.browserslistrc` file, a `browserslist` key in `package.json`, or `browserslist` environment variables.
+
+
+
+```tsx
+// postcss.config.js
+module.exports = {
+  plugins: [
+    require('postcss-preset-env')
+  ]
+}
+```
+
+
+
+
+
+
+
+
+
 
 
 
