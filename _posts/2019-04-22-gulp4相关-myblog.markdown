@@ -6,7 +6,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Gulp
+    - Bundler
 ---
 
 > “Yeah It's on. ”
@@ -474,7 +474,6 @@ gulp-uglify无法压缩带有es6语法的js，先要用babel把es6转为es5。
 
 
 >这就很坑了Orz
-
 
 
 

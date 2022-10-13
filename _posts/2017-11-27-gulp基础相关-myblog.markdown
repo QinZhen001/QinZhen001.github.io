@@ -6,7 +6,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Gulp
+    - Bundler
 ---
 
 > “Yeah It's on. ”
@@ -200,8 +200,8 @@ gulp.task('delete', =>
         .pipe(stripDebug())
         .pipe(vinylPaths(del))
 );
-``` 
- 
+```
+
 
 
 
@@ -296,7 +296,6 @@ gulp.task('default', function() {
     .pipe(gulp.dest('dist/'));
 });
 ```
-
 
 
 
