@@ -7,7 +7,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - Package
 ---
 
 > “Yeah It's on. ”
