@@ -12,6 +12,15 @@ tags:
 > “Yeah It's on. ”
 
 
+
+## 前言
+
+lerna  团队已经停止维护了
+
+**现在请用 pnpm 代替**
+
+ 
+
 ## 正文
 
 [https://github.com/lerna/lerna/](https://github.com/lerna/lerna/)

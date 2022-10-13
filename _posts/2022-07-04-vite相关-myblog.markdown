@@ -49,7 +49,53 @@ export default defineConfig({
 
 # plugin
 
+[https://cn.vitejs.dev/guide/api-plugin.html](https://cn.vitejs.dev/guide/api-plugin.html)
 
+
+
+## 基础
+
+
+
+### transformIndexHtml
+
+可以选择前置 or 后置 处理
+
+[https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks](https://cn.vitejs.dev/guide/api-plugin.html#vite-specific-hooks)
+
+例子：
+
+```tsx
+export default function () {
+  return {
+    name: 'my-plugin',
+    transformIndexHtml: {
+      enforce: 'post',   // 'pre'
+      transform(html, ctx) {
+        console.log('html', html);
+        console.log('ctx', ctx);
+        return html
+      }
+    }
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+## vite-plugin-inspect
+
+[https://github.com/antfu/vite-plugin-inspect](https://github.com/antfu/vite-plugin-inspect)
+
+Inspect the intermediate state of Vite plugins. Useful for debugging and authoring plugins.
 
 
 
@@ -243,6 +289,58 @@ const modules = import.meta.glob('./dir/*.js')
 
 
 
+## with babel
+
+[https://www.npmjs.com/package/vite-plugin-babel](https://www.npmjs.com/package/vite-plugin-babel)
+
+使用 vite-plugin-babel
+
+Vite team didn't enabled and included Babel by default, because they wanted to keep expirience as fast as possible and esbuild can already do a lot of things, you would probably do with Babel.
+
+```tsx
+import { defineConfig } from 'vite';
+import babel from 'vite-plugin-babel';
+
+export default defineConfig({
+    plugins: [
+        // Babel will try to pick up Babel config files (.babelrc or .babelrc.json)
+        babel(),
+        // ...
+    ],
+
+    // ...
+})
+```
+
+
+
+
+
+
+
+## 打包分析
+
+```tsx
+// vite.config.ts
+
+import { visualizer } from 'rollup-plugin-visualizer';
+
+export default defineConfig({
+  plugins: [visualizer()],
+  build: {
+		// ...
+  }
+})
+```
+
+使用rollup 的 plugin
+
+默认会在root目录生成 stats.html  （分析结果页面）
+
+
+
+
+
 # 问题
 
 
@@ -290,11 +388,31 @@ If you only have minimal css, the easiest way is to simply use inline styles.
 
 
 
-
-
 我们可以使用一个插件
 
 **[vite-plugin-css-injected-by-js](https://github.com/Marco-Prontera/vite-plugin-css-injected-by-js)**
 
 A Vite plugin that takes the CSS and adds it to the page through the JS. For those who want a single JS file.
+
+
+
+
+
+## Multiple entry points/output in library mode?
+
+[https://github.com/vitejs/vite/discussions/1736](https://github.com/vitejs/vite/discussions/1736)
+
+多入口 库模式打包
+
+vite 的 lib 库模式打包 lib.entry 只支持单入口
+
+解决：
+
+```tsx
+import { build } from 'vite'
+```
+
+多次调用这个build
+
+
 

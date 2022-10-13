@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "npm和yarn"
+title:      "npm和yarn和pnpm"
 date:       2018-11-16 20:19:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -401,6 +401,48 @@ package.json:
 
 
 
+# pnpm
+
+[https://www.pnpm.cn/](https://www.pnpm.cn/)
+
+
+
+## filter
+
+[https://pnpm.io/zh/filtering](https://pnpm.io/zh/filtering)
+
+```bash
+pnpm --filter <package_selector> <command>
+```
+
+过滤允许您将命令限制于包的特定子集。
+
+
+
+例子：
+
+```bash
+"build": "pnpm -r --filter='./packages/*' run build",
+```
+
+
+
+
+
+### parallel
+
+[https://pnpm.io/zh/cli/exec#--parallel](https://pnpm.io/zh/cli/exec#--parallel)
+
+并发执行多个命令
+
+```bash
+"dev": "pnpm -r --parallel --filter='./packages/*' run dev",
+```
+
+
+
+
+
 
 
 # npx
@@ -430,7 +472,7 @@ $ npx mocha --version
 
 **除了调用项目内部模块，npx 还能避免全局安装的模块。**比如，`create-react-app`这个模块是全局安装，npx 可以运行它，而且不进行全局安装。
 
-```
+```tsx
 $ npx create-react-app my-react-app
 ```
 
