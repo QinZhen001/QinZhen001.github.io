@@ -981,3 +981,37 @@ If you want to force [pnpm](https://pnpm.js.org/), add:
 
 Unlike other build libraries, Just strives to be useful from the beginning. You can choose to write your own tasks that call other Node.js tools like TypeScript, jest, and webpack. However, Just includes some script functions to get you up and running immediately.
 
+
+
+
+
+### magic-string
+
+[https://www.npmjs.com/package/magic-string](https://www.npmjs.com/package/magic-string)
+
+It's a small, fast utility for manipulating strings and generating sourcemaps.
+
+
+
+
+
+### connect
+
+[https://www.npmjs.com/package/connect](https://www.npmjs.com/package/connect)
+
+Connect is an extensible HTTP server framework for [node](http://nodejs.org/) using "plugins" known as *middleware*.
+
+
+
+
+
+### chokidar
+
+[https://www.npmjs.com/package/chokidar](https://www.npmjs.com/package/chokidar)
+
+Minimal and efficient cross-platform file watching library
+
+
+
+
+

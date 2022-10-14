@@ -608,6 +608,20 @@ node process-argv.js 1 2 H 3 4
 
 
 
+### Inspector
+
+[https://nodejs.org/en/docs/guides/debugging-getting-started/](https://nodejs.org/en/docs/guides/debugging-getting-started/)
+
+When started with the `--inspect` switch, a Node.js process listens for a debugging client. By default, it will listen at host and port 127.0.0.1:9229. Each process is also assigned a unique [UUID](https://tools.ietf.org/html/rfc4122).
+
+
+
+
+
+
+
+
+
 
 ## 常用工具
 util 是一个Node.js 核心模块，提供常用函数的集合，用于弥补核心JavaScript 的功能 过于精简的不足。 

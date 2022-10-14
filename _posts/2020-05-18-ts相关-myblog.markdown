@@ -2714,6 +2714,22 @@ with these guys:
 
 
 
+### noEmit
+
+不生成输出文件。  (通常用于 ts check)
+
+```bash
+// vite
+
+"build-types-check": "tsc --project tsconfig.check.json",
+```
+
+
+
+
+
+
+
 ## ts结合react
 
 
