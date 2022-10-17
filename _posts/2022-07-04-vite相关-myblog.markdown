@@ -416,3 +416,8 @@ import { build } from 'vite'
 
 
 
+## ship in CJS format when my package has pure ESM package dependencies?
+
+[https://lightrun.com/answers/unjs-unbuild-how-to-ship-in-cjs-format-when-my-package-has-pure-esm-package-dependencies](https://lightrun.com/answers/unjs-unbuild-how-to-ship-in-cjs-format-when-my-package-has-pure-esm-package-dependencies)
+
+use `rollup.inlineDependencies` and make your ESM-only dependency a development dependency

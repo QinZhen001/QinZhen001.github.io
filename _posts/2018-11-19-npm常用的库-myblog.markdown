@@ -1015,3 +1015,42 @@ Minimal and efficient cross-platform file watching library
 
 
 
+### unbuild
+
+[https://www.npmjs.com/package/unbuild](https://www.npmjs.com/package/unbuild)
+
+> A unified javascript build system.   (js 打包工具)
+
+Robust [rollup](https://rollupjs.org/) based bundler that supports typescript and generates commonjs and module formats + type declarations.
+
+* 支持 typescript 及其生成 
+
+* 支持 cjs 和 mjs
+
+```
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+```
+
+Stub `dist` once using [jiti](https://github.com/unjs/jiti) and you can try and link your project without needing to watch and rebuild during development.
+
+
+
+例子：
+
+```tsx
+// build.config.ts
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  entries: ['src/index'],
+  externals: ['vite', 'vue/compiler-sfc', '@vue/compiler-sfc'],
+  clean: true,
+  declaration: true,
+  rollup: {
+    emitCJS: true,
+    inlineDependencies: true
+  }
+})
+```
+
