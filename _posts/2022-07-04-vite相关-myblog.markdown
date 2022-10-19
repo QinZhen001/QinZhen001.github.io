@@ -16,6 +16,14 @@ tags:
 
 # 基础
 
+[深入理解Vite核心原理](https://juejin.cn/post/7064853960636989454)
+
+`Vite`其核心原理是利用浏览器现在已经支持`ES6`的`import`,碰见`import`就会发送一个`HTTP`请求去加载文件，`Vite`启动一个 `express` 服务器拦截这些请求，并在后端进行相应的处理将项目中使用的文件通过简单的分解与整合，然后再以`ESM`格式返回返回给浏览器。`Vite`整个过程中没有对文件进行打包编译，做到了真正的按需加载，所以其运行速度比原始的`webpack`开发编译速度快出许多！
+
+#### 
+
+目前所有的打包工具实现热更新的思路都大同小异：主要是通过`WebSocket`创建浏览器和服务器的通信监听文件的改变，当文件被修改时，服务端发送消息通知客户端修改相应的代码，客户端对应不同的文件进行不同的操作的更新。
+
 
 
 ## alias
@@ -43,6 +51,36 @@ export default defineConfig({
 
 
 
+## HMR 热更新
+
+目前所有的打包工具实现热更新的思路都大同小异：主要是通过`WebSocket`创建浏览器和服务器的通信监听文件的改变，当文件被修改时，服务端发送消息通知客户端修改相应的代码，客户端对应不同的文件进行不同的操作的更新。
+
+
+
+* Webpack:  重新编译，请求变更后模块的代码，客户端重新加载
+* Vite:  请求变更的模块，再重新加载
+
+
+
+`Vite` 通过 `chokidar` 来监听文件系统的变更，只用对发生变更的模块重新加载， 只需要精确的使相关模块与其临近的 `HMR`边界连接失效即可，这样`HMR` 更新速度就不会因为应用体积的增加而变慢而 `Webpack` 还要经历一次打包构建。所以 `HMR` 场景下，`Vite` 表现也要好于 `Webpack`。
+
+
+
+## 预构建
+
+为什么需要预构建？
+
+1. 支持`commonJS`依赖。上面提到`Vite`是基于浏览器原生支持`ESM`的能力实现的，但要求用户的代码模块必须是`ESM`模块，因此必须将`commonJs`的文件提前处理，转化成 `ESM` 模块并缓存入 `node_modules/.vite`
+2. 减少模块和请求数量
+
+
+
+常用的`lodash`工具库，里面有很多包通过单独的文件相互导入，而 `lodash-es`这种包会有几百个子模块，当代码中出现 `import { debounce } from 'lodash-es'` 会发出几百个 `HTTP` 请求，这些请求会造成网络堵塞，影响页面的加载。
+
+ `Vite` 将有许多内部模块的 `ESM` 依赖关系转换为单个模块，以提高后续页面加载性能。
+
+通过预构建 `lodash-es` 成为一个模块，也就只需要一个 `HTTP` 请求了！
+
 
 
 
@@ -53,7 +91,7 @@ export default defineConfig({
 
 
 
-## 基础
+## basic
 
 
 
@@ -96,6 +134,22 @@ export default function () {
 [https://github.com/antfu/vite-plugin-inspect](https://github.com/antfu/vite-plugin-inspect)
 
 Inspect the intermediate state of Vite plugins. Useful for debugging and authoring plugins.
+
+
+
+## **esbuildScanPlugin**
+
+[https://www.modb.pro/db/96623](https://www.modb.pro/db/96623)
+
+源码： packages/vite/src/node/optimizer/scan.ts
+
+
+
+内置插件
+
+它是从入口文件开始，扫描所有文件，然后找到所有 **bare imports** 即官方称为裸导入的路径，然后记录在 **deps** 对象上。
+
+>  ★ 所谓的 **bare imports** 就是需要从 **node_modules** 中导入的模块。
 
 
 

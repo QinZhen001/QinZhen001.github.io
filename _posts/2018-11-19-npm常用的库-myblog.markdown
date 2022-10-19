@@ -991,6 +991,22 @@ Unlike other build libraries, Just strives to be useful from the beginning. You 
 
 It's a small, fast utility for manipulating strings and generating sourcemaps.
 
+字符串替换重写
+
+
+
+### es-module-lexer
+
+[https://www.npmjs.com/package/es-module-lexer](https://www.npmjs.com/package/es-module-lexer)
+
+A JS module syntax lexer used in [es-module-shims](https://github.com/guybedford/es-module-shims).
+
+Outputs the list of exports and locations of import specifiers, including dynamic import and import meta handling.
+
+虽然js代码的词法分析通常都使用babel, acorn等工具，但是针对ESM文件来说，使用es-module-lexer库在性能上能够有很大的提升，其压缩后的体积只有4kb，而且根据官方给出的例子720kb的Angular1库经过acorn解析要超过100ms，而使用es-module-lexer库只需要5ms, 在性能上提升了将近20倍。
+
+
+
 
 
 
