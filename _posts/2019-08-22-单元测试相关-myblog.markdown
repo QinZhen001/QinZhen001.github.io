@@ -815,6 +815,16 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 
 
 
+
+
+### 模拟对象
+
+[https://cn.vitest.dev/guide/mocking.html](https://cn.vitest.dev/guide/mocking.html)
+
+
+
+
+
 ## ts-jest
 
 [https://www.npmjs.com/package/ts-jest](https://www.npmjs.com/package/ts-jest)
