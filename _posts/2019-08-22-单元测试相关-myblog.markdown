@@ -443,13 +443,9 @@ foo();
 
 
 
+### jest.config
 
-
-## jest.config
-
-
-
-### [setupFiles and setupFilesAfterEnv?](https://stackoverflow.com/questions/58080435/when-should-i-use-setupfiles-rather-than-setupfilesafterenv)
+[setupFiles and setupFilesAfterEnv?](https://stackoverflow.com/questions/58080435/when-should-i-use-setupfiles-rather-than-setupfilesafterenv)
 
 **setupFiles** will be executed
 
@@ -808,6 +804,14 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 如果我们想通过className查询元素，可以利用wrapper.container调用querySelector
 
 
+
+
+
+
+
+## vitest
+
+[https://vitest.dev/](https://vitest.dev/)
 
 
 

@@ -123,12 +123,6 @@ export default function () {
 
 
 
-
-
-
-
-
-
 ## vite-plugin-inspect
 
 [https://github.com/antfu/vite-plugin-inspect](https://github.com/antfu/vite-plugin-inspect)
@@ -139,17 +133,29 @@ Inspect the intermediate state of Vite plugins. Useful for debugging and authori
 
 ## **esbuildScanPlugin**
 
+> 内置插件
+
 [https://www.modb.pro/db/96623](https://www.modb.pro/db/96623)
 
 源码： packages/vite/src/node/optimizer/scan.ts
 
 
 
-内置插件
-
 它是从入口文件开始，扫描所有文件，然后找到所有 **bare imports** 即官方称为裸导入的路径，然后记录在 **deps** 对象上。
 
 >  ★ 所谓的 **bare imports** 就是需要从 **node_modules** 中导入的模块。
+
+
+
+## vite-plugin-react
+
+[https://www.npmjs.com/package/@vitejs/plugin-react](https://www.npmjs.com/package/@vitejs/plugin-react)
+
+[学不动系列之vite-plugin-react](https://zhuanlan.zhihu.com/p/146273954)
+
+内部 dependencies  => react-refresh
+
+react-refresh主要有两个文件，一个是babel的插件ReactFreshBabelPlugin.js， 一个是ReactFreshRuntime.js。
 
 
 

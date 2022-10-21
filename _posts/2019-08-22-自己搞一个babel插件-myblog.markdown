@@ -91,6 +91,20 @@ const result = 1 + 1
 }
 ```
 
+
+
+### astexplorer
+
+[https://astexplorer.net/](https://astexplorer.net/)
+
+
+
+一个简单plugin例子：
+
+https://astexplorer.net/#/gist/c103ecf502c10b6d9e5ab69df5580a55/fc6e168a7f32738fb6bb2e0b55c5ea1ad17830fd
+
+
+
 ### 基础知识
 
 [ https://juejin.im/post/5d94bfbf5188256db95589be ]( https://juejin.im/post/5d94bfbf5188256db95589be )

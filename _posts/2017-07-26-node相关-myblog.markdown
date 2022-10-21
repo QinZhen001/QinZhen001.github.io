@@ -866,6 +866,20 @@ kill xxx
 
 
 
+### path is a directory?
+
+[https://melvingeorge.me/blog/check-if-path-is-directory-nodejs](https://melvingeorge.me/blog/check-if-path-is-directory-nodejs)
+
+```tsx
+// Check if path is a directory
+fs.statSync("./reports").isDirectory();
+
+```
+
+
+
+
+
 
 
 ## 中间件
