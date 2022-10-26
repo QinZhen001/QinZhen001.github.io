@@ -970,6 +970,36 @@ console.log(Object.getOwnPropertyNames(objWithStrings));
 
 
 
+### AbortController
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AbortController](https://developer.mozilla.org/zh-CN/docs/Web/API/AbortController)
+
+**`AbortController`** 接口表示一个控制器对象，允许你根据需要中止一个或多个 Web 请求。
+
+
+
+```tsx
+  controller = new AbortController();
+  const signal = controller.signal;
+  fetch(url, { signal })
+    .then((response) => {
+      console.log("Download complete", response);
+    })
+    .catch((err) => {
+      console.error(`Download error: ${err.message}`);
+    });
+
+
+	// 在 fetch 的过程中 
+	controller.abort(); // 中断请求
+```
+
+
+
+
+
+
+
 ## 补充
 
 
@@ -4665,6 +4695,34 @@ event中的offsetX 会触发到子元素中
 * 用 event.pageX - xxx.getBoundingClientRect().left 代替
 
 
+
+
+
+
+
+### dark mode
+
+ [How do I detect dark mode using JavaScript?](https://stackoverflow.com/questions/56393880/how-do-i-detect-dark-mode-using-javascript)
+
+```tsx
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // dark mode
+}
+```
+
+```tsx
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+    const newColorScheme = event.matches ? "dark" : "light";
+});
+```
+
+
+
+[https://cn.windicss.org/features/dark-mode.html](https://cn.windicss.org/features/dark-mode.html)
+
+像 Windi CSS 这种库
+
+默认情况下，启用的是 `class` 模式。
 
 
 

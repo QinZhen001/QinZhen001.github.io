@@ -463,6 +463,10 @@ eslint src/** --fix
 
 [https://juejin.cn/post/6924568874700505102](https://juejin.cn/post/6924568874700505102)
 
+[为什么我不使用 Prettier](https://antfu.me/posts/why-not-prettier-zh)
+
+
+
 
 
 ESLint 主要解决了两类问题
@@ -476,6 +480,12 @@ ESLint 主要解决了两类问题
 ```
 npm install --save-dev eslint prettier eslint-config-prettier eslint-plugin-prettier
 ```
+
+
+
+
+
+
 
 
 

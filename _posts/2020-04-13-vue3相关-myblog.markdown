@@ -362,6 +362,14 @@ export const mutableHandlers: ProxyHandler<object> = {
 
 
 
+
+
+
+
+
+
+
+
 ### Vue 3 的 `$emit` 与 Vue 2 的 `$emit`
 
 [https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension](https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension)
@@ -592,6 +600,29 @@ render() {
 
 
 
+### EffectScope
+
+[聊一聊 Effect Scope API](https://juejin.cn/post/7019241635942760455)
+
+副作用生效的作用域
+
+```tsx
+// effect, computed, watch, watchEffect created inside the scope will be collected
+
+const scope = effectScope()
+
+scope.run(() => {
+  const doubled = computed(() => counter.value * 2)
+
+  watch(doubled, () => console.log(doubled.value))
+
+  watchEffect(() => console.log('Count: ', doubled.value))
+})
+
+// to dispose all effects in the scope
+scope.stop()
+```
+
 
 
 
@@ -600,9 +631,7 @@ render() {
 
 # 补充
 
-
-
-### vue3 放弃了 Object.defineProperty
+## vue3 放弃了 Object.defineProperty
 
 Object.defineProperty存在的问题
 
@@ -618,8 +647,7 @@ Object.defineProperty存在的问题
 
 
 
-
-### vue-cli-plugin-commitlint
+## vue-cli-plugin-commitlint
 
 `vue-cli-plugin-commitlint` 是以 `vue` 插件的形式写的，可以执行 `vue add commitlint` 直接使用，如果不是 `vue` 的项目也可以根据下面的配置自行配置。
 
@@ -630,6 +658,53 @@ Object.defineProperty存在的问题
 3. 集成 `git add && git commit` 不需要执行两个命令
 4. 自动生成 `changelog`
 
+
+
+
+
+
+
+## Ref vs Reactive
+
+[https://vuejsdevelopers.com/2022/06/01/ref-vs-reactive/](https://vuejsdevelopers.com/2022/06/01/ref-vs-reactive/)
+
+Unlike `ref`, `reactive` can only be initialized with an object. Each property of the object can be a different reactive variable, however.
+
+```tsx
+const data = reactive({
+  count: 0,
+  name: 'Peter Griffin',
+  flag: false
+})
+```
+
+One advantage of `reactive` is that it doesn’t use a `value` property so it may be a little easier to read.
+
+```tsx
+data.name === 'Peter Griffin' // true
+data.name.value === 'Peter Griffin' // false
+```
+
+
+
+----
+
+
+
+`ref` advantages:
+
+- Much easier to pass single variables around your app
+- Avoids destructuring pitfall
+
+`reactive` advantages:
+
+- Can be less verbose if declaring lots of reactive variables
+- Consistency between JavaScript and template
+- Similar to Vue 2’s data object
+
+
+
+**I normally use `ref` as I find it more flexible.**
 
 
 

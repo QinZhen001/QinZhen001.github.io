@@ -1070,3 +1070,21 @@ export default defineBuildConfig({
 })
 ```
 
+
+
+
+
+### esno
+
+[https://www.npmjs.com/package/esno](https://www.npmjs.com/package/esno)
+
+Node.js runtime enhanced with esbuild for loading TypeScript & ESM
+
+可以直接在node环境中运行.ts
+
+```tsx
+npm i -g esno
+
+esno index.ts
+```
+
