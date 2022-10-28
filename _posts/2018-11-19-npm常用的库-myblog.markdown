@@ -1088,3 +1088,50 @@ npm i -g esno
 esno index.ts
 ```
 
+
+
+
+
+
+
+### fs-extra
+
+[https://www.npmjs.com/package/fs-extra](https://www.npmjs.com/package/fs-extra)
+
+`fs-extra` adds file system methods that aren't included in the native `fs` module and adds promise support to the `fs` methods. It also uses [`graceful-fs`](https://github.com/isaacs/node-graceful-fs) to prevent `EMFILE` errors. It should be a drop in replacement for `fs`.
+
+
+
+
+
+### url
+
+[https://www.npmjs.com/package/url](https://www.npmjs.com/package/url)
+
+This module has utilities for URL resolution and parsing meant to have feature parity with node.js core [url](http://nodejs.org/api/url.html) module.
+
+
+
+
+
+### jiti
+
+[https://github.com/unjs/jiti](https://github.com/unjs/jiti)
+
+> Runtime typescript and ESM support for Node.js (CommonJS)
+
+mjs
+
+```tsx
+// dist/index.mjs
+import jiti from 'jiti'
+export default jiti(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
+```
+
+cjs
+
+```tsx
+// dist/index.cjs
+module.exports = require('jiti')(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
+```
+

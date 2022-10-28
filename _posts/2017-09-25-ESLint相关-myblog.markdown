@@ -315,9 +315,7 @@ The resulting configuration file will be created in the current directory.
 
 
 
-
-
-#### --quiet
+### --quiet
 
 This option allows you to disable reporting on warnings. If you enable this option, only errors are reported by ESLint.
 
@@ -330,6 +328,12 @@ npx eslint --quiet file.js
 
 
 
+
+### --cache
+
+Store the info about processed files in order to only operate on the changed ones. The cache is stored in `.eslintcache` by default. Enabling this option can dramatically improve ESLint’s running time by ensuring that only changed files are linted.
+
+**Note:** If you run ESLint with `--cache` and then run ESLint without `--cache`, the `.eslintcache` file will be deleted. This is necessary because the results of the lint might change and make `.eslintcache` invalid. If you want to control when the cache file is deleted, then use `--cache-location` to specify an alternate location for the cache file.
 
 
 
