@@ -78,6 +78,36 @@ Rollup supports *ES modules* out of the box. However, to support *CommonJS*, the
 
 
 
+# plugin 
+
+
+
+
+
+## @rollup/pluginutils
+
+[https://www.npmjs.com/package/@rollup/pluginutils](https://www.npmjs.com/package/@rollup/pluginutils)
+
+A set of utility functions commonly used by 🍣 Rollup plugins.
+
+```tsx
+export {
+  addExtension,   // 增加后缀
+  attachScopes,   // 依附作用域 （ast处理）
+  createFilter, // 处理 include 和 exclude  (用于 transform 钩子)
+  dataToEsm,  // data =>  esmodule
+  extractAssignedNames,  // 获取ast的node的names
+  makeLegalIdentifier, // 变成下滑线命名
+  normalizePath  // 规范化路径
+};
+```
+
+
+
+
+
+
+
 # 问题
 
 
