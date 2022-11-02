@@ -36,3 +36,19 @@ Tailwind CSS v2.1 introduces a new just-in-time compiler for Tailwind CSS that g
 # unocss
 
 [https://github.com/unocss/unocss](https://github.com/unocss/unocss)
+
+
+
+
+
+## **@unocss/inspector**
+
+The inspector UI for UnoCSS. Ships with `unocss` and `@unocss/vite`.
+
+
+
+@unocss/vite 应该已经自带这个了  （无需额外安装）
+
+Visit `http://localhost:3000/__unocss` in your Vite dev server to see the inspector.
+
+就可以看到效果了 

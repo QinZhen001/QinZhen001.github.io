@@ -81,17 +81,13 @@ export default defineConfig({
 
 
 
-# plugin
+# plugin knowledge
 
 [https://cn.vitejs.dev/guide/api-plugin.html](https://cn.vitejs.dev/guide/api-plugin.html)
 
 
 
-## basic
-
-
-
-### transformIndexHtml
+## transformIndexHtml
 
 可以选择前置 or 后置 处理
 
@@ -116,6 +112,51 @@ export default function () {
 ```
 
 
+
+## configureServer
+
+是用于配置开发服务器的钩子。最常见的用例是在内部 [connect](https://github.com/senchalabs/connect) 应用程序中添加自定义中间件:
+
+```tsx
+const myPlugin = () => ({
+  name: 'configure-server',
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      // 自定义请求处理...
+    })
+  }
+})
+```
+
+
+
+在看一个例子：
+
+@unocss/inspector
+
+[https://github.com/unocss/unocss/blob/main/packages/inspector/node/index.ts](https://github.com/unocss/unocss/blob/main/packages/inspector/node/index.ts)
+
+
+
+## load 和  resolveId
+
+这两个都是rollup的钩子
+
+[https://rollupjs.org/guide/en/#load](https://rollupjs.org/guide/en/#load)
+
+
+
+load:
+
+**Previous Hook**    =>     [`resolveId`](https://rollupjs.org/guide/en/#resolveid)
+
+**Next Hook:**   =>  [`transform`](https://rollupjs.org/guide/en/#transform)
+
+
+
+# plugin usual
+
+常用的一些plugin
 
 
 

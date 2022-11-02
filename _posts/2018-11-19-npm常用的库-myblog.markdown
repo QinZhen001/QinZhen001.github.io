@@ -1135,3 +1135,48 @@ cjs
 module.exports = require('jiti')(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
 ```
 
+
+
+
+
+### sirv
+
+[https://www.npmjs.com/package/sirv](https://www.npmjs.com/package/sirv)
+
+> The optimized and lightweight middleware for serving requests to static assets
+
+为静态资产提供请求的优化的轻量级中间件
+
+
+
+
+
+### bumpp
+
+[https://www.npmjs.com/package/bumpp](https://www.npmjs.com/package/bumpp)
+
+用于自动版本号更新
+
+git commit  和 git tag 和 git push
+
+```tsx
+"release": "bumpp --commit --push --tag && npm publish"
+```
+
+
+
+
+
+
+
+# 其他
+
+
+
+## mpv
+
+[https://command-not-found.com/mpv](https://command-not-found.com/mpv)
+
+[https://mpv.io/](https://mpv.io/)
+
+mpv is a free (as in freedom) media player for the command line. It supports a wide variety of media file formats, audio and video codecs, and subtitle types.

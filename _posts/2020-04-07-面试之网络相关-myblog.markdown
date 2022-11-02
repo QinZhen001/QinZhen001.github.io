@@ -897,6 +897,22 @@ postMessage()方法允许来自不同源的脚本采用异步方式进行有限�
 
 
 
+## 跨域隔离
+
+Cross Origin Isolation
+
+跨域隔离使网页能够使用例如 SharedArrayBuffer 等强大功能。
+
+[为什么需要“跨域隔离”才能获得强大的功能](https://segmentfault.com/a/1190000022631118)
+
+
+
+[https://web.dev/i18n/zh/cross-origin-isolation-guide/](https://web.dev/i18n/zh/cross-origin-isolation-guide/)
+
+1. 在顶级文档上设置`Cross-Origin-Opener-Policy: same-origin`标头。
+2. 在顶级文档上设置`Cross-Origin-Embedder-Policy: require-corp`标头。
+3. 检查并确认`window.crossOriginIsolated`在控制台中返回`true`，从而验证您的页面已启用跨域隔离。
+
 
 
 # **nginx** 

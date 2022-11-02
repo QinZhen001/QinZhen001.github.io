@@ -63,3 +63,25 @@ export default (commandLineArgs: any): RollupOptions[] => {
 
 
 
+
+
+## support *CommonJS*
+
+Rollup supports *ES modules* out of the box. However, to support *CommonJS*, the following plugins are required:
+
+- [@rollup/plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs)
+- [@rollup/plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
+
+
+
+
+
+
+
+# 问题
+
+
+
+## [embed all dependencies into one fat target bundle](https://stackoverflow.com/questions/52125190/how-to-embed-all-dependencies-into-one-fat-target-bundle-with-rollup-js)
+
+Use [rollup-plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve) (and [rollup-plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs) if you have CommonJS dependencies).
