@@ -14,6 +14,92 @@ tags:
 
 
 
+# web rtc
+
+[https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
+
+[https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx](https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx)
+
+音视频通信的流程有五步：采集、编码、通信、解码、渲染。
+
+[WebRTC 介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Session_lifetime)
+
+[WebRTC 协议介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Protocols)
+
+[信令与视频通话](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling)
+
+
+
+## [信令服务器](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling#信令服务器)
+
+两个设备之间建立 WebRTC 连接需要一个**信令服务器**来实现双方通过网络进行连接。信令服务器的作用是作为一个中间人帮助双方在尽可能少的暴露隐私的情况下建立连接。
+
+
+
+## connectivity
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Connectivity](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Connectivity)
+
+
+
+## SDP
+
+[https://developer.mozilla.org/zh-CN/docs/Glossary/SDP](https://developer.mozilla.org/zh-CN/docs/Glossary/SDP)
+
+**SDP** (Session Description [Protocol](https://developer.mozilla.org/zh-CN/docs/Glossary/Protocol)) 是一个描述[peer-to-peer (en-US)](https://developer.mozilla.org/en-US/docs/Glossary/P2P) 连接的标准。SDP 包含音视频的：编解码 ([codec](https://developer.mozilla.org/zh-CN/docs/Glossary/Codec)),源地址，和时间信息。
+
+
+
+
+
+## AudioBuffer
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer)
+
+[https://github.com/mdn/webaudio-examples/blob/main/audio-buffer/index.html](https://github.com/mdn/webaudio-examples/blob/main/audio-buffer/index.html)
+
+AudioBuffer 接口表示存在内存里的一段短小的音频资源，利用[`AudioContext.decodeAudioData()`](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData)方法从一个音频文件构建，或者利用 [`AudioContext.createBuffer()`](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBuffer)从原始数据构建。把音频放入 AudioBuffer 后，可以传入到一个 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)进行播放。
+
+
+
+
+
+## MediaStream
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream)
+
+**`MediaStream`** 接口是一个媒体内容的流.。一个流包含几个*轨道*，比如视频和音频轨道。
+
+
+
+## MediaStreamTrack
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamTrack](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamTrack)
+
+**`MediaStreamTrack`** 接口在 User Agent 中表示一段媒体源，比如音轨或视频。
+
+Each `MediaStreamTrack` may have one or more channels. The channel represents the smallest unit of a media stream, such as an audio signal associated with a given speaker, like left or right in a stereo audio track.
+
+
+
+
+
+## AudioBufferSourceNode
+
+**`AudioBufferSourceNode`** 接口继承自 [`AudioScheduledSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioScheduledSourceNode)，表现为一个音频源，它包含了一些写在内存中的音频数据，通常储存在一个 ArrayBuffer 对象中。
+
+
+
+## RTCPeerConnection
+
+**`RTCPeerConnection`** 接口代表一个由本地计算机到远端的 WebRTC 连接。该接口提供了创建，保持，监控，关闭连接的方法的实现。
+
+
+
+
+
+
+
 
 
 # video.js
@@ -198,6 +284,11 @@ const file = await fetchFile(mp4Src)
 ```
 
 
+
+验证完成：
+
+* 提取出来数据 ArrayBuffer  => Blob  =>  ObjectURL  =>  audio tag => 播放成功
+* 提取出来数据 ArrayBuffer  =>  new AudioContext =>  decodeAudioData  => AudioBuffer =>  AgoraRTC.createBufferSourceAudioTrack  =>  audioTrack play 和 startProcessAudioBuffer => 播放成功
 
 
 
