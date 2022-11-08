@@ -1291,6 +1291,10 @@ function CustomTextInput(props) {
 
 
 
+### context
+
+[https://dmitripavlutin.com/react-context-and-usecontext/](https://dmitripavlutin.com/react-context-and-usecontext/)
+
 
 
 
