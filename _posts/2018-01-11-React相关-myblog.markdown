@@ -1234,6 +1234,8 @@ function Example(props) {
 
 避免使用 refs 来做任何可以通过声明式实现来完成的事情。
 
+
+
 #### Refs 与函数组件
 
 默认情况下，**你不能在函数组件上使用 `ref` 属性**，因为它们没有实例：
@@ -1288,6 +1290,38 @@ function CustomTextInput(props) {
 #### DOM Refs 暴露给父组件
 
 如果你使用 16.3 或更高版本的 React, 这种情况下我们推荐使用 [ref 转发](https://zh-hans.reactjs.org/docs/forwarding-refs.html)。**Ref 转发使组件可以像暴露自己的 ref 一样暴露子组件的 ref**。关于怎样对父组件暴露子组件的 DOM 节点，在 [ref 转发文档](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components)中有一个详细的例子。
+
+
+
+#### Ref with ts
+
+[https://www.designcise.com/web/tutorial/how-to-fix-useref-react-hook-cannot-assign-to-read-only-property-typescript-error](https://www.designcise.com/web/tutorial/how-to-fix-useref-react-hook-cannot-assign-to-read-only-property-typescript-error)
+
+```tsx
+function useRef<T>(initialValue: T): MutableRefObject<T>;
+function useRef<T>(initialValue: T|null): RefObject<T>;
+function useRef<T = undefined>(): MutableRefObject<T | undefined>;
+```
+
+
+
+```tsx
+interface RefObject<T> {
+    readonly current: T | null;   // tip： readonly 只读
+}
+```
+
+```tsx
+interface MutableRefObject<T> {
+    current: T;
+}
+```
+
+所以我们在ts中使用ref 可以使用MutableRefObject
+
+
+
+
 
 
 
