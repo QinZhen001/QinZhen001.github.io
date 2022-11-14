@@ -91,6 +91,29 @@ The init command is transformed to a corresponding `npx` operation as follows:
 
 
 
+## npm version
+
+[https://blog.csdn.net/weixin_40817115/article/details/90384398](https://blog.csdn.net/weixin_40817115/article/details/90384398)
+
+`npm version`获取当前的详细版本信息。
+
+```tsx
+{ 'npm-version-test': '1.0.0',
+  npm: '6.4.1',
+  ares: '1.14.0',
+  cldr: '33.1',
+  http_parser: '2.8.0',
+	// ....
+  zlib: '1.2.11' }
+```
+
+```
+npm version prerelease // 1.0.1-0 变为 1.0.1-1
+npm version prepatch   // 1.0.1-1 变为 1.0.2-0
+npm version preminor   // 1.0.2-0 变为 1.1.0-0
+// ...  
+```
+
 
 
 

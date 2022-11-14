@@ -4635,6 +4635,49 @@ searchIframes(document)
 
 
 
+### webassembly
+
+[http://webassembly.org.cn/getting-started/js-api/](http://webassembly.org.cn/getting-started/js-api/)
+
+
+
+方法的 imports 和 exports
+
+在[未来计划](http://webassembly.org.cn/docs/future-features/)中，WebAssembly 模块可以使用 ES6 模块(使用`<script type="module">`)加载，WebAssembly 目前只能通过 JavaScript 来加载和编译。基础的加载，只需要3步：
+
+- 获取 `.wasm` 二进制文件，将它转换成类型数组或者 `ArrayBuffer`
+- 将二进制数据编译成一个 `WebAssembly.Module`
+- 使用 imports 实例化这个 `WebAssembly.Module`，获取 exports。
+
+
+
+```tsx
+function instantiate(bytes, imports) {
+  return WebAssembly.compile(bytes).then(m => new WebAssembly.Instance(m, imports));
+}
+
+
+var importObject = { imports: { i: arg => console.log(arg) } };
+
+fetch('simple.wasm').then(response => response.arrayBuffer())
+.then(bytes => instantiate(bytes, importObject))
+.then(instance => instance.exports.e());
+```
+
+----
+
+Memory
+
+[Linear memory](http://webassembly.org.cn/docs/semantics/#linear-memory) 是 WebAssembly 的另外一种构建块，通常用于表示编译的 C/C++ 应用程序的整个堆。从 JavaScript 的角度，linear memory（后面称作 memory）可以被认为是一个可以调整大小的 `ArrayBuffer`，它是通过尽心优化的，用于负载和存储的低开销沙箱。
+
+Memories 可以被 JavaScript 创建，需要提供出初始大小和最大的大小这些选项。
+
+```
+var memory = new WebAssembly.Memory({initial:10, maximum:100});
+```
+
+
+
 
 
 ### 全屏 API

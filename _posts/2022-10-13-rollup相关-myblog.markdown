@@ -82,6 +82,55 @@ Rollup supports *ES modules* out of the box. However, to support *CommonJS*, the
 
 
 
+## base 
+
+
+
+### Inter-plugin communication
+
+[https://rollupjs.org/guide/en/#inter-plugin-communication](https://rollupjs.org/guide/en/#inter-plugin-communication)
+
+```tsx
+function parentPlugin() {
+  return {
+    name: 'parent',
+    api: {
+      //...methods and properties exposed for other plugins
+      doSomething(...args) {
+        // do something interesting
+      }
+    }
+    // ...plugin hooks
+  };
+}
+
+function dependentPlugin() {
+  let parentApi;
+  return {
+    name: 'dependent',
+    buildStart({ plugins }) {
+      const parentName = 'parent';
+      const parentPlugin = plugins.find(plugin => plugin.name === parentName);
+      if (!parentPlugin) {
+        // or handle this silently if it is optional
+        throw new Error(`This plugin depends on the "${parentName}" plugin.`);
+      }
+      // now you can access the API methods in subsequent hooks
+      parentApi = parentPlugin.api;
+    },
+    transform(code, id) {
+      if (thereIsAReasonToDoSomething(id)) {
+        parentApi.doSomething(id);
+      }
+    }
+  };
+}
+```
+
+通过提供api 一个插件可以调用另外一个插件提供的方法。
+
+
+
 
 
 ## @rollup/pluginutils
