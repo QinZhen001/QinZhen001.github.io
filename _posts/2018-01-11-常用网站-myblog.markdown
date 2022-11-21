@@ -166,7 +166,15 @@ tags:
 
 
 
+### svg背景
 
+[https://philiprogers.com/svgpatterns/#argyle](https://philiprogers.com/svgpatterns/#argyle)
+
+
+
+### svg to react component
+
+[https://react-svgr.com/playground/](https://react-svgr.com/playground/)
 
 
 
@@ -295,9 +303,6 @@ You can generate the required JSON file for this tool by running
 [https://contrast-ratio.com/](https://contrast-ratio.com/)
 
 
-
-### svg背景
-[https://philiprogers.com/svgpatterns/#argyle](https://philiprogers.com/svgpatterns/#argyle)
 
 
 
