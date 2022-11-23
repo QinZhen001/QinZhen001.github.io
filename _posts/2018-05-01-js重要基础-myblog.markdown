@@ -3844,6 +3844,8 @@ The `close()` method is visible inside the worker's scope. The `terminate()` met
 
 
 
+问题：
+
 Cannot use import statement outside a module
 
 解决：
@@ -3861,6 +3863,16 @@ new Worker(url, {
 ```
 
 - `type`：用以指定 worker 类型的 [`DOMString`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String) 值。该值可以是 `classic` 或 `module`. 如果未指定，将使用默认值 `classic.`
+
+
+
+---
+
+Failed to execute 'importScripts' on 'WorkerGlobalScope': Module scripts don't support importScripts().
+
+ type: 'module' 时 worker 里面不支持importScripts
+
+
 
 
 
