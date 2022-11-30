@@ -3360,6 +3360,26 @@ ES2019没有效果。
 
 
 
+## 类型检查
+
+[https://www.typescriptlang.org/tsconfig#noEmit](https://www.typescriptlang.org/tsconfig#noEmit)
+
+```tsx
+// package.json
+  "scripts": {
+    "types:check": "tsc --noEmit",
+  },
+```
+
+Do not emit compiler output files like JavaScript source code, source-maps or declarations.
+
+不要发出编译器输出文件，如JavaScript源代码、源映射或声明
+
+
+
+
+
+
 
 # 遇到的问题
 

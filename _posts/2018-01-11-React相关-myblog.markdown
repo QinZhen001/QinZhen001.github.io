@@ -924,6 +924,12 @@ ReactNode 是包括ReactElement 同时可以为null
 
 
 
+### ReactDOMServer
+
+[https://reactjs.org/docs/react-dom-server.html](https://reactjs.org/docs/react-dom-server.html)
+
+
+
 ## 动画
 
 
@@ -2012,12 +2018,6 @@ setState(prevState => {
 [https://reactjs.org/docs/concurrent-mode-patterns.html](https://reactjs.org/docs/concurrent-mode-patterns.html)
 
 使用 **useTransition** 时，**react** 会以 **Concurrent** 模式来协调 **fiber tree**。**Concurrent** 模式下，**协调**过程是**并行可中断**的，**渲染进程**不会长时间被阻塞，使得用户操作可以及时得到响应，极大提升了用户体验。
-
-
-
-
-
-
 
 对比**防抖 - debounce**、**节流 - throttle**，**useTransition** 有如下优势:
 
