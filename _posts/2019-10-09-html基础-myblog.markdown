@@ -356,6 +356,38 @@ CDN 虽好，但 CDN 有可能被劫持，导致下载的文件是被篡改过�
 
 
 
+## readyState
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Document/readyState](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/readyState)
+
+- `loading`（正在加载）
+
+  [`document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 仍在加载。
+
+- `interactive`（可交互）
+
+  文档已被解析，"**正在加载**"状态结束，但是诸如图像，样式表和框架之类的子资源仍在加载。
+
+- `complete`（完成）
+
+  文档和所有子资源已完成加载。表示 `load (en-US)` 状态的事件即将被触发。
+
+
+
+[readyState 用于开源库](https://www.zhangxinxu.com/wordpress/2019/10/document-readystate/)
+
+如果insert.js是一个公用组件，尤其以后会开源的那种，那势必要考虑到各种加载场景，页面的头部，页面底部，或者异步动态加载。
+
+```javascript
+if (document.readyState != 'loading') {
+    init();
+} else {
+    window.addEventListener("DOMContentLoaded", function () {
+        init();
+    });
+}
+```
+
 
 
 ## audio标签

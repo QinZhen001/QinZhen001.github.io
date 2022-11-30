@@ -2455,9 +2455,23 @@ module.exports = {
 
 
 
+### css in js
 
+[https://dev.to/srmagura/why-were-breaking-up-wiht-css-in-js-4g9b](https://dev.to/srmagura/why-were-breaking-up-wiht-css-in-js-4g9b)
 
+Good:
 
+1. Styles are locally-scoped. 样式是局部范围的。
+2. Styles are colocated with the components they apply to. 样式与其应用的组件位于同一位置。
+3. You can use JavaScript variables in styles.您可以在样式中使用 JavaScript 变量。
+
+Ugly:
+
+* **Frequently inserting CSS rules forces the browser to do a lot of extra work** **频繁插入CSS规则迫使浏览器做很多额外的工作。**
+
+* **With CSS-in-JS, there's a lot more that can go wrong, especially when using SSR and/or component libraries****使用 CSS-in-JS，还有很多可能出错的地方，尤其是在使用 SSR 和/或组件库时。
+
+  
 
 
 

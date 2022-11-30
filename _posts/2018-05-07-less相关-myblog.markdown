@@ -12,11 +12,13 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+
 [网页链接](https://www.imooc.com/wenda/detail/348038?block_id=tuijian_yw)
 
 
-### 路径问题
+
+## 路径问题
+
 Vue组件引入less文件，图片路径出现问题
 
 
@@ -37,8 +39,8 @@ header.vue使用.bg-images(@url)
 出现问题
 **.bg-image('brand')编译出来的图片的路径是less目录下**
 
+最终解决
 
-#### 最终解决
 ```
 .bg-image(@url){
  background-image:~"url(@{url}@2x.png)";
@@ -48,8 +50,8 @@ header.vue使用.bg-images(@url)
 }
 ```
 
+## LESS中关于‘~’符号的小问题
 
-### LESS中关于‘~’符号的小问题
 在.less文件中写：
 ```
 .test_03{  
@@ -80,10 +82,7 @@ header.vue使用.bg-images(@url)
 ```
 也就是说让浏览器去计算300px-30px。
 
-
-
-### less字符串拼接
-
+## less字符串拼接
 
 [网页链接](https://blog.csdn.net/butterfly5211314/article/details/72667273)
 
@@ -123,10 +122,7 @@ bg-image($url)
     background-image: url($url + "@3x.png")
 ```
 
-
-
-
-### modifyVars
+## modifyVars
 
 使用modifyVars可以在运行时修改LESS变量。当用新的变量值调用了这个函数时，LESS文件将会被重新编译，但不会被重新加载。一个基本的用法示例：
 
@@ -138,7 +134,8 @@ less.modifyVars({
 });
 ```
 
-#### webpack less-loader 的modifyVars
+### webpack less-loader 的modifyVars
+
 在module rules 中的less-loader 下配置options modifyVars。 
 实现 更改less 中的变量
 ```javascript
@@ -224,6 +221,23 @@ export default class ColorPicker extends React.Component {
 
 
 
+## Functions
+
+[https://lesscss.org/functions/](https://lesscss.org/functions/)
+
+### extract
+
+```less
+@list: apple, pear, coconut, orange;
+value: extract(@list, 3);
+
+// value: coconut;
+```
+
+
+
+
+
 ## 补充
 
 
@@ -270,6 +284,10 @@ webpack中可以通过resolve.modules字段修改模块目录。
 ```
 
 
+
+### less to css online
+
+[https://lesscss.org/less-preview/](https://lesscss.org/less-preview/)
 
 
 

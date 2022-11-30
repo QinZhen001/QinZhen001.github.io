@@ -1470,6 +1470,15 @@ logAnswer(() => Promise.resolve(42));
 
 
 
+### NonNullable
+
+[https://javascript.plainenglish.io/how-the-typescript-nonnullable-type-works-ccfd68972f02](https://javascript.plainenglish.io/how-the-typescript-nonnullable-type-works-ccfd68972f02)
+
+```tsx
+type myType = string | number | null | undefined
+type noNulls = NonNullable<myType>   // string | number
+```
+
 
 
 

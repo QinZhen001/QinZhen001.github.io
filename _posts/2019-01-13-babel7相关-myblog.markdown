@@ -291,6 +291,31 @@ classic | automatic, defaults to classic
 
 
 
+### @babel/standalone
+
+[https://babeljs.io/docs/en/babel-standalone](https://babeljs.io/docs/en/babel-standalone)
+
+@babel/standalone provides a standalone build of Babel for use in browsers and other non-Node.js environments.
+
+
+
+execute all script tags with type `text/babel` or `text/jsx`:
+
+```html
+<div id="output"></div>
+<!-- Load Babel -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Your custom script here -->
+<script type="text/babel">
+  const getMessage = () => "Hello World";
+  document.getElementById("output").innerHTML = getMessage();
+</script>
+```
+
+
+
+
+
 ### @babel/polyfill
 
 [https://mp.weixin.qq.com/s/hgiSKyFxb6RFD6n2diixvQ](https://mp.weixin.qq.com/s/hgiSKyFxb6RFD6n2diixvQ)
