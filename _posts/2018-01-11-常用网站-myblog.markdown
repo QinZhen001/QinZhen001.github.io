@@ -413,10 +413,6 @@ vue 单文件组件的编译结果
 
 
 
-
-
-
-
 ### netlify
 
 [https://www.netlify.com/](https://www.netlify.com/)
@@ -426,6 +422,20 @@ The fastest way to combine your favorite tools and APIs to build the fastest sit
 部署github上的网站 同时支持https
 
 
+
+### vercel
+
+[https://vercel.com/](https://vercel.com/)
+
+可以部署github上的页面 支持ssr方式部署  （next.js等）
+
+Vercel is the platform for frontend developers, providing the speed and reliability innovators need to create at the moment of inspiration.
+
+Vercel是面向前端开发人员的平台，提供创新者在灵感迸发时所需的速度和可靠性。
+
+We enable teams to iterate quickly and develop, preview, and ship delightful user experiences. Vercel has zero-configuration support for 35+ frontend frameworks and integrates with your headless content, commerce, or database of choice.
+
+我们使团队能够快速迭代、开发、预览和发布令人愉快的用户体验。Vercel对35个以上前端框架提供零配置支持，并与您选择的无头内容、商业或数据库集成。
 
 
 

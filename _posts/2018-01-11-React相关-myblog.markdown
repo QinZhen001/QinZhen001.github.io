@@ -901,6 +901,20 @@ ReactDOM.findDOMNode(Btn).style.color = 'red'
 
 
 
+### createPortal
+
+[https://zh-hans.reactjs.org/docs/react-dom.html#createportal](https://zh-hans.reactjs.org/docs/react-dom.html#createportal)
+
+```
+createPortal(child, container)
+```
+
+创建 portal。[Portal](https://zh-hans.reactjs.org/docs/portals.html) 提供了一种将子节点渲染到已 DOM 节点中的方式，该节点存在于 DOM 组件的层次结构之外。
+
+用处：我们渲染dialog到指定的container中
+
+
+
 ###  [ReactNode vs ReactElement](https://stackoverflow.com/questions/58123398/when-to-use-jsx-element-vs-reactnode-vs-reactelement)
 
 ```tsx
@@ -1487,6 +1501,14 @@ export default React.memo(MyComponent, areEqual);
 > useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
 
 
+
+#### useLayoutEffect
+
+[https://zhuanlan.zhihu.com/p/348701319](https://zhuanlan.zhihu.com/p/348701319)
+
+**`useLayoutEffect` 是渲染之前同步执行的，所以会等它执行完再渲染上去，就避免了闪烁现象。也就是说我们最好把操作 dom 的相关操作放到 `useLayouteEffect` 中去，避免导致闪烁。**
+
+在ssr中不要使用useLayoutEffect  （`useLayoutEffect` 是不会在服务端执行的，所以就有可能导致 ssr 渲染出来的内容和实际的首屏内容并不一致。）
 
 
 

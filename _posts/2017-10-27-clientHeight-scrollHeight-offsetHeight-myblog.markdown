@@ -43,11 +43,16 @@ scrollHeight返回元素的完整的高度，以像素为单位.
 * window.screen.width     返回当前屏幕宽度(分辨率值)  
 * window.screen.height     返回当前屏幕高度(分辨率值)  
 
+---
+
+* window.innerWidth 包括滚动条的浏览器宽度 **（浏览器对象模型）**
+* window.innerWidth 包括滚动条的浏览器高度
+
 
 ----------
 
 
-* 网页可见区域宽： document.body.clientWidth
+* 网页可见区域宽： document.body.clientWidth   (不包括滚动条)   (**文档对象模型**)
 * 网页可见区域高： document.body.clientHeight
 * 网页可见区域宽： document.body.offsetWidth (包括边线的宽)
 * 网页可见区域高： document.body.offsetHeight (包括边线的高)

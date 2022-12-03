@@ -933,3 +933,12 @@ body包含分析数据的新对象request 在中间件（即req.body）之后被
 
 该type选项用于确定中间件将解析的媒体类型。该选项可以是字符串，字符串数组或函数。如果不是函数，则将type选项直接传递到 类型库，这可以是扩展名（例如urlencoded），MIME类型（如 application/x-www-form-urlencoded）或具有通配符（如*/x-www-form-urlencoded）的MIME类型 。如果一个函数，该type选项被调用， fn(req)并且如果它返回一个真值，则该请求被解析。**默认为application/x-www-form-urlencoded。**
 
+
+
+
+
+### Connect
+
+[https://github.com/senchalabs/connect](https://github.com/senchalabs/connect)
+
+Connect is an extensible HTTP server framework for [node](http://nodejs.org/) using "plugins" known as *middleware*.
