@@ -354,6 +354,28 @@ When bundling with `target: 'node'`, the styles in all rendered components are c
 
 
 
+### babel-loader
+
+[https://webpack.js.org/loaders/babel-loader/#root](https://webpack.js.org/loaders/babel-loader/#root)
+
+To exclude `node_modules`, see the `exclude` option in the `loaders` config as documented above.
+
+babel-loader 设置 exclude：
+
+```tsx
+exclude： '/node_modules/'
+```
+
+You can also speed up babel-loader by as much as 2x by using the `cacheDirectory` option. This will cache transformations to the filesystem.
+
+cache 默认在开发环境是memory
+
+可以改 cache.type 为 'filesystem'
+
+
+
+
+
 ### postcss-loader
 [网页链接](https://www.npmjs.com/package/postcss-loader)
 
