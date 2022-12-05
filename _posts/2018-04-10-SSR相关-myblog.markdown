@@ -11,7 +11,7 @@ tags:
 
 > “Yeah It's on. ”
 
-## 正文
+
 
 [https://github.com/yacan8/blog/issues/30](https://github.com/yacan8/blog/issues/30)
 
@@ -20,9 +20,25 @@ tags:
 - 更好的 SEO，由于搜索引擎爬虫抓取工具可以直接查看完全渲染的页面。请注意，截至目前，Google 和 Bing 可以很好对同步 JavaScript 应用程序进行索引。在这里，同步是关键。如果你的应用程序初始展示 loading 菊花图，然后通过 Ajax 获取内容，抓取工具并不会等待异步完成后再行抓取页面内容。也就是说，如果 SEO 对你的站点至关重要，而你的页面又是异步获取内容，则你可能需要服务器端渲染(SSR)解决此问题。
 - 更快的内容到达时间 (time-to-content)，特别是对于缓慢的网络情况或运行缓慢的设备。无需等待所有的 JavaScript 都完成下载并执行，才显示服务器渲染的标记，所以你的用户将会更快速地看到完整渲染的页面。通常可以产生更好的用户体验，并且对于那些「内容到达时间(time-to-content) 与转化率直接相关」的应用程序而言，服务器端渲染 (SSR) 至关重要。
 
-![](https://s1.ax1x.com/2020/07/10/UMFELQ.png)
 
 
+##  React 
+
+
+
+### Suspense in ssr
+
+[New Suspense SSR Architecture in React 18](https://github.com/reactwg/react-18/discussions/37)
+
+支持在ssr下的组件的懒加载
+
+
+
+
+
+
+
+## Vue
 
 
 
@@ -46,15 +62,9 @@ tags:
 
 当编写纯客户端 (client-only) 代码时，我们习惯于每次在新的上下文中对代码进行取值。但是，Node.js 服务器是一个长期运行的进程。当我们的代码进入该进程时，它将进行一次取值并留存在内存中。这意味着如果创建一个单例对象，它将在每个传入的请求之间共享。
 
-
-
 如基本示例所示，我们**为每个请求创建一个新的根 Vue 实例**。这与每个用户在自己的浏览器中使用新应用程序的实例类似。如果我们在多个请求之间使用一个共享的实例，很容易导致交叉请求状态污染 (cross-request state pollution)。
 
-
-
 因此，我们不应该直接创建一个应用程序实例，而是应该暴露一个可以重复执行的工厂函数，为每个请求创建新的应用程序实例：
-
-
 
 ```js
 // app.js
@@ -72,15 +82,7 @@ module.exports = function createApp (context) {
 
 
 
-
-
 >同样的规则也适用于 router、store 和 event bus 实例。你不应该直接从模块导出并将其导入到应用程序中，而是需要在 `createApp` 中创建一个新的实例，并从根 Vue 实例注入。
-
-
-
-
-
-
 
 ### 数据预取存储容器 (Data Store)
 

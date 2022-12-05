@@ -372,7 +372,19 @@ regenerator-runtime是generator以及async/await的运行时依赖
 
 
 
+### @babel/register
 
+[https://www.babeljs.cn/docs/babel-register](https://www.babeljs.cn/docs/babel-register)
+
+@babel/register在底层改写了node的require方法，在代码里引入@babel/register模块后，所有通过require引入并且以.es6, .es, .jsx 和 .js为后缀名的模块都会经过babel的转译。
+
+
+
+### @babel/node
+
+[https://babeljs.io/docs/en/babel-node](https://babeljs.io/docs/en/babel-node)
+
+babel-node is a CLI that works exactly the same as the Node.js CLI, with the added benefit of compiling with Babel presets and plugins before running it.
 
 
 
