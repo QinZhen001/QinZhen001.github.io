@@ -507,6 +507,32 @@ env会取`process.env.BABEL_ENV`的值，如果这个变量没有设置，会取
 
 
 
+### loose-mode
+
+[https://2ality.com/2015/12/babel6-loose-mode.html](https://2ality.com/2015/12/babel6-loose-mode.html)
+
+Many plugins in Babel have two modes:
+
+- A normal mode follows the semantics of ECMAScript 6 as closely as possible. (正常模式尽可能地遵循ECMAScript 6的语义。)
+- A loose mode produces simpler ES5 code. (松散模式产生更简单的ES5代码。)
+
+Normally, it is recommended to not use loose mode. The pros and cons are:
+
+- Pros: The generated code is potentially faster and more compatible with older engines. It also tends to be cleaner, more “ES5-style”.  (优点:生成的代码可能更快，更兼容旧引擎。它也倾向于更干净，更es5风格。)
+- Con: You risk getting problems later on, when you switch from transpiled ES6 to native ES6. That is rarely a risk worth taking. (缺点:当你从编译的ES6切换到原生ES6时，你可能会遇到问题。这几乎是不值得冒的风险。)
+
+
+
+举个例子：
+
+normal 模式 =>  通过Object.defineProperty定义对象属性
+
+loose 模式 => 用 = 直接赋值 这种风格更像你用 ES5 手动编写代码
+
+
+
+
+
 ### Generator
 
 [https://www.jianshu.com/p/92639e681e2a](https://www.jianshu.com/p/92639e681e2a)
