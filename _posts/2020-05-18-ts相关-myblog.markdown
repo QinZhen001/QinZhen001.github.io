@@ -3398,6 +3398,32 @@ Do not emit compiler output files like JavaScript source code, source-maps or de
 
 
 
+## 设置函数身上的属性
+
+例子：
+
+```tsx
+type Plugin = {
+  (aaa: any): void
+  init: () => void
+}
+```
+
+使用：
+
+```tsx
+const test: Plugin = () => {
+  console.log('test')
+}
+test.init = () => {
+  console.log('test init')
+}
+```
+
+
+
+
+
 ## 在react中使用ts的问题
 
 

@@ -464,6 +464,14 @@ pnpm --filter <package_selector> <command>
 
 
 
+## [pnpm store directory](https://stackoverflow.com/questions/55403775/how-to-get-pnpm-store-directory)
+
+```bash
+pnpm store path
+```
+
+
+
 
 
 

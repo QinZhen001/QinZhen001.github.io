@@ -1687,15 +1687,44 @@ function Counter() {
 
 
 
+#### forwardRef
+
+React.forwardRef:
+
+`React.forwardRef` 会创建一个React组件，这个组件能够将其接受的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html) 属性转发到其组件树下的另一个组件中。这种技术并不常见，但在以下两种场景中特别有用：
+
+- [转发 refs 到 DOM 组件](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components)
+- [在高阶组件中转发 refs](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-in-higher-order-components)
+
+ `React.forwardRef` 接受渲染函数作为参数。React 将使用 `props` 和 `ref` 作为参数来调用此函数。此函数应返回 React 节点。
+
+```jsx
+const FancyButton = React.forwardRef((props, ref) => (
+  <button ref={ref} className="FancyButton">
+    {props.children}
+  </button>
+));
+
+// You can now get a ref directly to the DOM button:
+const ref = React.createRef();
+<FancyButton ref={ref}>Click me!</FancyButton>;
+```
+
+在上述的示例中，React 会将 `<FancyButton ref={ref}>` 元素的 `ref` 作为第二个参数传递给 `React.forwardRef` 函数中的渲染函数。该渲染函数会将 `ref` 传递给 `<button ref={ref}>` 元素。
+
+因此，当 React 附加了 ref 属性之后，`ref.current` 将直接指向 `<button>` DOM 元素实例。
 
 
-#### createRef,forwardRef和useRef
+
+
+
+#### createRef和useRef
+
+[精读《useRef 与 createRef 的区别》](https://juejin.cn/post/6844904079164964878)
 
 [https://zh-hans.reactjs.org/docs/react-api.html#reactcreateref](https://zh-hans.reactjs.org/docs/react-api.html#reactcreateref)
 
 `React.createRef` 创建一个能够通过 ref 属性附加到 React 元素的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html)。
-
-
 
 ```jsx
 class MyComponent extends React.Component {
@@ -1717,50 +1746,9 @@ class MyComponent extends React.Component {
 
 
 
-----
-
-
-
-React.forwardRef:
-
-`React.forwardRef` 会创建一个React组件，这个组件能够将其接受的 [ref](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html) 属性转发到其组件树下的另一个组件中。这种技术并不常见，但在以下两种场景中特别有用：
-
-- [转发 refs 到 DOM 组件](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components)
-- [在高阶组件中转发 refs](https://zh-hans.reactjs.org/docs/forwarding-refs.html#forwarding-refs-in-higher-order-components)
-
- `React.forwardRef` 接受渲染函数作为参数。React 将使用 `props` 和 `ref` 作为参数来调用此函数。此函数应返回 React 节点。
-
-
-
-```jsx
-const FancyButton = React.forwardRef((props, ref) => (
-  <button ref={ref} className="FancyButton">
-    {props.children}
-  </button>
-));
-
-// You can now get a ref directly to the DOM button:
-const ref = React.createRef();
-<FancyButton ref={ref}>Click me!</FancyButton>;
-```
-
-在上述的示例中，React 会将 `<FancyButton ref={ref}>` 元素的 `ref` 作为第二个参数传递给 `React.forwardRef` 函数中的渲染函数。该渲染函数会将 `ref` 传递给 `<button ref={ref}>` 元素。
-
-
-
-因此，当 React 附加了 ref 属性之后，`ref.current` 将直接指向 `<button>` DOM 元素实例。
-
-
-
-----
-
-
-
 useRef:
 
 `useRef` 返回一个可变的 ref 对象，其 `.current` 属性被初始化为传入的参数（`initialValue`）。返回的 ref 对象在组件的整个生命周期内保持不变。
-
-
 
 一个常见的用例便是命令式地访问子组件：
 
@@ -1779,6 +1767,28 @@ function TextInputWithFocusButton() {
   );
 }
 ```
+
+
+
+两者的区别：
+
+**createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会返回相同的引用。**
+
+**`useRef` 仅能用在 FunctionComponent，`createRef` 仅能用在 ClassComponent**
+
+> createRef  并没有 Hooks 的效果，其值会随着 FunctionComponent 重复执行而不断被初始化：
+
+
+
+#### useImperativeHandle
+
+[https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
+
+```tsx
+useImperativeHandle(ref, createHandle, [deps])
+```
+
+`useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值。在大多数情况下，应当避免使用 ref 这样的命令式代码。`useImperativeHandle` 应当与 [`forwardRef`](https://zh-hans.reactjs.org/docs/react-api.html#reactforwardref) 一起
 
 
 
@@ -2253,6 +2263,79 @@ type ElementType =
   | React.ComponentType<any>;
 
 ```
+
+
+
+
+
+
+
+### StrictMode导致组件渲染两次
+
+[https://juejin.cn/post/6858508463274885134](https://juejin.cn/post/6858508463274885134)
+
+```tsx
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
+
+`StrictMode`它帮助我们检测到渲染期生命周期的预期之外的副作用。
+
+`React.StrictMode` 不能马上检测到副作用，但是它可以通过故意调用一些关键函数两次，来帮助我们发现副作用。
+
+这个行为肯定对性能有一些影响，但我们不应该担心，因为它只在开发而不是生产环境中发生。
+
+
+
+### useEffect 陷阱
+
+[https://zhuanlan.zhihu.com/p/84697185](https://zhuanlan.zhihu.com/p/84697185)
+
+**使用useEffect，不要调用函数层次太多，代码应该一眼看清楚哪些函数和变量会被useEffect调用（被使用到的变量一定要加到deps依赖中）**。
+
+
+
+
+
+### DetailedHTMLProps
+
+[https://stackoverflow.com/questions/58418950/whats-the-difference-between-detailedhtmlprops-and-htmlattributes](https://stackoverflow.com/questions/58418950/whats-the-difference-between-detailedhtmlprops-and-htmlattributes)
+
+[https://github.com/DefinitelyTyped/DefinitelyTyped/blob/1349b640d4d07f40aa7c1c6931f18e3fbf667f3a/types/react/index.d.ts#L1342](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/1349b640d4d07f40aa7c1c6931f18e3fbf667f3a/types/react/index.d.ts#L1342)
+
+```tsx
+ type DetailedHTMLProps<E extends HTMLAttributes<T>, T> = ClassAttributes<T> & E;
+```
+
+
+
+
+
+### custom HTML attributes
+
+[https://stackoverflow.com/questions/40093655/how-do-i-add-attributes-to-existing-html-elements-in-typescript-jsx/56109822#56109822](https://stackoverflow.com/questions/40093655/how-do-i-add-attributes-to-existing-html-elements-in-typescript-jsx/56109822#56109822)
+
+
+
+React type definition file (by default - `index.d.ts` when staring with `create-react-app`) contain list of all the standard HTML elements, as well as known attributes.
+
+In order to allow custom HTML attributes, you need to define it's typing. Do that by expanding `HTMLAttributes` interface:
+
+```tsx
+declare module 'react' {
+  interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+    // extends React's HTMLAttributes
+    custom?: string;
+  }
+```
+
+
+
+
 
 
 
