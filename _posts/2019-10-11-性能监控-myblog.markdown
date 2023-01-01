@@ -231,3 +231,24 @@ overrideApp(app, ctx) => {
 装饰器模式，增强原函数
 
 ![replaceOld](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9828fb478366475eb547e7f26f15f0fd~tplv-k3u1fbpfcp-zoom-1.image)
+
+
+
+## Navigator.sendBeacon
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/sendBeacon
+
+```tsx
+const blob = new Blob([JSON.stringify(formData)], { type: 'text/plain; charset=UTF-8' });
+navigator.sendBeacon(`${this.baseUrl}${config.url || ''}`, blob);
+```
+
+[https://stackoverflow.com/questions/45274021/sendbeacon-api-not-working-temporarily-due-to-security-issue-any-workaround](https://stackoverflow.com/questions/45274021/sendbeacon-api-not-working-temporarily-due-to-security-issue-any-workaround)
+
+The only allowed values for the Content-Type header in sendBeacon now are:
+
+- application/x-www-form-urlencoded
+- multipart/form-data
+- text/plain
+
+**sendBeacon 不支持application/json**  应该是浏览器的BUG  新一点chorme应该🆗  （没试验过）

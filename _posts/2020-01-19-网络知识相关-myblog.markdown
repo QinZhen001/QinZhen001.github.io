@@ -1075,3 +1075,19 @@ http://127.0.0.1/user  PUT 修改用户信息
 http://127.0.0.1/user  DELETE 删除用户信息
 ```
 
+
+
+## CORB
+
+[https://juejin.cn/post/6844903831373889550#heading-12](https://juejin.cn/post/6844903831373889550#heading-12)
+
+Cross-Origin Read Blocking (CORB)
+
+CORB 是一种判断是否要在跨站资源数据到达页面之前阻断其到达当前站点进程中的算法，降低了敏感数据暴露的风险。 (也就是无法收到正常的response 控制台会有warnning)
+
+
+
+当跨域请求回来的数据 MIME type 同跨域标签应有的 MIME 类型不匹配时，浏览器会启动 CORB 保护数据不被泄漏，被保护的数据类型只有 `html` `xml` 和 `json`。很明显 `<script>` 和 `<img>` 等跨域标签应有的 MIME type 和 `html`、`xml`、`json` 不一样。
+
+
+
