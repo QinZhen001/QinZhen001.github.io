@@ -52,3 +52,44 @@ The inspector UI for UnoCSS. Ships with `unocss` and `@unocss/vite`.
 Visit `http://localhost:3000/__unocss` in your Vite dev server to see the inspector.
 
 就可以看到效果了 
+
+
+
+
+
+# css in js
+
+Ant Design 5.0放弃了跟随 antd 已久的 less 方案，转而拥抱 CSS-in-JS。
+
+- 更小的 BundleSize；
+- 不依赖任何插件的样式按需引入能力。
+
+## Emotion
+
+[Emotion](https://emotion.sh/docs/introduction) 
+
+Emotion is a library designed for writing css styles with JavaScript
+
+###  with react
+
+```tsx
+// .babelrc
+
+{
+  "presets": [
+    [
+      "@babel/preset-react",
+      { "runtime": "automatic", "importSource": "@emotion/react" }
+    ]
+  ],
+  "plugins": ["@emotion/babel-plugin"]
+}
+```
+
+然后组件就可以使用css props了
+
+```tsx
+const AnotherComponent = () => 
+<div css={{ textDecoration: 'underline' }}>Some text with an underline.</div>;
+```
+
