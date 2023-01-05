@@ -437,6 +437,19 @@ the program crashed with Maximum call stack size exceeded
 
 
 
+### 函数
+
+[如何给所有的async函数添加try/catch？](https://juejin.cn/post/7155434131831128094)
+
+**函数分为4种情况：函数声明 、箭头函数 、函数表达式 、函数为对象的方法**
+
+```
+FunctionDeclaration	函数声明	声明一个函数，例如 function
+FunctionExpression	函数表达式	例如const func = function () {}
+ObjectMethod	对象中定义的方法	例如 let obj = { fn () {} }
+ArrowFunctionExpression	箭头函数表达式	例如const func = ()=> {}
+```
+
 
 
 
