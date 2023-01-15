@@ -423,6 +423,22 @@ console.log('解码:', jsonwebtoken.verify(token, secret, opt))
 
 
 
+### 为什么要有refreshToken
+
+使用refreshToken可以提高安全性
+
+`accessToken`被盗取了，此时攻击者就可以拿这个`accessToke`访问权限以内的功能了。如果`accessToken`设置一个短暂的有效期2小时，攻击者能使用被盗取的`accessToken`的时间最多也就2个小时，除非再通过`refreshToken`刷新`accessToken`才能正常访问。
+
+**有了`refreshToken`可以降低`accessToken`被盗的风险**
+
+
+
+### 无感刷新TOKEN方案
+
+[无感刷新 Token](https://mp.weixin.qq.com/s/Pt3ySxBWCmNswYsKIebPgQ)
+
+在用户登录应用后，服务器会返回一组数据，其中就包含了`accessToken`和`refreshToken`，每个`accessToken`都有一个固定的有效期，如果携带一个过期的`token`向服务器请求时，服务器会返回401的状态码来告诉用户此`token`过期了，此时就需要用到登录时返回的`refreshToken`调用刷新`Token`的接口（`Refresh`）来更新下新的`token`再发送请求即可。
+
 
 
 

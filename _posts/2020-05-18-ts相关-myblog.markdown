@@ -2218,6 +2218,20 @@ export const REMOVE_TODO = 'REMOVE_TODO' as const;
 
 
 
+## 数组类型遍历
+
+```tsx
+type Keys<F> = {
+  [key in keyof F]: F[key]
+}
+
+type aaa = Keys<[1,2,3]>
+```
+
+索引类型是聚合多个元素的类型，所以对象、数组、class 都是。
+
+（准确来说叫元组，元组是元素个数固定的数组）
+
 
 
 
@@ -2907,9 +2921,15 @@ var myElem: HTMLDivElement;
 var x = fn(myElem); // x: string, :)
 ```
 
-*为什么*：TypeScript会选择*第一个匹配到的重载*当解析函数调用的时候。 当前面的重载比后面的“普通”，那么后面的被隐藏了不会被调用。
+***为什么*：TypeScript会选择*第一个匹配到的重载*当解析函数调用的时候。 当前面的重载比后面的“普通”，那么后面的被隐藏了不会被调用。**
 
 
+
+另外加上 as const 会推导出 readonly
+
+另外加上 as const 会推导出 readonly
+
+另外加上 as const 会推导出 readonly
 
 
 
