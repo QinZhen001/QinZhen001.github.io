@@ -2218,22 +2218,6 @@ export const REMOVE_TODO = 'REMOVE_TODO' as const;
 
 
 
-## 数组类型遍历
-
-```tsx
-type Keys<F> = {
-  [key in keyof F]: F[key]
-}
-
-type aaa = Keys<[1,2,3]>
-```
-
-索引类型是聚合多个元素的类型，所以对象、数组、class 都是。
-
-（准确来说叫元组，元组是元素个数固定的数组）
-
-
-
 
 
 ## 类型编程
@@ -2889,6 +2873,88 @@ const data:Dictionary<number> = {
 
 
 
+
+
+
+## 数组类型遍历
+
+```tsx
+type Keys<F> = {
+  [key in keyof F]: F[key]
+}
+
+type aaa = Keys<[1,2,3]>
+```
+
+索引类型是聚合多个元素的类型，所以对象、数组、class 都是。
+
+（准确来说叫元组，元组是元素个数固定的数组）
+
+
+
+## 区分的联合类型
+
+```tsx
+type Shape = {
+  kind: 'circle' | 'rect';
+  radius?: number;
+  width?: number;
+  height?: number;
+}
+```
+
+因为 `kind` 与其他字段之间没有建立关系。相反，区分联合是一个更好的解决方案：
+
+```tsx
+type Circle = { kind: 'circle'; radius: number };
+type Rect = { kind: 'rect'; width: number; height: number };
+type Shape = Circle | Rect;
+```
+
+
+
+## 类型谓词来避免类型断言
+
+如果你正确使用 TypeScript，你应该很少会发现自己使用显式类型断言（例如 `value as SomeType`）
+
+```tsx
+type Circle = { kind: 'circle'; radius: number };
+type Rect = { kind: 'rect'; width: number; height: number };
+type Shape = Circle | Rect;
+
+function isCircle(shape: Shape) {
+  return shape.kind === 'circle';
+}
+
+function isRect(shape: Shape) {
+  return shape.kind === 'rect';
+}
+
+const myShapes: Shape[] = getShapes();
+// 错误，因为typescript不知道过滤的方式
+const circles: Circle[] = myShapes.filter(isCircle);
+
+// 你可能倾向于添加一个断言
+// const circles = myShapes.filter(isCircle) as Circle[];
+
+```
+
+一个更优雅的解决方案是将`isCircle`和`isRect`改为返回类型谓词，这样它们可以帮助Typescript在调用 `filter` 后进一步缩小类型。
+
+```tsx
+function isCircle(shape: Shape): shape is Circle {
+    return shape.kind === 'circle';
+}
+
+function isRect(shape: Shape): shape is Rect {
+    return shape.kind === 'rect';
+}
+
+...
+// now you get Circle[] type inferred correctly
+const circles = myShapes.filter(isCircle);
+
+```
 
 
 
