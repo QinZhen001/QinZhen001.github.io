@@ -15,13 +15,7 @@ tags:
 
 
 
-
-
-## 组件
-
-
-
-### BrowserRouter
+## BrowserRouter
 
 一个使用了 HTML5 history API 的高阶路由组件，保证你的 UI 界面和 URL 保持同步。此组件拥有以下属性：
 
@@ -56,6 +50,31 @@ const supportsHistory = 'pushState' in window.history
 **children: node**
 作用：渲染唯一子元素。
 使用场景：作为一个 React组件，天生自带 children 属性。
+
+
+
+## Link
+
+[https://stackoverflow.com/questions/42914666/react-router-external-link](https://stackoverflow.com/questions/42914666/react-router-external-link)
+
+With Link component of react-router you can do that. In the "**to**" prop you can specify 3 types of data:
+
+- **a string**: A string representation of the Link location, created by concatenating the location’s pathname, search, and hash properties.
+
+- an object
+
+  : An object that can have any of the following properties:
+
+  - **pathname**: A string representing the path to link to.
+  - **search**: A string representation of query parameters.
+  - **hash**: A hash to put in the URL, e.g. #a-hash.
+  - **state**: State to persist to the location.
+
+- **a function**: A function to which current location is passed as an argument and which should return location representation as a string or as an object
+
+
+
+
 
 ## Route
 
