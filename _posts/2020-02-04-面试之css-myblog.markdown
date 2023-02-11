@@ -746,10 +746,12 @@ float、clear 和 vertical-align
 
 **浏览器什么时候会创建一个独立的复合图层呢？事实上一般是在以下几种情况下：**
 
-- 3D或者CSS transform
+- 3D
 - `<video>`和`<canvas>`标签
 - `css filters(滤镜效果)`
 - 元素覆盖时，比如使用了z-index属性
+- 对 opacity、transform、fliter、backdropfilter 应用了 animation 或者 transition
+- 设置will-change
 
 
 

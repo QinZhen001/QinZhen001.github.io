@@ -16,6 +16,10 @@ tags:
 
 # 前序
 
+[自己写的vue3基本使用](https://github.com/QinZhen001/test/tree/vue3)
+
+[vue api 查询 https://vuejs.org/api/](https://vuejs.org/api/)
+
 
 
 ## Reflect 
@@ -375,6 +379,29 @@ export const mutableHandlers: ProxyHandler<object> = {
 [https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension](https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension)
 
 在 Vue 2 中 `$emit` 方法是 `Vue.prototype` 对象上的属性，而 Vue 3 上的 `$emit` 是组件实例上的一个属性，`instance.emit = emit.bind(null, instance)`。
+
+
+
+
+
+### watch vs watchEffect
+
+[https://www.thisdot.co/blog/vue-3-composition-api-watch-and-watcheffect](https://www.thisdot.co/blog/vue-3-composition-api-watch-and-watcheffect)
+
+
+
+
+
+###  ref vs reactive
+
+[ref vs reactive](https://stackoverflow.com/questions/61452458/ref-vs-reactive-in-vue-3)
+
+- `reactive()` only takes objects, **NOT** JS primitives *(String, Boolean, Number, BigInt, Symbol, null, undefined)*
+- `ref()` is calling `reactive()` behind the scenes
+- Since `reactive()` works for objects and `ref()` calls `reactive()`, objects work for both
+- BUT, `ref()` has a `.value` property for reassigning, `reactive()` does not have this and therefore CANNOT be reassigned
+
+
 
 
 

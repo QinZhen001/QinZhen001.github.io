@@ -349,9 +349,17 @@ function Profile() {
 
 ## react-router 还是 react-router-dom？
 
+[https://www.syncfusion.com/blogs/post/react-router-vs-react-router-dom.aspx](https://www.syncfusion.com/blogs/post/react-router-vs-react-router-dom.aspx)
+
 在 React 的使用中，我们一般要引入两个包，react 和 react-dom，那么 react-router 和 react-router-dom 是不是两个都要引用呢？
 非也，坑就在这里。他们两个只要引用一个就行了，不同之处就是后者比前者多出了 `<Link>` `<BrowserRouter>` 这样的 DOM 类组件。
 因此我们**只需引用 react-router-dom 这个包**就行了。当然，如果搭配 redux ，你还需要使用 react-router-redux。
+
+
+
+如果你只开发一个web应用，使用react-router-dom就足够了。
+
+If you are working on a web application, the better option is to use **react-router-dom**, because it contains all the necessary common components and features essential for routing in a web application. **react-router-dom** installs **react-router** as a dependency, so there is no need to re-install and import anything directly from the **react-router**.
 
 
 

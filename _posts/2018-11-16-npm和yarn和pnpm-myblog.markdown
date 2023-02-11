@@ -48,11 +48,25 @@ $ npm run lint --  --reporter checkstyle > checkstyle.xml
 
 
 
+## npm unpublish
 
+[https://docs.npmjs.com/unpublishing-packages-from-the-registry](https://docs.npmjs.com/unpublishing-packages-from-the-registry)
 
-## 撤销已经发布的包
+撤销已经发布的包
 
+```bash
 npm unpublish 包名 --force
+```
+
+
+
+Unpublishing a single version
+
+```bash
+npm unpublish <package-name>@<version>
+```
+
+
 
 
 
@@ -428,6 +442,10 @@ package.json:
 
 [https://www.pnpm.cn/](https://www.pnpm.cn/)
 
+节约磁盘空间并提升安装速度
+
+[平铺的结构不是 node_modules 的唯一实现方式](https://pnpm.io/zh/blog/2020/05/27/flat-node-modules-is-not-the-only-way)
+
 
 
 ## filter
@@ -464,13 +482,43 @@ pnpm --filter <package_selector> <command>
 
 
 
-## [pnpm store directory](https://stackoverflow.com/questions/55403775/how-to-get-pnpm-store-directory)
+## [store directory](https://stackoverflow.com/questions/55403775/how-to-get-pnpm-store-directory)
 
 ```bash
 pnpm store path
 ```
 
 
+
+## shamefully-hoist
+
+[https://pnpm.io/zh/blog/2020/10/17/node-modules-configuration-options-with-pnpm](https://pnpm.io/zh/blog/2020/10/17/node-modules-configuration-options-with-pnpm)
+
+即使使用pnpm的默认配置，某些工具也可能无法工作，默认配置下所有内容都悬挂在虚拟存储的根目录中，而某些软件包则悬挂在根目录中。 在这种情况下，您可以将所有内容或部分依赖关系提升到modules目录的根目录。
+
+要将所有内容提升到node_modules的根目录：
+
+```ini
+shamefully-hoist=true
+```
+
+按匹配规则提升:
+
+```ini
+public-hoist-pattern[]=babel-*
+```
+
+
+
+
+
+## patch
+
+[https://pnpm.io/zh/cli/patch](https://pnpm.io/zh/cli/patch)
+
+给软件包添加补丁
+
+该命令会将指定的软件包提取到一个可以随意编辑的临时目录中。
 
 
 
