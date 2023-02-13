@@ -1721,6 +1721,8 @@ Webpack 5将会在使用[contenthash]的时候使用一个真正的文件内容�
 
 ### Module Federation（模块联合）
 
+[https://webpack.docschina.org/concepts/module-federation/](https://webpack.docschina.org/concepts/module-federation/)
+
 Webpack 5 adds a new feature called "Module Federation", which allows multiple webpack builds to work together. From runtime perspective modules from multiple builds will behave like a huge connected module graph. From developer perspective modules can be imported from specified remote builds and used with minimal restrictions.
 
 Webpack 5增加了一个名为“模块联合”的新特性，它允许多个Webpack构建一起工作。从运行时的角度来看，来自多个构建的模块将表现为一个巨大的连接模块图。从开发人员的角度来看，可以从指定的远程构建中导入模块，并以最小的限制使用它们。
@@ -1740,6 +1742,18 @@ webpack 5引入联邦模式是为了**更好的共享代码**。 在此之前，
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f716494c298941e5bcb4874256d83dba~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
 
 
+
+#### 原理
+
+[https://juejin.cn/post/6963326546606030856#heading-7](https://juejin.cn/post/6963326546606030856#heading-7)
+
+[https://github.com/Vincent0700/learning-webpack/blob/master/docs/Webpack%E6%A8%A1%E5%9D%97%E8%81%94%E9%82%A6%E5%8E%9F%E7%90%86.md](https://github.com/Vincent0700/learning-webpack/blob/master/docs/Webpack%E6%A8%A1%E5%9D%97%E8%81%94%E9%82%A6%E5%8E%9F%E7%90%86.md)
+
+下载并执行 `remoteEntry.js`，挂载入口点对象到 `window.app1`，他有两个函数属性，`init` 和 `get`。`init` 方法用于初始化作用域对象 initScope，`get` 方法用于下载 `moduleMap` 中导出的远程模块。
+
+用户 `import` 远程模块时调用 `app1.get(moduleName)` 通过 `Jsonp` 懒加载远程模块，然后缓存在全局对象 window['webpackChunk' + appName]
+
+通过 **webpack_require** 读取缓存中的模块，执行用户回调
 
 
 
@@ -2015,7 +2029,11 @@ function reloadApp() {
 2. 将 modules 传入一个自执行函数中，自执行函数中包含一个 installedModules 已经加载过的模块和一个模块加载函数，最后加载入口模块并返回。
 3. *__webpack_require__* 模块加载，先判断 installedModules 是否已加载，加载过了就直接返回 exports 数据，没有加载过该模块就通过 *modules[moduleId].call(module.exports, module, module.exports, __webpack_require__)* 执行模块并且将 module.exports 给返回。
 
-## webpack是如何实现动态导入的
+
+
+
+
+## 异步模块原理  (动态导入)
 
 [https://juejin.im/post/6844903888319954952](https://juejin.im/post/6844903888319954952)
 

@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "react路由相关"
+title:      "react-router相关"
 date:       2018-01-15 13:00:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

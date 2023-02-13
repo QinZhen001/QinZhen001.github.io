@@ -110,15 +110,140 @@ async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但a
 
 ---
 
-手写题：
+#### 手写题
 
+```
 实现一个Promise.all()
+tip: 考虑arr里面非Promise的情况
+```
 
-//tip: 考虑arr里面非Promise的情况
-
-
-
+```
 a[s6[sd]cd21[ere]]  => 展开
+```
+
+
+
+算法题目最重要的思路，要考虑边界，要覆盖所有case，其次才是bug free（这个不一定要做到）
+
+```tsx
+function myPromiseAll(fns = []) {
+  if (fns.length == 0) {
+    // tip: 空数组直接返回
+    return Promise.resolve(fns);
+  }
+  let result = [];
+  let count = 0;
+  return new Promise((resolve, reject) => {
+    fns.forEach((item, index) => {
+      if (!(item instanceof Promise)) {
+        // tip: 转Promise
+        item = Promise.resolve(item);
+      }
+      item.then(
+        (res) => {
+          result[index] = res;
+          count++;
+          if (count == fns.length) {
+            return resolve(result);
+          }
+        },
+        (rej) => {
+          return reject(rej);
+        }
+      );
+    });
+  });
+}
+```
+
+
+
+
+
+#### Proxy 缺点
+
+[https://juejin.cn/post/6844903790739456013#heading-1](https://juejin.cn/post/6844903790739456013#heading-1)
+
+虽然 Proxy 可以代理针对目标对象的访问，但它不是目标对象的透明代理，即不做任何拦截的情况下，也无法保证与目标对象的行为一致
+
+* 兼容性问题，而且无法用polyfill实现
+
+* this 指向的问题。在 Proxy 代理的情况下，目标对象内部的`this`关键字会指向 Proxy 代理。
+
+  
+
+  
+
+
+
+
+
+#### cookie 跨域
+
+**cookie 可以跨越一个域名下的多个网页，但不能跨越多个域名使用**
+
+
+
+domain 属性指定浏览器发出 HTTP 请求时，哪些域名要附带这个 Cookie。
+
+可以设置 domain 为当前服务器域名或者父域名。如果未设置，则该 Cookie 值只能在发向该域名的请求时被携带。如果设置了 domain，则发向该域以及子域的请求都会带上该 Cookie。
+
+
+
+在发送跨域 AJAX 请求时，Cookie 默认不会被发送。如果需要允许跨域请求携带 Cookie ，需要在发起请求的时候设置 withCredentials 请求头
+
+跨域情况下的set-cookie：
+
+1. 前端设置with-credentials:true，后端即使不设置CORS头也可set-cookie成功
+2. 前端不设置with-credentials或者false，set-cookie响应头会被直接忽略
+
+**为 Cookie 服务的 HTTP 首部字段：**
+
+```
+HTTP/1.1 200 OK
+...
+Set-Cookie: name=LvLin;domain=github.com;path=/blog
+Set-Cookie: id=test123;
+```
+
+
+
+
+
+#### redux 和 mobx 的差异
+
+[https://juejin.cn/post/7087338460129787941](https://juejin.cn/post/7087338460129787941)
+
+redux：
+
+* 函数式编程，使用了**纯函数**，无副作用
+* 数据不可变   （Redux Starter Kit 解决数据嵌套层级过多问题）
+* 数据保存在一个全局的store中
+* **行为稳定可预测**，**易于测试**
+
+mobx：
+
+* 面向对象编程，可以直接赋值更新状态对象，简单直接
+* 存在Derivations(派生）  
+* 数据可变，state 用的是“响应式”数据
+* 按模块将应用状态划分，在多个独立的store中管理
+
+
+
+
+
+Derivations(派生)：
+
+* *Reactions*, 当 State 改变时需要自动运行的副作用
+* *Computed values*,总是可以通过纯函数从当前的可观测 State 中派生。
+
+
+
+#### JSONP 的局限性
+
+* 仅支持get请求；
+* 具有局限性，不安全，可能会受到XSS攻击
+* 只支持跨域 HTTP 请求这种情况，不能解决不同域的两个页面之间如何进行 调用的问题。
 
 
 
@@ -164,41 +289,6 @@ Object.defineProperty(PopupManager, 'zIndex', {
 
 
 
-
-
-
-算法题目最重要的思路，要考虑边界，要覆盖所有case，其次才是bug free（这个不一定要做到）
-
-```tsx
-function myPromiseAll(fns = []) {
-  if (fns.length == 0) {
-    // tip: 空数组直接返回
-    return Promise.resolve(fns);
-  }
-  let result = [];
-  let count = 0;
-  return new Promise((resolve, reject) => {
-    fns.forEach((item, index) => {
-      if (!(item instanceof Promise)) {
-        // tip: 转Promise
-        item = Promise.resolve(item);
-      }
-      item.then(
-        (res) => {
-          result[index] = res;
-          count++;
-          if (count == fns.length) {
-            return resolve(result);
-          }
-        },
-        (rej) => {
-          return reject(rej);
-        }
-      );
-    });
-  });
-}
-```
 
 
 
@@ -3307,23 +3397,9 @@ const obj = {
 (教育 会议 音视频场景)
 
 * 基本上都是根据项目经历来问。
-* electorn用的有多深？有没有遇见什么坑？electorn多窗口使用过没？
+* electorn用的有多深？有没有遇见什么坑？**electorn多窗口使用过没？**
 * pnpm 对比 lerna 的优势在哪？（节约磁盘空间并提升安装速度）
 * cdn直播首帧太慢怎么解决？ 融合 CDN方案。  （节点快切换-节点慢恢复-节点评分一体化的调度体系）
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

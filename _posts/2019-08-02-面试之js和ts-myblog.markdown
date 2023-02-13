@@ -4929,13 +4929,13 @@ var B = /*#__PURE__*/ (function (_A) {
 ```js
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const subFlow = createFlow([() => delay(1000).then(() => log("c"))]);
+const subFlow = createFlow([() => delay(1000).then(() => console.log("c"))]);
 
 createFlow([
-  () => log("a"),
-  () => log("b"),
+  () => console.log("a"),
+  () => console.log("b"),
   subFlow,
-  [() => delay(1000).then(() => log("d")), () => log("e")],
+  [() => delay(1000).then(() => console.log("d")), () => console.log("e")],
 ]).run(() => {
   console.log("done");
 });
