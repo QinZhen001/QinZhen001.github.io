@@ -399,4 +399,12 @@ function App() {
 }
 ```
 
-Ï
+
+
+# 问题
+
+
+
+## location.hash after 6.7.0
+
+[https://github.com/remix-run/react-router/discussions/9973](https://github.com/remix-run/react-router/discussions/9973)

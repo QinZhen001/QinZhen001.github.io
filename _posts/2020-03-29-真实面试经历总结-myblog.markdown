@@ -3403,6 +3403,147 @@ const obj = {
 
 
 
+### 二面
+
+* 根据项目经历来问
+* 说一下你设计的插件机制
+* electorn视频渲染
+* 小程序采集音视频推流
+* 做过哪些有挑战性的事情
+* 做过哪些性能优化的东西
+
+
+
+#### 手写题
+
+```
+/**
+实现洗牌算法函数shuffle，给定一个数组[0,1,2,3,4,5,6]，每次随机抽选数组的n个值，连续抽选不重复已经抽选的值，直到数组抽完，再进行下一轮循环。
+
+示例1：
+var random = shuffle([0,1,2,3,4,5,6]);
+random(1); // [1]
+random(1); // [0]
+random(1); // [2]
+random(1); // [3]
+random(1); // [5]
+random(1); // [4]
+random(1); // [6]
+random(1); // [3]
+
+示例2：
+var random = shuffle([0,1,2,3,4,5,6]);
+random(1); // [1]
+random(2); // [0,6]
+random(1); // [2]
+random(4); // [3,4,5,2]
+**/
+
+```
+
+解决：
+
+```tsx
+const shuffle = (arr = []) => {
+  // 避免修改原数组
+  let copyArr = arr.slice(0)
+  return (num = 1) => {
+    let result = []
+    for (let i = 0;i < num;i++) {
+      // 随机数
+      let random = Math.floor(Math.random() * copyArr.length)
+      // 从数组中取出随机数对应的值
+      let value = copyArr.splice(random, 1)[0]
+      // 如果数组为空，就重置数组
+      if (copyArr.length === 0) {
+        copyArr = arr.slice(0)
+      }
+      result.push(value)
+    }
+    return result
+  }
+}
+```
+
+---
+
+
+
+```tsx
+var data = [
+  {
+    parentId: 0,
+    id: 1,
+    value: '1'
+  },
+  {
+    parentId: 3,
+    id: 2,
+    value: '2'
+  },
+  {
+    parentId: 0,
+    id: 3,
+    value: '3'
+  },
+  {
+    parentId: 1,
+    id: 4,
+    value: '4'
+  },
+  {
+    parentId: 1,
+    id: 5,
+    value: '5'
+  },
+  {
+    parentId: null,
+    id: 0,
+    value: 'root'
+  },
+];
+
+// 请完成toTree函数将该数据整理为树状结构, 该树每个节点的结构如下,
+// node: Node = {
+//     children: Node[],
+//     parentId,
+//     id,
+//     value,
+// }
+```
+
+解决：
+
+```ts
+const toTree = (data = []) => {
+  // 先建立一个map 这样查找效率就是O(1)
+  let map = new Map();
+  for (let i = 0;i < data.length;i++) {
+    map.set(data[i].id, data[i])
+  }
+
+  // 建立 children 关系
+  for (let i = 0;i < data.length;i++) {
+    const curNode = data[i];
+    if (curNode.parentId != null) {
+      const node =  map.get(curNode.parentId)
+      if (node.children) {
+        node.children.push(curNode)
+      } else {
+        node.children = [curNode]
+      }
+    }
+  }
+
+  // 返回根节点
+  return map.get(0)
+}
+```
+
+
+
+
+
 
 
 

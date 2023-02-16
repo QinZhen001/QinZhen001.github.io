@@ -1627,9 +1627,25 @@ Vary: User-Agent
 
 
 
+## webscoket的连接原理
+
+[https://juejin.cn/post/7086021621542027271](https://juejin.cn/post/7086021621542027271)
+
+> WebSocket 是基于 TCP 的一种新的应用层网络协议。它实现了浏览器与服务器全双工通信，即允许服务器主动发送信息给客户端。因此，在 WebSocket 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输，客户端和服务器之间的数据交换变得更加简单
+
+**应用层协议、基于 TCP、全双工通信、一次握手、持久连接、双向数据传输**
 
 
 
+WebSocket是基于TCP的，TCP的握手和WebSocket的握手是不同层次的。
+
+TCP的握手用来保证链接的建立，WebSocket的握手是在TCP链接建立后告诉服务器这是个WebSocket链接，服务器你要按WebSocket的协议来处理这个TCP链接。
+
+
+
+**如何建立连接？**
+
+在 WebSocket 开始通信之前，通信双方需要先进行握手，`WebSocket 复用了 HTTP 的握手通道`，即客户端通过 HTTP 请求与 WebSocket 服务端协商升级协议。协议升级完成后，后续的数据交换则遵照 WebSocket 的协议。
 
 
 

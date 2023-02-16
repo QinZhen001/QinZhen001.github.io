@@ -616,6 +616,14 @@ When started with the `--inspect` switch, a Node.js process listens for a debugg
 
 
 
+### libuv
+
+[https://luohaha.github.io/Chinese-uvbook/source/introduction.html](https://luohaha.github.io/Chinese-uvbook/source/introduction.html)
+
+libuv是一个高性能的，事件驱动的I/O库，并且提供了跨平台（如windows, linux）的API。
+
+
+
 
 
 
@@ -875,6 +883,24 @@ kill xxx
 fs.statSync("./reports").isDirectory();
 
 ```
+
+
+
+
+
+### PM2
+
+[https://hkc452.github.io/patronum-pm2/#/?id=patronum-pm2](https://hkc452.github.io/patronum-pm2/#/?id=patronum-pm2)
+
+PM2的原理，用一句话来概括，就是我们通过rpc跟守护进程通信,让守护进程帮我们去创建、销毁、重启进程
+
+
+
+
+
+#### [如何和守护进程通信](https://hkc452.github.io/patronum-pm2/#/pm2/导言?id=如何和守护进程通信)
+
+[https://hkc452.github.io/patronum-pm2/#/pm2/%E5%AF%BC%E8%A8%80?id=pm2-%e6%98%af%e6%80%8e%e4%b9%88%e5%81%9a%e7%9a%84](https://hkc452.github.io/patronum-pm2/#/pm2/%E5%AF%BC%E8%A8%80?id=pm2-%e6%98%af%e6%80%8e%e4%b9%88%e5%81%9a%e7%9a%84)
 
 
 
