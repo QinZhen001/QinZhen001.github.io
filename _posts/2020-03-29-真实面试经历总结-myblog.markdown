@@ -407,13 +407,34 @@ function retry(fn, num, interval) {
 * ts编译。tsc 和 babel结合ts-loader 的区别？
 * koa洋葱模型中间件机制怎么实现的？
 * 讲一下浏览器的事件循环？node事件循环和浏览器事件循环是否一样？
+* 说一下你实现的插件机制？有没有了解过依赖反转IOC方式去实现插件？
 
-手写题
+
+
+手写题：
 
 找到数组中连续的子数组使得其值最大，输出最大值
 
 [1,2,5,-7,8] => 9
 ```tsx
+function findMax(arr = []) {
+  if (!arr.length) {
+    return 0
+  }
+
+  let dp = new Array(arr.length).fill(0)
+  // dp[i] 表示以 arr[i] 结尾的最大子序列和
+  dp[0] = arr[0]
+  for (let i = 1;i < arr.length;i++) {
+    dp[i] = dp[i - 1] > 0 ? dp[i - 1] + arr[i] : arr[i]
+  }
+
+  let max = dp[0]
+  for (let i = 1;i < dp.length;i++) {
+    max = Math.max(max, dp[i])
+  }
+  return max
+}
 ```
 
 
