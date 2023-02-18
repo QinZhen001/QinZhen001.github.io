@@ -495,8 +495,6 @@ function isSameIsland(grid, row1, col1, row2, col2) {
 }
 
 function dfs(grid, cur, target, marked) {
-  // console.log(cur, marked)
-  // debugger
   if (!grid[cur[0]][cur[1]]) {
     // 不是岛屿
     return false
@@ -543,7 +541,7 @@ console.log(res2)
 
 ```
 
-
+tip: 也可以不用flag  dfs返回true 就是最终的true
 
 ----
 
@@ -3241,13 +3239,39 @@ str1[i]!=str2[j]则`dp[i][j]=0`
 * 数组循环的方法  （基础for，for...of，forEach） =>  for...of可以遍历对象吗？ **（不可以 内含iterator的才可以 这里答错了）** =》 哪一个循环的方式性能最好 （基础for循序） =>  为什么呢？
 * forEach 为什么性能差？ =>  forEach 算函数式编程吗 =>  说一下对函数式编程的理解
 * css 动画 和 js动画的区别 => js动画采用setInterval实现，同时去改变data，动画会卡吗？为什么？（会 先执行同步任务在进行异步任务）=> css 动画中同时去改变data，动画会卡吗？（不会）
-* 重排和重绘的区别 => transform 会导致重排和重绘吗
+* 重排和重绘的区别 =>  transform 会导致重排和重绘吗  =>  (不会)  transform 形成合成层，直接在非主线程中执行合成动画操作,交由 GPU 合成，比 CPU 处理要快。  =>  提升合成层的最好方式是使用 CSS 的 will-change 属性
 
 * 同时setState两次会怎么样 =>  **为什么setTimeout中的 setState 没办法合并**
 * 如何实现connect  (react-redux)
 * react 的 useRef，ref 有什么作用  （拿到dom节点， 回调 Refs更精细地控制何时 refs 被设置和解除 ，拿到子组件的dom节点）
 
 [回调 Refs](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html#callback-refs)
+
+
+
+
+
+#### 实现connect （react-redux）
+
+[https://juejin.cn/post/6844903505191239694](https://juejin.cn/post/6844903505191239694)
+
+connect是一个高阶函数，首先传入mapStateToProps、mapDispatchToProps，然后返回一个生产Component的函数(wrapWithConnect)，然后再将真正的Component作为参数传入wrapWithConnect，这样就生产出一个经过包裹的Connect组件
+
+
+
+
+
+
+
+#### setTimeout 结合  setState
+
+[https://segmentfault.com/q/1010000015805834](https://segmentfault.com/q/1010000015805834)
+
+为什么setTimeout中的 setState 没办法合并？ （在新版本的react已经可以合并了）
+
+`setState`的“异步”并不是说内部由异步代码实现，其实本身执行的过程和代码都是同步的，只是合成事件和钩子函数的调用顺序在更新之前，导致在合成事件和钩子函数中没法立马拿到更新后的值，形式了所谓的“异步”，当然可以通过第二个参数 `setState(partialState, callback)` 中的`callback`拿到更新后的结果。
+
+
 
 手写题两道：
 
@@ -3361,7 +3385,11 @@ generatorToAsync这个函数，这是babel编译async函数的核心，当然在
 
 `yield`表达式本身没有返回值，或者说总是返回`undefined`。`next`方法可以带一个参数，该参数就会被当作上一个`yield`表达式的返回值。
 
-#### JS 各种循环性能对比
+
+
+
+
+#### 循环性能对比
 
 [JS 各种循环性能对比](https://segmentfault.com/a/1190000023046119)
 
@@ -3409,6 +3437,8 @@ const obj = {
 - NodeList 对象
 
 **tip：Object 不能被 for..of 遍历**
+
+
 
 #### css动画和js动画区别
 
@@ -3924,7 +3954,7 @@ hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情
 
 
 
-## 2020年
+## 2020
 
 2020是非常艰难的一年，受疫情影响，很多中小型公司倒闭，很多人二月份只有几天的工资。
 
@@ -3940,7 +3970,7 @@ hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情
 
 
 
-## 2021年
+## 2021
 
 > 2021.2.22
 
@@ -3962,11 +3992,15 @@ hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情
 
 
 
-## 2022年
+## 2022
 
 疫情的影响，上海封城两个多月，国内经济大环境太差，大厂纷纷裁员。
 
 面试情况：字节面试通过但hr面试后offer审批没有下来，外企基本都需要英语口语交流能力（挂在了英语方面，以后得加强英语学习），币圈拿了币安的offer但最终拒绝了（需要出国迪拜家里人不同意，怕安全问题）
 
 遂最终选择继续苟在声网
+
+
+
+## 2023
 
