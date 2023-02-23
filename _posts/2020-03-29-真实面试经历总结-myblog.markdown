@@ -408,6 +408,8 @@ function retry(fn, num, interval) {
 * koa洋葱模型中间件机制怎么实现的？
 * 讲一下浏览器的事件循环？node事件循环和浏览器事件循环是否一样？
 * 说一下你实现的插件机制？有没有了解过依赖反转IOC方式去实现插件？
+* class命名冲突怎么解决？css样式隔离怎么做？
+* 暗夜模式怎么实现的？怎么实现多主题切换？
 
 
 
@@ -436,6 +438,90 @@ function findMax(arr = []) {
   return max
 }
 ```
+
+
+
+### 抖音二面
+
+* react 的diff算法具体讲一讲？（单节点 和 多节点的diff）   （同级的`Fiber节点`是由`sibling`指针链接形成，无法使用**双指针**优化） （Diff算法的整体逻辑会经历两轮遍历：第一轮遍历：处理更新的节点。第二轮遍历：处理剩下的不属于更新的节点。)
+* diff时间复杂度？O(n)
+* 讲一下react的fiber架构？
+* 讲一下https 三次握手？什么时候对称加密 什么时候 非对称加密
+* redux 和 mobx 的差别
+* 如何实现一个低代码平台？（拖拽组件...）
+* 低代码平台有哪些难点？（协议的制定）
+* 你做过项目中的一些难点。
+
+手写题：
+
+* 之字型打印二叉树
+
+* 异步输出题？ process.nextTrick 怎么实现的
+
+  
+
+```tsx
+function printf(node) {
+  let res = []
+  let queue = []
+  queue.push(node)
+
+  while (queue.length) {
+    let curArr = []
+    let curLen = queue.length
+    for (let i = 0;i < curLen;i++) {
+      let cur = queue.shift()
+      curArr.push(cur.val)
+      if (cur.left) queue.push(cur.left)
+      if (cur.right) queue.push(cur.right)
+    }
+    res.push(curArr)
+  }
+
+  for (let i = 0;i < res.length;i++) {
+    if (i % 2 == 1) {
+      res[i] = res[i].reverse()
+    }
+  }
+
+  return res.flat()
+}
+```
+
+测试：
+
+```tsx
+//   1
+//   /\
+//  2  3
+//  /\ /\
+// 4 5 6 7
+//
+// [1,3,2,4,5,6,7] 
+
+
+class TreeNode {
+  constructor(val) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+const node = new TreeNode(1)
+node.left = new TreeNode(2)
+node.right = new TreeNode(3)
+node.left.left = new TreeNode(4)
+node.left.right = new TreeNode(5)
+node.right.left = new TreeNode(6)
+node.right.right = new TreeNode(7)
+
+
+const res = printf(node)
+console.log(res)
+```
+
+
 
 
 
@@ -3901,7 +3987,22 @@ console.log(res);
 
 
 
+## 虎牙
 
+
+
+### 一面
+
+* 对web rtc
+* 简历项目问问
+* babel插件相关？
+* dfs 和 bfs 的区别？
+* 两个不同内网的ip怎么进行P2P连接？TURN协议相关
+* 其他
+
+算法：
+
+一个字符串，将里面的小写字母转为大写字母，将里面大写字母转为小写字母
 
 
 
