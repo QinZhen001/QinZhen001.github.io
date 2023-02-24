@@ -88,9 +88,15 @@ a[class~="logo"] {
 
 
 
+#### 逻辑选择器
 
+is、where、not、has
 
+`:is()` 的优先级是由它的选择器列表中优先级最高的选择器决定的
 
+从语法上，`:is` 和 `:where` 是一模一样的。它们的核心区别点在于 **优先级**。
+
+`:where()` 的优先级**总是为 0** ，但是 `:is()` 的优先级是由它的选择器列表中优先级最高的选择器决定的。
 
 
 
@@ -2474,6 +2480,20 @@ Ugly:
   
 
 
+
+
+
+## 兼容性
+
+
+
+### where
+
+https://caniuse.com/?search=where
+
+where 在某些android的微信浏览器会有兼容性问题。
+
+[anti design 样式兼容](https://ant-design.antgroup.com/docs/react/compatible-style-cn)
 
 
 
