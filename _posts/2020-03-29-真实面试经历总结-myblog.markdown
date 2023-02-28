@@ -441,6 +441,48 @@ function findMax(arr = []) {
 
 
 
+#### 多主题样式
+
+* css var变量
+* 在元素`:active`时，叠加了一个透明遮罩层上去
+* **基于媒体查询 `prefers-color-scheme`** 的结果为 `dark` 时（即系统开启了暗夜模式时），来决定是否采用暗夜模式下的样式。
+
+
+
+[微信WeUI如何巧妙定义白天暗夜模式](https://juejin.cn/post/7132133082445905956)
+
+
+
+
+
+toggle 日间模式与暗夜模式
+
+```tsx
+// 以下代码兼容了随系统切换和让用户主动切换日间、暗夜模式的功能
+// On page load or when changing themes, best to add inline in `head` to avoid FOUC
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  document.documentElement.classList.add('dark')
+} else {
+  document.documentElement.classList.remove('dark')
+}
+
+// Whenever the user explicitly chooses light mode
+localStorage.theme = 'light'
+
+// Whenever the user explicitly chooses dark mode
+localStorage.theme = 'dark'
+
+// Whenever the user explicitly chooses to respect the OS preference
+localStorage.removeItem('theme')
+
+```
+
+
+
+
+
+
+
 ### 抖音二面
 
 * react 的diff算法具体讲一讲？（单节点 和 多节点的diff）   （同级的`Fiber节点`是由`sibling`指针链接形成，无法使用**双指针**优化） （Diff算法的整体逻辑会经历两轮遍历：第一轮遍历：处理更新的节点。第二轮遍历：处理剩下的不属于更新的节点。)

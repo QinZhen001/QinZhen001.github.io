@@ -70,7 +70,7 @@ Ant Design 5.0放弃了跟随 antd 已久的 less 方案，转而拥抱 CSS-in-J
 
 Emotion is a library designed for writing css styles with JavaScript
 
-###  with react
+###  react
 
 ```tsx
 // .babelrc
@@ -91,5 +91,25 @@ Emotion is a library designed for writing css styles with JavaScript
 ```tsx
 const AnotherComponent = () => 
 <div css={{ textDecoration: 'underline' }}>Some text with an underline.</div>;
+```
+
+
+
+
+
+### vite
+
+[https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react)
+
+```tsx
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react({
+    jsxImportSource: '@emotion/react',
+  })],
+})
 ```
 
