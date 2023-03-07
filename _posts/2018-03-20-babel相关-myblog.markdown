@@ -302,6 +302,14 @@ const x = 0;
 
 
 
+### babel-plugin-macros
+
+[https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros](https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros)
+
+
+
+
+
 
 
 ## config
