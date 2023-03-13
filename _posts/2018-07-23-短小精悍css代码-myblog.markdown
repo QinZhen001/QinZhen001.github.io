@@ -305,6 +305,28 @@ transform--style属性指定嵌套元素是怎样在三维空间中呈现。
 
 
 
+### 扩大点击区域
+
+常用于移动端
+
+```css
+.xxx::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left: -5px;
+}
+
+```
+
+
+
+
+
+
+
 
 ### backface-visibility 属性
 

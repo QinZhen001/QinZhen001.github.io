@@ -170,9 +170,9 @@ steps() 第一个参数 number 为指定的间隔数，即把动画分为 n 步�
  }
 ```
 之前也一直认为steps(5，start）中的5 就是指的keyframes中的0% 25% 50% 75% 100% 分成5个间隔等分
+
  
- 
- 
+
 为什么会出现这种理解错误，我们看一个例子
 
 keyframes的关键帧是只有2个规则的时候，假如我们有一张400px长度的雪碧图
@@ -209,15 +209,15 @@ keyframes的关键帧是只有2个规则的时候，假如我们有一张400px�
 那么同样用steps(5，start）效果就会乱套
 
 此刻你会很迷惑，所以关键要理解第一个参数的针对点，首先引入一个核心点：
- 
- 
+
+
 **timing-function 作用于每两个关键帧之间，而不是整个动画**
- 
+
 那么第一个参数很好理解了，steps的设置都是针对两个关键帧之间的，而非是整个keyframes，所以第一个参数对 - 次数对应了每次steps的变化 
- 
+
 换句话说也是 0-25 之间变化5次，  25-50之间 变化5次 ，50-75 之间变化5次，以此类推 
- 
- 
+
+
  第二个参数可选，接受 start 和 end 两个值，指定在每个间隔的起点或是终点发生阶跃变化，默认为 end
 
 通过案例看下 step-start，step-end 的区别
@@ -231,28 +231,28 @@ keyframes的关键帧是只有2个规则的时候，假如我们有一张400px�
 step-start ： 黄色与蓝色相互切换
 
 step-end  ： 红色与黄色相互切换
- 
- 
+
+
 2个参数都会选择性的跳过前后部分，start跳过0%，end跳过100% 
 step-start在变化过程中，都是以下一帧的显示效果来填充间隔动画，所以0% 到 50%  直接就显示了黄色yellow
 
 step-end与上面相反，都是以上一帧的显示效果来填充间隔动画，所以0% 到 50% 直接就显示了红色red 
- 
- 
+
+
 ![enter description here][1] 
+
  
- 
- 
+
 总结：
 steps函数，它可以传入两个参数，第一个是一个大于0的整数，他是将间隔动画等分成指定数目的小间隔动画，然后根据第二个参数来决定显示效果。
 
 第二个参数设置后其实和step-start，step-end同义，在分成的小间隔动画中判断显示效果。可以看出：steps(1, start) 等于step-start，steps(1,end)等于step-end
 
 最核心的一点就是：timing-function **作用于每两个关键帧之间，而不是整个动画** 
+
  
- 
- 
- 
+
+
 ### animation-delay负值
 
 animation-delay:-2s
@@ -260,19 +260,18 @@ animation-delay:-2s
 **允许负值，-2s 使动画马上开始，但跳过 2 秒进入动画。**
 
 
- 
+
 [https://www.w3school.com.cn/cssref/pr_animation-delay.asp](https://www.w3school.com.cn/cssref/pr_animation-delay.asp)
- 
- 
 
  
+
 **被设置了 animation-dealy 为负值的动画会立刻执行，开始的位置是其动画阶段中的一个阶段**
 
  
- 
+
 [https://juejin.im/post/5d4b8707f265da03a65302bd?utm_source=gold_browser_extension](https://juejin.im/post/5d4b8707f265da03a65302bd?utm_source=gold_browser_extension) 
- 
+
  
 
 
-  [1]: https://www.w3.org/TR/2012/WD-css3-transitions-20120403/step.png
+[1]: https://www.w3.org/TR/2012/WD-css3-transitions-20120403/step.png
