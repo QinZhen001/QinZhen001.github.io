@@ -110,11 +110,23 @@ babel的相关插件
 * @babel/preset-react
 * @babel/preset-typescript
 
+
+
+### @babel/env
+
+[@babel/env vs @babel/preset-env](https://stackoverflow.com/questions/56108110/confused-with-babel-preset-configs-between-babel-env-and-babel-preset-env)
+
+> Maybe they are same?
+
+That is correct, the `preset-` piece is optional. Since you are doing
+
+@babel/env 和 @babel/preset-env 是一个东西。
+
+
+
 ### @babel/preset-env
 
 [ https://jdc.jd.com/archives/212962 ]( https://jdc.jd.com/archives/212962 )
-
-
 
 使用`@babel/preset-env`，可以**「按需」**将`core-js`中的特性打包，这样可以显著减少最终打包的体积。
 
@@ -122,12 +134,6 @@ babel的相关插件
 
 - 宿主环境的粒度。根据不同宿主环境将该环境下所需的所有特性打包
 - 按使用情况的粒度。仅仅将使用了的特性打包
-
-
-
-
-
-
 
 
 那么我们在安装了@babel/preset-env，并且在.babelrc中配置了@babel/preset-env之后

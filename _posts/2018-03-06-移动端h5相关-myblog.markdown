@@ -578,7 +578,7 @@ ev.target.appendChild(document.getElementById(data));
 
 
 
-## 移动端100vh问题
+## 100vh问题
 
 在移动端使用 100vh 时，发现在 Chrome、Safari 浏览器中，因为浏览器栏和一些导航栏、链接栏导致不一样的呈现：
 
@@ -605,11 +605,23 @@ vhCheck('browser-address-bar');
 
 
 
-## 移动端1px问题
+## 1px问题
 
 因为Retine屏的分辨率始终是普通屏幕的2倍，1px的边框在devicePixelRatio=2的retina屏下会显示成2px，所以在高清屏下看着1px总是感觉变胖了
 
 
+
+## font-weight：500
+
+[https://jelly.jd.com/article/6006b1045b6c6a01506c87bf](https://jelly.jd.com/article/6006b1045b6c6a01506c87bf)
+
+[https://juejin.cn/post/7056752646283067400](https://juejin.cn/post/7056752646283067400)
+
+问题：在微信浏览器测试  font-weight：500  和 font-weight：400 效果是一样的
+
+ font-weight可取值：100～900和normal、bold、bolder、lighter。
+
+**若所指定的字重不存在直接匹配，则会通过字体匹配算法规则匹配使用邻近的可用字重。**
 
 
 

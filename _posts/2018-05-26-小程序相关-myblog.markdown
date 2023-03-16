@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "微信小程序相关"
+title:      "小程序相关"
 date:       2018-05-26 23:25:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -13,7 +13,7 @@ tags:
 
 
 
-## 原生小程序相关
+## 微信小程序相关
 
 
 
@@ -470,6 +470,33 @@ function uint8ArrayToString(arr) {
 bindchange和bindchanging 在mpvue框架中的写法为: @change和@changing
 
 类型为事件的属性在完成触发事件后，取值的方式为：event.mp.detail = {value: value}
+
+
+
+# 支付宝小程序
+
+
+
+## Function(...) is not a function
+
+[https://blog.csdn.net/yehuozhili/article/details/125925470](https://blog.csdn.net/yehuozhili/article/details/125925470)
+
+在小程序中，只要写了aync await（或者是你引入的库中写了），如果你使用了babel编译且babel的版本大于7，则会出现这个问题
+
+
+
+原因：小程序中会禁用一些动态写法，在babel/runtime中引入的index.js中写了这么一段：
+```tsx
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+  Function("r", "regeneratorRuntime = r")(runtime);
+  }
+}
+```
 
 
 
