@@ -1181,6 +1181,12 @@ git commit  和 git tag 和 git push
 
 
 
+### regenerator-runtime
+
+[https://www.npmjs.com/package/regenerator-runtime](https://www.npmjs.com/package/regenerator-runtime)
+
+Standalone runtime for [Regenerator](https://github.com/facebook/regenerator)-compiled generator and `async` functions.
+
 
 
 

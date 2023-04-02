@@ -20,6 +20,10 @@ tags:
 
 [https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx](https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx)
 
+[WebRTC 点对点通信原理](http://www.yyyweb.com/5480.html)
+
+
+
 音视频通信的流程有五步：采集、编码、通信、解码、渲染。
 
 [WebRTC 介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Session_lifetime)
@@ -30,9 +34,45 @@ tags:
 
 
 
+## **媒体协商**
+
+不同浏览器对于音视频的编解码能力是不同的。比如: Peer-A 端支持 H264、VP8 等多种编码格式,而 Peer-B 端支持 H264、VP9 等格式。为了保证双方都可以正确的编解码，最简单的办法即取它们所都支持格式的交集-H264。在 WebRTC 中，有一个专门的协议，称为**Session Description Protocol(SDP)**,可以用于描述上述这类信息。因此参与音视频通讯的双方想要了解对方支持的媒体格式，必须要交换 SDP 信息。而交换 SDP 的过程，通常称之为**媒体协商**。
+
+
+
+
+
+## **网络协商**
+
+参与音视频实时通信的双方要了解彼此的网络情况，这样才有可能找到一条相互通讯的链路。理想的网络情况是每个浏览器的电脑都有自己的私有公网 IP 地址，这样的话就可以直接进行点对点连接。但实际上出于网络安全和 IPV4 地址不够的考虑，我们的电脑与电脑之间或大或小都是在某个局域网内，需要**NAT(Network Address Translation, 网络地址转换)**。在 WebRTC 中我们使用 ICE 机制建立网络连接
+
+
+
+
+
 ## [信令服务器](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling#信令服务器)
 
 两个设备之间建立 WebRTC 连接需要一个**信令服务器**来实现双方通过网络进行连接。信令服务器的作用是作为一个中间人帮助双方在尽可能少的暴露隐私的情况下建立连接。
+
+
+
+## **ICE**
+
+**ICE (Interactive Connecctivity Establishment, 交互式连接建立)**，ICE 不是一种协议，而是整合了 STUN 和 TURN 两种协议的框架。其中**STUN(Sesssion Traversal Utilities for NAT, NAT 会话穿越应用程序)**，它允许位于 NAT（或多重 NAT）后的客户端找出自己对应的公网 IP 地址和端口，也就是俗称的“打洞”。但是，如果 NAT 类型是对称型的话，那么就无法打洞成功。这时候 TURN 就派上用场了，**TURN**(Traversal USing Replays around NAT)是 STUN/RFC5389 的一个拓展协议在其基础上添加了 Replay(中继)功能，简单来说其目的就是解决对称 NAT 无法穿越的问题，在 STUN 分配公网 IP 失败后，可以通过 TURN 服务器请求公网 IP 地址作为中继地址。
+
+
+
+在 WebRTC 中有三种类型的 ICE 候选者，它们分别是：
+
+- 主机候选者
+- 反射候选者
+- 中继候选者
+
+**主机候选者**，表示的是本地局域网内的 IP 地址及端口。它是三个候选者中优先级最高的，也就是说在 WebRTC 底层，首先会尝试本地局域网内建立连接。
+
+**反射候选者**，表示的是获取 NAT 内主机的外网 IP 地址和端口。其优先级低于 主机候选者。也就是说当 WebRTC 尝试本地连接不通时，会尝试通过反射候选者获得的 IP 地址和端口进行连接。
+
+**中继候选者**，表示的是中继服务器的 IP 地址与端口，即通过服务器中转媒体数据。当 WebRTC 客户端通信双方无法穿越 P2P NAT 时，为了保证双方可以正常通讯，此时只能通过服务器中转来保证服务质量了。
 
 
 

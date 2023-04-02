@@ -158,6 +158,19 @@ function myPromiseAll(fns = []) {
 
 
 
+#### script crossorigin
+
+[https://juejin.cn/post/6969825311361859598](https://juejin.cn/post/6969825311361859598)
+
+* `script`标签去请求资源的时候，request是没有origin头的。
+* `script`标签请求跨域资源的时候，内部运行如果报错的话，`window.onerror` 捕获的时候，内部的`error.message`只能看到`Script error.`看不到完整的错误内容。这个应该是浏览器的安全策略。
+
+---
+
+设置 `crossorigin`属性后，`script`标签去请求资源的时候，request会带上origin头，然后会要求服务器进行 cors校验，跨域的时候如果response header 没有 ‘Access-Control-Allow-Origin’ 是不会拿到资源的。cors验证通过后，拿到的script运行内部报错的话，，`window.onerror` 捕获的时候，内部的`error.message`可以看到完整的错误信息。
+
+
+
 
 
 #### Proxy 缺点
@@ -171,11 +184,6 @@ function myPromiseAll(fns = []) {
 * this 指向的问题。在 Proxy 代理的情况下，目标对象内部的`this`关键字会指向 Proxy 代理。
 
   
-
-  
-
-
-
 
 
 #### cookie 跨域
@@ -288,10 +296,6 @@ Object.defineProperty(PopupManager, 'zIndex', {
 
 
 
-
-
-
-
 ### 互娱影像二面
 
 * 主要是针对简历上的东西深入去挖
@@ -394,7 +398,7 @@ function retry(fn, num, interval) {
 ### 抖音一面
 
 * 狂问项目。项目架构，项目难点，项目优化
-* web worker 会跨域吗？ 如果要传递很大数据怎么办？（postmessage不行）
+* web worker 会跨域吗？ **如果要传递很大数据怎么办？**  (传递很大数据  => 这样纸在传递过程中会耗时很大，感觉上web worker的意义也不大了)  （可以尝试SharedArrayBuffer SharedWorker）
 * 前端性能指标。fcp。。。 谁制定的？google
 * 前端跨项目模块之间应用。pnpm 和 webpack5 联邦模块。
 *  webpack5 联邦模块实现原理？
@@ -405,7 +409,7 @@ function retry(fn, num, interval) {
 * 装饰器用过没？装饰器用来干嘛
 * es新语法提案 几个阶段？stage-[1-3] 
 * ts编译。tsc 和 babel结合ts-loader 的区别？
-* koa洋葱模型中间件机制怎么实现的？
+* koa洋葱模型中间件机制怎么实现的？ （形成一条Promise链）
 * 讲一下浏览器的事件循环？node事件循环和浏览器事件循环是否一样？
 * 说一下你实现的插件机制？有没有了解过依赖反转IOC方式去实现插件？
 * class命名冲突怎么解决？css样式隔离怎么做？
@@ -413,11 +417,12 @@ function retry(fn, num, interval) {
 
 
 
-手写题：
+#### 手写题：
 
 找到数组中连续的子数组使得其值最大，输出最大值
 
 [1,2,5,-7,8] => 9
+
 ```tsx
 function findMax(arr = []) {
   if (!arr.length) {
@@ -441,13 +446,52 @@ function findMax(arr = []) {
 
 
 
+#### web worker 跨域
+
+[https://zhuanlan.zhihu.com/p/47878150](https://zhuanlan.zhihu.com/p/47878150)
+
+Web Workers 在使用过程中要求加载的 JS 文件 URL 必须与当前 Domain 保持同源，即 同源策略，否则就会抛出错误。
+
+
+
+#### node事件循环
+
+[https://juejin.cn/post/6844903761949753352](https://juejin.cn/post/6844903761949753352)
+
+外部输入数据-->轮询阶段(poll)-->检查阶段(check)-->关闭事件回调阶段(close callback)-->定时器检测阶段(timer)-->I/O事件回调阶段(I/O callbacks)-->闲置阶段(idle, prepare)-->轮询阶段（按照该顺序反复运行）
+
+
+
+`timers`、`poll`、`check`这3个阶段，因为日常开发中的绝大部分异步任务都是在这3个阶段处理的。
+
+* timers 阶段会执行 setTimeout 和 setInterval 回调，并且是由 poll 阶段控制的。 同样，**在 Node 中定时器指定的时间也不是准确时间，只能是尽快执行**。
+* poll 是一个至关重要的阶段，这一阶段中，系统会做两件事情  (回到 timer 阶段执行回调 执行 I/O 回调)
+* timers。**timers阶段有几个setTimeout/setInterval都会依次执行**，并不像浏览器端，每执行一个宏任务后就去执行微任务
+
+
+
+**浏览器环境下，microtask的任务队列是每个macrotask执行完之后执行。而在Node.js中，microtask会在事件循环的各个阶段之间执行，也就是一个阶段执行完毕，就会去执行microtask队列的任务**。
+
+如果是node11版本一旦执行一个阶段里的一个宏任务(setTimeout,setInterval和setImmediate)就立刻执行微任务队列，这就跟浏览器端运行一致
+
+
+
+---
+
+- setImmediate 设计在poll阶段完成时执行，即check阶段；
+- setTimeout 设计在poll阶段为空闲时，且设定时间到达后执行，但它在timer阶段执行
+
+
+
+
+
+
+
 #### 多主题样式
 
 * css var变量
 * 在元素`:active`时，叠加了一个透明遮罩层上去
 * **基于媒体查询 `prefers-color-scheme`** 的结果为 `dark` 时（即系统开启了暗夜模式时），来决定是否采用暗夜模式下的样式。
-
-
 
 [微信WeUI如何巧妙定义白天暗夜模式](https://juejin.cn/post/7132133082445905956)
 
@@ -562,12 +606,6 @@ node.right.right = new TreeNode(7)
 const res = printf(node)
 console.log(res)
 ```
-
-
-
-
-
-
 
 
 
@@ -3514,6 +3552,12 @@ generatorToAsync这个函数，这是babel编译async函数的核心，当然在
 `yield`表达式本身没有返回值，或者说总是返回`undefined`。`next`方法可以带一个参数，该参数就会被当作上一个`yield`表达式的返回值。
 
 
+
+#### async/await 和 generator 的关系
+
+async/await 就是 generator +  promise 的语法糖，还自带auto run的buff
+
+generator函数，返回它返回一个generator 对象，需要不断的手动调用next，而async/await就不用手动调用next了，会
 
 
 

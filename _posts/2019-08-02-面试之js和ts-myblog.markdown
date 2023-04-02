@@ -5583,3 +5583,65 @@ JavaScript可以实现函数重载，主要有两种思想：
 
 1. 利用arguments类数组来判断接收参数的个数
 2. 利用闭包保存以前注册进来的同名函数
+
+
+
+## this指向题
+
+```tsx
+var name = '123';
+
+var obj = {
+	name: '456',
+	print: function() {
+		function a() {
+			console.log(this.name);
+		}
+		a();
+	}
+}
+
+obj.print(); // "123"
+```
+
+
+
+箭头函数里面的this是在定义它时绑定的，指向它的父级作用域，而不是调用它对象，这个this的指向是不能通过call和apply改变的。
+
+```tsx
+const obj = {
+	fn1: () => console.log(this),
+	fn2: function() {console.log(this)}
+}
+
+obj.fn1(); // window
+obj.fn2(); // obj
+
+
+// 普通对象中的函数其实是在window作用域的
+const f3 = obj.fn2
+f3(); // window
+```
+
+
+
+```tsx
+// 构造函数会形成一个作用域
+function Obj(name) {    
+  this.name = name;
+  this.s1 = function () {
+    return this.name;   
+  }
+  this.s2 = () => {
+    return this.name;   
+  };
+}
+
+var name = 'window'
+var obj = new Obj('obj');
+console.log(obj.s1());  // obj
+console.log(obj.s2());  // obj
+```
+
+
+

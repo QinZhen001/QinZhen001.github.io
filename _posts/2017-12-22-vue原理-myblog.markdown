@@ -366,6 +366,83 @@ export default Watcher
 
 
 
+## keep-alive
+
+[https://juejin.cn/post/6844903837770203144](https://juejin.cn/post/6844903837770203144)
+
+> keep-alive是一个抽象组件：它自身不会渲染一个 DOM 元素，也不会出现在父组件链中；使用keep-alive包裹动态组件时，会缓存不活动的组件实例，而不是销毁它们。
+
+```tsx
+  // src/core/components/keep-alive.js
+  render () {
+    const slot = this.$slots.default
+    const vnode: VNode = getFirstComponentChild(slot) // 找到第一个子组件对象
+    const componentOptions: ?VNodeComponentOptions = vnode && vnode.componentOptions
+    if (componentOptions) { // 存在组件参数
+      // check pattern
+      const name: ?string = getComponentName(componentOptions) // 组件名
+      const { include, exclude } = this
+      if ( // 条件匹配
+        // not included
+        (include && (!name || !matches(include, name))) ||
+        // excluded
+        (exclude && name && matches(exclude, name))
+      ) {
+        return vnode
+      }
+
+      const { cache, keys } = this
+      const key: ?string = vnode.key == null // 定义组件的缓存key
+        // same constructor may get registered as different local components
+        // so cid alone is not enough (#3269)
+        ? componentOptions.Ctor.cid + (componentOptions.tag ? `::${componentOptions.tag}` : '')
+        : vnode.key
+      if (cache[key]) { // 已经缓存过该组件
+        vnode.componentInstance = cache[key].componentInstance
+        // make current key freshest
+        remove(keys, key)
+        keys.push(key) // 调整key排序
+      } else {
+        cache[key] = vnode // 缓存组件对象
+        keys.push(key)
+        // prune oldest entry
+        if (this.max && keys.length > parseInt(this.max)) { // 超过缓存数限制，将第一个删除
+          pruneCacheEntry(cache, keys[0], keys, this._vnode)
+        }
+      }
+
+      vnode.data.keepAlive = true // 渲染和执行被包裹组件的钩子函数需要用到
+    }
+    return vnode || (slot && slot[0])
+  }
+```
+
+
+
+- 第一步：获取keep-alive包裹着的第一个子组件对象及其组件名；
+- 第二步：根据设定的黑白名单（如果有）进行条件匹配，决定是否缓存。不匹配，直接返回组件实例（VNode），否则执行第三步；
+- 第三步：根据组件ID和tag生成缓存Key，并在缓存对象中查找是否已缓存过该组件实例。如果存在，直接取出缓存值并更新该`key`在`this.keys`中的位置（更新key的位置是实现LRU置换策略的关键），否则执行第四步；
+- 第四步：在`this.cache`对象中存储该组件实例并保存`key`值，之后检查缓存的实例数量是否超过`max`的设置值，超过则根据LRU置换策略删除最近最久未使用的实例（即是下标为0的那个key）。
+- 第五步：最后并且很重要，将该组件实例的`keepAlive`属性值设置为`true`。
+
+### keep-alive组件不会被渲染到页面上
+
+怎么做到的呢？
+
+其实就是通过判断组件实例上的`abstract`的属性值，如果是true的话，就跳过该实例，该实例也不会出现在父级链上。
+
+
+
+### 只执行一次的钩子
+
+一般的组件，每一次加载都会有完整的生命周期，即生命周期里面对应的钩子函数都会被触发，为什么被keep-alive包裹的组件却不是呢？
+
+被缓存的组件实例会为其设置`keepAlive = true`
+
+当`vnode.componentInstance`和`keepAlive`同时为truly值时，不再进入`$mount`过程，那`mounted`之前的所有钩子函数（`beforeCreate`、`created`、`mounted`）都不再执行。
+
+
+
 ## vue-loader
 
 > webpack loader for Vue Single-File Components. 用于 Vue 单文件组件的 webpack 加载器。
@@ -421,5 +498,4 @@ import 'source.vue?vue&type=style&index=1&scoped&lang=scss'
 
 
 可得知，`vue-template-compiler` 的代码是**从 vue 源码中抽离的**！接着，我们对比一下 `vue-template-compiler` 和 vue 关于编译的 API。发现对于 compile 等函数是一致，只是 `vue-template-compiler` 开放的参数和方法更多。因此，**`vue` 和 `vue-template-compiler` 的版本必须一致（同一份源码）！**
-
 

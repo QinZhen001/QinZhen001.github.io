@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "单元测试相关"
+title:      "单元测试test相关"
 date:       2019-08-22 16:04:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -13,6 +13,16 @@ tags:
 
 
 # 正文
+
+
+
+## private
+
+[https://vuejs.org/guide/scaling-up/testing.html](https://vuejs.org/guide/scaling-up/testing.html)
+
+Don't assert the private state of a component instance or test the private methods of a component
+
+不要测试private相关的东西。例如：class 中的 private methods
 
 
 
@@ -814,6 +824,10 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 [https://vitest.dev/](https://vitest.dev/)
 
 
+
+### 快照
+
+[https://cn.vitest.dev/guide/snapshot.html](https://cn.vitest.dev/guide/snapshot.html)
 
 
 

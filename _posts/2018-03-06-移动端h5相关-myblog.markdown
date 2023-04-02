@@ -580,12 +580,51 @@ ev.target.appendChild(document.getElementById(data));
 
 ## 100vh问题
 
-在移动端使用 100vh 时，发现在 Chrome、Safari 浏览器中，因为浏览器栏和一些导航栏、链接栏导致不一样的呈现：
+[https://juejin.cn/post/6844904017051549703](https://juejin.cn/post/6844904017051549703)
+
+在移动端使用 100vh 时，发现在 Chrome、Safari 浏览器中，因为浏览器栏和一些导航栏、链接栏导致不一样的。
+
+呈现：
 
 * 你以为的 100vh === 视口高度
 * 实际上 100vh === 视口高度 + 浏览器工具栏（地址栏等等）的高度
 
+结论：
+
+**移动端不要使用100vh**
+
+
+
 **解决方案**
+
+```tsx
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+    let vh = window.innerHeight * 0.01
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+
+    // We listen to the resize event
+    window.addEventListener('resize', () => {
+      // We execute the same script as before
+      let vh = window.innerHeight * 0.01
+      console.log(vh);
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    })
+```
+
+```cs
+<style>
+.container {
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100 - 46px);
+</style>
+```
+
+
+
+
+
+---
 
 安装 vh-check `npm install vh-check --save`
 
@@ -649,6 +688,10 @@ vhCheck('browser-address-bar');
 viewport并非只是ios上的独有属性，在android、winphone上同样也有viewport。它们要解决的问题是相同的，即无视设备的真实分辨率，直接通过dpi，在物理尺寸和浏览器之间重设分辨率，这个分辨率和设备的分辨率无关。比如，你拿个3.5寸-320 * 480的iphone3 gs、3.5寸-640 *960的iphone4或者9.7寸-1024*768的ipad2，虽然设备的分辨率不同,物理尺寸也不同，但你可以通过设置viewport让它们在浏览器里有相同的分辨率。比如说，你的网站是800px宽，你可以通过设置viewport的width=800，来让你的网站在这三个不同的设备上都刚好满屏显示你的网站。
 
 
+
+## 唤起APP
+
+[https://mp.weixin.qq.com/s/v4EKb3A3QsZMK_-C5cnAVg](https://mp.weixin.qq.com/s/v4EKb3A3QsZMK_-C5cnAVg)
 
 
 
@@ -1287,6 +1330,8 @@ AOT (Ahead-Of-Time - 预先编译)    代表 C/C++  java     **(注意java的特
 
 ## JSBridge
 
+[从 微信 JS-SDK 认识 JSBridge](https://mp.weixin.qq.com/s/sQfkLQEfmFPA06ghQhKvFQ)
+
 [H5和app之间如何通信](https://juejin.cn/post/6945007689990832141)
 
 [深入浅出JSBridge：从原理到使用](https://juejin.cn/post/6936814903021797389#heading-4)
@@ -1306,7 +1351,9 @@ JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Na
 
 ### **Native->Web**
 
+`Native` 调用 `JavaScript` 的方式本质就是 **执行拼接 `JavaScript` 字符串**，这就好比我们通过 `eval()` 函数来执行 `JavaScript` 字符串形式的代码一样，不同的系统也有相应的方法执行 `JavaScript` 脚本。
 
+----
 
 Android 4.4之后提供了**evaluateJavascript**来执行JS代码，并且可以获取返回值执行回调：
 
@@ -1330,6 +1377,12 @@ NSString *jsStr = @"执行的JS代码";
 
 
 ### Web->Native
+
+- **注入 API**
+- **劫持 URL Scheme**
+- **弹窗拦截**
+
+----
 
 **注入 API 和 拦截 URL SCHEME**
 

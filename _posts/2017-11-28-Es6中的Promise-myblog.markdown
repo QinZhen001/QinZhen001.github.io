@@ -411,6 +411,34 @@ new Promise((resolve, reject) => {
 
 
 
+### catch 的好处
+
+Promise 对象后面要跟catch方法，这样可以处理 Promise 内部发生的错误
+
+```tsx
+function test() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(1111)
+    }, 0);
+  })
+}
+
+test().then(res => {
+  console.log("res ", res)
+  throw new Error("res error")
+}, rej => {
+  console.log("rej ", rej)
+  throw new Error("rej error")
+}).catch(err => {
+  // catch 可以捕获到上面的错误
+  console.log("catch err ", err)
+})
+
+```
+
+
+
 
 
 
@@ -418,8 +446,7 @@ new Promise((resolve, reject) => {
 
 ### catch返回的还是Promise
 
-
-一般总是建议，Promise 对象后面要跟catch方法，这样可以处理 Promise 内部发生的错误。catch方法返回的还是一个 Promise 对象，因此后面还可以接着调用then方法。
+**一般总是建议，Promise 对象后面要跟catch方法，这样可以处理 Promise 内部发生的错误。**catch方法返回的还是一个 Promise 对象，因此后面还可以接着调用then方法。
 
 ```javascript
 const someAsyncThing = function() {

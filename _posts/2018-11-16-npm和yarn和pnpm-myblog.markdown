@@ -522,6 +522,16 @@ public-hoist-pattern[]=babel-*
 
 
 
+## 原理
+
+[https://juejin.cn/post/7158631927992287263#heading-4](https://juejin.cn/post/7158631927992287263#heading-4)
+
+采用symbolic ink (软链接) 与 hard link (硬链接) 结合的方式 
+
+node_modules/.pnpm  硬链接到 pnpm store
+
+node_modules/其他 软链接到 node_modules/.pnpm
+
 
 
 # npx

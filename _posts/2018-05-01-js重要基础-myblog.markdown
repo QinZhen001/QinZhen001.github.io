@@ -3832,7 +3832,13 @@ Service worker will work only if you run it on a server. Just by opening the ind
 
 #### Web Worker 
 
+[https://javascript-concurrency.gitbook.io/javascript-concurrency/05.-di-wu-zhang-shi-yong-web-workers](https://javascript-concurrency.gitbook.io/javascript-concurrency/05.-di-wu-zhang-shi-yong-web-workers)
+
 [https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers)
+
+从主线程传递到worker线程的消息数据要经过序列化转换。当此序列化数据到达worker线程时，它被反序列化，并且数据可用作JavaScript基本类型。当worker线程想要将数据发送回主线程时，使用同样的过程。
+
+毋庸置疑，这是一个多余的步骤，给我们可能已经过度工作的应用程序增加了开销。因此，必须考虑在线程之间来回传递数据，因为从CPU成本方面来说这不是轻松的操作
 
 
 

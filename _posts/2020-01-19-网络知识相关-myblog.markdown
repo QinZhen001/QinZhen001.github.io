@@ -22,8 +22,6 @@ tags:
 
 如果页面中发起了多个http请求，此时只需要建立一个tcp连接就可以了，多个http请求响应会共用这一个tcp连接通道。
 
-
-
 相比1.0，优势在于：
 
 * 增加持久性连接
@@ -60,10 +58,6 @@ tags:
 
 
 **只有GET和HEAD要求可以进行管线化，而POST则有所限制**
-
-
-
-
 
 
 
@@ -140,9 +134,44 @@ HTTP/1.1 中在请求消息中引入了 `range`头域，它允许只请求资源
 #### **不安全性**
 
 
-
-
 传输内容没有加密，中途可能被篡改和劫持。
+
+## webscoket
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket)
+
+WebSocket 是基于TCP 的一种新的应用层网络协议。 它实现了浏览器与服务器全双工通信，即允许服务器主动发送信息给客户端。 因此，在WebSocket 中，**浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输，客户端和服务器之间的数据交换变得更加简单**。
+
+
+
+特点：
+
+- 建立在 TCP 协议之上；
+- 与 HTTP 协议有着良好的兼容性：默认端口也是 80（ws） 和 443(wss，运行在 TLS 之上)，并且握手阶段采用 HTTP 协议；
+- 较少的控制开销：连接创建后，ws 客户端、服务端进行数据交换时，协议控制的数据包头部较小，而 HTTP 协议每次通信都需要携带完整的头部；
+- 可以发送文本，也可以发送二进制数据；
+- 没有同源限制，客户端可以与任意服务器通信；
+- 协议标识符是 ws（如果加密，则为 wss），服务器网址就是 URL；
+- 支持扩展：ws 协议定义了扩展，用户可以扩展协议，或者实现自定义的子协议
+
+
+
+### 建立连接
+
+在 WebSocket 开始通信之前，通信双方需要先进行握手，`WebSocket 复用了 HTTP 的握手通道`，即客户端通过 HTTP 请求与 WebSocket 服务端协商升级协议。协议升级完成后，后续的数据交换则遵照 WebSocket 的协议。
+
+利用 HTTP 完成握手有什么好处呢？
+
+一是可以让 WebSocket 和 HTTP 基础设备兼容（运行在 80 端口 或 443 端口），二是可以复用 HTTP 的 Upgrade 机制，完成升级协议的协商过程。
+
+
+
+### 维持连接
+
+如果我们使用 WebSocket 进行通信，建立连接之后怎么判断连接正常没有断开或者服务是否可用呢？
+
+可以通过`建立心跳机制`，所谓心跳机制，就是定时发送一个数据包，让对方知道自己在线且正常工作，确保通信有效。如果对方无法响应，便可以弃用旧连接，发起新的连接了。
+
 
 
 ## SPDY 协议
@@ -171,18 +200,13 @@ SPDY 允许在一个连接上无限制并发流。因为请求在一个通道上
 
 使用专门的 HPACK 算法，每次请求和响应只发送差异头部，一般可以达到 50% ~90% 的高压缩率。
 
-
-
 ---
 
 
 **请求优先级**
 
-
 虽然无限的并发流解决了队头阻塞的问题，但如果带宽受限，客户端可能会因防止堵塞通道而阻止请求。在网络通道被非关键资源堵塞时，提高安全性
 请求会被优先处理。
-
-
 
 ---
 
@@ -192,10 +216,6 @@ SPDY 允许在一个连接上无限制并发流。因为请求在一个通道上
 
 服务端推送（ServerPush），可以让服务端主动把资源文件推送给客户端。当然客户端也有权利选择是否接收。
 
-
-
-
-
 ---
 
 **提高安全性**
@@ -204,15 +224,9 @@ SPDY 允许在一个连接上无限制并发流。因为请求在一个通道上
 支持使用 HTTPS 进行加密传输。
 
 
-
-
 ## HTTP2
 
 HTTP2 基于 SPDY，专注于性能，最大的一个目标是在用户和网站间只用一个连接。
-
-
-
-
 
 ---
 
@@ -226,15 +240,9 @@ HTTP2 基于 SPDY，专注于性能，最大的一个目标是在用户和网站
 
 首先，HTTP2 没有改变 HTTP1 的语义。因此，也引入了新的通信单位：**帧、消息、流**。
 
-
-
 在应用层（HTTP/2.0）和传输层（TCP or UDP）之间增加一个二进制分帧层，从而突破 HTTP1.1 的性能限制，改进**传输性能**，**实现低延迟**和**高吞吐量**。
 
-
-
 简单来说，HTTP/2.0 只是把原来 HTTP1.x 的 `header` 和 `body` 部分用 `frame` 重新封装了一层而已。
-
-
 
 分帧有什么好处？服务器单位时间接收到的请求数变多，可以提高并发数。最重要的是，为多路复用提供了底层支持。
 
@@ -249,10 +257,6 @@ HTTP2 基于 SPDY，专注于性能，最大的一个目标是在用户和网站
 #### **多路复用**
 
 一个域名对应一个连接，一个流代表了一个完整的**请求-响应**过程。帧是最小的数据单位，每个帧会标识出该帧属于哪个流，流也就是多个帧组成的数据流。多路复用，就是在一个 TCP 连接中可以存在多个流。
-
-
-
-
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_jpg/dy9CXeZLlCXSia2SiaCZVwd0340ZsUC8981Hgva8icluZibRTFhseKQM0Acw91qPJPj4SSPyNvnV7w1VLt6Jrodeng/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
@@ -269,14 +273,6 @@ HTTP2 基于 SPDY，专注于性能，最大的一个目标是在用户和网站
 ### 首部压缩
 
 HTTP1.1 不支持 `header` 数据的压缩，HTTP/2.0 使用 `HPACK` 算法对 `header` 的数据进行压缩，这样数据体积小了，在网络上传输就会更快。高效的压缩算法可以很大的压缩 `header` ，减少发送包的数量从而降低延迟。
-
-- 
-
-
-
-
-
-
 
 
 ### 缺陷
@@ -303,17 +299,9 @@ HTTP1.1 不支持 `header` 数据的压缩，HTTP/2.0 使用 `HPACK` 算法对 `
 
 **多路复用容易 Timeout**
 
-
-
 大批量的请求同时发送，由于 HTTP2 连接内存在多个并行的流，而网络带宽和服务器资源有限，每个流的资源会被稀释，虽然它们开始时间相差更短，但却都可能超时。
 
 即使是使用 Nginx 这样的负载均衡器，想正确进行节流也可能很棘手。其次，就算你向应用程序引入或调整排队机制，但一次能处理的连接也是有限的。如果对请求进行排队，还要注意在响应超时后丢弃请求，以避免浪费不必要的资源。
-
-
-
-
-
-
 
 ## **OAuth**
 
@@ -455,8 +443,6 @@ export class ReportServiceV2  {
 
 
 
-
-
 ## [NAT](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Protocols#nat) 
 
 网络地址转换协议[Network Address Translation (NAT)](http://en.wikipedia.org/wiki/NAT) 用来给你的（私网）设备映射一个公网的 IP 地址的协议。一般情况下，路由器的 WAN 口有一个公网 IP，所有连接这个路由器 LAN 口的设备会分配一个私有网段的 IP 地址（例如 192.168.1.3）。私网设备的 IP 被映射成路由器的公网 IP 和唯一的端口，通过这种方式不需要为每一个私网设备分配不同的公网 IP，但是依然能被外网设备发现。
@@ -465,43 +451,21 @@ export class ReportServiceV2  {
 
 
 
-
-
 ## 缓存
-
-
-
-
 
 ### **Provisional headers are shown**
 
 [https://www.jianshu.com/p/4cfa40121ecf](https://www.jianshu.com/p/4cfa40121ecf)
 
-
-
  Request Headers 中发现存在 Provisional headers are shown 的警告
-
-
 
 这个问题字面意思是“显示了临时报文头”，浏览器第一次发送这个请求，请求被阻塞，未收到响应。当要求浏览器再次发送这个请求时，上个同样的请求都还没有收到响应，浏览器就会报这个警告。
 
-
-
----
-
-
-
-
-
 **该数据直接采用了缓存，并没有发送请求**
-
-
 
 只从缓存中获得的通信显示为“显示临时标题”（或“执行”），因为该文件是从缓存中获取的，并且未进行通信，所以并不会显示详细标头。
 
 如果上一个资源加载失败，可能导致从缓存加载的资源失败，即缓存资源请求之前的请求不能失败。强缓存from disk cache或者from memory cache，此时也不会显示。
-
-
 
 其实都是与服务器没有进行或者完成正确的通信，所以只展示临时信息。
 
@@ -513,17 +477,9 @@ export class ReportServiceV2  {
 
 [https://stackoverflow.com/questions/3027492/x-cache-header-explanation](https://stackoverflow.com/questions/3027492/x-cache-header-explanation)
 
-
-
-
-
 `CDN` (`Content Delivery Network`) adds `X-cache` header to HTTP Response. `X-cache:HIT` means that your request was served by CDN, not origin servers. CDN is a special network designed to cache content, so that usr request served faster + to unload origin servers.
 
-
-
 CDN(内容传递网络)将X-cache头添加到HTTP响应中。x -高速缓存:命中意味着你的请求是由CDN服务的，而不是源服务器。CDN是一种特殊的网络，旨在缓存内容，使usr请求服务更快+卸载源服务器。
-
-
 
 Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate HIT, MISS etc. You can simply install firebug plugin in firefox and request some progressive download video, probably it'll be served by cdn node, so the HOST header in response might contain smth like cdn.rt.com and there will be "X- " headers
 
@@ -559,8 +515,6 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 
 
 
-
-
 ## CDN
 
 [CDN 的工作原理](https://www.cloudflare.com/zh-cn/learning/cdn/what-is-a-cdn/)
@@ -574,10 +528,6 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 3. **增加内容可用性和冗余** – 大流量或硬件故障可能会扰乱正常的网站功能。由于 CDN 具有分布式特性，因此与许多源服务器相比，CDN 可以处理更多流量并更好地承受硬件故障。
 4. **改善网站安全性** – CDN 可以通过提供 [DDoS 缓解](https://www.cloudflare.com/learning/ddos/ddos-mitigation/)、安全证书的改进以及其他优化措施来提高安全性。
 
-
-
-
-
 ### CDN 边缘服务器
 
 [CDN](https://www.cloudflare.com/learning/cdn/what-is-a-cdn/)边缘服务器是存在于网络逻辑极端或边缘的计算机。边缘服务器通常充当不同网络之间的连接**。CDN 边缘服务器的主要目的是将内容存储在尽可能靠近发出请求的客户端计算机的位置，从而减少[延迟](https://www.cloudflare.com/learning/performance/glossary/what-is-latency/)并缩短页面加载时间。**
@@ -589,10 +539,6 @@ Furthermore, there are a bunch of "X- " headers provided by CDNs. They indicate 
 [源服务器](https://www.cloudflare.com/learning/cdn/glossary/origin-server/)是在网络资产未使用 CDN 时接收所有 Internet 流量的网络服务器。使用没有 CDN 的源服务器意味着每个 Internet 请求都必须返回到该源服务器的物理位置，无论它位于世界的哪个位置。这会增加加载时间，这会增加服务器与请求客户端计算机的距离。
 
 CDN 边缘服务器将内容存储（[缓存](https://www.cloudflare.com/learning/cdn/what-is-caching/)）在战略位置，以减轻一台或多台源服务器的负载。通过将图像、HTML 和 JavaScript 文件（以及可能的其他内容）等静态资产尽可能靠近请求的客户端计算机，边缘服务器缓存能够减少加载 Web 资源所需的时间。使用 CDN 时，源服务器仍然具有重要功能，因为重要的[服务器端](https://www.cloudflare.com/learning/serverless/glossary/client-side-vs-server-side/)代码（例如用于身份验证的散列客户端凭据数据库）通常在源维护。
-
-
-
-
 
 典型的 CDN 高速缓存过程包含以下 4 个步骤：
 
@@ -624,17 +570,9 @@ CDN节点的缓存内容不是实时更新的，只有当缓存内容到期后�
 
 
 
-
-
-
-
 ## options 请求
 
-
-
 [ https://juejin.im/post/5edef7b2e51d45784213ca24?utm_source=gold_browser_extension ]( https://juejin.im/post/5edef7b2e51d45784213ca24?utm_source=gold_browser_extension )
-
-
 
 > HTTP 的 OPTIONS 方法 用于获取目的资源所支持的通信选项。客户端可以对特定的 URL 使用 OPTIONS 方法，也可以对整站（通过将 URL 设置为"*"）使用该方法。
 
@@ -642,17 +580,9 @@ CDN节点的缓存内容不是实时更新的，只有当缓存内容到期后�
 
 **简单来说，就是可以用 options 请求去嗅探某个请求在对应的服务器中都支持哪种请求方法。**
 
-
-
  在前端中我们一般不会主动发起这个请求，  是在跨域的情况下，浏览器发起"复杂请求"时主动发起的。 
 
-
-
 > 某些请求不会触发 CORS 预检请求，这样的请求一般称为"简单请求",而会触发预检的请求则成为"复杂请求"。
-
-
-
-
 
 跨域共享标准规范要求，对那些可能对服务器数据产生副作用的 HTTP 请求方法（特别是 GET 以外的 HTTP 请求，或者搭配某些 MIME 类型的 POST 请求），浏览器必须首先使用 OPTIONS 方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的 HTTP 请求。
 
@@ -719,20 +649,12 @@ response header 的关键字段
 
 所以，我们可以优化 Options 请求，主要有 2 种方法。
 
-  
-
-
+ 
 
 1.  转为简单请求，如用 JSONP 做跨域请求
 2.  对 options 请求进行缓存，服务器端设置 `Access-Control-Max-Age` 字段，那么当第一次请求该 URL 时会发出 OPTIONS 请求，浏览器会根据返回的 Access-Control-Max-Age 字段缓存该请求的 OPTIONS 预检请求的响应结果（具体缓存时间还取决于浏览器的支持的默认最大值，取两者最小值，一般为 10 分钟）。在缓存有效期内，该资源的请求（URL 和 header 字段都相同的情况下）不会再触发预检。（chrome 打开控制台可以看到，当服务器响应 Access-Control-Max-Age 时只有第一次请求会有预检，后面不会了。注意要开启缓存，去掉 disable cache 勾选。）
 
-
-
-
-
 #### 总结
-
-
 
 options 请求就是预检请求，可用于检测服务器允许的 http 方法。当发起跨域请求时，由于安全原因，触发一定条件时浏览器会在正式请求之前自动先发起 OPTIONS 请求，即 CORS 预检请求，服务器若接受该跨域请求，浏览器才继续发起正式请求。
 
@@ -815,10 +737,6 @@ Vary的字面意思是“不一、多样化”，顾名思义，它的存在区�
 
 
 
-
-
-
-
 比如在同一个浏览器下，先打开了`foo.taobao.com`上的一个页面，访问了我们的资源，这个资源被浏览器缓存了下来，和资源内容一起缓存的还有`Access-Control-Allow-Origin: https://foo.taobao.com`响应头。这时又打开 `bar.taobao.com`上的一个页面，这个页面也要访问那个资源，这时它会读取本地缓存，读到的 `Access-Control-Allow-Origin`头是缓存下的 `https://foo.taobao.com` 而不是自己想要的 `https://bar.taobao.com`，这时就报跨域错误了，虽然它应该是能访问到这份资源的。
 
 
@@ -878,21 +796,13 @@ Vary: Origin
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials ]( https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/withCredentials )
 
-
-
 > **一个很重要的点： withCredentials永远不会影响到同源请求** 
-
-
 
  **XMLHttpRequest.withCredentials**  属性是一个[`Boolean`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Boolean)类型，它指示了是否该使用类似cookies,authorization headers(头部授权)或者TLS客户端证书这一类资格证书来创建一个跨站点访问控制（cross-site `Access-Control`）请求。 
 
 
 
 在同一个站点下使用`withCredentials属性是无效的。`
-
-
-
-
 
 `此外，这个指示`也会被用做`响应中`cookies 被忽视的标示。默认值是false。
 
@@ -912,11 +822,7 @@ Vary: Origin
 
 jwt可以用于验证用户身份信息，和传统的token作用差不多。
 
-
-
 传统的token是服务端将用户信息进行MD5处理发送给客户端，客户端在请求时带上token验证。因为MD5是不可逆的，服务端需要去数据库查询相关用户信息，再进行一次MD5，用该MD5和客户端发来的MD5进行对比。
-
-
 
 而jwt是不需要服务端经过数据库查询的操作，jwt有对应的加密解密算法，服务端拿到jwt后通过密钥解密可以把其中的用户信息拿到。
 

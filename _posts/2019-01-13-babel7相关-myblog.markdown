@@ -136,6 +136,7 @@ That is correct, the `preset-` piece is optional. Since you are doing
 - 按使用情况的粒度。仅仅将使用了的特性打包
 
 
+
 那么我们在安装了@babel/preset-env，并且在.babelrc中配置了@babel/preset-env之后
 
 
@@ -155,22 +156,6 @@ That is correct, the `preset-` piece is optional. Since you are doing
 ```
 
 
-
->Without any configuration options, babel-preset-env behaves exactly the same as babel-preset-latest (or babel-preset-es2015, babel-preset-es2016, and babel-preset-es2017 together).
-
-
-**第一个问题是这个：**
-
-```javascript
-{
- "targets": {
-      "node": "4"
-  }
-}
-```
-
-
-这个targets实际上是针对上面的@babel/preset-env这个插件包的一个配置参数，它所代表的是你编译代码所针对的目标平台，我们这里的目标是版本号为4的node(友情提示：node -v  命令可以检查node的版本)，也就是我编译之后的代码能够在node版本号为4的环境下运行，同样大家可以做个试验，如果将node这个4改为6，再次编译，你会发现编译之后的代码和编译之前的代码没有任何变化，这表明原始的代码实际上已经可以直接在版本为6的node上直接运行，不需要babel的编译了。
 
 当然这里的targets参数配置除了可以设置node环境外，还可以设置针对各个浏览器环境的配置，例如
 
@@ -202,17 +187,13 @@ findIndex方法和padStart方法，这两个方法作为es6提出的新方法，
 
 
 
-------
-
-
-
-
-
 ####  useBuiltIns 
 
+[https://blog.csdn.net/james324/article/details/116128919](https://blog.csdn.net/james324/article/details/116128919)
+
+ https://www.babeljs.cn/docs/babel-preset-env#modules 
+
 **useBuiltIns 就是使用 polyfill （corejs）的方式，是在入口处全部引入（entry），还是每个文件引入用到的（usage），或者不引入（false）。**
-
-
 
 当值为 `entry` 时，Babel 会将 `import"@babel/polyfill"` 或者 `require("@babel/polyfill")` 语句根据我们指定的环境配置替换为单个的 polyfill require。
 
@@ -233,15 +214,11 @@ import "core-js/modules/es7.string.pad-end";
 
 
 
------
+注意：
 
+**polyfill 机制是，对于例如 Array.from 等静态方法，直接在 global.Array 上添加 （添加在全局，造成全局变量污染）**
 
-
- https://www.babeljs.cn/docs/babel-preset-env#modules 
-
-
-
-
+**这种使用 polyfill的方式不适合第三库的开发**
 
 
 
@@ -398,6 +375,8 @@ babel-node is a CLI that works exactly the same as the Node.js CLI, with the add
 
 #### @babel/plugin-transform-runtime
 
+**（适合第三方库的开发）**
+
 [@babel/plugin-transform-runtime 到底是什么](https://zhuanlan.zhihu.com/p/147083132)
 
 @babel/plugin-transform-runtime的作用是提供统一的模块化的helper，那什么是helper，我们举个例子：
@@ -497,9 +476,8 @@ Array.prototype 上新增了 includes 方法，并且新增了全局的 Promise 
 ```javascript
 {    
 "presets": [
-[
     "@babel/preset-env"     
-]   ],    
+],    
 "plugins": [   
 [        
     "@babel/plugin-transform-runtime",{     
@@ -557,6 +535,40 @@ babel 在转译的过程中，对 syntax 的处理可能会使用到 helper 函�
 ```
 
 该项用来设置是否使用ES6的模块化用法，取值是布尔值。默认是fasle，在用webpack一类的打包工具的时候，我们可以设置为true，以便做静态分析。
+
+
+
+##### regenerator
+
+[https://www.babeljs.cn/docs/babel-plugin-transform-runtime#regenerator](https://www.babeljs.cn/docs/babel-plugin-transform-runtime#regenerator)
+
+`boolean`, defaults to `true`.
+
+切换是否将生成器函数转换为使用不会污染全局作用域的再生器运行时。
+
+
+
+```tsx
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, in modern engines
+  // we can explicitly access globalThis. In older engines we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
+}
+```
 
 
 

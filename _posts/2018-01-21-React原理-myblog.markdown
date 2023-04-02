@@ -628,3 +628,13 @@ componentDidMount呢？
 
 只要你进入了 `react` 的调度流程，那就是异步的。只要你没有进入 `react` 的调度流程，那就是同步的。什么东西不会进入 `react` 的调度流程？ `setTimeout` `setInterval` ，直接在 `DOM` 上绑定原生事件等。这些都不会走 `React` 的调度流程，你在这种情况下调用 `setState` ，那这次 `setState` 就是同步的。 否则就是异步的。
 
+
+
+### 为什么 React 的 Diff 不采用双端对比
+
+[https://juejin.cn/post/7116141318853623839](https://juejin.cn/post/7116141318853623839)
+
+
+
+
+

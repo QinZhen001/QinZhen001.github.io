@@ -375,7 +375,7 @@ CommonJS规范主要用于服务端编程，加载模块是同步的，这并不
 
 
 
-### ES6 模块与 CommonJS 模块的差异
+### esm与cjs差异
 
 
 * CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
@@ -409,7 +409,9 @@ ES6 模块的运行机制与 CommonJS 不一样。**ES6 模块是动态引用，
 
 
 
-### ESmodule和CommonJS互转
+### esm和cjs互转
+
+[https://juejin.cn/post/7205897684624474168](https://juejin.cn/post/7205897684624474168)
 
 [https://www.zhihu.com/question/288322186](https://www.zhihu.com/question/288322186)
 
@@ -418,7 +420,65 @@ ES6 模块的运行机制与 CommonJS 不一样。**ES6 模块是动态引用，
 
 
 
+#### esm 转 cjs
 
+- **`module.exports.default` 为默认导出**
+- **`module.exports.xxx` 其他为命名导出**
+
+还要**新增一个标记`__esModule`**
+
+
+
+例子：
+
+```tsx
+export default 666
+export const a = 123
+export const b = 234
+```
+
+转为：
+
+```tsx
+Object.defineProperty(exports, '__esModule', { value: true })
+module.exports.default = 666
+module.exports.a = 123
+module.exports.b = 234
+```
+
+在这种情况下，**必须要用 `.default` 访问默认导出**
+
+我们一般无感知访问默认导出
+
+`_interopDefault` 函数会自动根据 `__esModule`，将导出对象**标准化**，**使 `.default` 一定为默认导出**
+
+ ```tsx
+ // foo.js
+ import lib from 'lib'
+ import {a, b} from 'lib'
+ console.log(lib, a, b)
+ ```
+
+```tsx
+'use strict';
+var lib = require('lib');
+function _interopDefault (e) { 
+  return e && e.__esModule ? e : { default: e }; 
+}
+var lib__default = /*#__PURE__*/_interopDefault(lib);
+console.log(lib__default.default, lib.a, lib.b);
+```
+
+- 如果有 `__esModule`，那就不用处理
+- 没有 `__esModule`，就将其放到 `default` 属性中，作为默认导出
+
+
+
+#### cjs 转 esm
+
+一般不会用 CJS 写 npm 库然后输出 ESM；用 CJS 写的库，当时不会输出 ESM。新写的 npm 库，一般来说也是用 ESM 写。
+
+CJS 转 ESM，**没有一种统一的转换标准**（相对来说，ESM 转 CJS 有 `__esModule` 约定），不同的工具和库，可能转换出来的结果是不一样的，可能**会导致代码不兼容**。
 
 
 

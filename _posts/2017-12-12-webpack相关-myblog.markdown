@@ -21,6 +21,10 @@ tags:
 
 [深入理解 webpack 文件打包机制](https://zhuanlan.zhihu.com/p/32706935)
 
+[Webpack设计理念](https://juejin.cn/post/7170852747749621791)
+
+
+
 ## 什么是Webpack
 
 WebPack可以看做是**模块打包机**：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。
@@ -1723,6 +1727,10 @@ Webpack 5将会在使用[contenthash]的时候使用一个真正的文件内容�
 
 [https://webpack.docschina.org/concepts/module-federation/](https://webpack.docschina.org/concepts/module-federation/)
 
+[基于 MF 的组件化共享工作流](https://mp.weixin.qq.com/s?__biz=MzIxMzExMjYwOQ==&mid=2651899353&idx=1&sn=2d2b300da8c4a0b0554dff4c2fb7d7da&chksm=8c5fa797bb282e81a9592ede083a0ea3d7d0fafe24744dcb69ad872a17166a6d4d265ad4578b#rd)
+
+
+
 Webpack 5 adds a new feature called "Module Federation", which allows multiple webpack builds to work together. From runtime perspective modules from multiple builds will behave like a huge connected module graph. From developer perspective modules can be imported from specified remote builds and used with minimal restrictions.
 
 Webpack 5增加了一个名为“模块联合”的新特性，它允许多个Webpack构建一起工作。从运行时的角度来看，来自多个构建的模块将表现为一个巨大的连接模块图。从开发人员的角度来看，可以从指定的远程构建中导入模块，并以最小的限制使用它们。
@@ -1740,6 +1748,16 @@ webpack 5引入联邦模式是为了**更好的共享代码**。 在此之前，
 
 
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f716494c298941e5bcb4874256d83dba~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
+
+
+
+MF 相对于 NPM 共享方式，有哪些优势？
+
+- 组件更新链路更短，实时更新
+- 可以实现依赖共享，在运行时动态去判断加载哪一方的依赖
+- 不需要重复编译，因为本身 MF 资源是已经编译过的代码
+
+
 
 
 
@@ -1955,8 +1973,8 @@ function reloadApp() {
 
 - 读取`webpack`的配置参数；
 - 启动`webpack`，创建`Compiler`对象并开始解析项目；
-- 从入口文件（`entry`）开始解析，并且找到其导入的依赖模块，递归遍历分析，形成依赖关系树；
-- 对不同文件类型的依赖模块文件使用对应的`Loader`进行编译，最终转为`Javascript`文件；
+- 从入口文件（`entry`）开始解析，并且找到其导入的依赖模块，递归遍历分析，形成依赖关系树，组装代码块 `chunk`
+- 对不同文件类型的依赖模块文件使用对应的`Loader`进行编译
 - 整个过程中`webpack`会通过发布订阅模式，向外抛出一些`hooks`，而`webpack`的插件即可通过监听这些关键的事件节点，执行插件任务进而达到干预输出结果的目的。
 
 
@@ -2214,6 +2232,29 @@ webpack根据webpack.config.js中的入口文件，在入口文件里识别模�
 
 
 同时以上意味着在webapck环境下，你可以只使用ES6 模块语法书写代码（通常我们都是这么做的），也可以使用CommonJS模块语法，甚至可以两者混合使用。**webpack会对各种模块进行语法分析，并做转换编译**
+
+
+
+## Webpack 本质
+
+Webpack 本质上是一个函数，它接受一个配置信息作为参数，执行后返回一个 [compiler 对象](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fplugins%2Finternal-plugins%2F%23compiler)，调用 `compiler` 对象中的 [run](https://link.juejin.cn/?target=https%3A%2F%2Fwebpack.js.org%2Fapi%2Fnode%2F%23run) 方法就会启动编译。`run` 方法接受一个回调，可以用来查看编译过程中的错误信息或编译信息。
+
+```tsx
+const webpack = require("./webpack"); //手写webpack
+const webpackOptions = require("./webpack.config.js"); //这里一般会放配置信息
+const compiler = webpack(webpackOptions);
+
+compiler.run((err, stats) => {
+  console.log(err);
+  console.log(
+    stats.toJson({
+      assets: true, //打印本次编译产出的资源
+      chunks: true, //打印本次编译产出的代码块
+      modules: true, //打印本次编译产出的模块
+    })
+  );
+});
+```
 
 
 
