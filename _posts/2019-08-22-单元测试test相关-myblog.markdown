@@ -18,11 +18,15 @@ tags:
 
 ## private
 
+[Can I unit test private methods?](https://roadfiresoftware.com/2018/05/can-i-unit-test-private-methods/)
+
 [https://vuejs.org/guide/scaling-up/testing.html](https://vuejs.org/guide/scaling-up/testing.html)
 
 Don't assert the private state of a component instance or test the private methods of a component
 
 不要测试private相关的东西。例如：class 中的 private methods
+
+
 
 
 

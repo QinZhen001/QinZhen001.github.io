@@ -609,6 +609,183 @@ console.log(res)
 
 
 
+### 剪映 一面
+
+* **xmlHttpRequest 和 fetch  的差异**
+
+* **h5 和移动端通信 除了url schema 还有别的方式吗？**怎么改变url =>  通过 iframe 
+* fiber是什么？ fiber tree怎么更新的？
+* virtual dom 介绍一下？有哪些优势？ virtual dom 在服务器的应用 =>  ssr
+* ssr介绍一下？ssr的好处
+* webpack loader 和 plugin 的差别
+* xss 在服务器可以怎么预防攻击？
+* 协商缓存 和 强缓存？ 和他们相关的response header
+* 介绍一下前端模块化规范？es module 和 commonjs的区别？介绍一下umd？
+* 判断元素是否在可见区域?
+
+
+
+
+
+#### xmlHttpRequest 和 fetch
+
+[https://zh.javascript.info/fetch-progress](https://zh.javascript.info/fetch-progress)
+
+[xmlHttpRequest 监测进度](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#%E7%9B%91%E6%B5%8B%E8%BF%9B%E5%BA%A6)
+
+* XHR 基于事件机制实现请求成功与失败的回调，Fetch 通过 Promise 来实现回调
+* XHR中断请求的方式 (abort api) 和 Fetch (AbortController)
+* XHR 监控请求进度（progress），fetch允许去跟踪下载进度，无法跟踪上传进度
+
+
+
+１）下载的progress事件属于XMLHttpRequest对象
+
+２）上传的progress事件属于XMLHttpRequest.upload对象。
+
+```tsx
+// 下载
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://example.com');
+xhr.onprogress = function(event) {
+  if (event.lengthComputable) {
+    var percentComplete = event.loaded / event.total * 100;
+    console.log(percentComplete + '% downloaded');
+  } else {
+    console.log('Download in progress');
+  }
+};
+xhr.send();
+```
+
+
+
+
+
+#### 缓存
+
+强缓存 header： Cache-Control 和 Expires  （都是服务器返回的）
+
+**协商缓存 header**：Last-Modifed/If-Modified-Since  Etag/If-None-Match 
+
+Last-Modifed 和  Etag 是服务器返回的
+
+
+
+
+
+#### 判断元素是否在可见区域
+
+- offsetTop、scrollTop
+- getBoundingClientRect
+- Intersection Observer
+
+
+
+```tsx
+el.offsetTop - document.documentElement.scrollTop <= viewPortHeight
+
+// viewPortHeight = window.innerHeight;
+// 元素距离顶部的距离 - 文档滚动的距离 <=  屏幕的高度
+```
+
+
+
+
+
+
+
+
+
+#### 输出题
+
+```tsx
+var a = 3
+
+// 自执行函数作用域是window
+!(function () {
+  // a 会提升
+  console.log(a) // undefined
+  console.log(window.a) // 3
+  var a = 5
+  console.log(a) // 5
+})()
+```
+
+
+
+#### 手写题
+
+* 版本号比较大小   
+
+```tsx
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
+}
+
+function isBigger(item1, item2) {
+  const arr1 = item1.split(".")
+  const arr2 = item2.split(".")
+  for (let i = 0;i < arr1.length;i++) {
+    // 分割字符串转number进行比较
+    // 注意：Number(undefined)  => NaN  (要避免这种情况 加上 || 0 )
+    const num1 = Number(arr1[i] || 0)
+    const num2 = Number(arr2[i] || 0)
+    if (num1 > num2) {
+      return true
+    } else if (num1 < num2) {
+      return false
+    }
+  }
+  return false
+}
+
+function compare(arr) {
+  for (i = 0;i < arr.length;i++) {
+    for (let j = i + 1;j < arr.length;j++) {
+      if (isBigger(arr[i], arr[j])) {
+        swap(arr, i, j)
+      }
+    }
+  }
+}
+```
+
+```tsx
+// 测试
+let arr = ["1.45", "1.5", "3.3.3.3", "6", "4.4", "6.1"]
+compare(arr)
+console.log(arr)
+```
+
+* 跳阶梯 （优化）
+
+```tsx
+let map = new Map() // 用于剪枝
+
+function dp(n) {
+  if (n == 1) {
+    return 1
+  }
+  if (n == 2) {
+    return 2
+  }
+  if (map.has(n)) {
+    return map.get(n)
+  }
+  let num = dp(n - 1) + dp(n - 2)
+  map.set(n, num)
+  
+  return num
+}
+```
+
+
+
+
+
 ## 阿里
 
 面试官会对着一个问题不断深挖，促使你不断地优化你回答的方案
