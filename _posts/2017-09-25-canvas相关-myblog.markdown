@@ -12,7 +12,7 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
+## 基础
 [网页链接](http://www.w3school.com.cn/tags/html_ref_canvas.asp)
 
 
@@ -194,71 +194,15 @@ canvas.save();和canvas.restore();是两个相互匹配出现的，作用是用�
 
 
 
-### Canvas 最佳实践(性能篇)
-[http://taobaofed.org/blog/2016/02/22/canvas-performance/](http://taobaofed.org/blog/2016/02/22/canvas-performance/)
 
 
+### **fill and stroke**
 
-#### Canvas 上下文是状态机
+The stroke and fill determines how the shape is drawn. 
 
-我们需要知道的第一件事就是，context 是一个状态机。你可以改变 context 的若干状态，而几乎所有的渲染操作，最终的效果与 context 本身的状态有关系
+**The stroke is the outline of a shape.** 
 
-
-#### 分层 Canvas
-
-分层 Canvas 在几乎任何动画区域较大，动画较复杂的情形下都是非常有必要的。分层 Canvas 能够大大降低完全不必要的渲染性能开销。分层渲染的思想被广泛用于图形相关的领域：从古老的皮影戏、套色印刷术，到现代电影/游戏工业，虚拟现实领域，等等。而分层 Canvas 只是分层渲染思想在 Canvas 动画上最最基本的应用而已。
-
-![enter description here][2]
-
-
-
-
-分层 Canvas 的出发点是，动画中的每种元素（层），对渲染和动画的要求是不一样的。对很多游戏而言，主要角色变化的频率和幅度是很大的（他们通常都是走来走去，打打杀杀的），而背景变化的频率或幅度则相对较小（基本不变，或者缓慢变化，或者仅在某些时机变化）。很明显，我们需要很频繁地更新和重绘人物，但是对于背景，我们也许只需要绘制一次，也许只需要每隔 200ms 才重绘一次，绝对没有必要每 16ms 就重绘一次。
-
-
-使用上，分层 Canvas 也很简单。我们需要做的，仅仅是生成多个 Canvas 实例，把它们重叠放置，每个 Canvas 使用不同的 z-index 来定义堆叠的次序。然后仅在需要绘制该层的时候（也许是「永不」）进行重绘。
-```
-var contextBackground = canvasBackground.getContext('2d');
-var contextForeground = canvasForeground.getContext('2d');
-
-function render(){
-  drawForeground(contextForeground);
-  if(needUpdateBackground){
-    drawBackground(contextBackground);
-  }
-  requestAnimationFrame(render);
-}
-```
-记住，堆叠在上方的 Canvas 中的内容会覆盖住下方 Canvas 中的内容。
-
-
-
-
-#### 绘制图像
-目前，Canvas 中使用到最多的 API，非 drawImage 莫属了。（当然也有例外，你如果要用 Canvas 写图表，自然是半句也不会用到了）。
-
-drawImage 方法的格式如下所示：
-```tsx
-context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-```
-
-**注意：image 需要是已经onload的图片**
-
-举个例子：
-
-```tsx
- const canvas = document.querySelector("#my-canvas");
- const ctx = canvas.getContext("2d");
- const img = document.createElement("img");
- img.src = "http://www.htmq.com/canvas/images/drawImage002.png";
- img.onload = (e) => {
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  };
-```
-
-
-
-
+**The fill is the contents inside the shape.**
 
 
 
@@ -712,6 +656,8 @@ img.onload = (e) => {
 
 ## 问题
 
+[https://juejin.cn/post/6844903989444608014](Canvas使用及常见问题)
+
 [网页链接](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/setLineDash)
 
 CanvasRenderingContext2D.setLineDash() 是 Canvas 2D API 设置虚线样式的方法。
@@ -723,7 +669,7 @@ CanvasRenderingContext2D.setLineDash() 是 Canvas 2D API 设置虚线样式的�
 
 
 
-### canvas 图片、文字模糊问题
+### **绘制模糊问题**
 
 canvas 绘图时，会从两个物理像素的中间位置开始绘制并向两边扩散 0.5 个物理像素。当设备像素比为 1 时，一个 1px 的线条实际上占据了两个物理像素（每个像素实际上只占一半），由于不存在 0.5 个像素，所以这两个像素本来不应该被绘制的部分也被绘制了，于是 1 物理像素的线条变成了 2 物理像素，视觉上就造成了模糊
 
@@ -750,6 +696,29 @@ canvas {
 
 
 
+```tsx
+// 获取dpr
+const dpr = window.devicePixelRatio; 
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+// 获取Canvas容器的宽高
+const { width: cssWidth, height: cssHeight } = canvas.getBoundingClientRect();
+// 根据dpr，设置Canvas的宽高，使1个canvas像素和1个物理像素相等
+canvas.width = dpr * cssWidth;
+canvas.height = dpr * cssHeight;
+// 根据dpr，设置canvas元素的宽高属性
+ctx.scale(dpr,dpr);
+```
+
+
+
+
+
+### getImageData 跨域问题
+
+1. 是页面与服务端开启允许跨域；
+2. 给图片设置允许跨域，`**img**.setAttribute('crossOrigin', 'anonymous');`
+
 
 
 ### 反锯齿使得drawImage图片更清晰
@@ -772,17 +741,61 @@ canvas {
 
 
 
+## 性能优化
+
+
+
+### **减少绘图指令的调用**
+
+把stoke调用放到循环外，减少stoke的调用
 
 
 
 
 
+### **分层渲染**
+
+为什么需要分层渲染， 在游戏中，假设人物的不停地在移动，但是呢背景可能加了很多花里呼哨的元素，但是我在每一次更新的时候，场景本身是不变的，变的只有人物不停的移动，如果每一帧再去重绘不就造成了性能浪费， 这时候分层canvas就出现了
+
+一个背景层一个运动层，再抽象一点，我们什么时候应该去做分层 ，如果画布纯是静态的就没有必要去做分层了， 如果当前有静态有东动态的，你可以逻辑层放在最上面，然后展示层放在最底下就可以实现所谓的分层渲染了，但是最好保持在3～5个。
 
 
 
 
 
+### **局部渲染**
 
+局部渲染的话其实就是调用canvas 的 clip方法。
+
+正确的做法其实就是我们要做局部刷新：
+
+1. 确定改变的元素的包围盒（是否存在相交）
+2. 画出路径 然后 clip
+3. 最后重新绘制绘制改变的图形
+
+**「** **clip()** **」** 确定绘制的的裁剪区域，区域之外的图形不能绘制，详情查看 CanvasRenderingContext2D.clip() **「** **clearRect(x, y, width, height)** **」** 擦除指定矩形内的颜色，查看 CanvasRenderingContext2D.clearRect()
+
+
+
+### **离屏canvas**
+
+**「** **OffscreenCanvas提供了一个可以脱离屏幕渲染的canvas对象。它在窗口环境和web worker环境均有效。** **」**
+
+由于浏览器是单线程，canvas的计算和渲染其实是在同一个线程的。这就会导致在动画中（有时候很耗时）的计算操作将会导致App卡顿，降低用户体验。
+
+到目前为止，canvas的绘制功能都与 标签绑定在一起，这意味着canvas API和DOM是耦合的。而OffscreenCanvas，正如它的名字一样，通过将Canvas移出屏幕来解耦了DOM和canvas API。
+
+但更重要的是，将两者分离后，canvas将可以在Web Worker中使用，即使在Web Worker中没有DOM。这给canvas提供了更多的可能性。
+
+```tsx
+// 离屏canvas
+const offscreen = new OffscreenCanvas(200, 200);
+```
+
+```tsx
+const canvas = document.getElementById('canvas');
+const offscreen = canvas.transferControlToOffscreen();
+```
 
 
 
