@@ -450,7 +450,7 @@ border-bottom: 40px solid #ff0000;
 2. absolute: 向上找最近的定位为absolute/relative的元素
 3. fixed: 它的containing block一律为根元素(html/body)，根元素也是initial containing block
 
-* 
+
 
 
 ##  元素竖向的百分比设定是相对于容器的高度吗？
@@ -546,35 +546,19 @@ display属性规定元素应该生成的框的类型；position属性规定元�
 
 **设置 `margin-left` 和 `margin-right` 有影响，而 `margin-top` 和 `margin-bottom` 无影响。**
 
-
-
-
-
 🚩 行内元素中，padding-left / padding-right / margin-left / margin-right 有影响结果；
 
 🚩 行内元素中，padding-top / padding-bottom / margin-top / margin-bottom 不影响结果；
 
 🚩 padding-top / padding-bottom 虽然不影响结果，**但实际上生效了**。
 
-
-
 所以，padding实际上是生效的
-
-
-
-
 
 padding的值是根据目标元素的width计算出来的，而inline， non-replace元素的width是不确定的
 
 
 
-
-
-
-
 ## [display的几种常用取值](https://www.cnblogs.com/demonswang/p/7161313.html)
-
-
 
 * none 此元素不会被显示，并且不占据页面空间
 * inline 行内元素 元素会在一行内显示，超出屏幕宽度自动换行，不能设置宽度和高度，元素的宽度和高度只能是靠元素内的内容撑开。
@@ -587,21 +571,13 @@ padding的值是根据目标元素的width计算出来的，而inline， non-rep
 
 ## 相邻的两个inline-block节点为什么会出现间隔
 
-
-
 原因：
 
-
-
 元素被当成行内元素排版的时候，元素之间的空白符（空格、回车换行等）都会被浏览器处理，根据white-space的处理方式（默认是normal，合并多余空白），原来HTML代码中的回车换行被转成一个空白符，在字体不为0的情况下，空白符占据一定宽度，所以inline-block的元素之间就出现了空隙。这些元素之间的间距会随着字体的大小而变化，当行内元素font-size:16px时，间距为8px。
-
-
 
 解决办法：
 
 **为父元素中设置font-size: 0，在子元素上重置正确的font-size**
-
-
 
 
 
@@ -612,16 +588,6 @@ padding的值是根据目标元素的width计算出来的，而inline， non-rep
 * transition关注的是CSS property的变化，property值和时间的关系是一个三次贝塞尔曲线。
 * CSS的`transition`只有两个状态：**开始状态** 和 **结束状态**；但`animation`可能是多个状态，有帧的概念
 * animation作用于元素本身而不是样式属性，可以使用关键帧的概念，应该说可以实现更自由的动画效果。
-
-
-
-
-
-
-
-
-
-## 怎么做到只加载首页的css
 
 
 
@@ -642,13 +608,7 @@ float、clear 和 vertical-align
 
  js执行会阻塞DOM树的解析和渲染，那么css加载会阻塞DOM树的解析和渲染吗？ 
 
-
-
-
-
  **css并不会阻塞DOM树的解析 , css加载会阻塞DOM树渲染** 
-
-
 
 其实我觉得，这可能也是浏览器的一种优化机制。因为你加载css的时候，可能会修改下面DOM节点的样式，如果css加载不阻塞DOM树渲染的话，那么当css加载完之后，DOM树可能又得重新重绘或者回流了，这就造成了一些没有必要的损耗。所以干脆就先把DOM树的结构先解析完，把可以做的工作做完，然后等你css加载完之后，在根据最终的样式来渲染DOM树，这种做法性能方面确实会比较好一点。
 
@@ -662,15 +622,9 @@ float、clear 和 vertical-align
 
 ## **css加载会阻塞js运行吗**
 
-
-
 由上面的推论，我们可以得出，css加载不会阻塞DOM树解析，但是会阻塞DOM树渲染。那么，css加载会不会阻塞js执行呢?
 
-
-
  **css加载会阻塞后面js语句的执行** 
-
-
 
 ```html
 <html lang="en">
@@ -703,15 +657,9 @@ float、clear 和 vertical-align
 
 得出结论：
 
-
-
  **css加载会阻塞后面js语句的执行** 
 
-
-
 **渲染用的是GUI线程、js执行用的是js引擎线程就是v8，GUI线程与V8之间是互斥的。又因为浏览器会维持html中css和js的顺序，所以css渲染会阻塞js执行。**
-
-
 
 
 
@@ -720,10 +668,6 @@ float、clear 和 vertical-align
 
 
 因此，为了避免让用户看到长时间的白屏时间，我们应该尽可能的提高css加载速度，比如可以使用以下几种方法:
-
-  
-
-
 
 1. 使用CDN(因为CDN会根据你的网络状况，替你挑选最近的一个具有缓存内容的节点为你提供资源，因此可以减少加载时间)
 2. 对css进行压缩(可以用很多打包工具，比如webpack,gulp等，也可以通过开启gzip压缩)
@@ -738,11 +682,7 @@ float、clear 和 vertical-align
 
 ## 硬件加速的原理
 
-
-
 浏览器接收到页面文档后，会将文档中的标记语言解析为DOM树。DOM树和CSS结合后形成浏览器构建页面的渲染树。渲染树中包含大量的渲染元素，每个渲染元素会被分到一个图层中，每个图层又会被加载到GPU形成渲染纹理，**而图层在GPU中transform是不会触发repaint的**，最终这些使用transform的图层都会由独立的合成器进程进行处理, CSS transform会**创建了一个新的复合图层，可以被GPU直接用来执行transform操作**。
-
-
 
 **浏览器什么时候会创建一个独立的复合图层呢？事实上一般是在以下几种情况下：**
 
@@ -753,11 +693,7 @@ float、clear 和 vertical-align
 - 对 opacity、transform、fliter、backdropfilter 应用了 animation 或者 transition
 - 设置will-change
 
-
-
 **所以得出一个结论：当我们做css动画时多使用transform**
-
-
 
 
 
@@ -771,11 +707,7 @@ float、clear 和 vertical-align
 
 简而言之，transform动画由GPU控制，支持硬件加载，并不需要软件方面的渲染。**并不是所有的CSS属性都能触发GPU的硬件加载，事实上只有少数的属性可以，比如transform、opacity、filter**
 
-
-
 ---
-
-
 
 CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint Setup and Paint` -> `Composite Layers`
 
@@ -848,8 +780,6 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 * position：fixed
 * 与其他元素可能重叠
 * will-change 样式的值为 opacity、transform、transform-style、perspective、filter、backdrop-filter 这 6 个之
-
-
 
 我们可以借助浏览器开发者的图层（Layer）来去判断
 

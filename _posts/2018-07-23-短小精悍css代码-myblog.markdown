@@ -554,12 +554,6 @@ body,html{
 
 
 
-
-
-
-
-
-
 ### 灰色滤镜
 
 ```css
@@ -567,6 +561,48 @@ body{
   filter: grayscale(1);
 }
 ```
+
+
+
+### AspectRatio 宽高比
+
+```tsx
+const AspectRatio: FC<{
+  aspectRatio: number;  // 宽高比
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  ref?: ForwardedRef<any>;
+}> = forwardRef(({ aspectRatio, children, className, style }, ref) => {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: 0,
+        position: "relative",
+        paddingBottom: 100 / aspectRatio + "%",
+      }}
+    >
+      <div
+        ref={ref}
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          ...style,
+        }}
+        className={className}
+      >
+        {children}
+      </div>
+    </div>
+  );
+});
+```
+
+
 
 
 

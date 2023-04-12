@@ -49,7 +49,11 @@ tags:
 
 
 
+### Cache-Control
 
+[https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Cache-Control)
+
+**Cache-Control** 通用消息头字段，被用于在 http 请求和响应中
 
 
 

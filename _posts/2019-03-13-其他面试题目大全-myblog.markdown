@@ -13,7 +13,6 @@ tags:
 
 
 
-
 [前端工程师手册](https://leohxj.gitbooks.io/front-end-database/content/html-and-css-basic/semantic-html.html)
 
 [前端面试基础](https://yuchengkai.cn/docs/frontend/#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87)
@@ -141,13 +140,6 @@ will-change也有副作用，虽然并不直接可见，毕竟它只是在背后
 
 
 
-
-### ajax和axios的不同
-
-
-
-
-
 ### meta标签
 
 meta标签：提供给页面的一些元信息（名称/值对）， 比如针对搜索引擎和更新频度的描述和关键词。
@@ -160,16 +152,12 @@ meta标签：提供给页面的一些元信息（名称/值对）， 比如针�
 
 
 
-### commonjs和ES6中的模块化有什么区别
+### commonjs和es module有什么区别
 
 它们有两个重大差异。
 
 * CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
 * CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
-
-
-
-### Virtual Dom
 
 
 
@@ -206,19 +194,15 @@ console.log(b);
 
 
 
-### webpack 代码混淆
-
-
-
-
-
 ### webpack里 tree-shaking的条件
 
 * es module
+
 * 无用代码
-*  开发的第三方库可以在package.json设置  "sideEffects": false
 
+* 开发的第三方库可以在package.json设置  "sideEffects": false
 
+  
 
 "side effect(副作用)" 的定义是，在导入时会执行特殊行为的代码，而不是仅仅暴露一个 export 或多个 export。
 
@@ -263,8 +247,6 @@ Vite是一种新型前端构建工具，能够显著提升前端开发体验。�
 
 依赖大多为在开发时不会变动的纯 JavaScript。一些较大的依赖（例如有上百个模块的组件库）处理的代价也很高。依赖也通常会存在多种模块化格式（例如 ESM 或者 CommonJS）。Vite 将会使用 [esbuild](https://link.juejin.cn?target=https%3A%2F%2Fesbuild.github.io%2F) [预构建依赖](https://link.juejin.cn?target=https%3A%2F%2Fcn.vitejs.dev%2Fguide%2Fdep-pre-bundling.html)。Esbuild 使用 Go 编写，并且比以 JavaScript 编写的打包器预构建依赖快 10-100 倍。
 
-
-
 * CommonJS 和 UMD 兼容性: 开发阶段中，Vite 的开发服务器将所有代码视为原生 ES 模块
 
 * Vite 将有许多内部模块的 ESM 依赖关系转换为单个模块，以提高后续页面加载性能。
@@ -301,12 +283,6 @@ Vite 会将预构建的依赖缓存到`node_modules/.vite`。它根据几个源�
 
 
 
-
-
-
-
-
-
 ## babel 
 
 
@@ -315,19 +291,13 @@ Vite 会将预构建的依赖缓存到`node_modules/.vite`。它根据几个源�
 
 ### babel-polyfill和babel-runtime
 
-
-
 babel-polyfill解决了Babel不转换新API的问题，但是直接在代码中插入帮助函数，**会导致污染了全局环境，不建议在第三方库中使用**，并且不同的代码文件中包含重复的代码，导致编译后的代码体积变得很大
-
-
 
 -----
 
 
 
 babel-runtime
-
-
 
 ```javascript
 var _defineProperty2 = __webpack_require__("./node_modules/babel-runtime/helpers/defineProperty.js");
@@ -349,25 +319,11 @@ var obj = (0, _defineProperty3.default)(
 
 ```
 
-
-
-
-
 _defineProperty帮助函数是通过babel-runtime下的模块引用的， 同时Object.assign也变成了模块引用, 这样可以避免自行引入polyfill时导致的污染全局命名空间的问题。
 
 
 
-
-
-
-
-
-
-
-
 ## 逻辑题
-
-
 
 
 
@@ -390,8 +346,6 @@ _defineProperty帮助函数是通过babel-runtime下的模块引用的， 同时
 
 12 20 48
 ```
-
-
 
 
 
@@ -426,8 +380,6 @@ B的5项共9分,其中百米第一5分,其它4项全是1分,9=5 1=1 1 1.即B除�
 
 
 
-
-
 ### 女孩概率
 
 ```
@@ -451,8 +403,6 @@ B的5项共9分,其中百米第一5分,其它4项全是1分,9=5 1=1 1 1.即B除�
 2. 天平一边放7克砝码和刚才得到的9克盐，另一边放16克盐。
 3. 天平一边放刚才得到的16克盐和再刚才得到的9克盐，另一边放25克盐。
 ```
-
-
 
 
 
@@ -551,8 +501,6 @@ B的5项共9分,其中百米第一5分,其它4项全是1分,9=5 1=1 1 1.即B除�
 
 ### Web项目持续集成怎么做
 
-
-
 Web项目的持续集成方案选择比较多，并且相对成熟，这里介绍一下 gitlab-ci 持续集成方案。
 
 这种方式的原理就是为项目在自己的 linux 服务器安装并注册 gitlab-runner ，注册会有一个 token ，服务器上运行 gitlab-runner 后， runner 会轮询的发送带 token 的 http 请求给 gitlab ,如果 gitlab 有任务了，（一般是 git push ），那么会把任务信息返回给 runner ，然后 runner 就开始调用注册时选的 Executor 来执行项目根目录下的配置文件 .gitlab-ci.yml ，执行后把结果反馈给 gitlab 。
@@ -562,10 +510,6 @@ Web项目的持续集成方案选择比较多，并且相对成熟，这里介�
 
 
 这里只要考虑的足够全面，那么之后的项目开发你只需要 push 到对应的分支，gitlab-runner 会自动完成你想做的所有构建、提测、上线操作。减少重复工作，这就是持续集成的意义所在。
-
-
-
-
 
 
 

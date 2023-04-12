@@ -98,10 +98,6 @@ tags:
 
 
 
-
-
-
-
 ```
 <div id="outer">
 	<div id="inner">
@@ -126,8 +122,6 @@ get('outer').addEventListener('click',function(e){
 
 ```
 
-
-
 ```
 // 输出
 
@@ -136,12 +130,6 @@ inner,false
 inner,true
 outer,false
 ```
-
-
-
-
-
-
 
 
 
@@ -262,8 +250,6 @@ element.dispatchEvent(eve)
 
 [编译器和解析器：V8如何执行一段JavaScript代码的](https://blog.poetries.top/browser-working-principle/guide/part3/lesson14.html#%E7%BC%96%E8%AF%91%E5%99%A8%E5%92%8C%E8%A7%A3%E9%87%8A%E5%99%A8)
 
-
-
 机器码所占用的空间远远超过了字节码，所以使用字节码可以减少系统的内存使用。
 
 ---
@@ -290,6 +276,7 @@ element.dispatchEvent(eve)
 ----------
 
 var a = new A()
+
 显而易见， 对象a是继承于A.prototype的， 那么A.prototype这个自动生成的对象，又是从哪出来的呢？
 
 答案是： A.prototype 这个对象是Object和Object.prototype的产物， 当我们
@@ -317,7 +304,7 @@ function A() {
 ![enter description here][9]
 
 举个栗子:
-```
+```tsx
     var obj = {};
     obj.a = 100;
     var arr = [];
@@ -335,7 +322,7 @@ function A() {
 
 ----------
 
-```
+```tsx
    // 构造函数
     function Foo(name, age) {
         this.name = name
@@ -357,7 +344,7 @@ function A() {
 ----------
 
 
-```
+```tsx
     //动物
     function Animal() {
         this.eat = function () {
@@ -427,10 +414,6 @@ var new2 = function(func){
 ```
 
 
-
-
-
-
 ## 渲染机制类
 
 ### DOCTYPE
@@ -478,11 +461,7 @@ DOM 和 CSSOM通常是并行构建的，所以**「CSS 加载不会阻塞 DOM �
 
 有个需要注意的点就是：
 
-
-
 **「有时候JS需要等到CSS的下载，这是为什么呢？」**
-
-
 
 仔细思考一下，其实这样做是有道理的，如果脚本的内容是获取元素的样式，宽高等`CSS`控制的属性，浏览器是需要计算的，也就是依赖于`CSS`。浏览器也无法感知脚本内容到底是什么，为避免样式获取，因而只好等前面所有的样式下载完后，再执行`JS`。
 
@@ -511,10 +490,6 @@ SSR，服务器渲染。简单来说就是，服务器将每个要展示的页�
 7、返回数据： 当页面请求发送到服务器端后，服务器端会返回一个 html 文件作为响应，浏览器接收到响应后，开始对 html 文件进行解析，开始页面的渲染过程。
 8、页面渲染：
 ```
-
-
-
-
 
 
 
@@ -554,8 +529,6 @@ DOM结构中的各个元素都有自己的盒子(模型)，这些都需要浏览
 DocumentFragment 接口表示一个没有父级文件的最小文档对象。它被当做一个轻量版的 Document 使用，用于存储已排好版的或尚未打理好格式的XML片段。最大的区别是因为DocumentFragment不是真实DOM树的一部分，**它的变化不会引起DOM树的重新渲染的操作(reflow) ，且不会导致性能等问题。**
 
 >所有的节点会被一次插入到文档中，而这个操作仅发生一个重渲染的操作，而不是每个节点分别被插入到文档中，因为后者会发生多次重渲染的操作。
-
-
 
 可以使用document.createDocumentFragment 方法或者构造函数来创建一个空的 DocumentFragment.
 
@@ -613,8 +586,6 @@ DocumentFragment 接口表示一个没有父级文件的最小文档对象。它
 * 使用CND让资源加载更快
 * 使用SSR后端渲染，数据直接突入到HTML中
 
-
-
 ## 页面性能类
 提升页面性能的方法有哪些？
 1. 资源压缩合并，减少HTTP请求
@@ -646,17 +617,11 @@ DocumentFragment 接口表示一个没有父级文件的最小文档对象。它
 
 
 
-
-
-
-
 ### js 延迟加载
 
 1. 动态脚本加载
 2. defer
 3. async
-
-
 
 ```html
 <script src="xxx.js" defer></script>		
@@ -1084,8 +1049,6 @@ d1，e1不可能是前三的马，所以d1，e1不用参加最后一场
 
 [https://www.zhihu.com/question/19905845](https://www.zhihu.com/question/19905845)
 
-
-
 你好 非常感谢贵公司对我的认可。但是由于个人的一些原因，我思虑良久，选择了另外一个可能更适合自己的offer，所以不能接受贵公司的offer。给贵公司带来的不便还请谅解，希望贵公司能找到更加适合这个职位的人选。谢谢。
 
 
@@ -1122,11 +1085,7 @@ JD描述(job description)
 自我介绍
 一定要打草稿，展示什么优势，描述什么项目，切忌临场发挥
 
-
-
 **不要一味低头做事，多思考，学会沟通。**
-
-
 
 校招看潜力，社招看价值
 

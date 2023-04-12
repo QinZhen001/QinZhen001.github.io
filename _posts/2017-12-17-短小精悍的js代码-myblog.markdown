@@ -2134,6 +2134,32 @@ window.addEventListener("locationchange", function () {
 
 
 
+### 全局唯一config
+
+```tsx
+class SceneBuilderConfig {
+  private static _config: SceneBuilderConfig | null;
+
+  constructor(
+    public companyId: string,
+    public accessToken: string,
+    public refreshToken: string
+  ) {
+    //@ts-ignore
+    window.SceneBuilderConfig = this;
+  }
+  static setConfig(config: SceneBuilderConfig | null) {
+    this._config = config;
+  }
+  static get shared() {
+    if (!this._config) {
+      throw new Error("config not ready");
+    }
+    return this._config;
+  }
+}
+```
+
 
 
 

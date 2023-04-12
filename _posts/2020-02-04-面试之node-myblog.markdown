@@ -26,8 +26,6 @@ tags:
 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 
 Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。 
 
-
-
 它是单线程单进程模式，nodeJS的单线程指js的引擎只有一个实列。且是在主线程执行的，这样的。
 
 
@@ -505,15 +503,6 @@ Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步
 
 在单核 CPU 系统之上我们采用 单进程 + 单线程 的模式来开发。在多核 CPU 系统之上，可以通过 child_process.fork 开启多个进程（Node.js 在 v0.8 版本之后新增了Cluster 来实现多进程架构） ，即 多进程 + 单线程 模式。注意：开启多进程不是为了解决高并发，主要是解决了单进程模式下 Node.js CPU 利用率不足的情况，充分利用多核 CPU 的性能。
 
-作者：大西轰已在服务区
-链接：https://juejin.im/post/5d43017be51d4561f40adcf9
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
-
-
-------
-
 [https://juejin.im/post/5a996a87f265da239d48bebc](https://juejin.im/post/5a996a87f265da239d48bebc)
 
 
@@ -538,15 +527,9 @@ Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步
 
 在Node.js中，提供了一个child_process模块,通过它可以开启多个子进程，在多个子进程之间可以共享内存空间，可以通过子进程的互相通信来实现信息的交换。
 
-
-
 [`child_process.spawn()`](http://nodejs.cn/s/CKoDGf)、[`child_process.fork()`](http://nodejs.cn/s/VDCJMa)、[`child_process.exec()`](http://nodejs.cn/s/pkpJMy) 和 [`child_process.execFile()`](http://nodejs.cn/s/N6uK8q) 方法都遵循其他 Node.js API 惯用的异步编程模式。
 
-
-
 每个方法都返回一个 ChildProcess 实例。 这些对象实现了 Node.js 的 EventEmitter API，允许父进程注册监听器函数，在子进程的生命周期中当发生某些事件时会被调用。
-
-
 
 
 
@@ -567,29 +550,19 @@ for (let i = 0; i < numCPUs; i++) {
 
 ## cluster
 
-
-
 单个 Node.js 实例运行在单个线程中。 为了充分利用多核系统，有时需要启用一组 Node.js 进程去处理负载任务。
 
 
 
 ## EventEmitter
 
-
-
 ```js
 const EventEmitter = require('events');
 ```
 
-
-
 大多数 Node.js 核心 API 构建于惯用的异步事件驱动架构，其中某些类型的对象（又称触发器，Emitter）会触发命名事件来调用函数（又称监听器，Listener）。
 
-
-
 **所有能触发事件的对象都是 `EventEmitter` 类的实例**
-
-
 
 ```javascript
 const EventEmitter = require('events');
@@ -605,12 +578,6 @@ myEmitter.emit('event');
 
 
 
-
-
-
-
-
-
 ## Koa2 中间件机制
 
 https://juejin.im/post/5a5f5a126fb9a01cb0495b4c
@@ -621,20 +588,12 @@ https://juejin.im/post/5a5f5a126fb9a01cb0495b4c
 
 ## Express和Koa框架中间件有什么不同
 
-
-
 - express 中间件：是通过 next 的机制，即上一个中间件会通过 next 触发下一个中间件   (express中间件处理方式是线性的，next过后继续寻找下一个中间件，当然如果没有调用next()的话，就不会调用下一个函数了，调用就会被终止)
 - koa2 中间件：是通过 async await 实现的，中间件执行顺序是“洋葱圈”模型（推荐）
 
 
 
-
-
-
-
 # 补充
-
-
 
 
 

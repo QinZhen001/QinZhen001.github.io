@@ -613,12 +613,12 @@ console.log(res)
 
 * **xmlHttpRequest 和 fetch  的差异**
 
-* **h5 和移动端通信 除了url schema 还有别的方式吗？**怎么改变url =>  通过 iframe 
+* **h5 和移动端通信 除了url schema 还有别的方式吗？（注入全局api）** 怎么改变url =>  通过 iframe 
 * fiber是什么？ fiber tree怎么更新的？
 * virtual dom 介绍一下？有哪些优势？ virtual dom 在服务器的应用 =>  ssr
 * ssr介绍一下？ssr的好处
 * webpack loader 和 plugin 的差别
-* xss 在服务器可以怎么预防攻击？
+* **xss 在服务器可以怎么预防攻击？**
 * 协商缓存 和 强缓存？ 和他们相关的response header
 * 介绍一下前端模块化规范？es module 和 commonjs的区别？介绍一下umd？
 * 判断元素是否在可见区域?
@@ -691,7 +691,21 @@ el.offsetTop - document.documentElement.scrollTop <= viewPortHeight
 
 
 
+#### xss攻击在服务器上预防
 
+1. 安全的Cookie：确保Cookie只能由服务器端访问，并且不包含敏感信息。 （HTTP-only）
+
+2. HTTPS协议：使用HTTPS协议加密数据传输，以防止中间人攻击和窃听。
+
+3. #### Content Security Policy
+
+严格的 CSP 在 XSS 的防范中可以起到以下的作用：
+
+- 禁止加载外域代码，防止复杂的攻击逻辑。
+- 禁止外域提交，网站被攻击后，用户的数据不会泄露到外域。
+- 禁止内联脚本执行（规则较严格，目前发现 GitHub 使用）。
+- 禁止未授权的脚本执行（新特性，Google Map 移动版在使用）。
+- 合理使用上报可以及时发现 XSS，利于尽快修复问题。
 
 
 

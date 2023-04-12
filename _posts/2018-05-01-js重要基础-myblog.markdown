@@ -3846,9 +3846,11 @@ Service worker will work only if you run it on a server. Just by opening the ind
 
 The `close()` method is visible inside the worker's scope. The `terminate()` method is a part of the worker object's interface and can be called "from the outside".
 
----
 
 
+##### importScripts
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/WorkerGlobalScope/importScripts](https://developer.mozilla.org/zh-CN/docs/Web/API/WorkerGlobalScope/importScripts)
 
 问题：
 

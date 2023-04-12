@@ -20,13 +20,9 @@ tags:
 
 
 
-
-
 ## interface
 
 在面向对象语言中，接口是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类去实现。
-
-
 
 TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类的一部分行为进行抽象](https://ts.xcatliu.com/advanced/class-and-interfaces.html#类实现接口)以外，也常用于对「对象的形状（Shape）」进行描述。
 
@@ -38,13 +34,7 @@ TypeScript 中的接口是一个非常灵活的概念，除了可用于[对类�
 
 [ https://ts.xcatliu.com/basics/type-of-object-interfaces ]( https://ts.xcatliu.com/basics/type-of-object-interfaces )
 
-
-
-
-
 有时候我们希望一个接口允许有任意的属性，可以使用如下方式：
-
-
 
 ```tsx
 interface Person {
@@ -59,17 +49,9 @@ let tom: Person = {
 };
 ```
 
-
-
-
-
 使用 `[propName: string]` 定义了任意属性取 `string` 类型的值。
 
-
-
 需要注意的是，**一旦定义了任意属性，那么确定属性和可选属性的类型都必须是它的类型的子集**：
-
-
 
 ```tsx
 interface Person {
@@ -127,11 +109,7 @@ let tom: Person = {
 
 ### **类 Interface**
 
-
-
  Interface 也可以用来定义一个类的形状。需要注意的是类 Interface 只会检查实例的属性，静态属性是需要额外定义一个 Interface 
-
-
 
 ```tsx
 // ? PersonConstructor 是用来检查静态部分的
@@ -164,11 +142,7 @@ const Person: PersonConstructor = class Person implements PersonInterface {
 }
 ```
 
-
-
 **一定要记住静态属性和方法的检查、实例属性和方法的检查是不同的 Interface**
-
-
 
 
 
@@ -190,9 +164,27 @@ export const invert: InvertColor;
 
 
 
+### interface vs type
+
+[https://juejin.cn/post/6844903749501059085](https://juejin.cn/post/6844903749501059085)
+
+**结论：能用 interface 实现，就用 interface**
 
 
 
+相同点：
+
+都可以描述一个对象或者函数
+
+都允许拓展（extends）
+
+不同点:
+
+- type 可以声明基本类型别名，联合类型，元组等类型
+
+- interface 能够声明合并
+
+  
 
 ## 运算符
 
@@ -806,15 +798,7 @@ console.log(Test.bbb) // ok
 
 [导入/导出](https://jkchao.github.io/typescript-book-chinese/new/typescript-3.8.html#%E4%BB%85%E4%BB%85%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E5%A3%B0%E6%98%8E)
 
-`import type` 仅仅导入被用于类型注解或声明的声明语句，它总是会被完全删除，因此在运行时将不会留下任何代码。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
-
-
-
-
-
-
-
-
+`import type` 仅仅导入被用于类型注解或声明的声明语句，**它总是会被完全删除，因此在运行时将不会留下任何代码**。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
 
 
 
@@ -844,13 +828,7 @@ let value8: Function = value; // Error
 
 ```
 
-
-
-
-
 直观地说，这是有道理的：只有能够保存任意类型值的容器才能保存 `unknown` 类型的值。毕竟我们不知道变量 `value` 中存储了什么类型的值。
-
-
 
 ```js
 let value: unknown;
@@ -864,6 +842,16 @@ value[0][1]; // Error
 ```
 
 将 `value` 变量类型设置为 `unknown` 后，这些操作都不再被认为是类型正确的。通过将 `any` 类型改变为 `unknown` 类型，我们已将允许所有更改的默认设置，更改为禁止任何更改。
+
+
+
+#### unknown & any
+
+[https://stackoverflow.com/questions/51439843/unknown-vs-any](https://stackoverflow.com/questions/51439843/unknown-vs-any)
+
+`unknown` is the parent type of all other types. it's a regular type in the type system.
+
+`any` means "turn off the type check". it's a compiler directive and kind of meta programming.
 
 
 
@@ -1219,15 +1207,48 @@ type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
 
 
+### Parameters
+
+拿到函数参数的类型
+
+```tsx
+declare function f1(arg: { a: number; b: string }): void;
+ 
+type T0 = Parameters<() => string>;   
+type T0 = []
+
+type T1 = Parameters<(s: string) => void>;
+type T1 = [s: string]
+
+type T2 = Parameters<<T>(arg: T) => T>;
+type T2 = [arg: unknown]
+
+type T3 = Parameters<typeof f1>;
+type T3 = [arg: {
+    a: number;
+    b: string;
+}]
+```
+
+原理：
+
+```tsx
+type Parameters<T extends (...args: any) => any> = T extends ( 
+  ...args: infer P 
+  ) => any 
+    ? P 
+    : never 
+```
+
+
+
+
+
 ### InstanceType
 
 [https://www.typescriptlang.org/docs/handbook/utility-types.html#instancetypetype](https://www.typescriptlang.org/docs/handbook/utility-types.html#instancetypetype)
 
-
-
 定义：
-
-
 
 例子：
 
@@ -1248,7 +1269,7 @@ Type 'string' does not satisfy the constraint 'new (...args: any) => any'.
 //    ^ = type T3 = any
 type T4 = InstanceType<Function>;
 Type 'Function' does not satisfy the constraint 'new (...args: any) => any'.
-  Type 'Function' provides no match for the signature 'new (...args: any): any'.
+Type 'Function' provides no match for the signature 'new (...args: any): any'.
 //    ^ = type T4 = any
 ```
 
@@ -3234,8 +3255,6 @@ const foo: Foo = ['1', '2', '3']; // OK
 1. 基于 `Babel` 的优秀的缓存和单文件散发架构，`Babel` + `TypeScript` 的组合套餐会提供了更快的编译。
 2. **而 类型检查 呢？** 那只在当你准备好的时候进行。
 
-
-
 **如果项目中有 `Babel`，安装 `@babel/preset-typescript`，配合 `tsc` 做类型检查。（这个是我们首选的）**
 
 
@@ -3474,7 +3493,31 @@ Do not emit compiler output files like JavaScript source code, source-maps or de
 
 [常见的 error](https://jkchao.github.io/typescript-book-chinese/error/common.html)
 
+## Don't use Function type
 
+[https://www.totaltypescript.com/dont-use-function-keyword-in-typescript](https://www.totaltypescript.com/dont-use-function-keyword-in-typescript)
+
+Sometimes, you'll want to express 'any function' in TypeScript.
+
+```tsx
+(...args: any) => any
+```
+
+
+
+
+
+## public static and private static 
+
+[public static and private static variables](https://stackoverflow.com/questions/10459487/difference-between-public-static-and-private-static-variables)
+
+- A `public` variable is accessible from anywhere (well, anywhere where the class is accessible).
+
+- A `private` variable is only accessible inside the class.
+
+- A `static` variable belongs to the class rather than to an instance of a class.
+
+  
 
 
 
