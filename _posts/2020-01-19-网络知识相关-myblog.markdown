@@ -285,15 +285,11 @@ HTTP1.1 不支持 `header` 数据的压缩，HTTP/2.0 使用 `HPACK` 算法对 `
 
 
 
-----
-
-
+---
 
 **多路复用导致服务器压力上升**
 
 多路复用没有限制同时请求数。请求的平均数量与往常相同，但实际会有许多请求的短暂爆发，导致瞬时 QPS 暴增。
-
-
 
 -----
 
@@ -302,6 +298,26 @@ HTTP1.1 不支持 `header` 数据的压缩，HTTP/2.0 使用 `HPACK` 算法对 `
 大批量的请求同时发送，由于 HTTP2 连接内存在多个并行的流，而网络带宽和服务器资源有限，每个流的资源会被稀释，虽然它们开始时间相差更短，但却都可能超时。
 
 即使是使用 Nginx 这样的负载均衡器，想正确进行节流也可能很棘手。其次，就算你向应用程序引入或调整排队机制，但一次能处理的连接也是有限的。如果对请求进行排队，还要注意在响应超时后丢弃请求，以避免浪费不必要的资源。
+
+---
+
+**TCP 的队头阻塞并没有彻底解决**
+
+当 TCP 数据包在传输过程中丢失时，在服务器重新发送丢失的数据包之前，接收方无法确认传入的数据包。由于 TCP 在设计上不遵循 HTTP 之类的高级协议，因此单个丢失的数据包将阻塞所有进行中的 HTTP 请求的流，直到重新发送丢失的数据为止
+
+
+
+## HTTP3
+
+> HTTP3 背后的主要思想是放弃 TCP，转而使用基于 UDP 的 QUIC （快速UDP互联网连接）协议。
+
+为了解决传输级别的线头阻塞问题，通过 QUIC 连接传输的数据被分为一些流。流是持久性 QUIC 连接中短暂、独立的“子连接”。每个流都处理自己的错误纠正和传递保证，但使用连接全局压缩和加密属性。每个客户端发起的 HTTP 请求都在单独的流上运行，因此丢失数据包不会影响其他流/请求的数据传输。
+
+
+
+
+
+
 
 ## **OAuth**
 
@@ -738,19 +754,13 @@ Vary的字面意思是“不一、多样化”，顾名思义，它的存在区�
 
 [ https://zhuanlan.zhihu.com/p/38972475 ]( https://zhuanlan.zhihu.com/p/38972475 )
 
-
-
 [图片出现 不能跨域的缓存 ]( https://www.ccc5.cc/2375.html )
 
 
 
 在 @koa/cors 中
 
-
-
 我们发现
-
-
 
 ```js
     // Always set Vary header
@@ -761,8 +771,6 @@ Vary的字面意思是“不一、多样化”，顾名思义，它的存在区�
 
 
 这是为了解决**条件型 CORS 响应下的缓存错乱问题**
-
-
 
 比如在同一个浏览器下，先打开了`foo.taobao.com`上的一个页面，访问了我们的资源，这个资源被浏览器缓存了下来，和资源内容一起缓存的还有`Access-Control-Allow-Origin: https://foo.taobao.com`响应头。这时又打开 `bar.taobao.com`上的一个页面，这个页面也要访问那个资源，这时它会读取本地缓存，读到的 `Access-Control-Allow-Origin`头是缓存下的 `https://foo.taobao.com` 而不是自己想要的 `https://bar.taobao.com`，这时就报跨域错误了，虽然它应该是能访问到这份资源的。
 
@@ -804,10 +812,6 @@ Vary: Origin
 
 
  在使用 XHR 发起的 CORS 请求也不会使用那份缓存，因为`Origin`请求头从无到有，也算是变了。 
-
-
-
-
 
 > If CORS protocol requirements are more complicated than setting `Access-Control-Allow-Origin` to * or a static origin, `Vary` is to be used 
 >
@@ -932,8 +936,6 @@ application/json，随着json规范的越来越流行，并且浏览器支持程
 [http://www.ruanyifeng.com/blog/2016/09/csp.html](http://www.ruanyifeng.com/blog/2016/09/csp.html)
 
 [https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP)
-
-
 
 > **内容安全策略** (CSP) 是一个附加的安全层，用于帮助检测和缓解某些类型的攻击，包括跨站脚本 (XSS) 和数据注入等攻击。
 

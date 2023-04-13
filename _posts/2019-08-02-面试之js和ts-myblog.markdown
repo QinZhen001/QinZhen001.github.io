@@ -1044,6 +1044,33 @@ checkScope()() // 'local scope'
 
 
 
+### 遍历一个对象的所有自身属性
+
+[遍历一个对象的所有自身属性](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty#遍历一个对象的所有自身属性)
+
+```tsx
+var buz = {
+  fog: 'stack'
+};
+
+buz.__proto__.name = 'buz';
+
+// in 会查找到原型链上的属性
+for(let name in buz ){
+  if(buz.hasOwnProperty(name)){
+    console.log("in",name)
+  }
+}
+// Object.keys() 只会查找到自身的属性
+Object.keys(buz).forEach(key => {
+  console.log("key",key)
+})
+```
+
+
+
+
+
 ### 原型链的一些问题
 
 * 实例的 __proto__ 属性（原型）等于其构造函数的 prototype 属性。

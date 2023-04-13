@@ -1000,6 +1000,28 @@ console.log(Object.getOwnPropertyNames(objWithStrings));
 
 
 
+### MessageChannel
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/MessageChannel)
+
+Channel Messaging API 的 **`MessageChannel`** 接口允许我们创建一个新的消息通道，并通过它的两个 [`MessagePort`](https://developer.mozilla.org/zh-CN/docs/Web/API/MessagePort) 属性发送数据。
+
+MessageChannel是以DOM Event的形式发送消息，所以它是一个宏任务，会在下一个事件循环的开头执行。 
+
+**MessageChannel回调的执行时机会比`setTimeout`早**
+
+浏览器的宏任务队列其实是一个有序集合，这意味着队列里到期的事件不一定会按入队的顺序执行，因为DOM Event的优先级比计时器高，所以会出现上面的打印结果。
+
+
+
+
+
+### requestAnimationFrame
+
+requestAnimationFrame打印时机不稳定，因为不是每次事件循环都会触发重渲染，浏览器可能将多次渲染合成一次；
+
+
+
 ## 补充
 
 

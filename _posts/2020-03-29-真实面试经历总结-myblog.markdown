@@ -190,8 +190,6 @@ function myPromiseAll(fns = []) {
 
 **cookie 可以跨越一个域名下的多个网页，但不能跨越多个域名使用**
 
-
-
 domain 属性指定浏览器发出 HTTP 请求时，哪些域名要附带这个 Cookie。
 
 可以设置 domain 为当前服务器域名或者父域名。如果未设置，则该 Cookie 值只能在发向该域名的请求时被携带。如果设置了 domain，则发向该域以及子域的请求都会带上该 Cookie。
