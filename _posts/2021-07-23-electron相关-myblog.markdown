@@ -288,6 +288,45 @@ vscode 是一个 electron 应用，窗口等功能的实现基于 electron
 
 
 
+## @electron-toolkit/preload
+
+> Easy to expose Electron APIs (ipcRenderer,webFrame,process) to renderer.
+
+```tsx
+import { contextBridge } from 'electron'
+import { electronAPI } from '@electron-toolkit/preload'
+
+if (process.contextIsolated) {
+  try {
+    contextBridge.exposeInMainWorld('electron', electronAPI)
+  } catch (error) {
+    console.error(error)
+  }
+} else {
+  window.electron = electronAPI
+}
+```
+
+Then, use the Electron APIs directly in the renderer process：
+
+```
+window.electron.ipcRenderer.send('electron:say', 'hello')
+```
+
+
+
+
+
+## @electron-toolkit/utils
+
+> Utils for Electron main process.
+
+electron使用的工具包
+
+
+
+
+
 
 
 ## Electron 原理
