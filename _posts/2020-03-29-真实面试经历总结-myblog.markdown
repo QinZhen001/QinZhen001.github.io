@@ -607,7 +607,7 @@ console.log(res)
 
 
 
-### 剪映 一面
+### 剪映一面
 
 * **xmlHttpRequest 和 fetch  的差异**
 
@@ -791,6 +791,220 @@ function dp(n) {
   map.set(n, num)
   
   return num
+}
+```
+
+
+
+### 剪映二面
+
+- 主要问项目（架构，难点，优化）
+- 单元测试怎么mock函数  （a.js import b.js 对a文件做单元测试怎么模拟b中的函数）
+- fps是什么？怎么监控fps？
+- webassembly怎么使用？
+- long task是什么？怎么捕获long task
+
+
+
+
+
+#### webassembly使用
+
+```tsx
+const importObject = {
+    imports: {
+        imported_func: (arg) => console.log("I was imported. " + arg)
+    }
+}
+
+
+fetch("http://localhost:3000/audiotest/test/simple.wasm").then(res => {
+    console.log("res", res)
+    return res.arrayBuffer()
+}).then(bytes => {
+    console.log("bytes", bytes)
+    return WebAssembly.instantiate(bytes, importObject)
+}).then(result => {
+    console.log("result", result)
+    result.instance.exports.exported_func(111)
+})
+```
+
+
+
+
+
+#### fps 相关
+
+参考 stats.js
+
+[JavaScript Performance Monitor](https://github.com/mrdoob/stats.js)
+
+
+
+```tsx
+var stats = new Stats();
+stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
+
+function animate() {
+	stats.begin();
+	// monitored code goes here
+  // 中间就是动画执行，每次就是一个frame
+	stats.end();
+	requestAnimationFrame( animate );
+}
+
+requestAnimationFrame( animate );
+```
+
+内部实现原理：
+
+```tsx
+		begin: function () {
+			beginTime = (performance || Date).now();
+		},
+		end: function () {
+			frames++;
+			var time = (performance || Date).now();
+			if (time >= prevTime + 1000) {
+        // 一秒钟多少帧
+				const num = (frames * 1000) / (time - prevTime)
+				fpsPanel.update(num, 100);
+				prevTime = time;
+				frames = 0;
+			}
+			return time;
+		},
+```
+
+简化例子：
+
+```tsx
+var frame = 0;
+var lastTime = Date.now();
+
+var loop = function () {
+    var now = Date.now();
+    frame++;
+    if (now > 1000 + lastTime) {
+        var fps = Math.round((frame * 1000) / (now - lastTime));
+        console.log(`${new Date()} 1S内 FPS：`, fps);
+        frame = 0;
+        lastTime = now;
+    };
+
+    requestAnimationFrame(loop);
+}
+
+loop();
+```
+
+
+
+
+
+#### memory 相关
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Performance/memory](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance/memory)
+
+* jsHeapSizeLimit
+
+上下文内可用堆的最大体积，以字节计算。
+
+* totalJSHeapSize
+
+已分配的堆体积，以字节计算。
+
+* usedJSHeapSize
+
+当前 JS 堆活跃段（segment）的体积，以字节计算。
+
+
+
+例子：
+
+获取已使用的Memory
+
+```tsx
+// 1MB would be 1048576 bytes
+const memory = performance.memory;
+const used = memory.usedJSHeapSize / 1048576
+const total = memory.jsHeapSizeLimit / 1048576
+
+console.log("Memory used: " + used + "MB")
+console.log("Memory total: " + total + "MB")
+console.log("Memory used: " + (used / total * 100) + "%")
+```
+
+
+
+
+
+
+
+#### 手写题
+
+```
+顺时针螺旋顺序输出组件：
+输入:
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+输出: [1,2,3,6,9,8,7,4,5]
+```
+
+解决：
+
+```tsx
+const directions = [
+  [0, 1], // right
+  [1, 0], // down
+  [0, -1], // left
+  [-1, 0] // up
+]
+
+function print(grid) {
+  let visited = new Array(grid.length)
+  for (let i = 0;i < visited.length;i++) {
+    visited[i] = new Array(grid[i].length).fill(false)
+  }
+
+  let row = grid.length // 行
+  let col = grid[0].length // 列
+  let max = row * col
+  let curIndex = 0
+  let curPos = [0, 0]
+  let direction = 0
+
+  const print = (curPos) => {
+    console.log(grid[curPos[0]][curPos[1]])
+  }
+
+  isLegalPos = (pos) => {
+    if (pos[0] >= 0 && pos[0] < row && pos[1] >= 0 && pos[1] < col) {
+      if (!visited[pos[0]][pos[1]]) {
+        return true
+      }
+    }
+    return false
+  }
+
+  while (curIndex < max) {
+    print(curPos)
+    curIndex++
+    visited[curPos[0]][curPos[1]] = true
+    let nextPos = [curPos[0] + directions[direction][0], curPos[1] + directions[direction][1]]
+    if (!isLegalPos(nextPos)) {
+      // 不合法的位置，换方向
+      direction = (direction + 1) % 4
+      nextPos = [curPos[0] + directions[direction][0], curPos[1] + directions[direction][1]]
+    }
+    curPos = nextPos
+  }
+
 }
 ```
 
@@ -2138,13 +2352,13 @@ setTimeout(() => {
 
 ```js
 // fns 为请求函数
-function multiRequest(fns, maxNum) {
-  const len = fns.length
+function multiRequest(fns, max) {
+  const len = fns.length;
   const result = new Array(len).fill(false)
   let count = 0
 
   return new Promise((resolve, reject) => {
-    while (count < maxNum) {
+    while (count < max) {
       next()
     }
 
@@ -2157,15 +2371,14 @@ function multiRequest(fns, maxNum) {
           return reject(result)
         }
       }
-      const fn = fns[current]
-      fn().then((res) => {
+      let fn = fns[current]
+      Promise.resolve(fn()).then(res => {
         result[current] = res
-        if (current < len) {
-          next()
-        }
+        next()
       })
     }
   })
+
 }
 ```
 

@@ -829,6 +829,14 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 
 
 
+### vscode中Debugger
+
+[https://cn.vitest.dev/guide/debugging.html#vscode](https://cn.vitest.dev/guide/debugging.html#vscode)
+
+利用JavaScript Debug Terminal
+
+
+
 ### 快照
 
 [https://cn.vitest.dev/guide/snapshot.html](https://cn.vitest.dev/guide/snapshot.html)
@@ -838,6 +846,34 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 ### 模拟对象
 
 [https://cn.vitest.dev/guide/mocking.html](https://cn.vitest.dev/guide/mocking.html)
+
+
+
+### 测试覆盖率
+
+[https://cn.vitest.dev/guide/coverage.html](https://cn.vitest.dev/guide/coverage.html)
+
+Vitest 通过 [`c8`](https://github.com/bcoe/c8) 支持本机代码覆盖率。同时也支持 [`istanbul`](https://istanbul.js.org/)。
+
+[c8 vs istanbul vs nyc](https://npmtrends.com/c8-vs-istanbul-vs-nyc)
+
+[看懂「测试覆盖率报告」 ](https://github.com/JChehe/blog/issues/49)
+
+**注意需要版本：  "vitest": "0.29.8"**
+
+
+
+#### c8
+
+[https://github.com/bcoe/c8#readme](https://github.com/bcoe/c8#readme)
+
+c8 - native V8 code-coverage
+
+Code-coverage using [Node.js' built in functionality](https://nodejs.org/dist/latest-v10.x/docs/api/cli.html#cli_node_v8_coverage_dir) that's compatible with [Istanbul's reporters](https://istanbul.js.org/docs/advanced/alternative-reporters/).
+
+
+
+#### **[istanbul](https://github.com/gotwarlost/istanbul)**
 
 
 

@@ -2488,6 +2488,10 @@ When enabled, TypeScript will check all code paths in a function to ensure they 
 2. 制作npm包时，书写自己的声明文件，需要在package.json的typing/types字段注册声明文件的路径；
 3. 不使用ts时，也可以添加声明文件与（自己的）的模块存放在同一目录下，简单做一下数据结构体，对IDE参数声明也有用哦；
 
+在`.d.ts`文件中声明的变量或者模块，在其他文件中不需要使用`import`导入，可以直接使用。
+
+
+
 ### --lib选项
 
 有时，你想要解耦编译目标（即生成的 JavaScript 版本）和环境库支持之间的关系。例如对于 Promise，你的编译目标是 `--target es5`，但是你仍然想使用它，这时，你可以使用 `lib` 对它进行控制。

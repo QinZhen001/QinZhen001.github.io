@@ -207,11 +207,19 @@ win.webContents.openDevTools()
 
 #### contextIsolation
 
-`contextIsolation` Boolean (可选) - 是否在独立 JavaScript 环境中运行 Electron API和指定的`preload` 脚本. 默认为 `true`。 `预加载`脚本所运行的上下文环境只能访问其自身专用的`文档`和全局`窗口`，其自身一系列内置的JavaScript (`Array`, `Object`, `JSON`, 等等) 也是如此，这些对于已加载的内容都是不可见的。 Electron API 将只在`预加载`脚本中可用，在已加载页面中不可用。 这个选项应被用于加载可能不被信任的远程内容时来确保加载的内容无法篡改`预加载`脚本和任何正在使用的Electron api。 该选项使用的是与[Chrome内容脚本](https://developer.chrome.com/extensions/content_scripts#execution-environment)相同的技术。 你可以在开发者工具Console选项卡内顶部组合框中选择 'Electron Isolated Context'条目来访问这个上下文。
+`contextIsolation` Boolean (可选) - 是否在独立 JavaScript 环境中运行 Electron API和指定的`preload` 脚本. 默认为 `true`。 `预加载`脚本所运行的上下文环境只能访问其自身专用的`文档`和全局`窗口`，其自身一系列内置的JavaScript (`Array`, `Object`, `JSON`, 等等) 也是如此，这些对于已加载的内容都是不可见的。 Electron API 将只在`预加载`脚本中可用，在已加载页面中不可用。 这个选项应被用于加载可能不被信任的远程内容时来确保加载的内容无法篡改`预加载`脚本和任何正在使用的Electron api
 
 
 
+#### nodeIntegration
 
+是否启用Node integration. 默认值为 `false`.
+
+如果在HTML page中使用node相关方法，需要设置为true
+
+#### webSecurity
+
+当设置为 `false`, 它将禁用同源策略 (通常用来测试网站), 如果此选项不是由开发者设置的，还会把 `allowRunningInsecureContent`设置为 `true`. 默认值为 `true`。
 
 
 
@@ -273,6 +281,12 @@ IPC（Inter-[Process](https://baike.baidu.com/item/Process/1170280)[ Communicati
 vscode 是一个 electron 应用，窗口等功能的实现基于 electron
 
 [vscode 是怎么跑起来的](https://juejin.cn/post/6987420993568374797)
+
+
+
+## macOS
+
+
 
 
 
@@ -429,6 +443,8 @@ app.whenReady().then(() => {
 
 ## require is not define
 
+using node functions inside my HTML page 
+
 解决方案：
 
 ```tsx
@@ -444,13 +460,6 @@ app.whenReady().then(() => {
 ```
 
 nodeIntegration 和 contextIsolation 都要设置缺一不可
-
-
-
-- `nodeIntegration` Boolean (可选) - 是否启用Node integration. 默认值为 `false`.
-- `contextIsolation` Boolean (可选) - 是否在独立 JavaScript 环境中运行 Electron API和指定的`preload` 脚本. 默认为 `true`。 `预加载`脚本所运行的上下文环境只能访问其自身专用的`文档`和全局`窗口`，其自身一系列内置的JavaScript (`Array`, `Object`, `JSON`, 等等) 也是如此，这些对于已加载的内容都是不可见的。 Electron API 将只在`预加载`脚本中可用，在已加载页面中不可用。
-
-
 
 
 
