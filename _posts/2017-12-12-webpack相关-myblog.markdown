@@ -547,15 +547,9 @@ define('MyLibrary', [], function() {
 
 
 
-
-
 Configure which module or modules will be exposed via the libraryTarget. The default entry return value is the namespace or default module returned by your entry file. The examples below demonstrate the effect of this config when using libraryTarget: "var", but any target may be used.
 
 配置哪些或哪些模块将通过libraryTarget公开。默认条目返回值是条目文件返回的名称空间或默认模块。下面的例子演示了这个配置在使用libraryTarget: "var"时的效果，但是任何目标都可以使用。
-
-
-
----
 
 
 
@@ -568,15 +562,11 @@ Configure which module or modules will be exposed via the libraryTarget. The def
 var MyDefaultModule = _entry_return_.default;
 ```
 
+只会暴露default上面的东西。
 
 
 
 
-`libraryExport: "MyModule"` - The **specified module** will be assigned to the library target:
-
-```js
-var MyModule = _entry_return_.MyModule;
-```
 
 ## context
 
@@ -2634,6 +2624,31 @@ webpack.config
         Buffer: ['buffer', 'Buffer'],
       }),
     ],
+```
+
+
+
+### not provide export named 'default'
+
+[https://bobbyhadz.com/blog/javascript-requested-module-not-provide-export-named-default](https://bobbyhadz.com/blog/javascript-requested-module-not-provide-export-named-default)
+
+例子：
+
+```ts
+// index.js
+// 👇️ named export
+export function sum(a, b) {
+  return a + b;
+}
+```
+
+引入：
+
+```tsx
+// ⛔️ The requested module './index.js' does not provide
+// an export named 'default'
+import sum from './index.js';
+console.log(sum(10, 10));
 ```
 
 
