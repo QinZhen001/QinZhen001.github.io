@@ -336,6 +336,8 @@ commonjs 规范只定义了exports，而 module.exports是nodejs对commonjs的�
 
 ### __esModule 的作用
 
+[https://toyobayashi.github.io/2020/06/29/ESModule/](https://toyobayashi.github.io/2020/06/29/ESModule/)
+
 [简要说明 Webpack 和 TypeScript 编译器对__esModule的处理方式](https://toyobayashi.github.io/2020/06/29/ESModule/)
 
 **`__esModule` 是用来兼容 ES 模块导入 CommonJS 模块默认导出方案**

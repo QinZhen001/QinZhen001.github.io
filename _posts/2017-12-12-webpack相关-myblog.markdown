@@ -1858,6 +1858,65 @@ In this example, the export `b` can be removed in production mode.
 
 
 
+### 处理 ES 导入 CommonJS 
+
+```tsx
+(function(modules) {
+  // ...
+  function __webpack_require__ (moduleId) {
+    // ...
+  }
+
+  // ...
+
+  __webpack_require__.d = function(exports, name, getter) {
+    if(!__webpack_require__.o(exports, name)) {
+      Object.defineProperty(exports, name, { enumerable: true, get: getter });
+    }
+  };
+
+  __webpack_require__.r = function(exports) {
+    if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+      Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+    }
+    Object.defineProperty(exports, '__esModule', { value: true }); // <-- 重点
+  };
+
+  __webpack_require__.n = function(module) {
+    var getter = module && module.__esModule ?
+      function getDefault() { return module['default']; } :
+      function getModuleExports() { return module; }; // <-- 兼容处理
+    __webpack_require__.d(getter, 'a', getter);
+    return getter;
+  };
+
+  return __webpack_require__(__webpack_require__.s = 0);
+})({
+  "./mod.js": function (module, exports) {
+    function foo () {}
+    function bar () {}
+    module.exports = foo
+    module.exports.bar = bar
+  },
+  "./index.js": function (module, __webpack_exports__, __webpack_require__) {
+;
+    __webpack_require__.r(__webpack_exports__); // <-- 标识 ES 模块
+    var _mod_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./mod.js");
+    var _mod_js__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(_mod_js__WEBPACK_IMPORTED_MODULE_0__);
+
+    console.log(_mod_js__WEBPACK_IMPORTED_MODULE_0__["bar"])
+    console.log(_mod_js__WEBPACK_IMPORTED_MODULE_0___default.a)
+    console.log(_mod_js__WEBPACK_IMPORTED_MODULE_0___default()())
+  },
+  0: function (module, exports, __webpack_require__) {
+    module.exports = __webpack_require__("./index.js");
+  }
+  // ...
+})
+```
+
+如果 __esModule 为 `true` 那么 `a` 就是 `module.exports.default`，Getter 调用也返回 `module.exports.default`，否则 `a` 的值和 Getter 返回值就是 `module.exports`
+
 
 
 # 面试

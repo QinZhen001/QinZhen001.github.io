@@ -86,6 +86,16 @@ Electron Builder 是一个完备的Electron应用打包和分发解决方案，�
 
 
 
+#### install-app-deps
+
+> To ensure your native dependencies are always matched electron version, simply add script "postinstall": "electron-builder install-app-deps" to your package.json.
+
+```bash
+"postinstall": "electron-builder install-app-deps",
+```
+
+
+
 
 
 ## electron-reload
@@ -207,7 +217,17 @@ win.webContents.openDevTools()
 
 #### contextIsolation
 
+[https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation](https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation)
+
+自 Electron 12 以来，默认情况下已启用上下文隔离，并且它是 *所有应用程序*推荐的安全设置。
+
+**如果启用上下文隔离，预加载脚本访问的 `window` 对象并不是render网站所能访问的对象。**
+
+
+
 `contextIsolation` Boolean (可选) - 是否在独立 JavaScript 环境中运行 Electron API和指定的`preload` 脚本. 默认为 `true`。 `预加载`脚本所运行的上下文环境只能访问其自身专用的`文档`和全局`窗口`，其自身一系列内置的JavaScript (`Array`, `Object`, `JSON`, 等等) 也是如此，这些对于已加载的内容都是不可见的。 Electron API 将只在`预加载`脚本中可用，在已加载页面中不可用。 这个选项应被用于加载可能不被信任的远程内容时来确保加载的内容无法篡改`预加载`脚本和任何正在使用的Electron api
+
+
 
 
 
@@ -217,6 +237,8 @@ win.webContents.openDevTools()
 
 如果在HTML page中使用node相关方法，需要设置为true
 
+
+
 #### webSecurity
 
 当设置为 `false`, 它将禁用同源策略 (通常用来测试网站), 如果此选项不是由开发者设置的，还会把 `allowRunningInsecureContent`设置为 `true`. 默认值为 `true`。
@@ -225,11 +247,17 @@ win.webContents.openDevTools()
 
 
 
-## 上下文隔离
+#### sandbox
 
-[https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation](https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation)
+[https://www.electronjs.org/zh/docs/latest/tutorial/sandbox](https://www.electronjs.org/zh/docs/latest/tutorial/sandbox)
 
-上下文隔离功能将确保您的 `预加载`脚本 和 Electron的内部逻辑 运行在所加载的 [`webcontent`](https://www.electronjs.org/zh/docs/latest/api/web-contents)网页 之外的另一个独立的上下文环境里。 这对安全性很重要，因为它有助于阻止网站访问 Electron 的内部组件 和 您的预加载脚本可访问的高等级权限的API 。
+**如果开启了sandbox，preload中无法使用第三方库。**
+
+
+
+boolean (可选)-如果设置该参数, 沙箱的渲染器将与窗口关联, 使它与Chromium OS-level 的沙箱兼容, 并禁用 Node. js 引擎。 它与 `nodeIntegration` 的选项不同，且预加载脚本的 API 也有限制
+
+在沙盒中，渲染进程只能透过 进程间通讯 (inter-process communication, IPC) 委派任务给主进程的方式， 来执行需权限的任务 (例如：文件系统交互，对系统进行更改或生成子进程)
 
 
 
@@ -288,6 +316,12 @@ vscode 是一个 electron 应用，窗口等功能的实现基于 electron
 
 
 
+## electron-updater
+
+[https://www.electron.build/auto-update.html](https://www.electron.build/auto-update.html)
+
+
+
 ## @electron-toolkit/preload
 
 > Easy to expose Electron APIs (ipcRenderer,webFrame,process) to renderer.
@@ -327,7 +361,23 @@ electron使用的工具包
 
 ### optimizer
 
-// TODO:
+Default open or close DevTools by `F12` in development and ignore `CommandOrControl + R` in production. Furthermore, you can use `shortcutOptions` to control more shortcuts.
+
+在开发中默认使用F12打开或关闭DevTools，而在生产中忽略commandcontrol + R。
+
+```tsx
+// main.js
+import { app } from 'electron'
+import { optimizer } from '@electron-toolkit/utils'
+
+app.whenReady().then(() => {
+  app.on('browser-window-created', (_, window) => {
+    optimizer.watchWindowShortcuts(window)
+  })
+})
+```
+
+
 
 
 

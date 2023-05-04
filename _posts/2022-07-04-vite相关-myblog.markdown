@@ -178,7 +178,7 @@ tip: resolveId 默认不需要有返回值
 
 
 
-# plugin usual
+# 常用 plugin 
 
 常用的一些plugin
 
@@ -220,15 +220,23 @@ react-refresh主要有两个文件，一个是babel的插件ReactFreshBabelPlugi
 
 
 
-
-
-#### vite-dev-rpc
+## vite-dev-rpc
 
 [https://www.npmjs.com/package/vite-dev-rpc](https://www.npmjs.com/package/vite-dev-rpc)
 
 Remote procedure call for client-server communication in Vite plugins.
 
 
+
+## vite-plugin-commonjs-externals
+
+Provides commonjs externals support for Vite.
+
+为Vite提供commonjs外部支持。
+
+Prevent bundling of certain *esm* `import`ed packages and instead retrieve these external dependencies at runtime by *commonjs* `require`.
+
+防止绑定某些esm导入的包，而是在运行时通过commonjs require检索这些外部依赖项。
 
 
 
