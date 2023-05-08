@@ -15,11 +15,11 @@ tags:
 ## 正文
 [网页链接](https://segmentfault.com/a/1190000011595620#articleHeader5)
 
+[Some things you may think about PostCSS](https://www.julian.io/articles/postcss.html)
+
 **一个后处理器**
 
-PostCSS 可以直观的理解为：它就是一个平台
-
-PostCSS 它需要一个插件系统才能够发挥作用。我们可以通过“插件”来传递AST，然后再把AST转换成一个串，最后再输出到目标文件中去
+本身是一个 Node.js 模块，可将 CSS 解析为[抽象语法树 (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)；通过任意数量的“插件”函数传递该 AST；然后将该 AST 转换回字符串
 
 [https://segmentfault.com/a/1190000003909268](https://segmentfault.com/a/1190000003909268)
 
@@ -29,8 +29,6 @@ postcss处理css的方式，主要区分三部分：
 * parser过程：将css字符串解析成可供我们操作的JavaScript对象
 * processor过程：我们应用postcss插件、或是自定义插件，都是在这个过程中，根据postcss提供的API，对parser生成的js对象做相应调整；
 * stringfier过程：将我们处理后的js对象，再转换回为css字符串
-
-
 
 [https://segmentfault.com/a/1190000015155639](https://segmentfault.com/a/1190000015155639)
 

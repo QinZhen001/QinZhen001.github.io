@@ -183,9 +183,27 @@ DNS服务器想给你返回什么IP就给你返回什么，所以他可以在幕
 
 
 
+## Headless
+
+[https://developer.chrome.com/blog/headless-chrome/](https://developer.chrome.com/blog/headless-chrome/)
+
+It brings **all modern web platform features** provided by Chromium and the Blink rendering engine to the command line.
 
 
 
+### [new-headless](https://developer.chrome.com/articles/new-headless/)
+
+```tsx
+const browser = await puppeteer.launch({
+  headless: 'new',
+  // `headless: true` (default) enables old Headless;
+  // `headless: 'new'` enables new Headless;
+  // `headless: false` enables “headful” mode.
+});
+
+```
+
+实现和维护这个独立的无头浏览器会带来大量的工程开销——但这并不是唯一的问题。因为 Headless 是一个单独的实现，所以它有自己的错误和功能，而这些错误和功能在 headful Chrome 中是不存在的。这造成了一种令人困惑的情况，即任何自动化浏览器测试都可能在有头模式下通过但在无头模式下失败，反之亦然——这是自动化工程师的主要痛点。例如，它还排除了任何依赖于安装浏览器扩展的自动化测试。这同样适用于任何其他浏览器级别的功能：除非 Headless 有自己的、单独的实现，否则它不受支持。2021 年，Chrome 团队着手解决这个问题，一劳永逸地统一了 Headless 和 headful 模式。
 
 
 

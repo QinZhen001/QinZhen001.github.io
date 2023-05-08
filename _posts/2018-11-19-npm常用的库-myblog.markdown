@@ -746,11 +746,9 @@ Example: `~/.config/configstore/some-id.json`
 
 [ https://www.npmjs.com/package/puppeteer ]( https://www.npmjs.com/package/puppeteer )
 
-
+[puppeteer vs puppeteer-core](https://zhaoqize.github.io/puppeteer-api-zh_CN/#?product=Puppeteer&version=puppeteer-v20.1.1&show=api-puppeteer-vs-puppeteer-core)
 
 Puppeteer 是一个Node库， 它提供高级API，通过DevTools Protocol 来控制Chrome 或 Chromium。 Puppeteer 默认运行为headless ，但是可以配置为运行为non-headless 。
-
-### 
 
 - 生成页面截图或PDF
 - 抓取SPA 并生成预渲染内容（SSR）

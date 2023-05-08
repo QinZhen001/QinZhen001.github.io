@@ -396,7 +396,7 @@ function retry(fn, num, interval) {
 ### 抖音一面
 
 * 狂问项目。项目架构，项目难点，项目优化
-* web worker 会跨域吗？ **如果要传递很大数据怎么办？**  (传递很大数据  => 这样纸在传递过程中会耗时很大，感觉上web worker的意义也不大了)  （可以尝试SharedArrayBuffer SharedWorker）
+* web worker 会跨域吗？ **如果要传递很大数据怎么办？**  (**Web Worker 提供了一种转移数据的方式Transferable，允许主线程把二进制数据直接转移给子线程**)  （可以尝试SharedArrayBuffer SharedWorker）
 * 前端性能指标。fcp。。。 谁制定的？google
 * 前端跨项目模块之间应用。pnpm 和 webpack5 联邦模块。
 *  webpack5 联邦模块实现原理？
@@ -444,11 +444,37 @@ function findMax(arr = []) {
 
 
 
-#### web worker 跨域
+#### web worker 
+
+##### 跨域
 
 [https://zhuanlan.zhihu.com/p/47878150](https://zhuanlan.zhihu.com/p/47878150)
 
 Web Workers 在使用过程中要求加载的 JS 文件 URL 必须与当前 Domain 保持同源，即 同源策略，否则就会抛出错误。
+
+
+
+##### postMessage transfer
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Worker/postMessage](https://developer.mozilla.org/zh-CN/docs/Web/API/Worker/postMessage)
+
+[可转移对象](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects)
+
+transfer: 一个可选的、会被转移所有权的可转移对象数组。如果一个对象的所有权被转移，它将在发送它的上下文中变为不可用（中止），而仅在接收方的 worker 中可用。
+
+像 ArrayBuffer、MessagePort 或 ImageBitmap 类的实例才是可转移对象，才能够被转移。不能将 null 作为 transfer 的值。
+
+
+
+##### Worker 之间通信
+
+[MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/Channel_Messaging_API/Using_channel_messaging)
+
+```js
+const channel = new MessageChannel();
+receivingWorker.postMessage({port: channel.port1}, [channel.port1]);
+sendingWorker.postMessage({port: channel.port2}, [channel.port2]);
+```
 
 
 

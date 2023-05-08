@@ -270,6 +270,42 @@ Node normally exits with a 0 status code （正常情况） when no more async o
 
 
 
+### 环境变量
+
+[https://github.com/frmachao/frmachao.github.io/issues/4](https://github.com/frmachao/frmachao.github.io/issues/4)
+
+错误做法：
+
+```tsx
+cross-env NODE_ENV=production && npm run clean && webpack
+```
+
+此类的设置不能使环境变量生效。原因是 && 符号把命令语句分离成了多个，每一个命令执行的环境都是隔离的，而 cross-env 无法作用于其他环境的命令。
+
+正确做法：
+
+```tsx
+cross-env NODE_ENV=production npm run clean
+```
+
+
+
+
+
+### node:module 语法
+
+[https://savokiss.com/tech/nodejs-module-syntax.html](https://savokiss.com/tech/nodejs-module-syntax.html)
+
+```bash
+import fs from 'node:fs/promises';
+```
+
+
+
+
+
+
+
 ### 模块的缓存
 
 **这是一个非常重要的知识点**
