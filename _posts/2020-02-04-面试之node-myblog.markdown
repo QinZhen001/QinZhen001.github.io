@@ -216,7 +216,7 @@ module.exports = function () { return 'foo'; };
 
 
 
-## nodejs 的单线程架构模型
+## 单线程架构模型
 
 优势：
 
@@ -231,7 +231,7 @@ module.exports = function () { return 'foo'; };
 
 > 当然这些劣势都已经有成熟的解决方案了，使用 PM2 管理进程，或者上 K8S 也可以
 
-##  **nodejs 的事件循环（重要）**
+##  **事件循环（重要）**
 
 [http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html](http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html)
 
@@ -628,6 +628,48 @@ InterProcess Communication
 [https://www.jianshu.com/p/c1015f5ffa74](https://www.jianshu.com/p/c1015f5ffa74)
 
 每个进程各自有不同的用户地址空间，任何一个进程的全局变量在另一个进程中都看不到，所以进程之间要交换数据必须通过内核，在内核中开辟一块缓冲区，进程1把数据从用户空间拷到内核缓冲区，进程2再从内核缓冲区把数据读走，内核提供的这种机制称为**进程间通信（IPC，InterProcess Communication）**
+
+
+
+## 文件读取最大值
+
+**在读取大文件时，会有读取文件大小的限制 (最大2GB)**
+
+```js
+const readFileTest = async () => {
+    let data = await fs.promises.readFile("./video.mp4")
+    console.log(data)
+}
+
+
+// RangeError [ERR_FS_FILE_TOO_LARGE]: File size (5699669796) is greater than 2 GB
+```
+
+解决：
+
+通过Steam的方式读取
+
+```js
+const fs = require('fs')
+const readFileTest = () => {
+    var data = ''
+    var rs = fs.createReadStream('./video.mp4');
+    rs.on('data', function(chunk) {
+        data += chunk;
+     });
+    rs.on('end',function(){
+        console.log(data);
+    });
+    rs.on('error', function(err){
+        console.log(err.stack);
+     });
+}
+readFileTest()
+
+// RangeError: Invalid string length
+```
+
+此时是因为data的长度超过了最大限制，比如2048M等。因此在用Steam处理的时候，在对读取结果的保存时，要注意文件的大小，千万不能超过默认的Buffer的最大值。上述这种情况，我们不用data += chunk将数据全部保存在一个大的data中，我们可以边读取边处理。
 
 
 

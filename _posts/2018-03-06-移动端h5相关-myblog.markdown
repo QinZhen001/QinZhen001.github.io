@@ -1380,9 +1380,9 @@ NSString *jsStr = @"执行的JS代码";
 
 ### Web -> Native
 
-- **注入 API**
-- **劫持 URL Scheme**
-- **弹窗拦截**
+- 拦截URL Scheme ：Native的WebView拦截Web页面发出的特定格式的网络请求
+- 拦截prompt API ：Native的WebView拦截Web页面中的window.prompt等api的调用
+- Native API注入：Native在javaScript环境上下文直接注入javascript方法以供调用
 
 ----
 
@@ -1454,10 +1454,18 @@ window.JSBridge.foo2(); // 返回 'foo2:test'
 
 #### **URL SCHEME**
 
+> 这种方式不推荐，只适用于demo或低频场景
+>
+> 因为多次连续调用时，客户端只会收到最后一次消息
+
+
+
 **缺陷**：
 
 * 使用 iframe.src 发送 URL SCHEME 会有 url 长度的隐患。
 * 创建请求，需要一定的耗时，比注入 API 的方式调用同样的功能，耗时会较长。
+
+
 
 为什么选择 iframe.src 不选择 locaiton.href ？
 

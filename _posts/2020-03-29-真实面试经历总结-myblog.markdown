@@ -1036,6 +1036,19 @@ function print(grid) {
 
 
 
+### 抖音中台二面
+
+* node 读取文件的最大值
+* electron 打包这么大怎么办
+* 小程序渲染  (基于 WebView 和原生控件混合渲染的方式) (目前[原生组件](https://developers.weixin.qq.com/miniprogram/dev/component/native-component.html)均已支持同层渲染，建议使用 [image](https://developers.weixin.qq.com/miniprogram/dev/component/image.html) 替代cover-image )  (**通过一定的技术手段把「原生组件」直接渲染到 `WebView` 层级上**，)
+* 爬虫遇见白屏怎么办？  （使用puppeteer）
+* js bridge
+* long task
+
+跳出研发的角度看事情
+
+
+
 
 
 ## 阿里
@@ -1043,6 +1056,8 @@ function print(grid) {
 面试官会对着一个问题不断深挖，促使你不断地优化你回答的方案
 
 盒马hr最多接受**三年两跳**，遂只能中止盒马的面试流程，没有达到最后一面，GG **（据了解不同团队的hr要求不一样 别的团队并没有这个限制）**
+
+
 
 ### 盒马一面(笔试)
 
