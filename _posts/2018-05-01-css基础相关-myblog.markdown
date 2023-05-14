@@ -1625,6 +1625,29 @@ display属性
 
 
 
+### table
+
+合并border
+
+```css
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+th {
+  border: 1px solid rgb(142, 136, 136);
+}
+
+td {
+  border: 1px solid rgb(142, 136, 136);
+}
+```
+
+
+
+
+
 ### 文字溢出显示省略号
 
 [https://www.daqianduan.com/6179.html](https://www.daqianduan.com/6179.html)
