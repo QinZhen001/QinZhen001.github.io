@@ -853,6 +853,36 @@ value[0][1]; // Error
 
 `any` means "turn off the type check". it's a compiler directive and kind of meta programming.
 
+unknown 类型要安全得多，因为它迫使我们执行额外的类型检查来对变量执行操作。
+
+any 和 unknown 的最大区别是, unknown 是 top type (任何类型都是它的 subtype) , 而 any 即是 top type, 又是 bottom type (它是任何类型的 subtype ) ,这导致 any 基本上就是放弃了任何类型检查.
+
+
+
+**TypeScript 强制要求在使用`unknown`之前必须确定其具体类型，而`any`不需要。**
+
+举个例子:
+
+```tsx
+class BoardUIStore {
+  aaa: string
+  constructor() {
+    this.aaa = "aaa"
+  }
+}
+
+const boardUIStore = new BoardUIStore()
+const a = boardUIStore.aaa as unknown
+const b = boardUIStore.aaa as any
+
+(a as string).toString()   // unknown 必须要设置类型
+b.toString()  // any 相当于不进行任何校验
+```
+
+结论：
+
+**使用unknown 可以保证类型安全，使用 any 则彻底放弃了类型检查 , 在很多情况下, 我们可以使用 unknow 来替代 any , 既灵活, 又可以继续保证类型安全**
+
 
 
 
