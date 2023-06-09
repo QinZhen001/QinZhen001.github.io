@@ -2149,27 +2149,17 @@ if (dpr >= 2) {
 
 
 
+### grid 布局
 
-
-
-
-
+[https://juejin.cn/post/6854573220306255880](https://juejin.cn/post/6854573220306255880)
 
 
 
 ## css3
 
-
-
-
-
 ###  @supports 
 
-
-
 @supports是CSS3新引入的规则之一，主要用于检测当前浏览器是否支持某个CSS属性并加载具体样式.
-
-
 
 ```css
 @supports (display: grid) {

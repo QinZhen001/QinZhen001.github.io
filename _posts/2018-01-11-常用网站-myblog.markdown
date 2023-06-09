@@ -363,9 +363,11 @@ vue 单文件组件的编译结果
 
 
 
+### browserslist
 
+浏览器兼容列表
 
-
+https://browserslist.dev/
 
 
 
@@ -436,6 +438,23 @@ Vercel是面向前端开发人员的平台，提供创新者在灵感迸发时�
 We enable teams to iterate quickly and develop, preview, and ship delightful user experiences. Vercel has zero-configuration support for 35+ frontend frameworks and integrates with your headless content, commerce, or database of choice.
 
 我们使团队能够快速迭代、开发、预览和发布令人愉快的用户体验。Vercel对35个以上前端框架提供零配置支持，并与您选择的无头内容、商业或数据库集成。
+
+
+
+#### cli
+
+[https://vercel.com/docs/cli](https://vercel.com/docs/cli)
+
+通过cli链接到vercel上面的项目，可以本地跑vercel的命令
+
+```bash
+// 拉取环境变量
+vercel env pull
+```
+
+
+
+
 
 
 

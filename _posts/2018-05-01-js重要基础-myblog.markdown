@@ -1022,6 +1022,24 @@ requestAnimationFrame打印时机不稳定，因为不是每次事件循环都�
 
 
 
+
+
+### PointerEvent
+
+> 用于web白板中，可适用多个设备，如ipad的触控笔
+
+[Pointer Events API 介绍](https://juejin.cn/post/6844904046159986695)
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Pointer_events](https://developer.mozilla.org/zh-CN/docs/Web/API/Pointer_events)
+
+目前绝大多数的 Web 内容都假设用户的指针定点设备为鼠标。然而，近年来的新兴设备支持更多不同方式的指针定点输入，如各类触控笔和触摸屏幕等。这就有必要扩展现存的定点设备事件模型，以有效追踪各类*[指针事件](https://developer.mozilla.org/zh-CN/docs/Web/API/Pointer_events#term_pointer_event)*。
+
+我们可以简单地将 Pointer Events 理解成是 Mouse Event 和 Touch Event 的结合。
+
+
+
+
+
 ## 补充
 
 
@@ -4816,6 +4834,67 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', eve
 像 Windi CSS 这种库
 
 默认情况下，启用的是 `class` 模式。
+
+
+
+
+
+### Mutex 锁
+
+```tsx
+export class Mutex {
+  private mutex = Promise.resolve();
+
+  lock(): PromiseLike<() => void> {
+    let begin: (unlock: () => void) => void = () => null;
+
+    this.mutex = this.mutex.then(() => {
+      // unlock() 调用之后 触发这里then的回调
+      return new Promise(begin);
+    });
+
+    return new Promise((res) => {
+      begin = res;
+    });
+
+  }
+
+  async dispatch<T>(fn: (() => T) | (() => PromiseLike<T>)): Promise<T> {
+    const unlock = await this.lock();
+    try {
+      return await Promise.resolve(fn());
+    } finally {
+      unlock();
+    }
+  }
+}
+```
+
+例子：
+
+```tsx
+const sleep1 = async () => {
+  await new Promise(resolve => setTimeout(() => {
+    console.log("sleep1")
+    resolve(111)
+  }, 5000))
+}
+
+const sleep2 = async () => {
+  await new Promise(resolve => setTimeout(() => {
+    console.log("sleep2")
+    resolve(2222)
+  }, 10000))
+}
+
+const mutex = new Mutex()
+mutex.dispatch(sleep1)  // 先执行完这个
+mutex.dispatch(sleep2)  // 才会执行
+```
+
+
+
+
 
 
 

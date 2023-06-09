@@ -494,6 +494,16 @@ import "regenerator-runtime/runtime";
 
 
 
+## regenerator-runtime 和 core-js
+
+regenerator-runtime 是一个由 Facebook 团队开发的专门用于支持 ECMAScript 6+ async/await、yield、generator 函数的运行时库，它是在 core-js 库的基础上构建的。
+
+而 core-js 则是一个非常全面的 JavaScript 标准库，用于模拟 ECMAScript 最新标准中提到的新特性，比如 Promise、Map、Set、Symbol、Array.from 等，以及各种 polyfill，可以实现在旧浏览器上使用最新的语言特性。在实现 async/await、yield、generator 函数时，需要使用 regenerator-transform 插件，它会将源代码中的 yield、async/await 等代码转换成通过 regenerator-runtime 运行的代码。
+
+因此，可以说 regenerator-runtime 是 core-js 库的一部分，是其在 async/await、yield、generator 函数方面的补充。
+
+
+
 
 
 

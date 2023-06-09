@@ -240,6 +240,122 @@ Prevent bundling of certain *esm* `import`ed packages and instead retrieve these
 
 
 
+## @vitejs/plugin-legacy
+
+vitejs/plugin-legacy 插件用于在旧版浏览器中支持 ES2015+ 特性
+
+
+
+### targets
+
+targets 是一个对象，可指定要支持的最低浏览
+
+```
+{
+  targets: {
+    ie: '11'
+  }
+}
+```
+
+上面的配置使用了 IE11 最小支持版本。当使用该插件对代码进行转换时，Vite 会尝试根据这个目标将代码转换为 ES5 代码。
+
+The query is also [Browserslist compatible](https://github.com/browserslist/browserslist)
+
+也就说不是必要填targets 也可用browserslist 的形式表达
+
+
+
+### globalThis is not defined 问题
+
+[https://github.com/vitejs/vite/discussions/7915](https://github.com/vitejs/vite/discussions/7915)
+
+```ts
+import legacy from '@vitejs/plugin-legacy';
+
+export default defineConfig({
+  // For production build environments only
+  build: {
+    target: 'es2015',
+  },
+  plugins: [
+    // For production build environments only
+    legacy({
+      targets: ['chrome >= 64', 'edge >= 79', 'safari >= 11.1', 'firefox >= 67'],
+      ignoreBrowserslistConfig: true,
+      renderLegacyChunks: false,
+      /**
+       * Polyfills required by modern browsers
+       *
+       * Since some low-version modern browsers do not support the new syntax
+       * You need to load polyfills corresponding to the syntax to be compatible
+       * At build, all required polyfills are packaged according to the target browser version range
+       * But when the page is accessed, only the required part is loaded depending on the browser version
+       *
+       * Two configuration methods:
+       *
+       * 1. true
+       *  - Automatically load all required polyfills based on the target browser version range
+       *  - Demerit: will introduce polyfills that are not needed by modern browsers in higher versions,
+       *    as well as more aggressive polyfills.
+       *
+       * 2、string[]
+       *  - Add low-version browser polyfills as needed
+       *  - Demerit: It needs to be added manually, which is inflexible;
+       *    it will be discovered after the production is deployed, resulting in production failure! ! !
+       */
+      modernPolyfills: ['es/global-this'],
+      //  or
+      // modernPolyfills: true,
+    }),
+  ],
+});
+
+```
+
+
+
+### Polyfills 和 additionalLegacyPolyfills 
+
+* Polyfills：这是一组默认的 polyfills，包括一些常见的 JavaScript API、ES2015+ 特性和浏览器支持的功能。这些 polyfills 能够在旧版浏览器中模拟现代浏览器的功能，使得你的代码可以跨浏览器运行。这些 polyfills 不需要手动配置，在启用插件时会默认加载。
+* additionalLegacyPolyfills：这是一个用户定义的选项，用于添加额外的 polyfills。如果你使用了某些 ES2015+ 特性或浏览器 API，而默认的 Polyfills 无法支持这些特性，你可以在这里添加相应的 polyfills。这些 polyfills 需要手动配置，并且会在启用插件时一起加载。
+
+
+
+### 结合 regenerator-runtime
+
+regenerator-runtime 是一个将 generator 和 async/await 等语法转换为 ES5 版本的库，用于在不支持这些语法的浏览器中运行。
+
+这两者结合使用，可以让我们在 Vite 中使用 generator 和 async/await 等语法，并且能够在不支持这些语法的浏览器中运行。
+
+```
+npm i regenerator-runtime -D
+```
+
+在项目的入口文件中引入 regenerator-runtime
+
+```tsx
+import 'regenerator-runtime/runtime'
+```
+
+```tsx
+// 在 vite.config.js 中配置
+import legacy from '@vitejs/plugin-legacy'
+
+export default {
+  plugins: [
+    legacy({
+      targets: ['ie >= 11'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+    })
+  ]
+}
+```
+
+
+
+
+
 # 补充
 
 

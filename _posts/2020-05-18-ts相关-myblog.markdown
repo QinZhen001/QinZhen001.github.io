@@ -2812,6 +2812,12 @@ with these guys:
 
 
 
+### resolveJsonModule
+
+tsconfig.json 中的 resolveJsonModule 设置为 true 时，可以在 TypeScript 中直接引入 .json 文件，而无需进行特殊处理。这个选项的作用是让 TypeScript 支持解析 JSON 文件。当这个选项被启用时，TypeScript 就可以像处理 .ts/.tsx 文件一样处理 .json 文件。因此我们可以在 TypeScript 中直接使用 import 导入 .json 文件，而不需要自己手动读取和解析。这个选项通常在处理配置文件或者国际化数据时会用到。
+
+
+
 
 
 ## ts结合react
@@ -3121,6 +3127,26 @@ const count = ref(ref(ref(ref(2))))
 
 
 
+### 定义一定长度数组
+
+[https://juejin.cn/post/6844903781633622023](https://juejin.cn/post/6844903781633622023)
+
+使用元组来定义类型
+
+```
+type Position = [number, number, number]
+let p: Position = [1, 2, 3];
+```
+
+假如我们想定义一个长度限制在50的数组呢?难不成要写50遍 number?
+
+ Typescript 3.0 中引入一个新的特性叫[元组展开](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2FMicrosoft%2FTypeScript%2Fwiki%2FWhat%27s-new-in-TypeScript%23rest-elements-in-tuple-types)
+
+```tsx
+type Tuple50<TItem> = [TItem, ...TItem[]] & { length: 50 };
+let iMArray: Tuple50<number> = [0,...,50];
+```
+
 
 
 
@@ -3296,6 +3322,59 @@ const foo: Foo = ['1', '2', '3']; // OK
 
 
 ## tsc命令
+
+[TSC编译时指定生成d.ts的目录 并解决无法导入package.json和alias别名的问题](https://chengpeiquan.com/article/tsc-compiles-dts.html)
+
+```tsx
+// ts config 
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "./dist/types"
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules"]
+}
+```
+
+
+
+### 无法导入package.json
+
+[https://chengpeiquan.com/article/tsc-compiles-dts.html](https://chengpeiquan.com/article/tsc-compiles-dts.html)
+
+尝试关闭 `tsconfig` 里的 `resolveJsonModule` 选项
+
+
+
+### 合并文件
+
+[https://github.com/SitePen/dts-generator](https://github.com/SitePen/dts-generator)
+
+这样构建出来的 DTS 文件只有一个，比如 `dist/types/index.d.ts` 。
+
+
+
+
+
+#### 处理别名
+
+如果用了 `alias` 别名，会发现生成的 DTS 文件并不支持 `alias` （比如源码里通过 `@foo/bar` 来代替 `src/foo/bar` 或者 `../../foo/bar` ）。
+
+这个也是要借助外部插件来实现转换，这里测试了几款外部工具，最有效的是 [tscpaths](https://github.com/joonhocho/tscpaths) 。
+
+需要明确的是，它本身不支持编译生成 DTS 文件，而是在 TSC 编译时，根据 `tsconfig.json` 的 `paths` 配置，将 TypeScript 编译出来的 DTS 文件里的绝对路径替换为相对路径。
+
+```tsx
+tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/types
+```
+
+
 
 
 
@@ -4663,7 +4742,29 @@ type B = {
 
 
 
+## ts(6133) 
+
+["is declared but never used"?](https://stackoverflow.com/questions/44565671/ignore-ts6133-import-is-declared-but-never-used)
+
+声明了引用但是没有使用
+
+```
+"noUnusedParameters": false,
+"noUnusedLocals": false,
+```
+
+
+
+## ts(4094)
+
+exported class expression may not be private or protected
 
 
 
 
+
+
+
+## ts(2527)
+
+The inferred type of 'createEventBase' references an inaccessible 'unique symbol' type. A type annotation is necessary.ts(2527)
