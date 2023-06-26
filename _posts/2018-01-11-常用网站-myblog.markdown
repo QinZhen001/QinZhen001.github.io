@@ -371,9 +371,11 @@ https://browserslist.dev/
 
 
 
+### mobile-friendly
 
+判断网页是否适合在移动设备上浏览
 
-
+https://search.google.com/test/mobile-friendly
 
 
 

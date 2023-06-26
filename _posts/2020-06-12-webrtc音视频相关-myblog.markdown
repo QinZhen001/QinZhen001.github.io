@@ -414,6 +414,95 @@ const file = await fetchFile(mp4Src)
 
 
 
+## 音频
+
+[https://zhuanlan.zhihu.com/p/34295106](https://zhuanlan.zhihu.com/p/34295106)
+
+声音是一种波。计算机只能处理离散的信号，通过收集足够多的离散的信号，来不断逼近波形，这个过程我们叫做采样。
+
+
+
+### **采样频率(Sample Rate)**
+
+每秒采集声音的数量，它用赫兹(Hz)来表示。
+
+
+
+### **声音通道(Channel)**
+
+每个通道存储的声音会从其中的一个喇叭出来就好了，不过可以通过算法的模拟来让没有那么多喇叭也能出来类似的效果。
+
+
+
+### PCM 数据
+
+PCM 数据是脉冲编码调制（Pulse Code Modulation）的缩写，是一种数字音频编码方式。在 PCM 中，音频信号会被采样成一系列的数字化值，每个值对应着采样时的声音强度。这些数字化值通常是用二进制数表示，可以存储在计算机中或者传输到其他设备或系统中。PCM 数据是一种常见的音频格式，包括 CD 音乐、数字音频文件等，也是许多数字信号处理方案的基础。
+
+
+
+### **比特率(bps [bits per second])**
+
+每秒钟要播放多少 bit 的数据。公式一目了然：
+
+```text
+比特率 = 采样率 × 采样深度 × 通道。
+```
+
+
+
+
+
+### 音频裁剪
+
+[js实现音频PCM数据合并、拼接、裁剪、调节音量等功能](https://juejin.cn/post/7095537979724136456#heading-1)
+
+```tsx
+/**
+* 音频裁剪
+* @param audioBuffer 待裁剪的数据
+* @param duration 音频总时长
+* @param startOffset 裁剪偏移时间,单位s
+*/
+clipAudio(audioBuffer,duration,startOffset = 0){
+	return new Promise((resolve,reject) => {
+		// 获取音频通道数量
+		const channels = audioBuffer,.numberOfChannels;
+		// 获取采样率
+		const rate = audioBuffer.sampleRate;
+		
+		// 计算截取后需要的采样数量
+		const endOffset = rate * duration;
+		const frameCount = endOffset - 0;
+		
+		// 创建新的audioBuffer数据
+		const newAudioBuffer = new AudioContext().createBuffer(channels,frameCount,rate);
+		
+		// 创建Float32的空间,作为copy数据的载体
+		const anotherArray = new Float32Array(frameCount);
+		
+		// 裁剪后放置的起始位置
+		const offset = 0;
+		
+		// 遍历通道,将每个通道的数据分别copy到对应的newAudioBuffer的通道
+		for(let channel = 0; channel < channels;channel++){
+      // 将样本从 AudioBuffer 的指定通道复制到目标数组中
+			audioBuffer.copyFromChannel(anotherArray, channel, rate * startOffset);
+      // 将样本从源数组复制到AudioBuffer的指定通道。
+			newAudioBuffer.copyToChannel(anotherArray, channel, offset);
+		}
+		// 完成裁剪
+		resolve(newAudioBuffer);
+	})
+	
+}
+```
+
+
+
+
+
+
+
 ## flv、hls、dash
 
 | 协议      | 传输方式 | 视频封装格式 | 数据分段 | 延时 | H5播放                                |
