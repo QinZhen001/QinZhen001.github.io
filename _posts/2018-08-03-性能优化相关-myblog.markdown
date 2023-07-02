@@ -175,6 +175,10 @@ Web应用的运行离不开静态资源，所以对静态资源的优化至关�
 
 
 
+#### next/img
+
+[Next.js 对图片的优化](https://github.com/findxc/blog/issues/68)
+
 
 
 
@@ -912,6 +916,18 @@ function ts (gen) {
 
 
 上面代码核心思想是：通过yield关键字可以将任务暂停执行，从而让出主线程的控制权；通过定时器可以将“未完成的任务”重新放在任务队列中继续执行。
+
+
+
+
+
+### Cumulative Layout Shift 累积布局偏移
+
+[https://web.dev/optimize-cls/#images-without-dimensions](https://web.dev/optimize-cls/#images-without-dimensions)
+
+
+
+
 
 
 
