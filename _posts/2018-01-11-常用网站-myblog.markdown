@@ -379,6 +379,14 @@ https://search.google.com/test/mobile-friendly
 
 
 
+
+
+### Web 指标
+
+[https://web.dev/vitals/](https://web.dev/vitals/)
+
+
+
 ## 其他 
 
 

@@ -242,6 +242,16 @@ Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该
 
 as与crossorigin选项都是可选的。
 
+
+
+##### Next.js next/link
+
+[https://nextjs.org/docs/app/api-reference/components/link#prefetch](https://nextjs.org/docs/app/api-reference/components/link#prefetch)
+
+[next/link prefetch 实现原理](https://blog.csdn.net/VoisSurTonChemin/article/details/121587068)
+
+
+
 #### prerender
 prerender用于标识下一个导航可能需要的资源。浏览器会获取并执行，一旦将来请求该资源，浏览器可以提供更快的响应。
 ```

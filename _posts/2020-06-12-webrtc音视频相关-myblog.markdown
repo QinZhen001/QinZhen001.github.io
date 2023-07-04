@@ -603,3 +603,13 @@ H.264 和 AAC，可以被封装成 MP4 或 FLV。但是 Chrome 只能播放前�
 没有音轨的video可以自动播放
 
 有音轨但是muted静音的video可以自动播放
+
+
+
+## http下无法调用摄像头和麦克风
+
+[https://blog.csdn.net/qq_33878858/article/details/114382864](https://blog.csdn.net/qq_33878858/article/details/114382864)
+
+在浏览器地址栏中输入“chrome://flags/#unsafely-treat-insecure-origin-as-secure”
+
+将该选项置为Enabled
