@@ -312,6 +312,46 @@ vscode 是一个 electron 应用，窗口等功能的实现基于 electron
 
 
 
+## rebuild
+
+```basic
+"postinstall": "npm run rebuild", 
+"rebuild": "electron-rebuild -f -o ref-napi",
+```
+
+
+
+@electron/rebuild
+
+根据您的Electron项目正在使用的Node.js版本重新构建原生Node.js模块
+
+This executable rebuilds native Node.js modules against the version of Node.js that your Electron project is using. This allows you to use native Node.js modules in Electron apps without your system version of Node.js matching exactly (which is often not the case, and sometimes not even possible).
+
+
+
+
+
+[ref-napi](https://www.npmjs.com/package/ref-napi)
+
+[https://github.com/node-ffi-napi/ref-napi](https://github.com/node-ffi-napi/ref-napi)
+
+**Turn Buffer instances into "pointers"**
+
+This module is inspired by the old `Pointer` class from node-ffi, but with the intent of using Node's fast `Buffer` instances instead of a slow C++ `Pointer` class. These two concepts were previously very similar, but now this module brings over the functionality that Pointers had and Buffers are missing, so now Buffers are a lot more powerful.
+
+
+
+- ffi-napi: 在javascript中调用动态链接库（.dll/.so），在Node.js中使用这个模块可以不写任何C/C++代码来创建一个对本地库的绑定。
+- ref-napi: 这个模块定义了很多C/C++的常见数据类型，可以在声明和调用动态库的时候直接使用。
+
+
+
+
+
+
+
+
+
 ## macOS
 
 
