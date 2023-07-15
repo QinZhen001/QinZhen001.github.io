@@ -4327,11 +4327,23 @@ const toTree = (data = []) => {
 
 
 
+## 欢聚时代
 
 
 
+### 一面
+
+* node.js 事件循环
+* node.js 中 setImmediate vs setTimeout
+* 怎么理解node 中 nextTick
+* rollup 打包为什么比 webpack 要小
+* webpack 和 rollup 的tree shaking 的区别
+* 怎么做一个高可用的服务 =>  多路复用 => 微服务架构 
+* 怎么理解hooks
 
 
+
+node相关请查看 node 面试 blog 
 
 
 

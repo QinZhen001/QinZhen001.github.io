@@ -233,192 +233,157 @@ module.exports = function () { return 'foo'; };
 
 ##  **事件循环（重要）**
 
-[http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html](http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html)
+[https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick](https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick)
 
-![](https://mmbiz.qpic.cn/mmbiz_png/68e53Trxt1gCoLYibhDAZ5wOAadwAsxzevKW0Wlco5QwzKxJeyGq8z3bAcmbRmdiaaepajdibdBlwNUn7PyC3rJbg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-
-
-如上图，事件循环中细分为这六个阶段，依次如下：
-
-1. `Timers`: 定时器 Interval Timoout 回调事件，将依次执行定时器回调函数
-2. `Pending`: 一些系统级回调将会在此阶段执行
-3. `Idle,prepare`: 此阶段"仅供内部使用"
-4. `Poll`: IO回调函数，这个阶段较为重要也复杂些，
-5. `Check`: 执行 setImmediate() 的回调
-6. `Close`: 执行 socket 的 close 事件回调
-
-与我们开发相关的三个阶段分别是 `Timers Poll Check`
-
-* **`Timers` ：执行定时器的回调，但注意，在 node 11 前，连续的几个定时器回调会连续的执行，而不是像浏览器那样，执行完一个宏任务立即执行微任务。**
-
-* `Check` ：这个阶段执行 setImmediate() 的回调，这个事件只在 nodejs 中存在。
-
-* `Poll` ：上面两个阶段的触发，其实是在 poll 阶段触发的。
+[https://learnku.com/articles/38802](https://learnku.com/articles/38802)
 
 
 
+```
+   ┌───────────────────────────┐
+┌─>│           timers 计时器阶段 │  => 此阶段执行由 setTimeout 和 setInterval 回调排序执行
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │     pending callbacks     │  => 执行 I/O 回调推迟到下一个循环 迭代
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │       idle, prepare       │   => 仅在内部使用
+│  └─────────────┬─────────────┘      ┌───────────────┐
+│  ┌─────────────┴─────────────┐      │   incoming:   │
+│  │           poll 轮询        │<─────┤  connections, │   // 负责处理I/O请求的阶段
+│  └─────────────┬─────────────┘      │   data, etc.  │
+│  ┌─────────────┴─────────────┐      └───────────────┘
+│  │           check 检查       │  =>  setImmediate 回调执行
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+└──┤      close callbacks      │
+   └───────────────────────────┘
+```
 
-### timers 阶段
-
-一个`timer`指定一个下限时间而不是准确时间，在达到这个下限时间后执行回调。在指定的时间过后，`timers`会尽早的执行回调，但是系统调度或者其他回调的执行可能会延迟它们。
-
-> 从技术上来说，`poll`阶段控制`timers`什么时候执行，而执行的具体位置在`timers`。
-
-下限的时间有一个范围：`[1, 2147483647]`，如果设定的时间不在这个范围，将被设置为1。
-
-
-
-
-
-### poll 阶段
-
-当事件循环进入`poll`阶段：
-
-- `poll`队列不为空的时候，事件循环肯定是先遍历队列并同步执行回调，直到队列清空或执行回调数达到系统上限。
-- `poll`队列为空的时候，这里有两种情况。
-  - 如果代码已经被`setImmediate()`设定了回调，那么事件循环直接结束`poll`阶段进入`check`阶段来执行`check`队列里的回调。
-  - 如果代码没有被设定`setImmediate()`设定回调：
-    - 如果有被设定的`timers`，那么此时事件循环会检查`timers`，如果有一个或多个`timers`下限时间已经到达，那么事件循环将绕回`timers`阶段，并执行`timers`的有效回调队列。
-    - 如果没有被设定`timers`，这个时候事件循环是阻塞在`poll`阶段等待回调被加入`poll`队列。
-
-
-
-### check 阶段
-
-这个阶段允许在`poll`阶段结束后立即执行回调。如果`poll`阶段空闲，并且有被`setImmediate()`设定的回调，那么事件循环直接跳到`check`执行而不是阻塞在`poll`阶段等待回调被加入。
+* timers：此阶段执行由 setTimeout 和 setInterval 设置的回调。
+* pending callbacks：执行推迟到下一个循环迭代的 I/O 回调。
+* idle, prepare, ：仅在内部使用。
+* poll：取出新完成的 I/O 事件；执行与 I/O 相关的回调（除了关闭回调，计时器调度的回调和 setImmediate 之外，几乎所有这些回调） 适当时，node 将在此处阻塞。
+* check：在这里调用 setImmediate 回调。
+* close callbacks：一些关闭回调，例如 socket.on('close', ...)。
 
 
 
-`setImmediate()`实际上是一个特殊的`timer`，跑在事件循环中的一个独立的阶段。它使用`libuv`的`API`来设定在`poll`阶段结束后立即执行回调。
+#### **timers 计时器阶段**
+
+计时器可以在回调后面指定时间阈值，但这不是我们希望其执行的确切时间。 计时器回调将在经过指定的时间后尽早运行。 但是，操作系统调度或其他回调的运行可能会延迟它们。-- `执行的实际时间不确定`
 
 
 
-**注：`setImmediate()`具有最高优先级，只要`poll`队列为空，代码被`setImmediate()`，无论是否有`timers`达到下限时间，`setImmediate()`的代码都先执行。**
+#### **轮询 poll 阶段**
+
+轮询阶段具有两个主要功能：
+
+- 计算应该阻塞并 I/O 轮询的时间
+- 处理轮询队列 (**poll** queue) 中的事件
+
+为防止轮询 `poll` 阶段使事件循环陷入饥饿状态 (一直等待 `poll` 事件)，libuv 还具有一个硬最大值限制来停止轮询。
+
+* 如果轮询队列 (poll queue) 不为空，则事件循环将遍历其回调队列，使其同步执行，直到队列用尽或达到与系统相关的硬限制为止 (到底是哪些硬限制？)。
+* 如果轮询队列为空，则会发生以下两种情况之一：
+  * 如果已通过 setImmediate 调度了脚本，则事件循环将结束轮询 poll 阶段，并继续执行 check 阶段以执行那些调度的脚本。
+  * 如果脚本并没有 setImmediate 设置回调，则事件循环将等待 poll 队列中的回调，然后立即执行它们。
+
+一旦轮询队列 (`poll queue`) 为空，事件循环将检查哪些计时器 `timer` 已经到时间。 如果一个或多个计时器 `timer` 准备就绪，则事件循环将返回到计时器阶段，以执行这些计时器的回调。
 
 
 
-## node微任务的执行时机
+##  setImmediate、setTimeout 和 process.nextTick
 
-那么微任务是在什么时候执行呢？
+它们之间的主要区别在于执行时机。
 
-在上图，黄色的几个阶段的旁边挨着个小块 `microtask`，每个阶段执行后就立即执行微任务队列里的事件。
+1. process.nextTick：
+   - 在当前执行阶段结束后立即执行。   （同一个阶段）
+   - process.nextTick() 方法将回调函数放在当前执行栈的末尾，用于推迟执行任务。这意味着回调函数将在当前操作结束之后立即执行。
+   - process.nextTick 回调函数排队执行的优先级会高于其他回调函数，包括 I/O 操作和定时器。
+   - process.nextTick 适用于需要尽早执行的回调函数，比如需要尽快更新某些状态。
+   - process.nextTick() 从技术上讲不是事件循环的一部分。相反，它都将在当前操作完成后处理nextTickQueue
+2. setImmediate：
+   - timer 阶段 或者 check 阶段执行。
+   - setImmediate 回调函数排在其他 I/O 操作之后。
+   - setImmediate 实际上是一个在事件循环的单独阶段运行的特殊计时器
+3. setTimeout：
+   - **在指定的延迟时间后执行，即在事件循环的定时器阶段执行。**
+   - setTimeout 的执行会在 I/O 操作之后进行。
+   - setTimeout 适用于需要在一段时间后执行的回调函数。
+
+综上所述，setImmediate 和 process.nextTick 的执行会优先于 setTimeout，而它们之间的区别在于在事件循环的哪个阶段执行。
 
 
+
+
+
+
+
+**在一个异步流程**里，setImmediate一定会比setTimeout先执行
 
 举个例子：
 
-```js
+```tsx
+console.log('outer');
+
 setTimeout(() => {
-  console.log('timer1')
-  Promise.resolve().then(function() {
-    console.log('promise1')
-  })
-}, 0)
-setTimeout(() => {
-  console.log('timer2')
-  Promise.resolve().then(function() {
-    console.log('promise2')
-  })
-}, 0)
-```
-
-对浏览器事件队列熟悉的朋友很快就可得出 `浏览器中 timer1->promise1->timer2->promise2`，在浏览器中微任务队列是在每个宏任务执行完成后立即执行的。
-
-
-
-那么在 nodejs 中呢？
-
-结果是这样的：`timer1->timer2->promise1->promise2` ，因为微任务队列是在每个阶段完成后立即执行，所以 Timer 阶段有两个回调事件，将事件依次执行后，在进入下一阶段的之前，先执行微队列中的事件。
-
-
-
-**注意：这个结果是在 `node 10` 及以下的版本测试出来的，在 11 及以上的版本做了修改，执行的结果与浏览器的执行结果是一致的**
-
-```
-timer1->promise1->timer2->promise2
-```
-
-
-
-## setTimeout和setImmediate执行顺序随机
-
-[https://segmentfault.com/a/1190000013102056](https://segmentfault.com/a/1190000013102056)
-
-```js
-setTimeout(() => {
-    console.log('setTimeout');
-}, 0);
-setImmediate(() => {
-    console.log('setImmediate');
-})
-
-// console 的顺序是随机的
-```
-
-首先进入的是`timers`阶段，如果我们的机器性能一般，那么进入`timers`阶段，一毫秒已经过去了（`setTimeout(fn, 0)`等价于`setTimeout(fn, 1)`），那么`setTimeout`的回调会首先执行。
-
-如果没有到一毫秒，那么在`timers`阶段的时候，下限时间没到，`setTimeout`回调不执行，事件循环来到了`poll`阶段，这个时候队列为空，此时有代码被`setImmediate()`，于是先执行了`setImmediate()`的回调函数，之后在下一个事件循环再执行`setTimemout`的回调函数。
-
-而我们在执行代码的时候，进入`timers`的时间延迟其实是随机的，并不是确定的，所以会出现两个函数执行顺序随机的情况。
-
-
-
-- `setImmediate` 设计为在当前轮询 `poll` 阶段完成后执行脚本。
-- `setTimeout` 计划在以毫秒为单位的最小阈值过去之后运行脚本。
-
-
-
-但是，如果这两个调用在一个 `I/O` 回调中，那么 `immediate` 总是执行第一：
-
-```js
-// timeout_vs_immediate.js
-const fs = require('fs');
-
-fs.readFile(__filename, () => {
   setTimeout(() => {
-    console.log('timeout');
+    console.log('setTimeout');
   }, 0);
   setImmediate(() => {
-    console.log('immediate');
+    console.log('setImmediate');
   });
+}, 0);
+
+
+// outer
+// setImmediate
+// setTimeout
+```
+
+流程分析
+
+> 1. 外层是一个`setTimeout`，所以执行他的回调的时候已经在`timers`阶段了
+> 2. 处理里面的`setTimeout`，因为本次循环的`timers`正在执行，所以他的回调其实加到了下个`timers`阶段
+> 3. 处理里面的`setImmediate`，将它的回调加入`check`阶段的队列
+> 4. 外层`timers`阶段执行完，进入`pending callbacks`，`idle, prepare`，`poll`，这几个队列都是空的，所以继续往下
+> 5. 到了`check`阶段，发现了`setImmediate`的回调，拿出来执行
+> 6. 然后是`close callbacks`，队列是空的，跳过
+> 7. 又是`timers`阶段，执行我们的`console`
+
+
+
+如果 console.log('setTimeout') 和 console.log('setImmediate') 都写在外面
+
+```tsx
+console.log('outer');
+
+setTimeout(() => {
+  console.log('setTimeout');
+}, 0);
+
+setImmediate(() => {
+  console.log('setImmediate');
 });
+
+// 输出顺序是不确定的
 ```
 
-`poll` 阶段用 `setImmediate` 设置下阶段 `check` 的回调，等到了 `check` 就开始执行；`timers` 阶段只能等到下次循环执行！
+setTimeout(fn, 0) 会被强制改为 setTimeout(fn, 1)
+
+[https://nodejs.org/api/timers.html#timers_settimeout_callback_delay_args](https://nodejs.org/api/timers.html#timers_settimeout_callback_delay_args)
+
+When `delay` is larger than `2147483647` or less than `1`, the `delay` will be set to `1`. Non-integer delays are truncated to an integer.
+
+> 1. 外层同步代码一次性全部执行完，遇到异步API就塞到对应的阶段
+> 2. 遇到`setTimeout`，虽然设置的是0毫秒触发，但是被node.js强制改为1毫秒，塞入`times`阶段
+> 3. 遇到`setImmediate`塞入`check`阶段
+> 4. 同步代码执行完毕，进入Event Loop
+> 5. 先进入`times`阶段，检查当前时间过去了1毫秒没有，如果过了1毫秒，满足`setTimeout`条件，执行回调，如果没过1毫秒，跳过
+> 6. 跳过空的阶段，进入check阶段，执行`setImmediate`回调
 
 
-
-## process.nextTick
-
-无论事件循环的当前阶段如何，都将在当前操作完成之后处理 `nextTickQueue`
-
-```js
-           ┌───────────────────────────┐
-        ┌─>│           timers          │
-        │  └─────────────┬─────────────┘
-        │           nextTickQueue
-        │  ┌─────────────┴─────────────┐
-        │  │     pending callbacks     │
-        │  └─────────────┬─────────────┘
-        │           nextTickQueue
-        │  ┌─────────────┴─────────────┐
-        |  |     idle, prepare         │
-        |  └─────────────┬─────────────┘
-  nextTickQueue     nextTickQueue
-        |  ┌─────────────┴─────────────┐
-        |  │           poll            │
-        │  └─────────────┬─────────────┘
-        │           nextTickQueue
-        │  ┌─────────────┴─────────────┐
-        │  │           check           │
-        │  └─────────────┬─────────────┘
-        │           nextTickQueue
-        │  ┌─────────────┴─────────────┐
-        └──┤       close callbacks     │
-           └───────────────────────────┘
-
-```
 
 
 

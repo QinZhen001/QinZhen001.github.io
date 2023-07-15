@@ -804,6 +804,26 @@ npm uninstall node-sass
 
 
 
+### __dirname is not available
+
+当package.json 中   "type": "module" 时， 我们使用ES modules运行js，这个时候不存在 __dirname 变量了
+
+In ES modules, the `__dirname` variable is not available because ES modules use a different scope than CommonJS modules.
+
+In CommonJS modules, `__dirname` is a global variable that represents the directory name of the current module. It can be used to get the absolute path of the current module's directory.
+
+However, in ES modules, there is no direct equivalent for `__dirname`. Instead, you can use the `import.meta.url` property to get the URL of the current module and then extract the directory name from it.
+
+```tsx
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log(__dirname);
+```
+
 
 
 
