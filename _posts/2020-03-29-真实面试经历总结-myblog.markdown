@@ -4372,6 +4372,12 @@ Wepack5.x：
 
 Webpack 中截取的打标代码，可以看到主要会有两类标记，`harmony export` 和 `unused harmony export` 分别代表了有用与无用。标记完成后打包时 Teser 会将无用的模块去除。
 
+rollup:
+
+内部用到了 acorn => A tiny, fast JavaScript parser, written completely in JavaScript
+
+
+
 
 
 # 外企
