@@ -1844,9 +1844,9 @@ socket套接字是对TCP/IP协议的封装，自身并非协议而是一套调�
 
 [聊聊前端监控](https://juejin.cn/post/6867773840768909326)
 
-**`window.onerror` 是通过在冒泡阶段捕获错误，所以无法捕获资源错误。**
+onerror 的事件并不会向上**冒泡**
 
-**冒泡虽不行，但捕获可以**！我们可以通过捕获的方式全局监控加载失败的错误，虽然这也监控到了脚本错误，但通过判断便可以筛选出加载失败的错误。
+需要useCapture设置成true 在捕获阶段获得
 
 ----
 
@@ -1913,14 +1913,6 @@ window.onunload = () => {
 };
 
 ```
-
-
-
-
-
-
-
-
 
 ---
 
@@ -4375,6 +4367,117 @@ Webpack 中截取的打标代码，可以看到主要会有两类标记，`harmo
 rollup:
 
 内部用到了 acorn => A tiny, fast JavaScript parser, written completely in JavaScript
+
+
+
+
+
+## 稿定科技
+
+
+
+### 一面
+
+css：
+
+* 实现一行三列 =>  grid/flex  => flex相关属性
+* transform相关 => transform 先rotate在translate 和 先translate在rotate 的区别？ （没有区别） =>  transform:matrix 有了解过吗？ 
+* canvas 如何绘制gif  => 逐帧绘制（requestanimationframe）形成gif动图效果
+
+js：
+
+* 给一个一个promise数组如何按顺序串行执行？ async/await 或者 Generator 函数控制
+* 控制请求并发?
+* 如何监听promise error => try/catch await 或者 window.addEventListener('unhandledrejection）
+* 监听资源图片加载error => window.addEventListener('error') 
+* requestanimationframe 和 setTimeout/setInterval 的区别？
+* indexDB 和 localstorage 的区别？ 版本升级要升级indexDB怎么办？如何查看indexDB剩余的容量
+* localstorage 最大存储体积  =>  5-10MB
+* indexDB 最大存储体积 => 几十MB到几百MB之间
+
+网络：
+
+* options 请求出现时机？  跨域
+* 所有跨域请求都会出现options嘛？ （只有复杂请求会，简单请求不会）
+* 什么是简单请求？
+
+算法
+
+* 给定一个正整数数组找出其中的质数。 时间复杂度是？ 小于O(n2)
+
+正整数数组先排序 => 找出最大的正整数 =>  生成一个正质数set（小于前面的最大的正整数） => 比对查找
+
+Tip: set 查找效率更高
+
+
+
+#### indexDB 如何回退
+
+IndexedDB是一个浏览器本地数据库，它不像传统的关系型数据库，支持事务回滚和撤销操作。因此，在IndexedDB中，没有直接的方式来回滚或撤销更改。
+
+1. 备份和恢复：在进行更改之前，可以先创建数据库的备份，当需要回退时，可以将备份恢复回原始状态。这需要你手动编写备份和恢复的代码。
+2. 保存历史记录：在每次更改之前，可以将更改前的数据或状态保存到另一个表中，这样在需要回退时，可以从历史记录中找到并恢复特定的状态。
+3. **使用版本控制：可以在IndexedDB的数据库结构中添加一个版本号或时间戳字段，每次进行更改时，更新版本号或时间戳。当需要回退时，可以根据版本号或时间戳查询并恢复特定的数据。**
+
+需要注意的是，以上方法都需要你手动编写代码来实现，而且在实际使用中可能会有一些限制和复杂性。因此，在设计IndexedDB应用程序时，建议提前考虑可能的回退或撤销需求，并选择合适的方法来实现。
+
+
+
+#### Generator 控制 promise 执行顺序
+
+利用`for...of`循环会自动依次执行`yield`命令的特性，提供一种更一般的控制流管理的方法。
+
+```tsx
+let steps = [step1Func, step2Func, step3Func];
+
+function* iterateSteps(steps){
+  for (var i=0; i< steps.length; i++){
+    var step = steps[i];
+    yield step();
+  }
+}
+```
+
+
+
+```tsx
+  unction* generatorFunction() {
+      yield promiseFunction1();
+      yield promiseFunction2();
+      yield promiseFunction3();
+    }
+
+		//promiseFunction1 promiseFunction2 promiseFunction3
+    function promiseFunction1() {
+      return new Promise((resolve, reject) => {
+        // promise 1 的异步操作
+        setTimeout(() => {
+          console.log("Promise 1 resolved");
+          resolve();
+        }, 1000);
+      });
+    }
+
+    // 执行 generator 函数
+    const iterator = generatorFunction();
+    let result = iterator.next();
+
+    function handlePromise(result) {
+      if (result.done) {
+        console.log("All promises resolved");
+        return;
+      }
+
+      result.value.then(() => {
+        const nextPromise = iterator.next();
+        handlePromise(nextPromise);
+      });
+    }
+
+    handlePromise(result);
+```
+
+
 
 
 

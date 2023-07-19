@@ -410,6 +410,23 @@ const file = await fetchFile(mp4Src)
 
 
 
+
+
+# RTMP
+
+RTMP（Real-Time Messaging Protocol，实时消息传输协议）是一种用于音频、视频和数据传输的协议。它由Adobe Systems开发，并且在Adobe Flash Player和Adobe AIR等播放器中使用。RTMP协议可以将音频、视频和数据从Flash播放器传输到流媒体服务器，然后再将其传送给其他用户。
+
+RTMP协议是一种基于TCP的协议，通过TCP的可靠连接来传输数据。它支持实时的音视频传输，并且可以在不同的传输速率下自动调整视频和音频的质量，以适应不同的网络环境。
+
+RTMP协议包括两个部分：RTMP和RTMPT。
+
+- RTMP（Real-Time Messaging Protocol）是RTMP协议的常用版本，它使用TCP连接进行数据传输，并且支持实时的音频、视频和数据传输。
+- RTMPT（Real-Time Messaging Protocol over HTTP Tunneling）是通过HTTP隧道使用RTMP协议的版本。它将RTMP的数据包封装在HTTP请求中，可以通过HTTP端口进行传输，因此可以绕过防火墙和代理服务器的限制。
+
+RTMP协议广泛应用于流媒体领域，例如用于视频直播、音视频会议、在线游戏等。它具有低延迟、高可靠性和良好的扩展性等特点，适用于多种不同的网络环境。
+
+
+
 # 补充
 
 
