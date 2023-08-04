@@ -920,6 +920,16 @@ The UNIX command rm -rf for node.
 
 
 
+### release-it
+
+[https://www.npmjs.com/package/release-it](https://www.npmjs.com/package/release-it)
+
+🚀 Generic CLI tool to automate versioning and package publishing-related tasks:
+
+
+
+
+
 ### cp-cli
 
 [https://www.npmjs.com/package/cp-cli](https://www.npmjs.com/package/cp-cli)
@@ -990,6 +1000,10 @@ Unlike other build libraries, Just strives to be useful from the beginning. You 
 It's a small, fast utility for manipulating strings and generating sourcemaps.
 
 字符串替换重写
+
+作用是可以对源代码进行轻微的修改和替换。
+
+
 
 
 

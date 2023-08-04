@@ -401,6 +401,28 @@ function App() {
 
 
 
+
+
+## Switch和Routes
+
+React中的Switch和Routes都是React Router库中的组件，用于路由控制和页面切换。
+
+Switch组件是用于包裹Routes组件的，它的作用是当第一个匹配到URL的Route被发现后，就停止查找匹配并只渲染该Route对应的组件。换句话说，Switch只渲染第一个匹配到的Route组件。
+
+Routes组件则用于定义路由规则，它包含了多个Route组件，并根据URL匹配到的路径渲染对应的组件。Routes会逐个匹配路径，直到找到与URL匹配的路径为止。
+
+**总结起来，Switch是用来选择要渲染的Route组件的，而Routes则是用来定义路由规则的。Switch只渲染第一个匹配到的Route组件，并忽略后续的匹配，而Routes则按照定义的顺序逐个匹配路径，直到找到与URL匹配的路径为止。**
+
+
+
+In *react-router-dom* v6, "Switch" is replaced by routes "Routes"
+
+[https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom](https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom)
+
+
+
+
+
 # 问题
 
 

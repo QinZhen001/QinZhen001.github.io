@@ -1,0 +1,69 @@
+---
+layout:     post
+title:      "web渲染相关"
+date:       2023-07-26 20:32:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Other
+---
+
+> “Yeah It's on. ”
+>
+
+
+
+# WebGL 
+
+WebGL是一种用于在web浏览器中渲染交互式3D图形的Web标准。它是在HTML5和JavaScript技术的基础上开发的，允许开发者在浏览器中使用硬件加速的图形渲染，实现高性能的3D和2D图形效果。WebGL通过在浏览器中运行OpenGL ES API，将3D图形渲染功能带到了Web平台，使用者可以在任何支持WebGL的浏览器中无需安装插件的情况下访问和运行WebGL应用程序。WebGL应用程序通常用于游戏开发、数据可视化、虚拟现实、建筑和工程模拟等领域。
+
+
+
+## 可以使用canvas标签
+
+WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（RenderingContext）会被绑定到canvas元素上。当使用WebGL时，可以通过获取canvas的上下文并进行一系列的WebGL操作，如创建图形对象、定义顶点和片元着色器、设置顶点缓冲区等。
+
+在使用WebGL时，可以通过canvas的上下文调用WebGL API来绘制和渲染复杂的图形，包括3D模型、纹理映射、光照效果等。在canvas标签上进行绘制，可以通过CSS样式对其进行定位、大小和样式的调整，以实现所需的页面布局和美观效果。
+
+
+
+
+
+## WebGL和Canvas的区别
+
+1. 渲染方式：Canvas使用2D渲染引擎，而WebGL使用3D渲染引擎。Canvas通过绘制2D图形，如矩形、圆形和线条来渲染图像。而WebGL使用OpenGL ES的API来进行3D图形渲染。
+2. 功能和复杂性：WebGL相对于Canvas提供更强大的图形渲染功能。WebGL可以进行复杂的3D图形渲染、纹理映射、光照效果等。而Canvas则主要适用于简单的2D图形渲染，对于复杂的3D渲染需要使用其他库或框架。
+3. 性能：由于WebGL使用了硬件加速和GPU进行图形渲染，相对于Canvas具有更好的性能。特别是对于复杂的图形、动画和大规模数据可视化等场景，WebGL能够提供更流畅的体验。
+4. 学习曲线：相对于Canvas，WebGL对于开发人员来说学习曲线更陡峭。WebGL需要熟悉OpenGL ES的API和图形编程的基本原理。而Canvas则相对简单，只需要了解2D绘图的基本概念和API即可。
+
+因此，选择使用WebGL还是Canvas取决于项目的需求和复杂性。对于简单的2D图形渲染，选择Canvas更加方便和易于上手。而对于复杂的3D场景或需要更高性能的图形渲染，选择WebGL是更好的选择。
+
+
+
+
+
+# pixi
+
+[https://pixijs.com/](https://pixijs.com/)
+
+
+
+
+
+
+
+## 自适应屏幕宽高
+
+```tsx
+  useEffect(()=>{
+    const resize = () => {
+      location.reload()
+    }
+    window.addEventListener('resize', resize)
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  },[])
+```
+

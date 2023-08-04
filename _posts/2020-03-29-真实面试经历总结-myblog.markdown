@@ -4360,13 +4360,28 @@ TCP的多路复用（Multiplexing）是指在一条TCP连接上同时发送和�
 
 [https://juejin.cn/post/7169004126469914654](https://juejin.cn/post/7169004126469914654)
 
+**webpack更适合于应用，而rollup更适用于类库**
+
 Wepack5.x：
+
+**(仅仅针对模块)**
+
+Wepack 自身在编译过程中，会根据模块的 `import` 与 `export` 依赖分析对代码块进行打标。
 
 Webpack 中截取的打标代码，可以看到主要会有两类标记，`harmony export` 和 `unused harmony export` 分别代表了有用与无用。标记完成后打包时 Teser 会将无用的模块去除。
 
 rollup:
 
 内部用到了 acorn => A tiny, fast JavaScript parser, written completely in JavaScript
+
+与 Webpack 不同的是，Rollup 不仅仅针对模块进行依赖分析，它的分析流程如下：
+
+1. 从入口文件开始，组织依赖关系，并按文件生成 Module
+2. 生成抽象语法树（Acorn），建立语句间的关联关系
+3. 为每个节点打标，标记是否被使用
+4. 生成代码（MagicString+ position）去除无用代码
+
+**能更加正确的判断项目本身的代码是否有副作用**
 
 
 
@@ -4381,7 +4396,7 @@ rollup:
 css：
 
 * 实现一行三列 =>  grid/flex  => flex相关属性
-* transform相关 => transform 先rotate在translate 和 先translate在rotate 的区别？ （没有区别） =>  transform:matrix 有了解过吗？ 
+* transform相关 => transform 先rotate在translate 和 先translate在rotate 的区别？ **（有区别）** =>  transform:matrix 有了解过吗？ 
 * canvas 如何绘制gif  => 逐帧绘制（requestanimationframe）形成gif动图效果
 
 js：
@@ -4478,6 +4493,14 @@ function* iterateSteps(steps){
 ```
 
 
+
+#### rotate结合translate
+
+先rotate再translate表示在物体旋转后再沿某个方向移动。这意味着，在旋转过程中，物体的中心点保持不变，只是方向改变，然后再以新的方向进行平移。这种顺序下，平移的向量会受到旋转的影响，因为旋转改变了坐标系的方向。
+
+先translate再rotate表示在物体平移后再进行旋转。这意味着，在平移过程中，物体的中心点也会随着平移而改变，此时进行旋转操作，会绕着新的中心点进行旋转。这种顺序下，旋转的角度和中心点不会受到平移的影响，因为平移并不改变坐标系的方向，只会改变物体的位置。
+
+**具体来说，先rotate再translate会先进行旋转变换，再进行平移变换，而先translate再rotate会先进行平移变换，再进行旋转变换。这两种变换的顺序不同，会产生不同的视觉效果。**
 
 
 

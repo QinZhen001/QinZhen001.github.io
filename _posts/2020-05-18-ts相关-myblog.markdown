@@ -2052,7 +2052,7 @@ let a = new Animal('Jack');
 // index.ts(9,11): error TS2511: Cannot create an instance of the abstract class 'Animal'.
 ```
 
-其次，抽象类中的抽象方法必须被子类实现：
+抽象方法必须在子类中实现，否则将发生编译时错误。
 
 ```ts
 abstract class Animal {

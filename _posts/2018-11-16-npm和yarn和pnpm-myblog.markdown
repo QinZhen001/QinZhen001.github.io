@@ -109,6 +109,8 @@ The init command is transformed to a corresponding `npx` operation as follows:
 
 [https://blog.csdn.net/weixin_40817115/article/details/90384398](https://blog.csdn.net/weixin_40817115/article/details/90384398)
 
+[规范升级 NPM 包](https://juejin.cn/post/7143025612267978760)
+
 `npm version`获取当前的详细版本信息。
 
 ```tsx
@@ -126,6 +128,41 @@ npm version prerelease // 1.0.1-0 变为 1.0.1-1
 npm version prepatch   // 1.0.1-1 变为 1.0.2-0
 npm version preminor   // 1.0.2-0 变为 1.1.0-0
 // ...  
+```
+
+
+
+
+
+## npm publish
+
+如果直接使用 `npm publish` 来发布的话，发布出来的包的 tag 是 latest
+
+只有使用 `npm publish --tag XXX` 才是给 npm 包上打了 tag 标签。
+
+```tsx
+npm run build // 打包
+npm publish --tag beta // 发布 beta 包
+```
+
+如果不小心直接使用 `npm publish` 发错了也没有关系，可以使用以下命令来添加 tag：
+
+```
+npm dist-tag add <pkg>@2.3.2-beta.1 <tag>
+```
+
+当需要删除多余的 tag 时：
+
+```
+npm dist-tag rm <pkg> <tag>
+```
+
+一条指令完成 beta 版本的发布：
+
+```tsx
+"scripts": {
+    "publish:beta": npm version prerelease --preid=beta && npm run build && npm publish --tag=beta"
+  },
 ```
 
 
