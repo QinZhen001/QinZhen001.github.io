@@ -18,8 +18,6 @@ tags:
 
 electron 基于 node 和 chromium 做 js 逻辑的执行和页面渲染，并且提供了 BrowserWindow 来创建窗口，提供了 electron 包的 api，来执行一些操作系统的功能，比如打开文件选择窗口、进程通信等。
 
-
-
 每个 BrowserWindow 窗口内的 js 都跑在一个渲染进程，而 electron 有一个主进程，负责和各个窗口内的渲染进程通信。
 
 
@@ -28,9 +26,7 @@ electron 基于 node 和 chromium 做 js 逻辑的执行和页面渲染，并且
 
 
 
-缺点：性能比原生桌面应用要低，最终打包后的应用比原生应用大很多。
-
-
+**缺点：性能比原生桌面应用要低，最终打包后的应用比原生应用大很多。**
 
 
 
@@ -39,6 +35,321 @@ electron 基于 node 和 chromium 做 js 逻辑的执行和页面渲染，并且
 [https://www.electronjs.org/docs/tutorial/web-embeds](https://www.electronjs.org/docs/tutorial/web-embeds)
 
 有三种方式可以让你在Electron的BrowserWindow里集成（第三方）web内容，`<iframe>`, `<webview>` 和 `BrowserViews`每个功能都略有不同，适用于不同的情况。 为了帮助您在这些选择之间进行选择，本指南将解释他们之间的差异和功能。
+
+## electron-reload
+
+[https://www.npmjs.com/package/electron-reload](https://www.npmjs.com/package/electron-reload)
+
+This is (*hopefully*) the simplest way to load contents of all active [`BrowserWindow`s](https://github.com/atom/electron/blob/master/docs/api/browser-window.md) within electron when the source files are changed.
+
+```tsx
+if (isDev) {
+  require('electron-reload')(__dirname, {
+    electron: path.resolve(
+      __dirname,
+      process.platform === 'win32'
+        ? '../node_modules/electron/dist/electron.exe'
+        : '../node_modules/.bin/electron'
+    ),
+  });
+}
+```
+
+
+
+## electron-react-ts
+
+[https://github.com/sprout2000/electron-react-ts](https://github.com/sprout2000/electron-react-ts)
+
+An [Electron](https://www.electronjs.org/) boilerplate with hot reloading for [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/).
+
+
+
+## 调试渲染进程
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/application-debugging](https://www.electronjs.org/zh/docs/latest/tutorial/application-debugging)
+
+最广泛使用来调试指定渲染进程的工具是Chromium的开发者工具集。 它可以获取到所有的渲染进程，包括`BrowserWindow`的实例，`BrowserView`以及`WebView`。
+
+```tsx
+const { BrowserWindow } = require('electron')
+
+const win = new BrowserWindow()
+win.webContents.openDevTools()
+```
+
+
+
+## 主进程和渲染进程
+
+主进程(Main Process)
+
+- 应用启动时，会创建个主进程
+- 一个应用有且只有一个主进程
+- 只有主进程可以进行 `GUI` 的 API 操作，即调用 `Native APIs`
+
+渲染进程(Renderer Process)
+
+* Windows 中展示的界面通过渲染进程表现，DOM 操作 
+
+- 一个应用可以有多个渲染进程
+- 要通过主进程才可以访问原生 API(Native APIs)，要先跟主进程进行 ipc 通信
+
+
+
+## 进程通信 
+
+[https://www.electronjs.org/zh/docs/latest/api/ipc-main](https://www.electronjs.org/zh/docs/latest/api/ipc-main)
+
+`electron`中主进程和渲染进程两者之间需要通信
+
+**主线程** 到 **渲染线程** 通过 `webContents.send` 来发送 --->`ipcRenderer.on` 来监听
+
+**渲染线程** 到 **主线程** 需要通过 `ipcRenderer.send`发送 ---> `ipcMain.on`来监听
+
+
+
+### MessagePort
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/message-ports](https://www.electronjs.org/zh/docs/latest/tutorial/message-ports)
+
+[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)是一个允许在不同上下文之间传递消息的Web功能。 就像 `window.postMessage`, 但是在不同的通道上。 
+
+
+
+## utilityProcess
+
+[https://www.electronjs.org/zh/docs/latest/api/utility-process](https://www.electronjs.org/zh/docs/latest/api/utility-process)
+
+`utilityProcess` 使用 Node.js 和 Message 端口创建了一个子进程。 它提供一个相当于 Node.js 的 [`child_process.fork`](https://nodejs.org/dist/latest-v16.x/docs/api/child_process.html#child_processforkmodulepath-args-options) API，但使用 Chromium 的 [Services API](https://chromium.googlesource.com/chromium/src/+/main/docs/mojo_and_services.md) 代替来执行子进程。
+
+
+
+
+
+ ## preload script
+
+Preload scripts contain code that executes in a renderer process before its web contents begin loading. These scripts run within the renderer context, but are granted more privileges by having access to Node.js APIs.
+
+
+
+
+
+## 集成第三方web内容
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/web-embeds](https://www.electronjs.org/zh/docs/latest/tutorial/web-embeds)
+
+有三种方式可以让你在Electron的`BrowserWindow`里集成（第三方）web内容，`<iframe>` 和, `<webview>` 和 `BrowserViews` 每个功能都略有不同，适用于不同的情况。
+
+
+
+## BrowserView
+
+[https://www.electronjs.org/zh/docs/latest/api/browser-view](https://www.electronjs.org/zh/docs/latest/api/browser-view)
+
+[BrowserViews](https://www.electronjs.org/zh/docs/latest/api/browser-view) 不是 DOM 的一部分，而是由主进程创建和控制。 它们只是现有窗口之上的另一层 Web 内容。 这意味着它们与您自己的 `BrowserWindow` 内容完全分离，并且它们的位置不受 DOM 或 CSS 的控制，而是通过在主进程中设置边界来控制其位置。 相反，它通过在主进程中设置界面来控制 。
+
+
+
+### webPreferences
+
+
+
+#### contextIsolation
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation](https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation)
+
+自 Electron 12 以来，默认情况下已启用上下文隔离，并且它是 *所有应用程序*推荐的安全设置。
+
+**如果启用上下文隔离，预加载脚本访问的 `window` 对象并不是render网站所能访问的对象。**
+
+上下文隔离是 Electron 中的一项安全措施，可确保 预加载脚本不会将拥有优先权的 Electron 或 Node.js API 泄漏到 Web 渲染器进程中的内容。 启用上下文隔离后，从预加载脚本公开 API 的唯 方法是通过 `contextBridge` API。
+
+
+
+
+
+#### nodeIntegration
+
+是否启用Node integration. 默认值为 `false`.
+
+如果在HTML page中使用node相关方法，需要设置为true
+
+
+
+#### webSecurity
+
+当设置为 `false`, 它将禁用同源策略 (通常用来测试网站), 如果此选项不是由开发者设置的，还会把 `allowRunningInsecureContent`设置为 `true`. 默认值为 `true`。
+
+
+
+#### sandbox
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/sandbox](https://www.electronjs.org/zh/docs/latest/tutorial/sandbox)
+
+**如果开启了sandbox，preload中无法使用第三方库。**
+
+boolean (可选)-如果设置该参数, 沙箱的渲染器将与窗口关联, 使它与Chromium OS-level 的沙箱兼容, 并禁用 Node. js 引擎。 它与 `nodeIntegration` 的选项不同，且预加载脚本的 API 也有限制
+
+在沙盒中，渲染进程只能透过 进程间通讯 (inter-process communication, IPC) 委派任务给主进程的方式， 来执行需权限的任务 (例如：文件系统交互，对系统进行更改或生成子进程)
+
+
+
+
+
+
+
+# 补充 
+
+
+
+## chromium
+
+Chromium 是 [Google](https://baike.baidu.com/item/Google/86964) 的[Chrome](https://baike.baidu.com/item/Chrome/5633839)浏览器背后的引擎，其目的是为了创建一个安全、稳定和快速的通用浏览器。 
+
+Chromium和Chrome所使用的webkit内核，是目前公认的最快的网页浏览方式。
+
+
+
+## native modules
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/using-native-node-modules](https://www.electronjs.org/zh/docs/latest/tutorial/using-native-node-modules)
+
+原生模块（在 Node.js 中也称为 [addon](https://nodejs.org/api/addons.html)）是用C/C++写成的，可以在 Node.js 中加载，或通过 require() 函数在 Electron 中引入的模块。这些模块用起来与普通的Node.js模块并无二致。 它主要用于桥接在 JavaScript 上运行 Node.js 和 C/C++ 的库。
+
+Electron 支持原生的 Node 模块，但是 Electron 非常可能使用了和你系统中安装的Node所不一样的 V8 版本，所以在构建原生模块的时候你需要手动指定 Electron 所使用的头文件的位置。
+
+
+
+## IPC
+
+IPC（Inter-[Process](https://baike.baidu.com/item/Process/1170280)[ Communication](https://baike.baidu.com/item/ Communication/20394231)，[进程间通信](https://baike.baidu.com/item/进程间通信/1235923)）。进程间通信是指两个进程的数据之间产生交互
+
+在Linux C编程中有几种方法
+
+* 半双工Unix管道
+* FIFOs(命名管道)
+*  消息队列
+*  信号量
+* 共享内存
+*  网络Socket
+
+
+
+## vscode
+
+vscode 是一个 electron 应用，窗口等功能的实现基于 electron
+
+[vscode 是怎么跑起来的](https://juejin.cn/post/6987420993568374797)
+
+
+
+## rebuild
+
+```basic
+"postinstall": "npm run rebuild", 
+"rebuild": "electron-rebuild -f -o ref-napi",
+```
+
+
+
+@electron/rebuild
+
+根据您的Electron项目正在使用的Node.js版本重新构建原生Node.js模块
+
+This executable rebuilds native Node.js modules against the version of Node.js that your Electron project is using. This allows you to use native Node.js modules in Electron apps without your system version of Node.js matching exactly (which is often not the case, and sometimes not even possible).
+
+是一个用于重新编译 Electron 版本的原生模块的命令。它的作用是在使用 Electron 开发应用程序时，当你安装了一个原生模块，但该模块与 Electron 的版本不兼容时，可以使用 electron-rebuild 命令来重新编译该模块以适配当前的 Electron 版本。
+
+
+
+
+
+[ref-napi](https://www.npmjs.com/package/ref-napi)
+
+[https://github.com/node-ffi-napi/ref-napi](https://github.com/node-ffi-napi/ref-napi)
+
+**Turn Buffer instances into "pointers"**
+
+This module is inspired by the old `Pointer` class from node-ffi, but with the intent of using Node's fast `Buffer` instances instead of a slow C++ `Pointer` class. These two concepts were previously very similar, but now this module brings over the functionality that Pointers had and Buffers are missing, so now Buffers are a lot more powerful.
+
+
+
+- ffi-napi: 在javascript中调用动态链接库（.dll/.so），在Node.js中使用这个模块可以不写任何C/C++代码来创建一个对本地库的绑定。
+- ref-napi: 这个模块定义了很多C/C++的常见数据类型，可以在声明和调用动态库的时候直接使用。
+
+
+
+
+
+
+
+
+
+## macOS
+
+
+
+## electron-updater
+
+[https://www.electron.build/auto-update.html](https://www.electron.build/auto-update.html)
+
+
+
+## electron-toolkit
+
+**preload**
+
+> Easy to expose Electron APIs (ipcRenderer,webFrame,process) to renderer.
+
+```tsx
+import { contextBridge } from 'electron'
+import { electronAPI } from '@electron-toolkit/preload'
+
+if (process.contextIsolated) {
+  try {
+    contextBridge.exposeInMainWorld('electron', electronAPI)
+  } catch (error) {
+    console.error(error)
+  }
+} else {
+  window.electron = electronAPI
+}
+```
+
+Then, use the Electron APIs directly in the renderer process：
+
+```
+window.electron.ipcRenderer.send('electron:say', 'hello')
+```
+
+
+
+**utils**
+
+> Utils for Electron main process.
+
+electron使用的工具包
+
+
+
+### optimizer
+
+Default open or close DevTools by `F12` in development and ignore `CommandOrControl + R` in production. Furthermore, you can use `shortcutOptions` to control more shortcuts.
+
+在开发中默认使用F12打开或关闭DevTools，而在生产中忽略commandcontrol + R。
+
+```tsx
+// main.js
+import { app } from 'electron'
+import { optimizer } from '@electron-toolkit/utils'
+
+app.whenReady().then(() => {
+  app.on('browser-window-created', (_, window) => {
+    optimizer.watchWindowShortcuts(window)
+  })
+})
+```
 
 
 
@@ -98,329 +409,6 @@ Electron Builder 是一个完备的Electron应用打包和分发解决方案，�
 
 
 
-## electron-reload
-
-[https://www.npmjs.com/package/electron-reload](https://www.npmjs.com/package/electron-reload)
-
-This is (*hopefully*) the simplest way to load contents of all active [`BrowserWindow`s](https://github.com/atom/electron/blob/master/docs/api/browser-window.md) within electron when the source files are changed.
-
-```tsx
-if (isDev) {
-  require('electron-reload')(__dirname, {
-    electron: path.resolve(
-      __dirname,
-      process.platform === 'win32'
-        ? '../node_modules/electron/dist/electron.exe'
-        : '../node_modules/.bin/electron'
-    ),
-  });
-}
-```
-
-
-
-## electron-react-ts
-
-[https://github.com/sprout2000/electron-react-ts](https://github.com/sprout2000/electron-react-ts)
-
-An [Electron](https://www.electronjs.org/) boilerplate with hot reloading for [React](https://reactjs.org/) and [TypeScript](https://www.typescriptlang.org/).
-
-
-
-
-
-
-
-## 调试渲染进程
-
-[https://www.electronjs.org/zh/docs/latest/tutorial/application-debugging](https://www.electronjs.org/zh/docs/latest/tutorial/application-debugging)
-
-最广泛使用来调试指定渲染进程的工具是Chromium的开发者工具集。 它可以获取到所有的渲染进程，包括`BrowserWindow`的实例，`BrowserView`以及`WebView`。
-
-```tsx
-const { BrowserWindow } = require('electron')
-
-const win = new BrowserWindow()
-win.webContents.openDevTools()
-```
-
-
-
-
-
-## 主进程和渲染进程
-
-主进程(Main Process)
-
-- 应用启动时，会创建个主进程
-- 一个应用有且只有一个主进程
-- 只有主进程可以进行 `GUI` 的 API 操作，即调用 `Native APIs`
-
-渲染进程(Renderer Process)
-
-* Windows 中展示的界面通过渲染进程表现，DOM 操作 
-
-- 一个应用可以有多个渲染进程
-- 要通过主进程才可以访问原生 API(Native APIs)，要先跟主进程进行 ipc 通信
-
-
-
-
-
-
-
-## 进程通信 
-
-[https://www.electronjs.org/zh/docs/latest/api/ipc-main](https://www.electronjs.org/zh/docs/latest/api/ipc-main)
-
-`electron`中主进程和渲染进程两者之间需要通信
-
-**主线程** 到 **渲染线程** 通过 `webContents.send` 来发送 --->`ipcRenderer.on` 来监听
-
-**渲染线程** 到 **主线程** 需要通过 `ipcRenderer.send`发送 ---> `ipcMain.on`来监听
-
-
-
-### MessagePort
-
-[https://www.electronjs.org/zh/docs/latest/tutorial/message-ports](https://www.electronjs.org/zh/docs/latest/tutorial/message-ports)
-
-[`MessagePort`](https://developer.mozilla.org/en-US/docs/Web/API/MessagePort)是一个允许在不同上下文之间传递消息的Web功能。 就像 `window.postMessage`, 但是在不同的通道上。 
-
-
-
-
-
-## 集成第三方web内容
-
-[https://www.electronjs.org/zh/docs/latest/tutorial/web-embeds](https://www.electronjs.org/zh/docs/latest/tutorial/web-embeds)
-
-有三种方式可以让你在Electron的`BrowserWindow`里集成（第三方）web内容，`<iframe>` 和, `<webview>` 和 `BrowserViews` 每个功能都略有不同，适用于不同的情况。
-
-
-
-
-
-
-
-## BrowserView
-
-[https://www.electronjs.org/zh/docs/latest/api/browser-view](https://www.electronjs.org/zh/docs/latest/api/browser-view)
-
-[BrowserViews](https://www.electronjs.org/zh/docs/latest/api/browser-view) 不是 DOM 的一部分，而是由主进程创建和控制。 它们只是现有窗口之上的另一层 Web 内容。 这意味着它们与您自己的 `BrowserWindow` 内容完全分离，并且它们的位置不受 DOM 或 CSS 的控制，而是通过在主进程中设置边界来控制其位置。 相反，它通过在主进程中设置界面来控制 。
-
-
-
-### webPreferences
-
-
-
-#### contextIsolation
-
-[https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation](https://www.electronjs.org/zh/docs/latest/tutorial/context-isolation)
-
-自 Electron 12 以来，默认情况下已启用上下文隔离，并且它是 *所有应用程序*推荐的安全设置。
-
-**如果启用上下文隔离，预加载脚本访问的 `window` 对象并不是render网站所能访问的对象。**
-
-
-
-`contextIsolation` Boolean (可选) - 是否在独立 JavaScript 环境中运行 Electron API和指定的`preload` 脚本. 默认为 `true`。 `预加载`脚本所运行的上下文环境只能访问其自身专用的`文档`和全局`窗口`，其自身一系列内置的JavaScript (`Array`, `Object`, `JSON`, 等等) 也是如此，这些对于已加载的内容都是不可见的。 Electron API 将只在`预加载`脚本中可用，在已加载页面中不可用。 这个选项应被用于加载可能不被信任的远程内容时来确保加载的内容无法篡改`预加载`脚本和任何正在使用的Electron api
-
-
-
-
-
-#### nodeIntegration
-
-是否启用Node integration. 默认值为 `false`.
-
-如果在HTML page中使用node相关方法，需要设置为true
-
-
-
-#### webSecurity
-
-当设置为 `false`, 它将禁用同源策略 (通常用来测试网站), 如果此选项不是由开发者设置的，还会把 `allowRunningInsecureContent`设置为 `true`. 默认值为 `true`。
-
-
-
-
-
-#### sandbox
-
-[https://www.electronjs.org/zh/docs/latest/tutorial/sandbox](https://www.electronjs.org/zh/docs/latest/tutorial/sandbox)
-
-**如果开启了sandbox，preload中无法使用第三方库。**
-
-
-
-boolean (可选)-如果设置该参数, 沙箱的渲染器将与窗口关联, 使它与Chromium OS-level 的沙箱兼容, 并禁用 Node. js 引擎。 它与 `nodeIntegration` 的选项不同，且预加载脚本的 API 也有限制
-
-在沙盒中，渲染进程只能透过 进程间通讯 (inter-process communication, IPC) 委派任务给主进程的方式， 来执行需权限的任务 (例如：文件系统交互，对系统进行更改或生成子进程)
-
-
-
-
-
- ## preload script
-
-Preload scripts contain code that executes in a renderer process before its web contents begin loading. These scripts run within the renderer context, but are granted more privileges by having access to Node.js APIs.
-
-
-
-
-
-
-
-# 补充 
-
-
-
-## chromium
-
-Chromium 是 [Google](https://baike.baidu.com/item/Google/86964) 的[Chrome](https://baike.baidu.com/item/Chrome/5633839)浏览器背后的引擎，其目的是为了创建一个安全、稳定和快速的通用浏览器。 
-
-
-
-Chromium和Chrome所使用的webkit内核，是目前公认的最快的网页浏览方式。
-
-
-
-
-
-## IPC
-
-IPC（Inter-[Process](https://baike.baidu.com/item/Process/1170280)[ Communication](https://baike.baidu.com/item/ Communication/20394231)，[进程间通信](https://baike.baidu.com/item/进程间通信/1235923)）。进程间通信是指两个进程的数据之间产生交互
-
-在Linux C编程中有几种方法
-
-* 半双工Unix管道
-* FIFOs(命名管道)
-*  消息队列
-*  信号量
-* 共享内存
-*  网络Socket
-
-
-
-## vscode
-
-vscode 是一个 electron 应用，窗口等功能的实现基于 electron
-
-[vscode 是怎么跑起来的](https://juejin.cn/post/6987420993568374797)
-
-
-
-## rebuild
-
-```basic
-"postinstall": "npm run rebuild", 
-"rebuild": "electron-rebuild -f -o ref-napi",
-```
-
-
-
-@electron/rebuild
-
-根据您的Electron项目正在使用的Node.js版本重新构建原生Node.js模块
-
-This executable rebuilds native Node.js modules against the version of Node.js that your Electron project is using. This allows you to use native Node.js modules in Electron apps without your system version of Node.js matching exactly (which is often not the case, and sometimes not even possible).
-
-
-
-
-
-[ref-napi](https://www.npmjs.com/package/ref-napi)
-
-[https://github.com/node-ffi-napi/ref-napi](https://github.com/node-ffi-napi/ref-napi)
-
-**Turn Buffer instances into "pointers"**
-
-This module is inspired by the old `Pointer` class from node-ffi, but with the intent of using Node's fast `Buffer` instances instead of a slow C++ `Pointer` class. These two concepts were previously very similar, but now this module brings over the functionality that Pointers had and Buffers are missing, so now Buffers are a lot more powerful.
-
-
-
-- ffi-napi: 在javascript中调用动态链接库（.dll/.so），在Node.js中使用这个模块可以不写任何C/C++代码来创建一个对本地库的绑定。
-- ref-napi: 这个模块定义了很多C/C++的常见数据类型，可以在声明和调用动态库的时候直接使用。
-
-
-
-
-
-
-
-
-
-## macOS
-
-
-
-## electron-updater
-
-[https://www.electron.build/auto-update.html](https://www.electron.build/auto-update.html)
-
-
-
-## @electron-toolkit/preload
-
-> Easy to expose Electron APIs (ipcRenderer,webFrame,process) to renderer.
-
-```tsx
-import { contextBridge } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
-
-if (process.contextIsolated) {
-  try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
-  } catch (error) {
-    console.error(error)
-  }
-} else {
-  window.electron = electronAPI
-}
-```
-
-Then, use the Electron APIs directly in the renderer process：
-
-```
-window.electron.ipcRenderer.send('electron:say', 'hello')
-```
-
-
-
-
-
-## @electron-toolkit/utils
-
-> Utils for Electron main process.
-
-electron使用的工具包
-
-
-
-### optimizer
-
-Default open or close DevTools by `F12` in development and ignore `CommandOrControl + R` in production. Furthermore, you can use `shortcutOptions` to control more shortcuts.
-
-在开发中默认使用F12打开或关闭DevTools，而在生产中忽略commandcontrol + R。
-
-```tsx
-// main.js
-import { app } from 'electron'
-import { optimizer } from '@electron-toolkit/utils'
-
-app.whenReady().then(() => {
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window)
-  })
-})
-```
-
-
-
-
-
 
 
 ## Electron 原理
@@ -437,9 +425,19 @@ app.whenReady().then(() => {
 
 #### 渲染进程间通信
 
+方案一：
+
 `Electron`并没有提供渲染进程之间相互通信的方式，我们可以在主进程中建立一个消息中转站。
 
 渲染进程之间通信首先发送消息到主进程，主进程的中转站接收到消息后根据条件进行分发。
+
+方案二：
+
+在两个渲染进程之间建立 MessageChannel
+
+[https://www.electronjs.org/zh/docs/latest/tutorial/message-ports](https://www.electronjs.org/zh/docs/latest/tutorial/message-ports)
+
+主进程设置了一个MessageChannel，然后将每个端口发送给不同的渲染进程。 这样可以让渲染进程彼此之间发送消息，而无需使用主进程作为中转。
 
 
 
@@ -475,9 +473,7 @@ app.whenReady().then(() => {
 
 
 
-
-
-### Node.js 集成到 Chromium
+## Node.js 集成到 Chromium
 
 如何将 `Node.js` 和 `Chromiums` 整合？
 
@@ -502,13 +498,74 @@ app.whenReady().then(() => {
 
 
 
-### Electron工程踩坑记录
+## build
+
+package.json 中 build 字段
+
+```tsx
+  "build": {
+    "asar": false,
+    "buildDependenciesFromSource": true,
+    "productName": "Agora-Electron-API-Example",
+    "appId": "agora.io.ElectronApiExample",
+    "files": [
+      "!*.log"
+    ],
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "type": "distribution",
+      "hardenedRuntime": true,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development"
+    },
+    "directories": {
+      "buildResources": "assets"
+    },
+    "extraResources": [
+      "./extraResources/**"
+    ]
+  },
+```
+
+## Electron工程踩坑记录
 
 [https://lq782655835.github.io/blogs/project/project-electron-summary.html](https://lq782655835.github.io/blogs/project/project-electron-summary.html)
 
 
 
+## ASAR
 
+ASAR 表示 Atom Shell Archive Format。 一个 [asar](https://github.com/electron/asar) 档案就是一个简单的 `tar` 文件 - 比如将那些有关联的文件放至一个单独的文件格式中。 Electron 能够任意读取其中的文件并且不需要解压整个文件。
+
+ASAR格式是为了在Windows系统读取大量的小文件时 (比如像从`node_modules`加载应用的JavaScript依赖关系树) 提高性能。
 
 
 

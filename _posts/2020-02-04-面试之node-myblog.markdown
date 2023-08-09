@@ -298,13 +298,13 @@ module.exports = function () { return 'foo'; };
 它们之间的主要区别在于执行时机。
 
 1. process.nextTick：
-   - 在当前执行阶段结束后立即执行。   （同一个阶段）
+   - **在当前执行阶段结束后立即执行。   （同一个阶段）**
    - process.nextTick() 方法将回调函数放在当前执行栈的末尾，用于推迟执行任务。这意味着回调函数将在当前操作结束之后立即执行。
    - process.nextTick 回调函数排队执行的优先级会高于其他回调函数，包括 I/O 操作和定时器。
    - process.nextTick 适用于需要尽早执行的回调函数，比如需要尽快更新某些状态。
    - process.nextTick() 从技术上讲不是事件循环的一部分。相反，它都将在当前操作完成后处理nextTickQueue
 2. setImmediate：
-   - timer 阶段 或者 check 阶段执行。
+   - **timer 阶段 或者 check 阶段执行。**
    - setImmediate 回调函数排在其他 I/O 操作之后。
    - setImmediate 实际上是一个在事件循环的单独阶段运行的特殊计时器
 3. setTimeout：
