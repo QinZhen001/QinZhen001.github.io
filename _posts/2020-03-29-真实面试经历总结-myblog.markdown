@@ -2147,6 +2147,115 @@ pnpm 则是通过使用符号链接的方式仅将项目的直接依赖项添加
 
 
 
+### 智能信息一面
+
+* 根据简历去问
+* mobx 和 redux 怎么技术选型
+* react 和 vue 的差异
+* canvas渲染的性能优化
+* react 16/17/18 的区别
+
+算法：
+
+实现深度遍历查找
+
+```tsx
+    const tree = {
+      name: "a",
+      children: [
+        {
+          name: "b",
+          children: [
+            { name: 'g' },
+            { name: 'h' },
+          ]
+        },
+        {
+          name: "c",
+        },
+        {
+          name: "d",
+          children: [
+            { name: 'j' },
+          ]
+        },
+        {
+          name: "e",
+        },
+        {
+          name: "f",
+        }
+      ]
+    }
+
+    deepFind(tree, 'j')
+```
+
+解决：
+
+```tsx
+	const deepFind = (tree, name) => {
+      if (tree.name === name) {
+        return true
+      }
+      if (!tree.children || !tree.children.length) {
+        return false
+      }
+      for (let i = 0;i < tree.children.length;i++) {
+        const child = tree.children[i]
+        const result = deepFind(child, name)
+        if (result) {
+          return true
+        }
+      }
+      return false
+    }
+```
+
+---
+
+实现自定义filter
+
+```tsx
+    const arr = [1, 2, 3, 4]
+    Array.prototype.myFilter = function (fn, context) {
+      // 实现自定义 filter
+      // fn 参数 为 item当前值 index索引 list整个数组
+      // context 为 fn 的 this 指向上下文
+    }
+    const res = arr.myFilter(function (item, index, list) {
+      console.log(item, index, list)
+      return item > 2
+    })
+    console.log(res)
+```
+
+实现：
+
+```tsx
+    Array.prototype.myFilter = function (fn, context) {
+      if (typeof fn !== 'function') {
+        throw new Error("fn is not a function")
+      }
+      const res = []
+      const ctx = context || window
+      for (let i = 0;i < this.length;i++) {
+        if (fn.call(ctx, this[i], i, this)) {
+          res.push(this[i])
+        }
+      }
+      return res
+    }
+```
+
+
+
+
+
+
+
+
+
 ## 腾讯
 
 

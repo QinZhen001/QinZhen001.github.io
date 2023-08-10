@@ -118,6 +118,22 @@ render(
 
 
 
+## reducer
+
+reducer为什么叫reducer
+
+我们注意到redux的官方文档里专门有一句对reducer命名的解释：
+
+It's called a reducer because it's the type of function you would pass to Array.prototype.reduce(reducer, ?initialValue)
+
+中文版的文档把这一句话翻译成了：
+
+之所以称作 reducer 是因为它将被传递给 Array.prototype.reduce(reducer, ?initialValue) 方法
+
+直观起见，我们还是拿JavaScript来理解。reduce属于一种高阶函数，它将其中的回调函数reducer递归应用到数组的所有元素上并返回一个独立的值。这也就是“缩减”或“折叠”的意义所在了。
+
+**总而言之一句话，redux当中的reducer之所以叫做reducer，是因为它和 Array.prototype.reduce 当中传入的回调函数非常相似。**
+
 
 
 ## applyMiddlewares
