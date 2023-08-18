@@ -4894,7 +4894,38 @@ mutex.dispatch(sleep2)  // 才会执行
 
 
 
+### pagehide 和 visibilitychange 和 beforeunload
 
+[https://developer.chrome.com/blog/deprecating-unload/](https://developer.chrome.com/blog/deprecating-unload/)
+
+`pagehide`和`visibilitychange`是两个与页面可见性相关的事件，它们在不同的场景下触发。
+
+`pagehide`事件在页面即将离开用户的视图之前触发。通常在以下情况下会触发`pagehide`事件：
+
+- 用户关闭当前页面
+- 用户点击到一个新的页面链接
+- 用户切换到浏览器的其它标签页或应用
+- 用户执行了浏览器的前进/后退操作
+
+相比之下，`visibilitychange`事件在页面的可见性发生变化时触发。页面的可见性可以通过浏览器窗口被最小化、隐藏到后台标签页、操作系统的锁屏等方式发生变化。这个事件适用于以下场景：
+
+- 当用户最小化浏览器窗口或切换到其它应用时
+- 当用户恢复浏览器窗口或切换回当前标签页时
+- 在移动设备上，当屏幕被锁定或解锁时
+
+综上所述，`pagehide`事件主要监听页面即将离开用户视图的情况，而`visibilitychange`事件则监听页面可见性的变化。
+
+beforeunload事件：
+
+- 触发时机：在页面即将卸载之前触发，也就是在用户关闭页面、刷新页面、导航到其他页面等操作之前触发。
+- 执行操作：可以在此事件中执行一些清理操作，例如关闭WebSocket、清除定时器、发送最后的请求等。
+
+----
+
+
+
+* **beforeunload：在此事件中执行的操作可能会阻塞页面的关闭或离开，因此必须谨慎使用。**
+* **pagehide事件不会阻塞页面的关闭或离开，因此可用于执行一些较轻量级的操作。**
 
 
 

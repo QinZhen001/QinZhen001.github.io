@@ -1201,6 +1201,14 @@ Standalone runtime for [Regenerator](https://github.com/facebook/regenerator)-co
 
 
 
+### plyr
+
+Plyr is a simple, lightweight, accessible and customizable HTML5, YouTube and Vimeo media player that supports modern browsers.
+
+Plyr是一个简单，轻量级，可访问和可定制的HTML5, YouTube和Vimeo媒体播放器，支持现代浏览器。
+
+
+
 # react
 
 
