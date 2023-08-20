@@ -15,7 +15,6 @@ tags:
 ## 正文
 [网页链接](https://mp.weixin.qq.com/s/C2Zx3KPNPkgj-aHnOY43Iw)
 
-
 [Web性能领域常见的专业术语](https://github.com/berwin/Blog/issues/46)
 
 
@@ -59,6 +58,16 @@ FMP与英雄渲染时间非常相似，但它们不一样的地方在于FMP不�
 * 重要文件的大小预算小于170kb
 
 以上四种指标的设定都有据可循。详细信息请查看RAIL性能模型。
+
+
+
+### RAIL
+
+[https://web.dev/rail/](https://web.dev/rail/)
+
+**RAIL** 是一种以**用户为中心**的性能模型，它提供了一种考虑性能的结构。该模型将用户体验分解到按键操作（例如，点击、滚动、加载）中，帮助您为每个操作定义性能目标。
+
+RAIL 代表 Web 应用生命周期的四个不同方面：响应、动画、空闲和加载。
 
 
 

@@ -832,6 +832,33 @@ function dp(n) {
 
 
 
+#### long task
+
+任何连续不间断的且主 UI 线程繁忙 50 毫秒及以上的时间区间
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceLongTaskTiming](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceLongTaskTiming)
+
+[长任务会使主线程保持忙碌，延迟用户交互](https://web.dev/long-tasks-devtools/#are-there-long-tasks-in-my-page-that-could-delay-interactivity)
+
+```tsx
+var observer = new PerformanceObserver(function (list) {
+  var perfEntries = list.getEntries();
+  for (var i = 0; i < perfEntries.length; i++) {
+    // Process long task notifications:
+    // report back for analytics and monitoring
+    // ...
+  }
+});
+// register observer for long task notifications
+observer.observe({ entryTypes: ["longtask"] });
+// Long script execution after this will result in queueing
+// and receiving "longtask" entries in the observer.
+```
+
+
+
+
+
 
 
 #### webassembly使用
