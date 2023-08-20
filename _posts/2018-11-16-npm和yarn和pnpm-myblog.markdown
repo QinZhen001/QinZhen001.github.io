@@ -167,6 +167,29 @@ npm dist-tag rm <pkg> <tag>
 
 
 
+## workspaces
+
+npm workspaces是npm 7.0.0版本中新引入的功能，它允许您在具有相互依赖关系的多个包之间进行协同工作。
+
+使用npm workspaces，您可以在一个项目中管理多个包，这些包可以同时具有公共依赖关系。一种常见的用例是在一个大型代码库中，将多个相关的模块或功能作为独立的包进行开发和管理。
+
+在使用npm workspaces时，您只需在项目的根目录下创建一个`package.json`文件，并在其中声明`"workspaces"`属性，然后在该属性的值中列出您要包含的包的路径。例如：
+
+```json
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
+```
+
+上面的例子中，`packages/*`表示项目中所有位于`packages`目录下的包都将被包含在工作区中。
+
+当您使用`npm install`命令时，npm会自动将所有被声明的工作区中的包安装到项目的`node_modules`目录下，而不是每个包都有自己的
+
 
 
 ## 设置自动执行的默认值
@@ -430,10 +453,6 @@ npm用下来比较强的一个痛点就是：当包的依赖层次比较深时�
 
 
 ## workspace
-
-**workspace是除缓存外yarn区别于npm最大的优势**
-
- 
 
 * 能帮助你更好地管理多个子project的repo，这样你可以在每个子project里使用独立的package.json管理你的依赖，又不用分别进到每一个子project里去yarn
 * install/upfrade安装/升级依赖，而是使用一条yarn命令去处理所有依赖就像只有一个package.json一样

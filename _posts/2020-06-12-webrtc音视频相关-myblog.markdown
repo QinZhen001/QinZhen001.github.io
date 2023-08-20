@@ -438,6 +438,31 @@ RTMP协议广泛应用于流媒体领域，例如用于视频直播、音视频�
 
 
 
+
+
+# RTSP
+
+RTSP，全称为Real Time Streaming Protocol，即实时流传输协议。它是一种用于控制实时多媒体数据传输的应用层协议。RTSP协议允许客户端通过控制服务器来播放、暂停、调节音量、跳跃等操作，与流媒体服务器之间进行交互。RTSP常用于流媒体播放器、IP摄像机等设备上，用于实现实时音视频的传输和控制。
+
+
+
+RTSP 和 RTMP 的区别：
+
+1. 目的和使用场景：RTMP主要用于实时传输媒体数据，如音频和视频，它适用于一对一或一对多的直播和点播场景。RTSP主要用于控制网络流媒体服务器，它主要用于需要进行流式传输和控制的多媒体应用。
+2. 协议结构：RTMP是基于TCP的应用层协议，它通过建立TCP连接，并在该连接上传输媒体数据和控制信息。RTSP是一个用于实时传输控制的应用层协议，它使用TCP或UDP来传输控制消息，而媒体数据则使用RTP或者RTCP。
+3. 支持性和平台兼容性：RTMP在多种操作系统和平台上都有广泛的支持，包括Windows、Mac、Linux等。RTSP也有广泛的支持，但它可能不同程度地依赖于不同的操作系统和流媒体服务器。
+4. 编码支持：RTMP支持多种编码类型，包括H.264、AAC等，可以在较低的带宽下提供高质量的传输和播放。RTSP也支持多种编码类型，但具体的编码支持取决于流媒体服务器和客户端的能力。
+
+总的来说，RTMP适用于实时的直播和点播场景，而RTSP适用于需要进行流式传输和控制的多媒体应用。两种协议各有优劣，选择使用哪一种取决于具体的应用需求和平台支持。
+
+
+
+
+
+
+
+
+
 # 补充
 
 
@@ -527,6 +552,38 @@ clipAudio(audioBuffer,duration,startOffset = 0){
 
 
 
+### WAV
+
+WAV可以在mac 和 网页上进行播放。
+
+请注意，不是所有的浏览器都支持播放WAV文件。在某些情况下，您可能需要将WAV文件转换为其他格式（例如MP3或OGG），以确保在各种浏览器中的兼容性。
+
+判断浏览器是否支持播放WAV文件：
+
+```tsx
+var audio = new Audio("path_to_wav_file.wav");
+if (audio.canPlayType("audio/wav") !== "") {
+  // 浏览器支持播放WAV文件
+} else {
+  // 浏览器不支持播放WAV文件
+}
+```
+
+
+
+
+
+### WAV 和 MP3 
+
+WAV文件和MP3是两种常见的音频文件格式。
+
+* WAV（Waveform Audio File Format）是一种无损的音频文件格式，它的文件体积相对较大，因为它保存音频数据的完整信息，包括采样率、采样位数等。WAV文件通常用于存储无损音频数据，如音乐制作、CD音轨等。由于它的音质较高，很多专业音频工作者和音乐制作人都会选择使用WAV文件进行录制和编辑。
+* MP3（MPEG-1 Audio Layer III）是一种有损的音频文件格式，它通过压缩音频数据来减小文件体积，因此相对于WAV文件，MP3文件体积更小。在压缩过程中，MP3会丢弃一些人耳较难察觉的音频数据，从而达到较高的压缩比。由于MP3文件相对较小，易于传输和存储，因此成为了互联网上非常流行的音频格式，经常在音乐下载、流媒体等场景中使用。
+
+需要注意的是，由于MP3是有损压缩格式，相对于WAV来说会损失一些音质。因此，如果对音质要求较高的情况下，可以选择WAV文件作为首选，而如果追求文件体积小并且对音质要求相对较低，可以选择MP3文件。
+
+
+
 
 
 
@@ -559,6 +616,19 @@ clipAudio(audioBuffer,duration,startOffset = 0){
 [https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API)
 
 
+
+## m3u8
+
+application/vnd.apple.mpegURL 是一种MPEG-DASH（Dynamic Adaptive Streaming over HTTP）视频流的容器格式，也即.m3u8文件。
+
+这种格式通常用于流媒体服务中，允许动态自适应流媒体传输，以适应观众的网络状况和设备能力。.m3u8 是一个文本文件，其中包含媒体片段的URL，可以用于播放HLS（HTTP Live Streaming）视频流。HLS是苹果公司开发的一种流媒体传输协议，适用于iOS和macOS设备上的视频播放。
+
+```tsx
+browserHlsSupported(): boolean {
+    const mediaElement = document.createElement('video');
+    return !!mediaElement.canPlayType('application/vnd.apple.mpegURL');
+  }
+```
 
 
 
