@@ -4807,11 +4807,46 @@ event中的offsetX 会触发到子元素中
 
 
 
+### matchMedia
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Window/matchMedia](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/matchMedia)
+
+[`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window) 的 **`matchMedia()`** 方法返回一个新的 [`MediaQueryList`](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaQueryList) 对象，表示指定的[媒体查询 (en-US)](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries)字符串解析后的结果。返回的 `MediaQueryList` 可被用于判定 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 是否匹配媒体查询，或者监控一个 `document` 来判定它匹配了或者停止匹配了此媒体查询。
+
+
+
+#### 横竖屏判断）
+
+要判断设备的方向，可以使用`orientation`属性和媒体查询。`orientation`属性有两个可能的值：`portrait`（纵向）和`landscape`（横向）
+
+```tsx
+ window.matchMedia('(orientation: portrait)');
+```
+
+matchMedia('(orientation: portrait)') 的作用是检测当前设备的屏幕方向是否为纵向（竖屏）方向。根据传入的媒体查询条件，它会返回一个 MediaQueryList 对象，可以通过该对象的 matches 属性来判断当前设备的屏幕方向是否匹配查询条件。如果匹配条件，则 matches 属性为 true，否则为 false。
+
+```tsx
+const mql = window.matchMedia('(orientation: portrait)');
+// 一开始我们可以从 mql.matches 判断最初状态是 横屏/竖屏
+
+// 定义回调函数
+const handleChange = (event) => {
+  if (event.matches) {
+    console.log("竖屏")
+  } else {
+    console.log("横屏")
+  }
+};
+
+// 添加事件监听
+mql.addEventListener('change', handleChange)
+```
 
 
 
 
-### dark mode
+
+#### dark mode
 
  [How do I detect dark mode using JavaScript?](https://stackoverflow.com/questions/56393880/how-do-i-detect-dark-mode-using-javascript)
 
