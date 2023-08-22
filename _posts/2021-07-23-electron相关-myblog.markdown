@@ -407,6 +407,68 @@ Electron Builder 是一个完备的Electron应用打包和分发解决方案，�
 
 
 
+#### build
+
+package.json 中 build 字段
+
+```tsx
+  "build": {
+    "asar": false,
+    "buildDependenciesFromSource": true,
+    "productName": "Agora-Electron-API-Example",
+    "appId": "agora.io.ElectronApiExample",
+     // 指定应该包含在最终构建中的文件列表。
+    "files": [
+     "main",
+     "out"
+    ],
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "type": "distribution",
+      "hardenedRuntime": true,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development"
+    },
+    "directories": {
+      "buildResources": "assets"
+    },
+    //  额外的资源文件或文件夹，将会包含在最终构建中  
+    "extraResources": [
+      "./extraResources/**"
+    ]
+  },
+```
+
+
+
 
 
 
@@ -500,60 +562,15 @@ Electron Builder 是一个完备的Electron应用打包和分发解决方案，�
 
 ## build
 
-package.json 中 build 字段
+### buildDependenciesFromSource
 
-```tsx
-  "build": {
-    "asar": false,
-    "buildDependenciesFromSource": true,
-    "productName": "Agora-Electron-API-Example",
-    "appId": "agora.io.ElectronApiExample",
-    "files": [
-      "!*.log"
-    ],
-    "mac": {
-      "target": [
-        "dir"
-      ],
-      "type": "distribution",
-      "hardenedRuntime": true,
-      "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist",
-      "gatekeeperAssess": false
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "win": {
-      "target": [
-        "zip"
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage"
-      ],
-      "category": "Development"
-    },
-    "directories": {
-      "buildResources": "assets"
-    },
-    "extraResources": [
-      "./extraResources/**"
-    ]
-  },
-```
+一般情况下，从npm安装Electron时会自动下载预编译的二进制文件，但是在某些情况下可能会遇到二进制文件不可用或不兼容的问题。这时候可以使用 `electron buildDependenciesFromSource` 命令强制从源代码构建依赖项，以确保所有依赖项与当前系统环境兼容。
+
+这个命令主要用于调试和解决构建问题，一般情况下并不需要使用它。如果你在构建Electron应用中遇到了依赖项的问题，可以尝试使用 `electron buildDependenciesFromSource` 命令来重新构建依赖项，并查看是否能解决问题。
+
+
+
+
 
 ## Electron工程踩坑记录
 

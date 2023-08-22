@@ -1058,6 +1058,8 @@ webpack 5 打包的bundle文件内容:
 
 ## webpack-dev-server
 
+> webpack 5.x 版本 之后 使用 webpack serve 代替 
+
 > 从 `webpack-dev-server` v4.0.0 开始，热模块替换是默认开启的。
 
 [https://www.npmjs.com/package/webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server)
@@ -1111,8 +1113,6 @@ webpack-dev-middleware 是一个封装器(wrapper)，它可以把 webpack 处理
 * 如果使用 watch 模式监听代码修改，Webpack 会自动编译，如果在 Webpack 编译过程中请求文件，Webpack dev middleware 会延迟请求，直到编译完成之后再开始发送编译完成的文件。
 
 
-
-
 其实就是因为webpack-dev-server只负责启动服务和前置准备工作，所有文件相关的操作都抽离到webpack-dev-middleware库了，**主要是本地文件的编译和输出以及监听**，无非就是职责的划分更清晰了。
 
 
@@ -1128,17 +1128,9 @@ compiler.watch(options.watchOptions, (err) => {
 setFs(context, compiler); 
 ```
 
-
-
 为什么代码的改动保存会自动编译，重新打包？这一系列的重新检测编译就归功于compiler.watch这个方法了。**监听本地文件的变化主要是通过文件的生成时间是否有变化**，这里就不细讲了。
 
-
-
 执行setFs方法，这个方法主要目的就是将编译后的文件打包到内存。这就是为什么在开发的过程中，你会发现dist目录没有打包后的代码，因为都在内存中。原因就在于访问内存中的代码比访问文件系统中的文件更快，而且也减少了代码写入文件的开销，这一切都归功于memory-fs。
-
-
-
-
 
 
 
@@ -1151,6 +1143,15 @@ setFs(context, compiler);
 Webpack hot reloading using only webpack-dev-middleware. This allows you to add hot reloading into an existing server without webpack-dev-server.
 
 
+
+### webpack-dev-server 和 webpack serve
+
+**webpack-dev-server 是在 webpack 4.x 版本之前使用的开发服务器，而 webpack serve 是在 webpack 5.x 版本之后引入的新的开发服务器。所以如果你使用的是 webpack 4.x 版本及之前的版本，应该使用 webpack-dev-server；如果你使用的是 webpack 5.x 版本及之后的版本，应该使用 webpack serve。**
+
+1. 配置文件：使用 webpack-dev-server 需要将配置信息写在 webpack.config.js 文件中的 devServer 属性中，而使用 webpack serve 则是写在 webpack.config.js 文件中的 devServer 属性下的 serve 属性中。
+2. 默认值：使用 webpack-dev-server 时，默认的选项值可能需要通过命令行参数来修改，而 webpack serve 则会自动读取 webpack.config.js 文件中的配置，可以避免在命令行中设置参数。
+
+webpack serve 是 webpack 5.x 版本及之后的新的开发服务器，相比 webpack-dev-server 更加灵活和方便使用。但是两者的核心功能都是一样的，都是用于在开发环境下提供热更新、自动刷新等功能的开发服务器。
 
 
 
@@ -2687,7 +2688,7 @@ webpack.config
 
 
 
-### not provide export named 'default'
+## not provide export named 'default'
 
 [https://bobbyhadz.com/blog/javascript-requested-module-not-provide-export-named-default](https://bobbyhadz.com/blog/javascript-requested-module-not-provide-export-named-default)
 
