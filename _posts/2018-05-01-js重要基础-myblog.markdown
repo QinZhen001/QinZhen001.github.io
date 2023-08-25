@@ -3836,13 +3836,7 @@ V8 引入字节码，也就有了一个相对弹性的空间，内存和执行�
 
 Web Workers 是 现代浏览器 提供的一个javascript多线程解决方案，我们可以将一些大计算量的代码交由web Worker运行。JavaScript语言执行采用的是单线程模型，也就是说，所有任务排成一个队列，一次只能做一件事。但是有了webworker后就不一样了。
 
-
-
 Service Worker是基于Web Worker的事件驱动的，他们执行的机制都是新开一个线程去处理一些额外的，以前不能直接处理的任务。对于Web Worker，我们可以使用它来进行复杂的计算，因为它并不阻塞浏览器主线程的渲染。而Service Worker，我们可以用它来进行本地缓存或请求转发，相当于一个浏览器端本地的proxy。
-
-
-
-
 
 > 例如使用Service Worker来进行缓存，是用javascript代码来拦截浏览器的http请求，并设置缓存的文件，直接返回，不经过web服务器，然后，我们就可以开发基于浏览器的离线应用。这使得我们的web应用减少对网络的依赖。 如果我们使用了Service Worker做缓存，浏览器http请求会先经过Service Worker，通过url mapping去匹配，如果匹配到了，则使用缓存数据，如果匹配失败，则继续执行你指定的动作。一般情况下，匹配失败则让页面显示“网页无法打开”。
 
@@ -3885,6 +3879,40 @@ Service worker will work only if you run it on a server. Just by opening the ind
 [close() vs terminate()](https://stackoverflow.com/questions/30500883/javascript-web-worker-close-vs-terminate)
 
 The `close()` method is visible inside the worker's scope. The `terminate()` method is a part of the worker object's interface and can be called "from the outside".
+
+
+
+##### 跨域
+
+[https://zhuanlan.zhihu.com/p/47878150](https://zhuanlan.zhihu.com/p/47878150)
+
+Web Workers 在使用过程中要求加载的 JS 文件 URL 必须与当前 Domain 保持同源，即 同源策略，否则就会抛出错误。
+
+
+
+##### postMessage transfer
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Worker/postMessage](https://developer.mozilla.org/zh-CN/docs/Web/API/Worker/postMessage)
+
+[可转移对象](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects)
+
+transfer: 一个可选的、会被转移所有权的可转移对象数组。如果一个对象的所有权被转移，它将在发送它的上下文中变为不可用（中止），而仅在接收方的 worker 中可用。
+
+像 ArrayBuffer、MessagePort 或 ImageBitmap 类的实例才是可转移对象，才能够被转移。不能将 null 作为 transfer 的值。
+
+
+
+##### Worker 之间通信
+
+[MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/Channel_Messaging_API/Using_channel_messaging)
+
+```js
+const channel = new MessageChannel();
+receivingWorker.postMessage({port: channel.port1}, [channel.port1]);
+sendingWorker.postMessage({port: channel.port2}, [channel.port2]);
+```
+
+
 
 
 

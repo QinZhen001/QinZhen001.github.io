@@ -113,14 +113,10 @@ devserver作为webpack配置选项中的一项，以下是它的一些配置选�
 
 
 
-----
-
 
 
 - chunk: 是指代码中引用的文件（如：js、css、图片等）会根据配置合并为一个或多个包，我们称一个包为 chunk。
 - module: 是指将代码按照功能拆分，分解成离散功能块。拆分后的代码块就叫做 module。可以简单的理解为一个 export/import 就是一个 module。
-
-
 
 **每个 chunk 包可含多个 module。** 
 
@@ -164,10 +160,6 @@ filename应该比较好理解，就是对应于entry里面生成出来的文件�
 **chunk就是代码块的意思**
 
 多个chunk合在一起就是bundle，一个bundle可以理解为一个大的js打包之后生成的文件，而多个bundle里可能有公共的部分，或者一个bundle里的东西并不需要一次性加载，需要按照路由按需加载，这个时候就需要按需加载，拆分成不同的chunk
-
-
-
-
 
 
 
@@ -385,10 +377,7 @@ console.log(str);
 
 我们把所有代码分成一块一块，需要某块代码的时候再去加载它；利用浏览器的缓存，下次用到它的话，直接从缓存中读取。很显然，这种做法可以加快我们网页的加载速度。
 
-
 **所以说，Code Splitting 其实就是把代码分成很多很多块（ chunk ）**
-
-
 
 Code Splitting 主要有 2 种方式：
 1. 分离业务代码和第三方库（ vendor ）
@@ -994,21 +983,11 @@ package.json里面的sideEffects 表示当前项目发npm包时，无副作用
 })([/*存放所有模块的数组*/])
 ```
 
-
-
 bundle.js 能直接运行在浏览器中的原因在于输出的文件中通过 __webpack_require__ 函数定义了一个可以在浏览器中执行的加载函数来模拟 Node.js 中的 require 语句。
-
-
 
 原来一个个独立的模块文件被合并到了一个单独的 bundle.js 的原因在于浏览器不能像 Node.js 那样快速地去本地加载一个个模块文件，而必须通过网络请求去加载还未得到的文件。 如果模块数量很多，加载时间会很长，因此把所有模块都存放在了数组中，执行一次网络加载。
 
-
-
 如果仔细分析 __webpack_require__ 函数的实现，你还有发现 Webpack 做了缓存优化： 执行加载过的模块不会再执行第二次，执行结果会缓存在内存中，当某个模块第二次被访问时会直接去内存中读取被缓存的返回值。
-
-
-
-
 
 webpack 5 打包的bundle文件内容:
 
@@ -1052,8 +1031,6 @@ webpack 5 打包的bundle文件内容:
 
 和`webpack4`相比，`webpack5`打包出来的bundle做了相当的精简。在上面的打包`demo`中，整个立即执行函数里边只有三个变量和一个函数方法，`__webpack_modules__`存放了编译后的各个文件模块的JS内容，`__webpack_module_cache__ `用来做模块缓存，`__webpack_require__`是`Webpack`内部实现的一套依赖引入函数。最后一句则是代码运行的起点，从入口文件开始，启动整个项目。
 
-
-
 其中值得一提的是`__webpack_require__`模块引入函数，我们在模块化开发的时候，通常会使用`ES Module`或者`CommonJS`规范导出/引入依赖模块，`webpack`打包编译的时候，会统一替换成自己的`__webpack_require__`来实现模块的引入和导出，从而实现模块缓存机制，以及抹平不同模块规范之间的一些差异性。
 
 ## webpack-dev-server
@@ -1072,14 +1049,10 @@ Use webpack with a development server that provides live reloading. This should 
 将webpack与提供实时重新加载的开发服务器一起使用。这应该只用于开发。
 
 
-
-
 It uses webpack-dev-middleware under the hood, which provides fast in-memory access to the webpack assets.
 
 
 它使用底层的webpack-dev-middleware，它提供对webpack资产的快速内存访问。
-
-
 
 ```tsx
 const wdm = require('webpack-dev-middleware');
@@ -1097,8 +1070,6 @@ app.listen(8080);
 
 
 ### webpack-dev-middleware
-
-
 
 [ https://juejin.im/post/5e7782dbf265da57584dc95e?utm_source=gold_browser_extension ]( https://juejin.im/post/5e7782dbf265da57584dc95e?utm_source=gold_browser_extension )
 
@@ -1185,8 +1156,6 @@ import(/* webpackPrefetch: true */ 'LoginModal');
 
 
 与prefetch相比，Preload指令有很多不同之处：
-
-
 
 * 预加载的块开始与父块并行加载。父块完成加载后，将启动预取的块。
 * 预加载的块具有中等优先级并立即下载。浏览器空闲时下载预取的块。
@@ -1291,13 +1260,7 @@ whenever a module reexports all exports (regardless if used or unused) need to b
 
 上面也说到，通常我们发布到 npm 上的包很难保证其是否包含副作用（可能是代码的锅可能是 transformer 的锅），但是我们基本能确保这个包是否会对包以外的对象产生影响，比如是否修改了 window 上的属性，是否复写了原生对象方法等。如果我们能保证这一点，其实我们就能知道整个包是否能设置 sideEffects: false了，至于是不是真的有副作用则并不重要，这对于 webpack 而言都是可以接受的。**这也就能解释为什么能给 vue 这个本身充满副作用的包加上 sideEffects: false 了。**
 
-
-
 所以其实 webpack 里的 sideEffects: false 的意思并不是我这个模块真的没有副作用，而只是为了在摇树时告诉 webpack：**我这个包在设计的时候就是期望没有副作用的，即使他打完包后是有副作用的，webpack 同学你摇树时放心的当成无副作用包摇就好啦！**
-
-
-
-
 
 也就是说，只要你的包不是用来做 polyfill 或 shim 之类的事情，就尽管放心的给他加上 sideEffects: false 吧！
 
@@ -1319,15 +1282,11 @@ whenever a module reexports all exports (regardless if used or unused) need to b
 
 
 
-
-
-
-
 ### externals和libraryTarget的关系
 
 libraryTarget配置如何暴露 library。如果不设置library,那这个library就不暴露。就相当于一个自执行函数
 
-externals是决定的是以哪种模式去加载所引入的额外的包
+**externals是决定的是以哪种模式去加载所引入的额外的包**
 
 ## 动态import
 
@@ -1369,8 +1328,6 @@ Tree shaking是一种通过清除多余代码方式来优化项目打包体积�
 
 - `ES6 Module`引入进行静态分析，故而编译的时候正确判断到底加载了那些模块
 - 静态分析程序流，判断那些模块和变量未被使用或者引用，进而删除对应代码
-
-
 
 ### 和 Rollup 的tree-shaking比较
 
@@ -1730,8 +1687,6 @@ Webpack 5增加了一个名为“模块联合”的新特性，它允许多个We
 
 webpack 5引入联邦模式是为了**更好的共享代码**。 在此之前，我们共享代码一般用npm发包来解决。 npm发包需要经历构建，发布，引用三阶段，而联邦模块可以**直接引用其他应用代码**,实现热插拔效果。对比npm的方式更加简洁、快速、方便。
 
-
-
 联邦模块和微前端的关系：因为expose这个属性即可以暴露单个组件，也可以把整个应用暴露出去。同时由于share属性存在，技术栈必须一致。所以加上路由，可以用来实现single-spa这种模式的微前端。
 
 使用场景：新建专门的组件应用服务来管理所有组件和应用，其他业务层只需要根据自己业务所需载入对应的组件和功能模块即可。模块管理统一管理，代码质量高，搭建速度快。特别适用矩阵app，或者可视化页面搭建等场景。
@@ -1975,8 +1930,6 @@ HMR 成功与否的关键步骤，HotModulePlugin 将会对新旧模块进行对
 ```
 
 在入口默默增加了 2 个文件，那就意味会一同打包到`bundle`文件中去，也就是线上运行时。
-
-
 
 ```tsx
 // webpack-dev-server/client/index.js

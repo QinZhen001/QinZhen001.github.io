@@ -646,10 +646,6 @@ module.exports = function(source) {
 
 ### 同步loader
 
-
-
-
-
 同步 loader，我们可以通过`return`和`this.callback`返回输出的内容
 
 ```js

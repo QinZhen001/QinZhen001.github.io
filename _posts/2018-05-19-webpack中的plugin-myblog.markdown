@@ -981,14 +981,8 @@ Built at: 2020-10-28 10:09:54
 
 
 
-
-
-
-
 ```javascript
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
-
-
 
 new AddAssetHtmlPlugin({
         // dll文件位置
@@ -999,8 +993,6 @@ new AddAssetHtmlPlugin({
         outputPath: './vendor'
       })
 ```
-
-
 
 
 
@@ -1019,12 +1011,6 @@ new AddAssetHtmlPlugin({
 ```
 
 我们在固定了 module id 之后同理也需要固定一下 chunk id，不然我们增加 chunk 或者减少 chunk 的时候会和 module id 一样，都可能会导致 chunk 的顺序发生错乱，从而让 chunk 的缓存都失效。
-
-![](https://user-gold-cdn.xitu.io/2018/8/6/1650fa11fadb581f?w=1426&h=306&f=jpeg&s=179459)
-
-
-
-
 
 
 
@@ -1112,23 +1098,15 @@ module.exports = {
 
 [https://github.com/anthonygore/html-critical-webpack-plugin#readme](https://github.com/anthonygore/html-critical-webpack-plugin#readme)
 
-
-
 [Critical CSS and Webpack: Automatically Minimize Render-Blocking CSS](https://vuejsdevelopers.com/2017/07/24/critical-css-webpack/)
 
 
 
 This plugin extracts critical CSS and runs after all files have been emitted so you can use it after Mini CSS Extract Plugin and HTML Webpack Plugin.
 
-
-
 这个插件提取关键的CSS并在所有文件发出后运行，所以你可以在迷你CSS提取插件和HTML Webpack插件后使用它。
 
-
-
 执行后，这会将Webpack捆绑输出中的HTML文件更新为：
-
-
 
 ```html
 <!DOCTYPE html>
@@ -1276,8 +1254,6 @@ module.export = {
 
 
 
-
-
 * **Compiler 对象包含了 Webpack 环境所有的的配置信息**，包含 options，loaders，plugins 这些信息，这个对象在 Webpack 启动时候被实例化，它是全局唯一的，可以简单地把它理解为 Webpack 实例；
 * **Compilation 对象包含了当前的模块资源、编译生成资源、变化的文件等**。当 Webpack 以开发模式运行时，每当检测到一个文件变化，一次新的 Compilation 将被创建。Compilation 对象也提供了很多事件回调供插件做扩展。通过 Compilation 也能读取到 Compiler 对象。
 
@@ -1294,12 +1270,7 @@ module.export = {
 
 Webpack 就像一条生产线，要经过一系列处理流程后才能将源文件转换成输出结果。 这条生产线上的每个处理流程的职责都是单一的，多个流程之间有存在依赖关系，只有完成当前处理后才能交给下一个流程去处理。 插件就像是一个插入到生产线中的一个功能，在特定的时机对生产线上的资源做处理。
 
-
 **Webpack 通过 Tapable 来组织这条复杂的生产线。 Webpack 在运行过程中会广播事件，插件只需要监听它所关心的事件，就能加入到这条生产线中，去改变生产线的运作。 Webpack 的事件流机制保证了插件的有序性，使得整个系统扩展性很好。**
-
-
-
-
 
 
 Webpack 的事件流机制应用了观察者模式，和 Node.js 中的 EventEmitter 非常相似。Compiler 和 Compilation 都继承自 Tapable，可以直接在 Compiler 和 Compilation 对象上广播和监听事件，方法如下：

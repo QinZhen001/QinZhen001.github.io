@@ -371,8 +371,6 @@ module.exports = (api) => {
 
 很重要的点，再次强调一下
 
-
-
 **语法转换只是将高版本的语法转换成低版本的，但是新的内置函数api、实例方法无法转换， 比如 Promise、Generator、Set、Maps、Symbol 等全局对象，一些定义在全局对象上的方法（比如 Object.assign）也不会被转码 **
 
 
@@ -391,7 +389,6 @@ Babel 默认只转换新的 JavaScript 语法，而不转换新的 API。例如�
 ### babel-runtime-transform
 
 [https://babeljs.io/docs/en/next/babel-plugin-transform-runtime](https://babeljs.io/docs/en/next/babel-plugin-transform-runtime)
-
 
 局部垫片
 **为开发框架而准备**
@@ -627,12 +624,6 @@ Generator 的中文名称是生成器，它是ECMAScript6中提供的新特性�
   ],
 };
 ```
-
-
-
-
-
-
 
 
 

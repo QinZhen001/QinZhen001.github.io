@@ -49,6 +49,8 @@ export default defineConfig({
 
 ## HMR 热更新
 
+[https://zhuanlan.zhihu.com/p/424842555](https://zhuanlan.zhihu.com/p/424842555)
+
 目前所有的打包工具实现热更新的思路都大同小异：主要是通过`WebSocket`创建浏览器和服务器的通信监听文件的改变，当文件被修改时，服务端发送消息通知客户端修改相应的代码，客户端对应不同的文件进行不同的操作的更新。
 
 

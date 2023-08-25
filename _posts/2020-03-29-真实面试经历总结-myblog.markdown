@@ -171,8 +171,6 @@ function myPromiseAll(fns = []) {
 
 
 
-
-
 #### Proxy 缺点
 
 [https://juejin.cn/post/6844903790739456013#heading-1](https://juejin.cn/post/6844903790739456013#heading-1)
@@ -446,68 +444,13 @@ function findMax(arr = []) {
 
 #### web worker 
 
-##### 跨域
-
-[https://zhuanlan.zhihu.com/p/47878150](https://zhuanlan.zhihu.com/p/47878150)
-
-Web Workers 在使用过程中要求加载的 JS 文件 URL 必须与当前 Domain 保持同源，即 同源策略，否则就会抛出错误。
-
-
-
-##### postMessage transfer
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/Worker/postMessage](https://developer.mozilla.org/zh-CN/docs/Web/API/Worker/postMessage)
-
-[可转移对象](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects)
-
-transfer: 一个可选的、会被转移所有权的可转移对象数组。如果一个对象的所有权被转移，它将在发送它的上下文中变为不可用（中止），而仅在接收方的 worker 中可用。
-
-像 ArrayBuffer、MessagePort 或 ImageBitmap 类的实例才是可转移对象，才能够被转移。不能将 null 作为 transfer 的值。
-
-
-
-##### Worker 之间通信
-
-[MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/Channel_Messaging_API/Using_channel_messaging)
-
-```js
-const channel = new MessageChannel();
-receivingWorker.postMessage({port: channel.port1}, [channel.port1]);
-sendingWorker.postMessage({port: channel.port2}, [channel.port2]);
-```
+详情请查看js基础blog
 
 
 
 #### node事件循环
 
-[https://juejin.cn/post/6844903761949753352](https://juejin.cn/post/6844903761949753352)
-
-外部输入数据-->轮询阶段(poll)-->检查阶段(check)-->关闭事件回调阶段(close callback)-->定时器检测阶段(timer)-->I/O事件回调阶段(I/O callbacks)-->闲置阶段(idle, prepare)-->轮询阶段（按照该顺序反复运行）
-
-
-
-`timers`、`poll`、`check`这3个阶段，因为日常开发中的绝大部分异步任务都是在这3个阶段处理的。
-
-* timers 阶段会执行 setTimeout 和 setInterval 回调，并且是由 poll 阶段控制的。 同样，**在 Node 中定时器指定的时间也不是准确时间，只能是尽快执行**。
-* poll 是一个至关重要的阶段，这一阶段中，系统会做两件事情  (回到 timer 阶段执行回调 执行 I/O 回调)
-* timers。**timers阶段有几个setTimeout/setInterval都会依次执行**，并不像浏览器端，每执行一个宏任务后就去执行微任务
-
-
-
-**浏览器环境下，microtask的任务队列是每个macrotask执行完之后执行。而在Node.js中，microtask会在事件循环的各个阶段之间执行，也就是一个阶段执行完毕，就会去执行microtask队列的任务**。
-
-如果是node11版本一旦执行一个阶段里的一个宏任务(setTimeout,setInterval和setImmediate)就立刻执行微任务队列，这就跟浏览器端运行一致
-
-
-
----
-
-- setImmediate 设计在poll阶段完成时执行，即check阶段；
-- setTimeout 设计在poll阶段为空闲时，且设定时间到达后执行，但它在timer阶段执行
-
-
-
-
+详情请查看node相关blog
 
 
 
@@ -649,8 +592,6 @@ console.log(res)
 
 
 
-
-
 #### xmlHttpRequest 和 fetch
 
 [https://zh.javascript.info/fetch-progress](https://zh.javascript.info/fetch-progress)
@@ -684,8 +625,6 @@ xhr.send();
 
 
 
-
-
 #### 缓存
 
 强缓存 header： Cache-Control 和 Expires  （都是服务器返回的）
@@ -693,8 +632,6 @@ xhr.send();
 **协商缓存 header**：Last-Modifed/If-Modified-Since  Etag/If-None-Match 
 
 Last-Modifed 和  Etag 是服务器返回的
-
-
 
 
 
@@ -1073,6 +1010,85 @@ function print(grid) {
 * long task
 
 跳出研发的角度看事情
+
+
+
+
+
+### 火山引擎一面
+
+基础：
+
+* 聊简历项目
+* mobx的实现原理? mobx-react 的实现原理？
+
+* 在一个c端场景，客户反馈说页面出现卡顿怎么定位到？ （通过打点上报log分析时间戳）
+* 比new Date() 精度更细的获取时间的方法
+
+算法：
+
+写一个装饰器记录类函数的执行时间。 （注意区分同步/异步函数 cnotext）
+
+```
+
+```
+
+给一个number数组，输出数组每一项的非自己乘积  (时间复杂度n(O) 且不能使用除法)
+
+```
+例子：
+input = [1,2,3,4]
+output = [24,12,8,6]
+```
+
+react 题目
+
+```tsx
+function App() {
+  const [num, setNum] = useState(0)
+
+  useEffect(() => {
+    setInterval(() => {
+      setNum(pre => pre + 1)
+    }, 1000)
+  }, [])
+
+  const onClick = useCallback(() => {
+    // 这里的输出是多少 => 0
+    // 为什么useCallback能做到缓存这个num不改变，底层是怎么实现的？=> 闭包作用域
+    console.log(num)
+  }, [])
+
+  return <div onClick={onClick}>test</div>
+}
+```
+
+```tsx
+function App() {
+  const [num, setNum] = useState(0)
+
+  useEffect(() => {
+    setInterval(() => {
+      setNum(pre => pre + 1)
+    }, 1000)
+  }, [])
+
+  const onClick = () => {
+    // 也是0 
+    // useMemo 和 useCallback 都是用来缓存
+    // useMemo 缓存后TestEle就不会重新渲染了 onClick一直是最开始的那个 => 指向的num就是0
+    console.log(num)
+  }
+
+  const TestEle = useMemo(() => <div onClick={onClick}>test</div>, [])
+
+  return <div>
+    {TestEle}
+  </div>
+}
+```
+
+
 
 
 
@@ -2278,6 +2294,17 @@ pnpm 则是通过使用符号链接的方式仅将项目的直接依赖项添加
 
 
 
+
+### 智能信息二面
+
+* 主要还是问简历上的一些项目 **(大厂非常重视指标，如果做了优化之类的工作，一定要有优化前和优化后的指标数据)**
+* CDN 查找原理
+* electron 和 小程序 的渲染的异同点
+* js动画和css动画的区别？为什么js动画更消耗性能？   
+* canvas绘制原理？  （在canvas标签里面绘制比在dom树中绘制性能跟高）
+* 浏览器绘制ui的底层原理
+* 对http协议的认识？ http 1.1 和 2.0 的区别
+* 有没有遇见过流量挟持问题？
 
 
 
