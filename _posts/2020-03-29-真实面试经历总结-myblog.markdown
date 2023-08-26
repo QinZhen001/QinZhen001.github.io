@@ -1029,9 +1029,54 @@ function print(grid) {
 
 写一个装饰器记录类函数的执行时间。 （注意区分同步/异步函数 cnotext）
 
+实现：
+
+```tsx
+const run = (target, name, descriptor) => {
+
+  const originalMethod = descriptor.value; // 保存原始方法
+
+  descriptor.value = function (...args) {
+    let startTime = Date.now();
+    // 调用原始方法 注意this指向
+    const res = originalMethod.apply(this, args);
+    if (res instanceof Promise) {
+      res.then(() => {
+        let endTime = Date.now();
+        console.log('end', endTime - startTime);
+      }).catch(() => {
+        let endTime = Date.now();
+        console.log('end', endTime - startTime);
+      })
+    } else {
+      let endTime = Date.now();
+      console.log('end', endTime - startTime);
+    }
+
+    return res
+  };
+
+  return descriptor
+}
 ```
 
+测试：
+
+```tsx
+class Test {
+
+  @run
+  async task() {
+    await sleep()
+    console.log('task')
+  }
+}
+
+let t = new Test()
+t.task()
 ```
+
+---
 
 给一个number数组，输出数组每一项的非自己乘积  (时间复杂度n(O) 且不能使用除法)
 
@@ -1040,6 +1085,50 @@ function print(grid) {
 input = [1,2,3,4]
 output = [24,12,8,6]
 ```
+
+解决：
+
+```tsx
+function test(arr = []) {
+  let total = 1
+  let res = []
+  for (let i = 0;i < arr.length;i++) {
+    total = total * arr[i]
+  }
+  for (let i = 0;i < arr.length;i++) {
+    // 题目规定不能用除法
+    // 非自己的所有元素乘积 => 当前元素的所有左边元素乘积 * 当前元素的所有右边元素乘积
+    res[i] = total / arr[i]
+  }
+
+  return res
+}
+```
+
+优化：
+
+```tsx
+function test(arr = []) {
+  let res = []
+  let left = [] // 元素左边乘积
+  let right = [] // 元素右边乘积
+  left[0] = 1
+  right[arr.length - 1] = 1
+  for (let i = 1;i < arr.length;i++) {
+    left[i] = left[i - 1] * arr[i - 1]
+  }
+  for (let i = arr.length - 2;i >= 0;i--) {
+    right[i] = right[i + 1] * arr[i + 1]
+  }
+  for (let i = 0;i < arr.length;i++) {
+    res[i] = left[i] * right[i]
+  }
+  return res
+}
+
+```
+
+---
 
 react 题目
 
@@ -2298,7 +2387,7 @@ pnpm 则是通过使用符号链接的方式仅将项目的直接依赖项添加
 ### 智能信息二面
 
 * 主要还是问简历上的一些项目 **(大厂非常重视指标，如果做了优化之类的工作，一定要有优化前和优化后的指标数据)**
-* CDN 查找原理
+* CDN 查找原理 =>  查看网络相关blog
 * electron 和 小程序 的渲染的异同点
 * js动画和css动画的区别？为什么js动画更消耗性能？   
 * canvas绘制原理？  （在canvas标签里面绘制比在dom树中绘制性能跟高）

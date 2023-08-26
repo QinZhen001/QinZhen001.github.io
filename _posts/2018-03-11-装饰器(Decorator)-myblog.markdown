@@ -11,8 +11,8 @@ tags:
 
 > “Yeah It's on. ”
 
+# 正文
 
-## 正文
 [网页链接](http://es6.ruanyifeng.com/#docs/decorator#%E7%B1%BB%E7%9A%84%E4%BF%AE%E9%A5%B0)
 
 ### 类的修饰
@@ -135,7 +135,7 @@ class Person {
 上面代码中，修饰器readonly用来修饰“类”的name方法。
 
 修饰器函数readonly一共可以接受三个参数。
-```
+```tsx
 function readonly(target, name, descriptor){
   // descriptor对象原来的值如下
   // {
@@ -286,6 +286,61 @@ class I18nTranslate {
 }
 ```
 
+
+
+### 记录函数执行时间的装饰器
+
+实现：
+
+```tsx
+const run = (target, name, descriptor) => {
+
+  const originalMethod = descriptor.value; // 保存原始方法
+
+  descriptor.value = function (...args) {
+    let startTime = Date.now();
+    // 调用原始方法 注意this指向
+    const res = originalMethod.apply(this, args);
+    if (res instanceof Promise) {
+      res.then(() => {
+        let endTime = Date.now();
+        console.log('end', endTime - startTime);
+      }).catch(() => {
+        let endTime = Date.now();
+        console.log('end', endTime - startTime);
+      })
+    } else {
+      let endTime = Date.now();
+      console.log('end', endTime - startTime);
+    }
+
+    return res
+  };
+
+  return descriptor
+}
+```
+
+测试：
+
+```tsx
+class Test {
+
+  @run
+  async task() {
+    await sleep()
+    console.log('task')
+  }
+}
+
+let t = new Test()
+t.task()
+```
+
+
+
+
+
 ### 装饰器和注解的区别
 
 [https://zhuanlan.zhihu.com/p/22277764](https://zhuanlan.zhihu.com/p/22277764)
@@ -316,4 +371,35 @@ myClass.annotations = [
 **（AtScript 的）注解能够完全被（ES next）装饰器在实现上模拟！**
 
 所有 Angular 中使用的 Decorator 都并不是真正作为 Decorator 使用，只是通过 Decorator + Reflect.metadata 的组合来模拟 Annotation 的功能。即附加元数据走的是 Reflect.metadata，该实现和 Decorator 本身并无联系。
+
+
+
+
+
+# 补充
+
+
+
+## vite 中使用装饰器 
+
+[https://zhuanlan.zhihu.com/p/417263788](https://zhuanlan.zhihu.com/p/417263788)
+
+```tsx
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react({
+    babel: {
+      plugins: [
+        ["@babel/plugin-proposal-decorators", { legacy: true }],
+        ["@babel/plugin-proposal-class-properties", { loose: true }],
+      ],
+    }
+  })],
+})
+```
+
+
 
