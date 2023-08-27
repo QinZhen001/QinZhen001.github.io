@@ -584,11 +584,36 @@ WAV文件和MP3是两种常见的音频文件格式。
 
 
 
+### webaudio-examples
+
+[https://github.com/mdn/webaudio-examples](https://github.com/mdn/webaudio-examples)
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API)
 
 
 
 
-## flv、hls、dash
+
+## 视频
+
+
+
+### m3u8
+
+application/vnd.apple.mpegURL 是一种MPEG-DASH（Dynamic Adaptive Streaming over HTTP）视频流的容器格式，也即.m3u8文件。
+
+这种格式通常用于流媒体服务中，允许动态自适应流媒体传输，以适应观众的网络状况和设备能力。.m3u8 是一个文本文件，其中包含媒体片段的URL，可以用于播放HLS（HTTP Live Streaming）视频流。HLS是苹果公司开发的一种流媒体传输协议，适用于iOS和macOS设备上的视频播放。
+
+```tsx
+browserHlsSupported(): boolean {
+    const mediaElement = document.createElement('video');
+    return !!mediaElement.canPlayType('application/vnd.apple.mpegURL');
+  }
+```
+
+
+
+### flv、hls、dash
 
 | 协议      | 传输方式 | 视频封装格式 | 数据分段 | 延时 | H5播放                                |
 | --------- | -------- | ------------ | -------- | ---- | ------------------------------------- |
@@ -609,26 +634,9 @@ WAV文件和MP3是两种常见的音频文件格式。
 
 
 
-## webaudio-examples
+### 卡顿率
 
-[https://github.com/mdn/webaudio-examples](https://github.com/mdn/webaudio-examples)
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API)
-
-
-
-## m3u8
-
-application/vnd.apple.mpegURL 是一种MPEG-DASH（Dynamic Adaptive Streaming over HTTP）视频流的容器格式，也即.m3u8文件。
-
-这种格式通常用于流媒体服务中，允许动态自适应流媒体传输，以适应观众的网络状况和设备能力。.m3u8 是一个文本文件，其中包含媒体片段的URL，可以用于播放HLS（HTTP Live Streaming）视频流。HLS是苹果公司开发的一种流媒体传输协议，适用于iOS和macOS设备上的视频播放。
-
-```tsx
-browserHlsSupported(): boolean {
-    const mediaElement = document.createElement('video');
-    return !!mediaElement.canPlayType('application/vnd.apple.mpegURL');
-  }
-```
+视频卡顿率是指在播放视频时出现卡顿现象的频率。具体来说，视频卡顿率是指每秒钟连续播放的视频帧中，有多少帧出现了卡顿现象。常见的视频卡顿原因包括网络缓慢、计算机性能不足、视频文件损坏等。视频卡顿率越低，表示视频播放的流畅程度越高。
 
 
 
