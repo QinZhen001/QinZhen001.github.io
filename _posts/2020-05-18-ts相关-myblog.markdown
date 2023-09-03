@@ -2818,6 +2818,15 @@ tsconfig.json 中的 resolveJsonModule 设置为 true 时，可以在 TypeScript
 
 
 
+### moduleResolution
+
+指定模块解析的策略
+
+- 如果设置为"node"，TypeScript编译器将使用Node.js的模块解析算法来解析模块路径。这意味着当引入一个模块时，将首先尝试添加".ts"、".tsx"、".d.ts"扩展名，然后尝试添加文件夹中的"index.ts"、"index.tsx"、"index.d.ts"文件进行解析。这通常用于Node.js项目或在使用模块加载器时。
+- 如果设置为"classic"（默认值），TypeScript编译器将使用经典的模块解析算法来解析模块路径。这意味着当引入一个模块时，编译器将首先尝试在相同目录下查找该模块，然后再尝试在父目录中逐级向上查找该模块。这种解析算法适用于非模块加载器的项目。
+
+**"bundler"选项是在TypeScript 3.2版本中添加的一个实验性选项。当设置为"bundler"时，TypeScript编译器将通过使用bundler的路径映射来解析模块路径。这种模块解析策略用于支持基于bundler（如Webpack、Rollup）的项目，以便在构建过程中将模块打包到单个文件中。**
+
 
 
 ## ts结合react

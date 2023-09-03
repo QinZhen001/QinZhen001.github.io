@@ -158,11 +158,31 @@ WebSocket 是基于TCP 的一种新的应用层网络协议。 它实现了浏�
 
 ### 建立连接
 
-在 WebSocket 开始通信之前，通信双方需要先进行握手，`WebSocket 复用了 HTTP 的握手通道`，即客户端通过 HTTP 请求与 WebSocket 服务端协商升级协议。协议升级完成后，后续的数据交换则遵照 WebSocket 的协议。
+在 WebSocket 开始通信之前，通信双方需要先进行握手，**WebSocket 复用了 HTTP 的握手通道**，即客户端通过 HTTP 请求与 WebSocket 服务端协商升级协议。协议升级完成后，后续的数据交换则遵照 WebSocket 的协议。
 
 利用 HTTP 完成握手有什么好处呢？
 
 一是可以让 WebSocket 和 HTTP 基础设备兼容（运行在 80 端口 或 443 端口），二是可以复用 HTTP 的 Upgrade 机制，完成升级协议的协商过程。
+
+
+
+### Handshake
+
+收到状态码：
+
+101 WebSocket Protocol HandShake
+
+101 Switching Protocols
+
+WebSocket Protocol Handshake是指WebSocket协议的握手过程。
+
+WebSocket是一种在Web浏览器和服务器之间进行全双工通信的协议，可以实现实时数据传输。在建立WebSocket连接之前，需要进行握手来确认浏览器和服务器是否支持WebSocket协议，并进行必要的协议升级。
+
+在WebSocket Protocol Handshake过程中，浏览器首先发送一个HTTP请求到服务器，请求头中包含了一些WebSocket相关的信息。服务器接收到请求后，会进行验证，并返回一个HTTP响应，响应头中包含了一些关于WebSocket支持的信息。
+
+
+
+
 
 
 

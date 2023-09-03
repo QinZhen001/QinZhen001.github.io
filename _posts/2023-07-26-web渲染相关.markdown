@@ -43,13 +43,31 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 
 
 
+# canvas
+
+
+
+## width/height
+
+`canvas` 元素有两个属性 `width` 和 `height`，用于定义画布的尺寸。`width` 定义画布的宽度，`height` 定义画布的高度。这两个属性需要使用具体的数值来设置，例如 `width="500"` 和 `height="300"`。
+
+`style` 属性用于定义元素的样式，包括宽度和高度。它可以接受各种 CSS 值，如像素值、百分比、em 等。通过 `style` 属性，可以使用 CSS 来定义 `canvas` 元素的宽度和高度，例如 `style="width: 500px; height: 300px;"`。
+
+两者的区别在于：
+
+1. `width` 和 `height` 是 HTML5 中 `canvas` 元素的特定属性，用于定义画布的尺寸。它们是数值，表示具体的像素值。而 `style` 是一个通用的属性，可以用于任何元素，用于定义元素的样式。
+2. `width` 和 `height` 是 `canvas` 元素控制画布的大小。通过设置这两个属性，实际的绘图区域会被调整到对应的尺寸。而 `style` 只是用于定义元素的展示样式，并不会改变元素的实际大小。
+3. 优先级不同：`style` 属性可以通过 CSS 样式表或内联样式来设置，它的优先级会受到 CSS 规则的影响。而 `width` 和 `height` 是作为元素属性直接设置的，它们的优先级更高，优先级高于 `style` 属性的值。
+
+综上所述，`width` 和 `height` 是用于定义 `canvas` 元素的实际大小的属性，`style` 是用于定义元素的样式，其中包括宽度和高度。在设置 `canvas` 元素的尺寸时，`width` 和 `height` 的优先级更高，会覆盖 `style` 属性中的宽度和高度设置。
+
+
+
+
+
 # pixi
 
 [https://pixijs.com/](https://pixijs.com/)
-
-
-
-
 
 
 
