@@ -1149,6 +1149,15 @@ class MouseTracker extends React.Component {
 
 ### Hooks
 
+1. 更简洁的代码：使用Hooks可以使代码更加简洁，不再需要编写class组件，可以直接在函数组件中定义state和effect，减少了冗余的代码。
+2. 更好的代码复用：Hooks可以将逻辑相关的代码封装成自定义的Hook函数，以便在不同的组件中复用。
+3. 更好的可读性和可维护性：Hooks使得代码逻辑更加清晰，将关联的代码放在一起，便于理解和修改。
+4. 更好的性能优化：Hooks提供了更细粒度的控制，可以通过useMemo、useCallback等钩子函数来优化性能。
+5. 更好的测试性：由于Hooks是纯JavaScript函数，可以更方便地进行单元测试。
+6. 更好的适配性：Hooks不依赖于Class语法，可以更好地处理函数组件和类组件之间的转换。
+
+总之，使用React Hooks可以提高开发效率、改善代码质量和提供更好的用户体验。
+
 
 
 #### useEffect
