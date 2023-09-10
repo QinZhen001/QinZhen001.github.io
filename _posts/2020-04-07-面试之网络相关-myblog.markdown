@@ -1194,8 +1194,6 @@ Content-Security-Policy: default-src 'self'
 
 点击劫持（ClickJacking）是一种视觉上的欺骗手段。攻击者使用一个透明的iframe，覆盖在一个网页上，然后诱使用户在网页上进行操作，此时用户将在不知情的情况下点击透明的iframe页面。通过调整iframe页面的位置，可以诱使用户恰好点击在iframe页面的一些功能性按钮上。
 
-
-
 防御手段：
 
 HTTP响应头信息中的X-Frame-Options，可以指示浏览器是否应该加载一个iframe中的页面。如果服务器响应头信息中没有X-Frame-Options，则该网站存在ClickJacking攻击风险。网站可以通过设置X-Frame-Options阻止站点内的页面被其他页面嵌入从而防止点击劫持。
@@ -1207,12 +1205,6 @@ HTTP响应头信息中的X-Frame-Options，可以指示浏览器是否应该加�
 * DENY：不能被嵌入到任何iframe或者frame中。
 * SAMEORIGIN：页面只能被本站页面嵌入到iframe或者frame
 * ALLOW-FROM uri：只能被嵌入到指定域名的框架中
-
-
-
-
-
-
 
 
 
@@ -1231,47 +1223,15 @@ HTTP响应头信息中的X-Frame-Options，可以指示浏览器是否应该加�
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-### TCP连接复用（TCP Connection Reuse）
-
-[https://blog.csdn.net/gao_yu_long/article/details/79754541](https://blog.csdn.net/gao_yu_long/article/details/79754541)
-
-
-TCP连接复用技术通过将前端多个客户的HTTP请求复用到后端与服务器建立的一个TCP连接上。这种技术能够大大减小服务器的性能负载，减少与服务器之间新建TCP连接所带来的延时，并最大限度的降低客户端对后端服务器的并发连接数请求，减少服务器的资源占用。
-
-
-一般情况下，客户端在发送HTTP请求之前需要先与服务器进行TCP三次握手，建立TCP连接，然后发送HTTP请求。服务器收到HTTP请求后进行处理，并将处理的结果发送回客户端，然后客户端和服务器互相发送FIN并在收到FIN的ACK确认后关闭连接。在这种方式下，一个简单的HTTP请求需要十几个TCP数据包才能处理完成。
-
-
-采用TCP连接复用技术后，客户端（如：ClientA）与负载均衡设备之间进行三次握手并发送HTTP请求。负载均衡设备收到请求后，会检测服务器是否存在空闲的长连接，如果不存在，服务器将建立一个新连接。当HTTP请求响应完成后，客户端则与负载均衡设备协商关闭连接，而负载均衡则保持与服务器之间的这个连接。当有其它客户端（如：ClientB）需要发送HTTP请求时，负载均衡设备会直接向与服务器之间保持的这个空闲连接发送HTTP请求，避免了由于新建TCP连接造成的延时和服务器资源耗费。 
-
-
-
 ### **DNS原理及其解析过程**
 
 [https://www.zhihu.com/question/23042131](https://www.zhihu.com/question/23042131)
 
-
-
 DNS( Domain Name System)是“域名系统”的英文缩写，是一种组织成域层次结构的计算机和网络服务命名系统，它用于TCP/IP网络，它所提供的服务是用来将主机名和域名转换为IP地址的工作。
-
-
 
 **DNS 的过程？**
 
 DNS是应用层协议，事实上他是为其他应用层协议工作的，包括不限于HTTP和SMTP以及FTP，用于将用户提供的主机名解析为ip地址。
-
-
 
 具体过程如下：
 
@@ -1589,32 +1549,6 @@ Vary: User-Agent
 
 1. **解决分布式系统中，服务之间的调用问题。**
 2. **远程调用时，要能够像本地调用一样方便，让调用者感知不到远程调用的逻辑。**
-
-
-
-
-
-
-
-## webscoket的连接原理
-
-[https://juejin.cn/post/7086021621542027271](https://juejin.cn/post/7086021621542027271)
-
-> WebSocket 是基于 TCP 的一种新的应用层网络协议。它实现了浏览器与服务器全双工通信，即允许服务器主动发送信息给客户端。因此，在 WebSocket 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输，客户端和服务器之间的数据交换变得更加简单
-
-**应用层协议、基于 TCP、全双工通信、一次握手、持久连接、双向数据传输**
-
-
-
-WebSocket是基于TCP的，TCP的握手和WebSocket的握手是不同层次的。
-
-TCP的握手用来保证链接的建立，WebSocket的握手是在TCP链接建立后告诉服务器这是个WebSocket链接，服务器你要按WebSocket的协议来处理这个TCP链接。
-
-
-
-**如何建立连接？**
-
-在 WebSocket 开始通信之前，通信双方需要先进行握手，`WebSocket 复用了 HTTP 的握手通道`，即客户端通过 HTTP 请求与 WebSocket 服务端协商升级协议。协议升级完成后，后续的数据交换则遵照 WebSocket 的协议。
 
 
 
