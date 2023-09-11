@@ -34,7 +34,37 @@ tags:
 
 
 
-### [main](https://docs.npmjs.com/files/package.json#main)
+## scripts
+
+
+
+### preinstall
+
+在运行npm install命令时，preinstall脚本会在安装依赖包之前触发。这意味着，在安装依赖包之前，你可以在preinstall脚本中执行任何必要的操作，例如检查环境变量、创建目录、运行编译脚本等。
+
+举个例子：
+
+```ts
+"preinstall": "npx only-allow pnpm",
+```
+
+[https://pnpm.io/only-allow-pnpm](https://pnpm.io/only-allow-pnpm)
+
+
+
+
+
+###  prepare
+
+"prepare" script in package.json is triggered when the package is prepared for publishing
+
+It is executed automatically after the package is installed or updated
+
+在安装依赖 or 更新依赖之后执行
+
+
+
+## [main](https://docs.npmjs.com/files/package.json#main)
 
 The main field is a module ID that is the primary entry point to your program. That is, if your package is named `foo`, and a user installs it, and then does `require("foo")`, then your main module’s exports object will be returned.
 
