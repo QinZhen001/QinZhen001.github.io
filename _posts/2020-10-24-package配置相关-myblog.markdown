@@ -127,7 +127,21 @@ Conversely, some files are always ignored:
 - `*.orig`
 - `package-lock.json` (use shrinkwrap instead)
 
-## **type**
+
+
+## type
+
+在package.json文件中，type字段用于指定模块的类型。它有以下几种取值：
+
+1. "commonjs"：表示模块采用CommonJS规范，可以被Node.js环境直接加载。
+2. "module"：表示模块采用ES模块规范，可以被支持ES模块的环境直接加载，如Webpack、Rollup、Babel等。
+3. "unambiguous"：表示模块既可以采用CommonJS规范，也可以采用ES模块规范。在这种情况下，具体的模块类型会根据环境的支持情况来决定。如果环境支持ES模块，则按照ES模块规范加载；否则按照CommonJS规范加载。
+
+默认值为"commonjs"，大多数情况下不需要显式地指定type字段，因为Node.js环境默认支持CommonJS规范。但是，在使用一些前端构建工具如Rollup、Babel构建项目时，可能需要将type字段设置为"module"，以指定模块类型为ES模块规范
+
+
+
+## **types**
 
 [https://www.tslang.cn/docs/handbook/declaration-files/publishing.html](https://www.tslang.cn/docs/handbook/declaration-files/publishing.html)
 
@@ -144,6 +158,8 @@ Conversely, some files are always ignored:
 ```
 
 注意`"typings"`与`"types"`具有相同的意义，也可以使用它。
+
+
 
 ### 发布声明文件
 

@@ -2620,8 +2620,6 @@ webpack 5  打包会生成LICENSE.txt  如何可以忽略这个文件的生成�
 
 https://github.com/agoncal/swagger-ui-angular6/issues/2
 
-
-
 ```tsx
  "devDependencies": {
     "buffer": "6.0.3"
@@ -2638,6 +2636,36 @@ webpack.config
       }),
     ],
 ```
+
+也有可能不需要自己引入Buffer
+
+举个例子:
+
+https://hyrious.me/npm-browser/?q=atob@2.1.2/package/package.json:18
+
+```ts
+  "main": "node-atob.js",
+  "browser": "browser-atob.js",
+```
+
+我们应该拿browser的
+
+nodeResolve browser  以浏览器的形式查找
+
+解决：举一个rollup插件解决的
+
+```ts
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+
+nodeResolve({
+      browser: true,
+      mainFields: ['browser', 'module', 'main'],
+      preferBuiltins: false,
+      extensions: [".mjs", ".js", ".json", ".ts"]
+    }),
+```
+
+
 
 
 
@@ -2663,6 +2691,42 @@ export function sum(a, b) {
 import sum from './index.js';
 console.log(sum(10, 10));
 ```
+
+
+
+## 引入 mjs 文件
+
+**ModuleNotFoundError: Module not found**
+
+[https://stackoverflow.com/questions/70964723/webpack-5-in-ceate-react-app-cant-resolve-not-fully-specified-routes](https://stackoverflow.com/questions/70964723/webpack-5-in-ceate-react-app-cant-resolve-not-fully-specified-routes)
+
+[https://webpack.js.org/configuration/module/#resolvefullyspecified](https://webpack.js.org/configuration/module/#resolvefullyspecified)
+
+When enabled, you should provide the file extension when `import`ing a module in `.mjs` files or any other `.js` files when their nearest parent `package.json` file contains a `"type"` field with a value of `"module"`, otherwise webpack would fail the compiling with a `Module not found` error
+
+在导入.mjs文件或任何其他.js文件中最接近父包的模块时，您应该提供文件扩展名。json文件包含一个值为"module"的"type"字段，否则webpack将编译失败，并显示一个"module not found "错误。
+
+```ts
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false, // disable the behaviour
+        },
+      },
+    ],
+  },
+};
+```
+
+
+
+
+
+
 
 
 
