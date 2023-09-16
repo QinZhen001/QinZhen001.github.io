@@ -100,11 +100,48 @@ Rollup supports *ES modules* out of the box. However, to support *CommonJS*, the
 
 
 
-## base 
+## rollup-plugin-esbuild
+
+[https://www.npmjs.com/package/rollup-plugin-esbuild](https://www.npmjs.com/package/rollup-plugin-esbuild)
+
+[esbuild](https://github.com/evanw/esbuild) is by far one of the fastest TS/ESNext to ES6 compilers and minifier, this plugin replaces `rollup-plugin-typescript2`, `@rollup/plugin-typescript` and `rollup-plugin-terser` for you.
 
 
 
-### Inter-plugin communication
+## rollup-plugin-visualizer
+
+[https://www.npmjs.com/package/rollup-plugin-visualizer](https://www.npmjs.com/package/rollup-plugin-visualizer)
+
+分析打包体积
+
+
+
+
+
+## @rollup/plugin-node-resolve
+
+🍣 A Rollup plugin which locates modules using the [Node resolution algorithm](https://nodejs.org/api/modules.html#modules_all_together), for using third party modules in `node_modules`
+
+如何加载node_modules里面的三方库
+
+```ts
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+
+ nodeResolve({
+    browser: true,  // browser module resolutions 解析浏览器的包
+    mainFields: ['browser', 'module', 'main'],
+    preferBuiltins: false,
+    extensions: [".mjs", ".js", ".json", ".ts"]
+ }),
+```
+
+
+
+
+
+
+
+## Inter-plugin communication
 
 [https://rollupjs.org/guide/en/#inter-plugin-communication](https://rollupjs.org/guide/en/#inter-plugin-communication)
 
@@ -217,6 +254,8 @@ export default defineBuildConfig({
   },
 })
 ```
+
+
 
 
 
