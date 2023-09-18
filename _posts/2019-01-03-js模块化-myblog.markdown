@@ -561,3 +561,25 @@ Using named exports can reduce your bundle size when you don’t use all exporte
 
 
 
+
+
+### export { default as }
+
+假设我们在 src/index.ts 中需要导出 src/xxx.ts 里面的东西，而 src/xxx.ts是以 export default 导出的
+
+这个时候我们在src/index.ts
+
+不能直接
+
+```\
+export * from "./xxx.ts"
+```
+
+正确写法
+
+```ts
+export { default as xxx } from './xxx.ts';
+```
+
+
+
