@@ -47,6 +47,24 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 
 
 
+## 绘制
+
+```ts
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    ctx.strokeStyle = "white"
+    ctx.lineWidth = 4;
+    ctx.beginPath()
+    ctx.moveTo(10, 10)
+    ctx.lineTo(300, 600)
+    ctx.stroke() // tip： 注意这个,如果没有绘制不生效
+    ctx.closePath()
+```
+
+
+
+
+
 ## width/height
 
 `canvas` 元素有两个属性 `width` 和 `height`，用于定义画布的尺寸。`width` 定义画布的宽度，`height` 定义画布的高度。这两个属性需要使用具体的数值来设置，例如 `width="500"` 和 `height="300"`。
@@ -60,6 +78,86 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 3. 优先级不同：`style` 属性可以通过 CSS 样式表或内联样式来设置，它的优先级会受到 CSS 规则的影响。而 `width` 和 `height` 是作为元素属性直接设置的，它们的优先级更高，优先级高于 `style` 属性的值。
 
 综上所述，`width` 和 `height` 是用于定义 `canvas` 元素的实际大小的属性，`style` 是用于定义元素的样式，其中包括宽度和高度。在设置 `canvas` 元素的尺寸时，`width` 和 `height` 的优先级更高，会覆盖 `style` 属性中的宽度和高度设置。
+
+
+
+## restore/save
+
+[https://juejin.cn/post/6844903879599996942](https://juejin.cn/post/6844903879599996942)
+
+```tsx
+function draw() {
+    //初始的样式（绘制状态）并绘制矩形
+    ctx.fillStyle = '#FA6900';
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
+    ctx.shadowBlur    = 4;
+    ctx.shadowColor   = 'rgba(204, 204, 204, 0.5)';
+    ctx.fillRect(0,0,15,150);
+    ctx.save(); //保存上述设置的绘制状态
+    
+    //重新定义新的绘制状态，并绘制矩形
+    ctx.fillStyle = '#E0E4CD';
+    ctx.shadowOffsetX = 10;
+    ctx.shadowOffsetY = 10;
+    ctx.shadowBlur    = 4;
+    ctx.shadowColor   = 'rgba(204, 204, 204, 0.5)';
+    ctx.fillRect(30,0,30,150);
+    
+    //绘制完之后，恢复到初始的绘制状态，继续进行绘画。并绘制圆形，并不会恢复初始状态下绘制的矩形。
+    ctx.restore();
+  	// 绘制圆形
+    ctx.beginPath();
+    ctx.arc(305, 75, 8, 0, Math.PI*2, true);
+    ctx.closePath();
+    ctx.fill();
+    }
+
+```
+
+我们发现最后绘制的圆形的填充色和阴影和第一个矩形的保持了一致，这是因为restore之后，使用了初始绘制状态。
+
+
+
+
+
+## 离屏渲染
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/OffscreenCanvas](https://developer.mozilla.org/zh-CN/docs/Web/API/OffscreenCanvas)
+
+举个例子：
+
+```ts
+let offscreenCanvas = new OffscreenCanvas(300, 600)
+let offscreenCtx = offscreenCanvas.getContext("2d")!
+    
+//  利用 offscreenCtx 绘制一些东西
+// ...
+    
+let bitmap = offscreenCanvas.transferToImageBitmap()
+ctx.drawImage(bitmap, 0, 0); // 在别的 canvas 的 context 上绘制
+```
+
+
+
+### convertToBlob
+
+```ts
+let blob = await offscreenCanvas.convertToBlob()
+```
+
+让后我们可以将blob转 url 在页面中显示
+
+```ts
+const url = URL.createObjectURL(blob)
+var img = document.createElement('img');
+// 将临时URL分配给图像的src属性
+img.src = url;
+// 将图像元素添加到DOM中
+document.body.appendChild(img);
+```
+
+
 
 
 
@@ -84,4 +182,20 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
     }
   },[])
 ```
+
+
+
+
+
+
+
+## 雪碧图
+
+[http://pixijs.huashengweilai.com/guide/start/8.make-sprite-from-a-tileset-sub-image.html#%E9%9B%AA%E7%A2%A7%E5%9B%BE](http://pixijs.huashengweilai.com/guide/start/8.make-sprite-from-a-tileset-sub-image.html#%E9%9B%AA%E7%A2%A7%E5%9B%BE)
+
+
+
+
+
+
 

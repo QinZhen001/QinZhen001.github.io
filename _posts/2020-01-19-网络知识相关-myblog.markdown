@@ -751,9 +751,34 @@ CDN提供商通常会在全球各地建立多个边缘服务器节点，这些�
 
 
 
+## 跨域
+
+1. 域名不同：当请求的域名或端口与当前页面的域名或端口不同的时候。
+2. 协议不同：当请求的协议与当前页面的协议不同的时候。
+3. 端口不同
 
 
-## options 请求
+
+### crossOrigin
+
+[解决canvas图片getImageData,toDataURL跨域问题](https://www.zhangxinxu.com/wordpress/2018/02/crossorigin-canvas-getimagedata-cors/)
+
+crossOrigin是一个属性，可以设置在HTML中的img、video、audio等跨域元素上。
+
+使用crossOrigin属性可以告诉浏览器在跨域请求时是否获取跨域的资源，以及如何处理获取到的跨域资源。
+
+1. 跨域资源共享：设置crossOrigin属性为"anonymous"或"use-credentials"，可以使浏览器在跨域请求时自动发送CORS（跨域资源共享）请求头，从而服务端可以决定是否允许跨域访问。
+2. **获取跨域图片的像素数据：如果设置crossOrigin属性为"anonymous"，那么在通过canvas的context.drawImage()方法绘制跨域图片时，可以获取到图片的像素数据。**
+3. 防止跨域污染：设置crossOrigin属性为"anonymous"可以防止跨域污染，即不允许跨域资源修改当前页面的DOM结构和内容。
+4. 统计跨域资源加载失败：通过监听onerror事件，可以捕获跨域资源加载失败的情况，并进行统计或处理。
+
+
+
+`crossOrigin=anonymous`相对于告诉对方服务器，你不需要带任何非匿名信息过来。例如cookie，因此，当前浏览器肯定是安全的。
+
+
+
+### options 请求
 
 [ https://juejin.im/post/5edef7b2e51d45784213ca24?utm_source=gold_browser_extension ]( https://juejin.im/post/5edef7b2e51d45784213ca24?utm_source=gold_browser_extension )
 
