@@ -53,3 +53,66 @@ tcc
 
 ### half 消息
 
+
+
+# docker
+
+docker run -it alpine sh
+
+例子：
+
+docker run -d -p 80:80 nginx    
+
+-d   后台一直运行 daemon
+
+ -p 映射到物理机器的80端口
+
+---
+
+查看进程
+
+docker ps 
+
+---
+
+杀掉进程
+
+docker kill 973322dc1872
+
+973322dc1872 => CONTAINER ID
+
+
+
+## Daemon
+
+Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以分为Docker Server、Engine和Job三部分。 Docker Daemon可以认为是通过Docker Server模块接受Docker Client的请求，并在Engine中处理请求，然后根据请求类型，创建出指定的Job并运行
+
+
+
+
+
+# shell 编程
+
+[https://wangdoc.com/bash/intro](https://wangdoc.com/bash/intro)
+
+
+
+
+
+# elasticsearch
+
+
+
+```tsx
+ elastic.NewClient(
+    // Must turn off sniff in docker
+    // 不会自动转换地址
+    elastic.SetSniff(false))
+```
+
+
+
+## Sniffing
+
+[https://juejin.cn/post/6959746724995072031](https://juejin.cn/post/6959746724995072031)
+
