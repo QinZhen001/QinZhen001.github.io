@@ -81,6 +81,22 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 
 
 
+
+
+## 多次fill覆盖
+
+[https://juejin.cn/post/7007691485160144904](https://juejin.cn/post/7007691485160144904)
+
+在使用 `canvas` 绘制图形时，遇到了一个问题：在绘制图形时，后面设置的图形样式（颜色、线宽等）覆盖了前面绘制图形的样式。
+
+**每次画新线段的路径前，都要用ctx.beginPath()**
+
+
+
+
+
+
+
 ## restore/save
 
 [https://juejin.cn/post/6844903879599996942](https://juejin.cn/post/6844903879599996942)
@@ -198,4 +214,55 @@ document.body.appendChild(img);
 
 
 
+
+## 资源预加载
+
+```ts
+import * as PIXI from 'pixi.js';
+
+PIXI.Assets.add("down", "/assets/avatar_down.png")
+PIXI.Assets.add("up", "/assets/avatar_up.png")
+PIXI.Assets.add("left", "/assets/avatar_left.png")
+PIXI.Assets.add("right", "/assets/avatar_right.png")
+
+await PIXI.Assets.load(["down", "up", "left", "right"])
+
+
+// 使用 
+const downTexture = PIXI.Texture.from('down');
+```
+
+
+
+## **设置人物位置**
+
+[https://cloud.tencent.com/developer/article/1900019](https://cloud.tencent.com/developer/article/1900019)
+
+人物都是出现在屏幕中央，并且还需要设置 人物的中心为 元素的基点，这样人物缩放和其他操作就以中心为原点，符合视觉习惯。
+
+另外如果会出现有多个人物叠加出现的情况，需要设置一个偏移值  =>  是为了保证添加多个人物的时候，不会互相重叠
+
+```ts
+let addedNum = 0; // 当前人物是添加的第几个
+const offsetList = [0, 20, 40];
+
+class Person{
+ createPerson(){
+    // ...省略创建container 等其他代码
+    this.setCenterPosition()
+ }
+ setCenterPosition(container) {
+    const { screen } = this.app;
+
+    // 人物放置在中央，并且有一定的偏差
+    container.x = screen.width / 2 + offsetList[addedNum++ % 3];
+    container.y = screen.height / 2;
+
+    // 设置人物容器的基点为中心点
+    container.pivot.x = container.width / 2;
+    container.pivot.y = container.height / 2;
+  }
+}
+
+```
 
