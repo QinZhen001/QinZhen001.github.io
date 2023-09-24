@@ -2644,6 +2644,140 @@ data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
 
 
 
+### PCG 商业广告一面
+
+* 数组常用方法  => reduce?  => sort api 会改变原数组吗？ **会。就地对数组的元素进行排序，并返回对相同数组的引用**
+* 数组 中 push api 的返回值 => 返回新的数组长度
+* vue2/vue3 对数组的处理？ Object.defineProperty 和 Proxy 的区别
+* **reactServerComponent => 有什么用**
+* webpack 和 vite 的区别
+* vite 中为什么生产环境不用 esbuild？ 
+* http 和 https 
+* https 对称加密和非对称加密 => 为什么不直接用非对称加密
+* react 和 vue 的区别
+* react 16/17/18 的区别
+* hooks 的好处
+
+
+
+算法：
+
+#### 快速排序
+
+>  不能原地排序
+
+```ts
+onst quickSort = (arr = []) => {
+  if (arr.length <= 1) {
+    // 注意这个结束条件
+    return arr
+  }
+  // 注意：这里一定要int => 不然出现 arr[1.5] => 导致死循环
+  let index = parseInt(arr.length / 2)
+  let left = []
+  let right = []
+
+  for (let i = 0;i < arr.length;i++) {
+    if (i !== index) {
+      if (arr[i] <= arr[index]) {
+        left.push(arr[i])
+      } else {
+        right.push(arr[i])
+      }
+    }
+  }
+
+  return [...quickSort(left), arr[index], ...quickSort(right)]
+}
+```
+
+
+
+#### template 解析器
+
+```ts
+const data = {
+  aaa: "11111111",
+  bbb: "222"
+}
+let template = "abc{{aaa}} {{bbb}}abc"  
+// 将template中{{}}中的值替换成data中的值
+const res = test(template, data)
+console.log("res", res)
+```
+
+
+
+解决：
+
+```ts
+// 正则(最快的方式)
+function test(template = "", data = {}){
+  let reg = /\{\{(\S+)\}\}/g
+  return template.replace(reg, (...args) => {
+    const [match, p1] = args
+    return data[p1]
+  })
+}
+```
+
+---
+
+```ts
+const test = (template = "", data = {}) => {
+  let res = ""
+  let leftFirstIndex = []
+  let flag = false
+  for (let i = 0;i < template.length - 1;i++) {
+    let char = template[i]
+    let nextChar = template[i + 1]
+    if (char == "{" && nextChar == "{") {
+      leftFirstIndex.push(i)
+      flag = true
+    } else if (char == "}" && nextChar == "}") {
+      let rightFirstIndex = i
+      let lastLeftFirstIndex = leftFirstIndex.pop()
+      // 截取
+      let key = template.slice(lastLeftFirstIndex + 2, rightFirstIndex)
+      let value = data[key]
+      // 拼接
+      template = template.slice(0, lastLeftFirstIndex) + value + template.slice(rightFirstIndex + 2)
+      // 计算i坐标 => 光标是否要移动 
+      // 考虑 => 字符串可能别之前少 可能比之前多
+      let reduce = 1 // 减少的部分
+      let add = value.length
+      let num = add - reduce // 变化值
+      if (num > 0) {
+        while (num >= 0) {
+          num--
+          i++
+        }
+      } else {
+        while (num <= 0) {
+          num++
+          i--
+        }
+      }
+      flag = false
+    } else {
+      if (!flag) {
+        res += char
+      }
+    }
+  }
+  return res
+}
+
+```
+
+
+
+
+
+
+
+
+
 ### 商业直播一面
 
 > 主要还是一些常规的基础面试 

@@ -240,11 +240,13 @@ preconnect用于启动预链接，其中包含DNS查找，TCP握手，以及可�
 <link rel="preconnect" href="//cdn.example.com" crossorigin>
 ```
 
-#### prefetch
-Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该资源，一旦将来请求该资源，浏览器可以提供更快的响应。
-```
-<link rel="prefetch" href="//example.com/next-page.html" as="html" crossorigin="use-credentials">
 
+
+#### prefetch
+
+Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该资源，一旦将来请求该资源，浏览器可以提供更快的响应。
+```ts
+<link rel="prefetch" href="//example.com/next-page.html" as="html" crossorigin="use-credentials">
 <link rel="prefetch" href="/library.js" as="script">
 ```
 浏览器不会预处理、不会自动执行、不会将其应用于当前上下文。
@@ -261,12 +263,7 @@ as与crossorigin选项都是可选的。
 
 
 
-#### prerender
-prerender用于标识下一个导航可能需要的资源。浏览器会获取并执行，一旦将来请求该资源，浏览器可以提供更快的响应。
-```
-<link rel="prerender" href="//example.com/next-page.html">
-```
-浏览器将预加载目标页面相关的资源并执行来预处理HTML响应。
+
 
 #### Preload
 通过一个现有元素（例如：img，script，link）声明资源会将获取与执行耦合在一起。然而应用可能只是想要先获取资源，当满足某些条件时再执行资源。
@@ -295,7 +292,35 @@ document.head.appendChild(res);
 Link: <https://example.com/other/styles.css>; rel=preload; as=style
 ```
 
+
+
+##### Prefetch 和 Preload 区别
+
+1. 目的：Prefetch 的主要目的是在浏览器空闲时提前加载将来可能需要的资源，以加快用户访问页面时的加载速度。Preload 的主要目的则是指定某个资源在当前页面加载完成后立即加载，以提高该资源的优先级。
+2. 触发时机：Prefetch 通常在页面 `<link>` 标签中使用，并且可以在任何时间点触发，而 Preload 必须在当前页面加载完成后才会触发。
+3. 优先级：Prefetch 加载的资源通常具有较低的优先级，而 Preload 加载的资源具有较高的优先级。这意味着如果资源同时存在于 Prefetch 和 Preload 中，浏览器会首先加载 Preload 的资源。
+4. 加载方式：Prefetch 一般是在浏览器空闲时加载资源，而 Preload 是在当前页面加载完成后立即加载资源。
+
+**Prefetch 是一种在浏览器空闲时预加载可能需要的资源的技术，而 Preload 则是一种在当前页面加载完成后立即加载特定资源的技术**
+
+
+
+#### prerender
+
+prerender用于标识下一个导航可能需要的资源。浏览器会获取并执行，一旦将来请求该资源，浏览器可以提供更快的响应。
+
+```
+<link rel="prerender" href="//example.com/next-page.html">
+```
+
+浏览器将预加载目标页面相关的资源并执行来预处理HTML响应。
+
+
+
+
+
 #### 快速响应的用户界面
+
 PSI（Perceptual Speed Index，感知速度指数）是提升用户体验的重要指标，让用户感觉到页面的反馈比没有反馈体验要好很多。
 
 可以尝试使用骨架屏或添加一些Loading过渡动画提示用户体验。

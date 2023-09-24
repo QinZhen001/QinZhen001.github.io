@@ -18,6 +18,8 @@ tags:
 
 [深入理解 TypeScript](https://jkchao.github.io/typescript-book-chinese/)
 
+[进阶 TypeScript](https://mp.weixin.qq.com/s/rx-FYjUog12v9CqcOsWGEg)
+
 
 
 ## interface
@@ -356,6 +358,19 @@ let v2 = prop2(o, 'p1') // is number | string, no extra info is captured
 The difference is that in the first case the return type will be `T[K]` while in the second case it will be `T[keyof T]`.
 
 `K` can at it's widest be `keyof T` but it can be a specific string literal type representing a key. This means if `K` is a specific property the return value will be of the same type as the property:
+
+
+
+### keyof any
+
+```ts
+// Keys 类型为 string | number | symbol 组成的联合类型
+type Keys = keyof any
+```
+
+
+
+
 
 ### typeof
 
@@ -887,6 +902,63 @@ b.toString()  // any 相当于不进行任何校验
 
 
 
+## 泛型
+
+**把明确类型的工作推迟到创建对象或调用方法的时候才去明确的特殊的类型，简单点来讲我们可以将泛型理解成为把类型当作参数一样去传递**
+
+
+
+举个例子：
+
+```ts
+// 定义一个泛型接口 IPerson表示一个类，它返回的实例对象取决于使用接口时传入的泛型T
+interface IPerson<T> {  
+  // 因为我们还没有讲到unknown 所以暂时这里使用any 代替  
+  new(...args: unknown[]): T;
+}
+
+function getInstance<T>(Clazz: IPerson<T>) { 
+  return new Clazz();
+}
+
+// use it
+class Person {}
+
+// TS推断出函数返回值是person实例类型
+const person = getInstance(Person);
+```
+
+
+
+
+
+### 约束泛型
+
+```ts
+
+interface IHasLength { 
+  length: number;
+}
+
+// 利用 extends 关键字在声明泛型时约束泛型需要满足的条件
+function getLength<T extends IHasLength>(arg: T) { 
+  // throw error: arr上不存在length属性 
+  return arg.length;
+}
+
+getLength([1, 2, 3]); // correct
+getLength('123'); // correct
+getLength({ name: '19Qingfeng', length: 100 }); // correct
+// error 当传入true时，TS会进行自动类型推导 相当于 getLength<boolean>(true)
+// 显然 boolean 类型上并不存在拥有 length 属性的约束，所以TS会提示语法错误getLength(true); 
+```
+
+
+
+
+
+
+
 ## 工具类型
 
 
@@ -1102,7 +1174,7 @@ const peopleA: MyMapLikeType = {
 
 Exclude<T, U> 的作用是将某个类型中属于另一个的类型移除掉。
 
-
+> 利用了分发的原理
 
 定义
 
@@ -1461,7 +1533,7 @@ https://segmentfault.com/q/1010000015557807
 
 **它一定是出现在条件类型中的**
 
-
+**infer 代表待推断类型，它的必须和 extends 条件约束类型一起使用。**
 
 举个例子：
 
@@ -1583,9 +1655,55 @@ function loggingIdentity<T extends Lengthwise>(arg: T): T {
 
 
 
+## 分发
+
+```ts
+type GetSomeType<T extends string | number> = T extends string ? 'a' : 'b';
+let someTypeThree: GetSomeType<string | number>; // what ? 
+
+// 'a' | 'b' 组成的联合类型
+```
+
+- **分发一定是需要产生在 extends 产生的类型条件判断中，并且是前置类型。**
+
+比如`T extends string | number ? 'a' : 'b';` 那么此时，产生分发效果的也只有 extends 关键字前的 T 类型，string | number 仅仅代表一种条件判断。
+
+- **其次，分发一定是要满足联合类型，只有联合类型才会产生分发**（其他类型无法产生分发的效果，比如 & 交集中等等）。
+- **最后，分发一定要满足所谓的裸类型中才会产生效果。**
 
 
 
+
+
+## 逆变
+
+**逆变的效果函数的参数只允许“从少的赋值给多的”**
+
+```ts
+let fn1!: (a: string, b: number) => void;
+let fn2!: (a: string, b: number, c: boolean) => void;
+
+fn2 = fn1; // 正确，被允许  fn1 赋值给 fn2
+```
+
+**参数少（父）的可以赋给参数多（子）的那一个。看起来和类型兼容性（多的可以赋给少的）相反，但是通过调用的角度来考虑的话恰恰满足多的可以赋给少的兼容性原则。**
+
+> 上述这种函数之间互相赋值，他们的参数类型兼容性是典型的**逆变**
+
+
+
+## 协变
+
+```ts
+let fn1!: (a: string, b: number) => string;
+let fn2!: (a: string, b: number) => string | number | boolean;
+
+fn2 = fn1; // correct 
+fn1 = fn2 // error: 不可以将 string|number|boolean 赋给 string 类型
+
+```
+
+这里，**函数类型赋值兼容时函数的返回值就是典型的协变场景**
 
 
 
@@ -1640,7 +1758,7 @@ if ((pet as Fish).swim) {
 
 
 
-### 用户自定义的类型守卫
+### is 用户自定义的类型守卫
 
 类型守卫就是一些表达式，它们会在运行时检查以确保在某个作用域里的类型。
 
@@ -1794,6 +1912,8 @@ let zoo: Animal[] = [new Rhino(), new Elephant(), new Snake()];
 
 如果没有找到最佳通用类型的话，类型推断的结果为联合数组类型，`(Rhino | Elephant | Snake)[]`。
 
+
+
 ## in 关键字
 
 
@@ -1821,20 +1941,6 @@ function printEmployeeInformation(emp: UnknownEmployee) {
   }
 }
 
-```
-
-
-
-## 交叉类型
-
-```
-  // tab-bar__wrapper 适配PC端 展示540PX
-  @include screen-pad-only {
-    .tab-bar__wrapper {
-      left: calc(50% - 270PX);
-      width: 540PX;
-    }
-  }
 ```
 
 

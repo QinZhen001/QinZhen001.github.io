@@ -987,11 +987,7 @@ iPhone X 以及它以上的系列，都采用**刘海屏设计**和**全面屏�
 
 > 危险区域指头部不规则区域，底部横条区域，左右触发区域。 
 
-
-
 具体操作为：`viewport-fit` `meta` 标签设置为 `cover`，获取所有区域填充。判断设备是否属于 iPhone X，给头部底部增加**适配层**
-
-
 
 `viewport-fit` 有 3 个值分别为：
 
@@ -1081,10 +1077,6 @@ window.onresize = function(){
 
 我们都知道在H5端是没法监控键盘的弹出与收起的，resize事件触发的机型极其有限，何况我在ios中实测没有触发，安卓反而可以。因为安卓弹起键盘时会修改视窗的大小，但是ios并不会，如果你在ios上设置一个100%高度的body，弹起键盘后你会发现这个body是可以上下滚动的，即100%高度的body超出了视窗。
 
-
-
-
-
  ios上一直有个很🐂的优化，弹出键盘时会自动把当前输入框滚动到可视区域，在安卓中会出现键盘遮挡输入框的问题，需要手动调整 
 
 
@@ -1097,11 +1089,7 @@ window.onresize = function(){
 
 ios弹出键盘再收起点击事件无效,Why？
 
-
-
 推测是body没有正确重新渲染，导致点击事件不处于body内而无法触发。
-
-
 
 那么怎么解决呢，是不是只要把body‘推’会来就行了？ 方向有了，现在是如何‘推’的问题。
 
@@ -1117,8 +1105,6 @@ ios弹出键盘再收起点击事件无效,Why？
 
  最终解决方案 
 
-
-
 ```js
     onBlur = (e) => {
         const { onBlur } = this.props;
@@ -1126,10 +1112,6 @@ ios弹出键盘再收起点击事件无效,Why？
         onBlur && onBlur(e);
     }
 ```
-
-
-
-
 
  在input输入框失去焦点的钩子中设置滚动到原有位置`(document.body.scrollTop = document.body.scrollTop)`，触发浏览器的重绘，使的错误的渲染回复正常，滚动位置也不会有改变，没有影响体验。 
 
@@ -1233,13 +1215,9 @@ React Native使用的JavaScript语言开发, Flutte使用的是Dart语言
 
 ![v2-375798a9424bf72b0e60156702ec5ed5_1440w](https://pic2.zhimg.com/80/v2-375798a9424bf72b0e60156702ec5ed5_1440w.jpg)
 
-
-
 * Flutter完全独立于平台层的渲染管线的优势
 * RN映射实体组件的方式
 * **React Native 带有较强的平台关联性，而 Flutter UI 的平台关联性十分薄弱。**
-
-
 
 **React Native** 是一套 UI 框架，默认情况下 **React Native** 会在 `Activity` 下加载 JS 文件，然后运行在 `JavaScriptCore` 中解析 *Bundle* 文件布局，最终堆叠出一系列的原生控件进行渲染。
 
@@ -1256,12 +1234,6 @@ React Native使用的JavaScript语言开发, Flutte使用的是Dart语言
 **Flutter 则是让你忘掉平台，专注于 Flutter UI 就好了。**
 
 **Flutter 的整体渲染脱离了原生层面，直接和 GPU 交互**
-
- 
-
-
-
-
 
 
 
@@ -1339,8 +1311,6 @@ AOT (Ahead-Of-Time - 预先编译)    代表 C/C++  java     **(注意java的特
 [Hybrid开发中JSBridge的实现](https://segmentfault.com/a/1190000021915545)
 
 JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Native 之间的桥梁，它的核心是 构建 Native 和非 Native 间消息通信的通道，而且是 双向通信的通道。
-
-
 
 所谓 双向通信的通道:
 
@@ -1458,14 +1428,10 @@ window.JSBridge.foo2(); // 返回 'foo2:test'
 >
 > 因为多次连续调用时，客户端只会收到最后一次消息
 
-
-
 **缺陷**：
 
 * 使用 iframe.src 发送 URL SCHEME 会有 url 长度的隐患。
 * 创建请求，需要一定的耗时，比注入 API 的方式调用同样的功能，耗时会较长。
-
-
 
 为什么选择 iframe.src 不选择 locaiton.href ？
 
@@ -1490,8 +1456,6 @@ native会劫持webview onJsAlert、onJsConfirm、onConsoleMessage、onJsPrompt�
 注入方式和 Native 调用 JavaScript 类似，直接执行桥的全部代码。
 
 它的优点在于：桥的版本很容易与 Native 保持一致，Native 端不用对不同版本的 JSBridge 进行兼容；与此同时，它的缺点是：注入时机不确定，需要实现注入失败后重试的机制，保证注入的成功率，同时 JavaScript 端在调用接口时，需要优先判断 JSBridge 是否已经注入成功。
-
-
 
 #### **由 JavaScript 端引用**
 
