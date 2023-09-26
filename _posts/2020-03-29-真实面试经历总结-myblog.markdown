@@ -2660,6 +2660,39 @@ data C 的依赖收集器会同时收集到 computed B 和 页面 A 的 watcher
 
 
 
+#### reactServerComponent
+
+[https://blog.logrocket.com/what-you-need-to-know-about-react-server-components/](https://blog.logrocket.com/what-you-need-to-know-about-react-server-components/)
+
+[https://www.freecodecamp.org/news/how-to-use-react-server-components/](https://www.freecodecamp.org/news/how-to-use-react-server-components/)
+
+reactServerComponent 是 React 的一个新功能，用于改善服务器渲染（Server-side Rendering）时的性能和交互性。
+
+使用 reactServerComponent，可以将 React 组件的渲染过程放在服务器端完成，然后将渲染的结果发送到客户端。这样可以减轻客户端的负担，提高初始加载速度，并且可以在首次渲染后继续从服务器端接收更新的组件。
+
+reactServerComponent 具有以下特点和用处：
+
+1. 减轻客户端负担：React 组件的渲染过程在服务器端完成，客户端只需接收已渲染好的结果，无需再进行大量的计算和渲染。
+2. 提高初始加载速度：由于渲染工作在服务器端完成，可以将渲染结果直接发送到客户端，从而加快页面的初始加载速度。
+3. 支持组件的增量渲染：reactServerComponent 提供了服务端和客户端之间的通信接口，可以在首次渲染后继续从服务器端接收更新的组件，实现组件的增量渲染。
+4. 提供一致的交互性：reactServerComponent 可以在服务器端处理用户的交互操作，并将更新的结果发送到客户端，从而实现与客户端渲染一样的交互性。
+
+总的来说，reactServerComponent 通过在服务器端完成组件的渲染和更新，并与客户端进行交互，提供了更高效和更一致的服务器渲染体验。
+
+
+
+### RSC 和 SSR 的区别
+
+RSC =>  React Server Component
+
+With Server Side Rendering, we send the raw HTML from the server to the client, then all the client side JavaScript gets downloaded. React starts the Hydration process to transform the HTML to an interactive React component. In SSR the component doesn't stay on the server.
+
+with React server components, the components stay on the server and have access to the server infrastructure without making any network roundtrips.
+
+SSR is useful for faster loading of the initial page of your application. You can use SSR and RSCs together in your application without any problems.
+
+
+
 算法：
 
 #### 快速排序

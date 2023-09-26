@@ -16,3 +16,579 @@ tags:
 
 # 基础
 
+## Printf 和 Sprintf
+
+Printf : 只可以打印出格式化的字符串。只可以直接输出字符串类型的变量
+
+```go
+  fmt.Printf("%d",a)
+```
+
+Sprintf：格式化并返回一个字符串而不带任何输出。    
+
+```go
+   s := fmt.Sprintf("a %s", "string") fmt.Printf(s)
+```
+
+## GO111MODULE
+
+[GO111MODULE 及 Go 模块](https://zhuanlan.zhihu.com/p/417246469)
+
+## GOPATH 和 GOROOT
+
+GOROOT：GOROOT就是Go的安装目录，（类似于java的JDK）
+GOPATH：GOPATH是我们的工作空间,保存go项目代码和第三方依赖包
+
+
+
+## 环境变量
+
+[https://www.uedbox.com/post/67653/](https://www.uedbox.com/post/67653/)
+
+在~/.profile 或者 ~/.zshrc 中设置
+
+
+
+```
+export GOPATH=/Users/qinzhen/go
+export PATH=$GOPATH/bin:/usr/local/go/bin
+```
+
+注意：go要多设置两个PATH
+
+最终的PATH通过: 一起串联起来
+
+```
+export PATH=PNPMHOME:PNPM_HOME:PATH:/Users/qinzhen/go/bin:/usr/local/go/bin
+```
+
+```
+// 设置代理
+export GOPROXY=https://goproxy.io,direct
+```
+
+
+
+查看环境变量：
+echo $PATH
+
+
+
+
+
+
+## 下载包
+
+go install这个命令建议安装那些有主文件(main.go),下载下来是作为一个xxx.exe存在于bin目录下的
+go get一般用来下载我们项目中调用某个库时使用的命令。
+
+go get： 下载包 & 更新go.mod，不安装二进制
+go install ：已下载的包，安装二进制
+
+go get
+gopm来获取无法下载的包
+
+## 单元测试
+
+ go test
+
+覆盖率测试：
+go test -coverprofile=c.out
+
+以html形式查看覆盖率报告：
+go tool cover -html=c.out 
+
+性能测试：
+go test -bench .
+
+cpu耗时报告：
+go test -bench . -cpuprofile cpu.out
+查看：
+go tool pprof cpu.out
+让后：
+web  (以svg形式查看)
+
+
+## api文档
+
+查看文档：
+go doc 
+
+将本地所有项目包括系统api生成文档：
+(在项目根路径执行)
+godoc -http :6060
+
+
+
+## get
+
+```go
+got get -u 依赖包
+```
+
+升级依赖包
+
+
+
+## run
+
+go run命令会编译源码，并且直接执行源码的 main() 函数，不会在当前目录留下可执行文件。
+
+go run xxx.go 
+go run -race xxx.go 
+
+
+## build
+
+变成一个可执行文件，将始终打印出Hello World。如果我们想让程序再次运行，我们不需要再次编译程序，我们只需要运行可执行文件。
+
+
+## tool1
+
+pprof 分析性能
+go tool pprof http://localhost:8888/debug/profile
+
+
+## doc 
+
+查看文档
+godoc -http :8888
+
+
+
+## env
+
+查看环境变量
+
+```go
+go env
+```
+
+
+
+## mod
+
+```go
+// 清除mod中无用的依赖
+go mod tidy
+```
+
+
+
+```go
+// 初始化模块 初始化项目mod形式管理
+go mod init 名称
+```
+
+
+
+
+
+
+
+## log 
+
+
+
+### Fatal
+
+[https://stackoverflow.com/questions/33885235/should-a-go-package-ever-use-log-fatal-and-when](https://stackoverflow.com/questions/33885235/should-a-go-package-ever-use-log-fatal-and-when)
+
+
+
+
+
+## formatting
+
+[https://gobyexample.com/string-formatting](https://gobyexample.com/string-formatting)
+
+
+
+### %v
+
+```
+%v	the value in a default format
+	when printing structs, the plus flag (%+v) adds field names
+	
+// 	%+v  打印结构体的时候，会把里面字段名也打印出来
+```
+
+
+
+### %s
+
+For basic string printing use `%s`.
+
+可以用来打印 byte[] 
+
+
+
+## error
+
+[https://www.cnblogs.com/qcrao-2018/p/11538387.html](https://www.cnblogs.com/qcrao-2018/p/11538387.html)
+
+
+
+
+
+## go example
+
+[https://gobyexample.com/](https://gobyexample.com/)
+
+
+
+## 值传递
+
+一定要记住，在 Go 语言中，**函数的参数传递只有值传递**，而且传递的实参都是原始数据的一份拷贝。如果拷贝的内容是值类型的，那么在函数中就无法修改原始数据；如果拷贝的内容是指针（或者可以理解为引用类型 `map`、`chan` 等），那么就可以在函数中修改原始数据。
+
+
+
+## bufio
+
+Package bufio implements buffered I/O. It wraps an io.Reader or io.Writer object, creating another object (Reader or Writer) that also implements the interface but provides buffering and some help for textual I/O.
+
+
+
+
+
+## goroutine
+
+go中的goroutins并不是同时在运行。事实上，如果没有在代码中通过runtime.GOMAXPROCS(n) 其中n是整数，指定使用多核的话，goroutins都是在一个线程里的，它们之间通过不停的让出时间片轮流运行，达到类似同时运行的效果。
+
+
+
+**当一个goroutine发生阻塞，Go会自动地把与该goroutine处于同一系统线程的其他goroutines转移到另一个系统线程上去，以使这些goroutines不阻塞**
+
+
+
+## runtime.Gosched
+
+用于让出CPU时间片。这就像跑接力赛，A跑了一会碰到代码runtime.Gosched()就把接力棒交给B了，A歇着了，B继续跑。
+
+
+
+## channels
+
+[https://www.sohamkamani.com/golang/channels/](https://www.sohamkamani.com/golang/channels/)
+
+
+
+## sync
+
+
+
+### sync.WaitGroup
+
+[https://gobyexample.com/waitgroups](https://gobyexample.com/waitgroups)
+
+
+
+### syscall.SIGINT和syscall.SIGTERM
+
+在Go程序中，syscall.SIGINT和syscall.SIGTERM是两个特定的操作系统信号常量。
+
+- syscall.SIGINT 代表 "终止信号"，通常由终端用户按下组合键（Ctrl+C）发送给正在运行的程序。它用于请求进程终止运行，通常用于优雅地停止程序。
+- syscall.SIGTERM 代表 "终止信号"，通常由操作系统发送给正在运行的进程，用于通知进程终止运行。与SIGINT不同的是，SIGTERM信号不一定是有用户产生的，可以由操作系统或其他程序发送。
+
+在Go程序中，可以通过导入`os`和`os/signal`包来处理这些信号，例如使用`signal.Notify`函数来捕获并响应信号的发送。
+
+
+
+## sql.NullString and *string
+
+[https://stackoverflow.com/questions/40092155/difference-between-string-and-sql-nullstring](https://stackoverflow.com/questions/40092155/difference-between-string-and-sql-nullstring)
+
+```tsx
+type NullString struct {
+    String string
+    Valid  bool // Valid is true if String is not NULL
+}
+```
+
+As you can see, `sql.NullString` is a way to represent null string coming from SQL (which correspond to "NULL"). On the other hand, a nil `*string` is a pointer to a string which is nil, so the two are different.
+
+
+
+There's no effective difference. We thought people might want to use NullString because it is so common and perhaps expresses the intent more clearly than *string. But either will work
+
+使用 sql.NullString 更清晰
+
+
+
+
+
+## io.Reader,io.ReadCloser和io.ReadSeeker
+
+[https://github.com/wuyongxiu/wuyongxiu.github.io/issues/15](https://github.com/wuyongxiu/wuyongxiu.github.io/issues/15)
+
+
+## Struct 和 Interface
+
+Interface与struct类似，但只包含一些抽象方法。 在Go中，Interface定义了通用行为的抽象。
+
+```tsx
+//declare a rectangle struct
+type rectangle struct {
+    length int
+    width  int
+}
+
+//declare an interface with area() as a member
+type shape interface {
+    area() int
+}
+
+//declare a method area()
+//the rectangle struct implements area() method in shape interface
+func (r rectangle) area() int {
+    return r.length * r.width
+}
+
+//declare a method with type shape as a parameter
+func info(s shape) {
+    fmt.Println("the area: ", s.area())
+}
+
+```
+
+
+
+
+
+
+
+## new
+
+`new` 是一个内置函数，用于创建某个类型的零值，并返回该类型的指针。它的语法如下：
+
+```go
+new(Type)
+```
+
+其中，`Type` 是所需创建的类型。
+
+`new` 函数与使用 `&` 运算符创建指针的方式相似，但更为简洁。使用 `new` 函数可以直接创建某个类型的指针，而无需手动指定`&Type{}`。返回的指针指向该类型的零值。
+
+以下是使用 `new` 函数创建一个指向整型的指针的示例：
+
+```go
+num := new(int)
+```
+
+这将创建一个指向整型的指针 `num`，并将其初始化为整型的零值 `0`。
+
+
+
+## int32和int
+
+在Go语言中，int32和int是两种不同的数字类型。
+
+int32是int32位整数类型，表示一个带符号的32位整数，范围是-2147483648到2147483647。
+
+int是int的默认类型，它根据操作系统的架构决定位数，可以是32位或64位整数类型。在大多数情况下，int是int32的别名。在32位操作系统上，int是32位整数类型，在64位操作系统上，int是64位整数类型。
+
+因此，在大多数情况下，int32和int可以视为相同的东西，但在某些特定的环境下，它们可能会有不同的大小。为了保持代码的可移植性，建议明确指定所需的整数类型。
+
+
+
+
+
+# Gorm
+
+
+
+## foreignKey
+
+例子：
+
+```go
+	SubCategory      []*CateGory `gorm:"foreignKey:ParentCategoryID;references:ID"`
+```
+
+通过 `foreignKey` 方法来定义外键的引用关系
+
+
+
+
+
+## Gorm Associations
+
+Gorm Associations 是 Gorm 框架中用来定义和管理数据库表之间关系的一种功能。
+
+使用 Gorm Associations，可以简化数据库表之间的关联操作，比如定义一对一关系、一对多关系、多对多关系等。通过定义这些关系，可以方便地进行数据库查询和操作。
+
+应用 Gorm Associations 的主要优点包括：
+
+1. 简化代码：使用 Gorm Associations 可以简化关联关系的定义和查询操作，减少冗余代码。
+2. 方便的查询：通过定义关联关系，可以方便地进行复杂的查询操作，包括跨表查询、嵌套查询等。
+3. 数据库一致性：使用 Gorm Associations 可以确保数据库中的关联关系保持一致性，避免了手动管理关联关系带来的问题。
+4. 代码可读性：通过使用 Gorm Associations，可以更清晰地表达实体之间的关系，提高代码可读性和可维护性。
+
+总之，Gorm Associations 提供了一种方便、简化和规范的方式来管理数据库表之间的关系，提高了开发效率和代码质量。
+
+
+
+# protoc
+
+## protoc 使用
+
+protoc go-grpc_out 是一个 protoc 的插件，用于生成 Go 的 gRPC 代码。以下是它的使用方法：
+
+1. 确保已经安装了 protoc 编译器和 Go 的 protoc-gen-go 插件。
+2. 定义一个 .proto 文件，其中包含了 gRPC 服务的接口定义和消息定义。
+3. 使用以下命令生成 Go 的 gRPC 代码：
+
+```bash
+protoc book.proto --go_out=. --go-grpc_out=.
+```
+
+`--go_out=.` 表示生成的 Go 代码将保存在当前目录下，`--go-grpc_out=.` 表示生成的 gRPC 代码同样保存在当前目录下
+
+
+
+# Viper
+
+[https://pkg.go.dev/github.com/spf13/viper@v1.10.1#section-readme](https://pkg.go.dev/github.com/spf13/viper@v1.10.1#section-readme)
+
+Viper is a complete configuration solution for Go applications
+
+Viper是一个完整的Go应用程序配置解决方案
+
+
+
+# consul
+
+Identity-based networking with Consul
+
+[https://www.consul.io/](https://www.consul.io/)
+
+Consul uses service identities and traditional networking practices to help organizations securely connect applications running in any environment.
+
+Consul使用服务身份和传统的网络实践来帮助组织安全地连接在任何环境中运行的应用程序。
+
+Consul提供了一组用于注册、发现和连接服务的功能，支持多种服务发现机制，包括DNS、HTTP和gRPC。它还提供了一种分布式一致性协议来确保服务注册数据的一致性和可靠性。Consul还具有丰富的可视化界面、健康检查功能和基于ACL的权限控制。总体来说，Consul提供了一种可靠的方法来管理和连接微服务架构中的各个服务。
+
+
+
+
+
+### Consul和Etcd
+
+Consul和Etcd都是分布式键值存储系统，用于在集群中存储和同步数据，但它们也有一些区别。
+
+1. 一致性模型：Consul采用了强一致性模型，即读取和写入数据都会等待集群中的大多数节点确认。而Etcd则采用了弱一致性模型，即可能会存在短暂的数据不一致性。
+2. 功能特性：Consul提供了一些高级功能，如服务发现、健康检查、负载均衡、故障转移等。而Etcd则更加专注于分布式键值存储的基本功能。
+3. 架构设计：Consul采用Raft协议来实现一致性，每个节点都有相同的角色，可以进行读写操作。而Etcd也使用Raft协议，但采用了主从架构，其中的Leader节点用于处理写入请求，而Follower节点则用于处理读取请求。
+4. 数据模型：Consul支持键值对存储，同时还提供了额外的功能如短生命周期的会话、事件等。而Etcd则只支持简单的键值对存储。
+
+综上所述，Consul适用于需要更高级功能的场景，如服务发现和负载均衡等；而Etcd则更适用于简单的键值存储需求。
+
+
+
+# 补充
+
+[https://www.cnblogs.com/liyutian/p/10050320.html](https://www.cnblogs.com/liyutian/p/10050320.html)
+表达式 new(Type) 和 &Type{} 是等价的。
+
+new 关键字时 t := new(T)，变量 t 则是一个指向 T 的指针
+
+
+
+## don't close response.Body?
+
+[https://stackoverflow.com/questions/33238518/what-could-happen-if-i-dont-close-response-body](https://stackoverflow.com/questions/33238518/what-could-happen-if-i-dont-close-response-body)
+
+
+
+
+
+## string和[]byte
+
+[https://zboya.github.io/post/golang_byte_slice_and_string/](https://zboya.github.io/post/golang_byte_slice_and_string/)
+
+
+
+string:
+
+```go
+type stringStruct struct {
+    str unsafe.Pointer
+    len int
+}
+```
+
+简单的来说字符串是一系列8位字节的集合，通常但不一定代表UTF-8编码的文本。字符串可以为空，但不能为nil。而且字符串的值是不能改变的。
+
+[]byte:
+
+```go
+type slice struct {
+	array unsafe.Pointer
+	len   int
+	cap   int
+}
+```
+
+array是数组的指针，len表示长度，cap表示容量。除了cap，其他看起来和string的结构很像。
+
+
+
+标准转换
+
+```go
+// string to []byte
+s1 := "hello"
+b := []byte(s1)
+
+// []byte to string
+s2 := string(b)
+```
+
+
+
+### []byte转int
+
+```go
+var b = []byte{49,49} 
+strconv.Atoi(string(b))
+```
+
+
+
+
+
+
+
+## dereference the pointer
+
+对指针解引用
+
+
+
+
+
+
+
+
+
+## Mysql 无法启动
+
+[Mac 下 Mysql 无法启动](https://juejin.cn/post/6844904088098832398)
+
+```bash
+sudo /usr/local/mysql/support-files/mysql.server start
+```
+
+
+
+
+
+## vscode 打造舒适go体验
+
+[使用 VScode 打造舒适的 Go 开发环境](https://laomiao.site/%E4%BD%BF%E7%94%A8-vscode-%E6%89%93%E9%80%A0%E8%88%92%E9%80%82%E7%9A%84-go-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83)
+
+
+
+
+
+
