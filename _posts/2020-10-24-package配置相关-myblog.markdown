@@ -272,6 +272,39 @@ https://unpkg.com/jquery@[latestVersion]/[pkg.main]
 
 
 
+
+
+### unpkgFiles
+
+unpkg 和 unpkgFiles 都是用于指定在 unpkg（一个可靠的、快速的 CDN）上托管的 npm 包的文件。
+
+- `unpkg` 字段是一个字符串，用于指定入口文件（即主要资源），该文件将在访问 unpkg CDN 时加载。可以是一个`.js`、`.json` 或 `.html` 文件的 URL。当未指定`unpkg` 字段时，默认情况下，unpkg 将加载通过`main` 字段指定的主要文件。
+- `unpkgFiles` 字段是一个数组，用于指定应该在访问 unpkg CDN 时加载的其他文件。可以指定多个文件的路径，这些文件将作为附加资源加载到入口文件的环境中。
+
+使用 `unpkg` 字段可以指定整个 npm 包的单个入口文件，而使用 `unpkgFiles` 可以指定额外的附加资源。这样，当用户访问 unpkg CDN 时，可以加载指定的文件，而不仅仅是主要文件。这在加载相对较大的 npm 包或某些特定资源时很有用。
+
+举个例子：
+
+```json
+{
+  "name": "my-package",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "unpkg": "dist/main.js",
+  "unpkgFiles": [
+    "dist/styles.css",
+    "dist/images/logo.png"
+  ]
+}
+
+```
+
+
+
+
+
+
+
 ## style
 
 声明当前模块包含 `style` 部分，并指定入口文件。
@@ -313,4 +346,8 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
   }
 }
 ```
+
+
+
+
 

@@ -20,6 +20,10 @@ tags:
 
 [进阶 TypeScript](https://mp.weixin.qq.com/s/rx-FYjUog12v9CqcOsWGEg)
 
+[https://mkosir.github.io/typescript-style-guide/](https://mkosir.github.io/typescript-style-guide/)
+
+
+
 
 
 ## interface

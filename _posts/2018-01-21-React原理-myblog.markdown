@@ -11,7 +11,6 @@ tags:
 
 > “Yeah It's on. ”
 
-## 正文
 [网页链接](https://github.com/react-guide/react-basic)
 
 
@@ -299,6 +298,13 @@ function App(data) {
   );
 }
 ```
+
+
+
+### 重新渲染
+
+* 当 state 或者 prop 发生变化的时候，组件就会重渲染自己
+* **当组件的父组件重渲染时，组件也会重渲染自己**
 
 
 
@@ -638,3 +644,12 @@ componentDidMount呢？
 
 
 
+### 不需要 useMemo 和 useCallback
+
+[为什么你可以删除 90% 的 useMemo 和 useCallback ？](https://juejin.cn/post/7251802404877893689?utm_source=gold_browser_extension)
+
+* `useCallback` 和 `useMemo` 仅仅在后续渲染（也就是重渲染）中起作用，在初始渲染中它们反而是有害的
+
+* `useCallback` 和 `useMemo` 作用于 `props` 并不能避免组件重渲染。只有当每一个 `prop` 都被缓存，且组件本身也被缓存的情况下，重渲染才能被避免。只要有一丁点疏忽，那么你做的一切努力就打水漂了。所以说，简单点，把它们都删了吧。
+
+- 把包裹了“纯 js 操作“的 `useMemo` 也都删了吧。与组件本身的渲染相比，它缓存数据带来的耗时减少是微不足道的，并且会在初始渲染时消耗额外的内存，造成可以被观察到的延迟。
