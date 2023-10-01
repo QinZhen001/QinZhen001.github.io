@@ -231,6 +231,44 @@ For basic string printing use `%s`.
 
 
 
+## string
+
+
+
+### string函数与strconv.Itoa 区别
+
+* strconv.Itoa函数的参数是一个整型数字，它可以将数字转换成对应的字符串类型的数字。
+
+* string函数的参数若是一个整型数字，它将该整型数字转换成ASCII码值等于该整形数字的字符
+
+  
+
+例子：
+
+```go
+func main() {
+	string_number := 97
+	result := string(string_number)
+	fmt.Println(result)  // a 
+}
+```
+
+---
+
+```go
+func main() {
+	string_number := 97
+	result := strconv.Itoa(string_number)
+ 
+	fmt.Println(result)  // "97"
+	fmt.Printf("%T\n", result) // string
+}
+```
+
+
+
+
+
 ## go example
 
 [https://gobyexample.com/](https://gobyexample.com/)
