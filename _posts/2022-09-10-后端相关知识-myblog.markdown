@@ -65,6 +65,34 @@ tcc
 
 
 
+## 分布式锁
+
+
+
+### 保持数据一致性
+
+
+
+### 在集群中的问题
+
+
+
+
+
+
+
+## 锁
+
+
+
+### 悲观锁
+
+
+
+### 乐观锁
+
+
+
 
 
 # 消息队列
@@ -83,13 +111,23 @@ tcc
 
 # docker
 
+
+
+## 命令 
+
+
+
+### run
+
+[https://docs.docker.com/engine/reference/commandline/run/](https://docs.docker.com/engine/reference/commandline/run/)
+
 docker run -it alpine sh
 
 例子：
 
 docker run -d -p 80:80 nginx    
 
--d   后台一直运行 daemon
+-d   后台一直运行 daemon  （守护进程模式）
 
  -p 映射到物理机器的80端口
 
@@ -101,6 +139,10 @@ docker ps
 
 ---
 
+
+
+### kill 
+
 杀掉进程
 
 docker kill 973322dc1872
@@ -109,9 +151,65 @@ docker kill 973322dc1872
 
 
 
+### from
+
+
+
+### expose
+
+
+
+### add
+
+
+
+### copy
+
+
+
+### Volume
+
+
+
+### WorkDir
+
+
+
+### EntryPoint
+
+
+
+
+
+### CMD
+
+
+
+
+
+
+
+## 镜像
+
+
+
+
+
 ## Daemon
 
 Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以分为Docker Server、Engine和Job三部分。 Docker Daemon可以认为是通过Docker Server模块接受Docker Client的请求，并在Engine中处理请求，然后根据请求类型，创建出指定的Job并运行
+
+
+
+# k8s
+
+
+
+
+
+# 网关
+
+
 
 
 
