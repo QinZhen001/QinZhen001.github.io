@@ -22,7 +22,7 @@ tags:
 
 [https://mkosir.github.io/typescript-style-guide/](https://mkosir.github.io/typescript-style-guide/)
 
-
+[https://mkosir.github.io/typescript-style-guide/#introduction](https://mkosir.github.io/typescript-style-guide/#introduction)
 
 
 
