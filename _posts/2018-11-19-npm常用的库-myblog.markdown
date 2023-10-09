@@ -480,6 +480,14 @@ When you commit with Commitizen, you'll be prompted to fill out any required com
 
 
 
+### npkill
+
+[https://www.npmjs.com/package/npkill](https://www.npmjs.com/package/npkill)
+
+Easily find and **remove** old and heavy **node_modules** folders ✨
+
+
+
 
 ### conventional-changelog-cli
 

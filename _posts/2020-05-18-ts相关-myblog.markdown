@@ -190,7 +190,22 @@ export const invert: InvertColor;
 
 - interface 能够声明合并
 
-  
+
+
+
+
+
+## type
+
+
+
+### import/export type
+
+[导入/导出](https://jkchao.github.io/typescript-book-chinese/new/typescript-3.8.html#%E4%BB%85%E4%BB%85%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E5%A3%B0%E6%98%8E)
+
+`import type` 仅仅导入被用于类型注解或声明的声明语句，**它总是会被完全删除，因此在运行时将不会留下任何代码**。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
+
+
 
 ## 运算符
 
@@ -808,16 +823,6 @@ console.log(Test.bbb) // ok
 **仅当在你需要写一个`d.ts`文件时才使用这个指令。**
 
 
-
-## type
-
-
-
-### import/export type
-
-[导入/导出](https://jkchao.github.io/typescript-book-chinese/new/typescript-3.8.html#%E4%BB%85%E4%BB%85%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E5%A3%B0%E6%98%8E)
-
-`import type` 仅仅导入被用于类型注解或声明的声明语句，**它总是会被完全删除，因此在运行时将不会留下任何代码**。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
 
 
 
@@ -3734,6 +3739,46 @@ Sometimes, you'll want to express 'any function' in TypeScript.
 ```tsx
 (...args: any) => any
 ```
+
+
+
+## object keys expression string
+
+[typescript-element-implicitly-has-any-type-expression](https://bobbyhadz.com/blog/typescript-element-implicitly-has-any-type-expression)
+
+```ts
+const str = 'name' as string;
+
+const obj = {
+  name: 'Bobby Hadz',
+  country: 'Chile',
+};
+
+// ⛔️ Error: Element implicitly has an 'any' type
+// because expression of type 'string' can't be used
+// to index type '{ name: string; }'.
+// No index signature with a parameter of type 'string'
+// was found on type '{ name: string; }'.ts(7053)
+obj[str];
+
+Object.keys(obj).map((key) => {
+  console.log(obj[key]); 
+})
+
+// 这里 str 和 key 被推断成了 string 而不是 obj 中的 key 导致了问题
+```
+
+解决：
+
+```ts
+obj[str as keyof typeof obj]
+
+Object.keys(obj).map((key) => {
+  console.log(obj[key as keyof typeof obj]); 
+})
+```
+
+
 
 
 
