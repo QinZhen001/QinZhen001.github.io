@@ -1034,6 +1034,12 @@ useImperativeHandle(ref, createHandle, [deps])
 
 > react 18
 
+低优先级执行
+
+```ts
+  const [isPending, startTransition] = useTransition()
+```
+
 
 
 
@@ -1044,7 +1050,7 @@ useImperativeHandle(ref, createHandle, [deps])
 
 > react 18
 
-
+延迟值
 
 
 
