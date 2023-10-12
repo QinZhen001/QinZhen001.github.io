@@ -41,19 +41,76 @@ Gateway（网关）是一种网络设备或软件，用于连接两个或多个�
 
 
 
+## Webhook 
 
+> 用于后端api和后端api之间的通信
+
+[https://www.redhat.com/zh/topics/automation/what-is-a-webhook](https://www.redhat.com/zh/topics/automation/what-is-a-webhook)
+
+webhook 是一种基于 HTTP 的回调函数，**可在 2 个[应用编程接口（API）](https://www.redhat.com/zh/topics/api/what-are-application-programming-interfaces)之间实现轻量级的事件驱动通信**。许多种类的应用使用 webhook 来从其他应用接收少量数据，但 webhook 也可用于在 [GitOps](https://www.redhat.com/zh/topics/devops/what-is-gitops) 环境中触发自动化工作流。
 
 
 
 ## 锁
 
+锁（Lock）是一种并发控制机制，用于保护共享资源的访问，确保在多线程或多进程环境下的数据一致性和并发安全性。
 
+常见的锁包括：
+
+1. 互斥锁（Mutex）：提供了独占访问的能力，在同一时间只有一个线程可以持有该锁。
+2. 读写锁（ReadWrite Lock）：允许多个线程在没有写操作时并发地读取共享资源，但只有一个线程可以进行写操作。
+3. 自旋锁（Spin Lock）：在获取锁失败时，线程会循环不停地尝试获取锁，而不进入阻塞状态，适用于临界区很短暂的情况。
+4. 条件变量（Condition Variable）：用于线程之间的等待和通知，允许线程在某个条件满足或等待其他线程通知后继续执行。
 
 ### 悲观锁
 
+- 假设并发访问时会发生冲突，因此在操作之前先获取锁，阻止其他线程操作该资源。
+- 在获取锁期间，其他线程无法对该资源进行读或写，只有锁被释放后才能继续操作。
+- 适用于并发冲突较多的场景，例如数据库中的行级锁或表级锁。
+- **使用悲观锁会导致阻塞和上下文切换的开销增加，但可以保证数据的一致性和并发安全。**
 
+举个例子：
+
+行级锁（Row-Level Lock）：行级锁是一种在行级别进行的锁定操作，可以更细粒度地控制并发访问。在SQL中，可以通过在事务中使用`SELECT ... FOR UPDATE`语句的条件约束来获取行级锁。只有满足特定条件的数据行才会被锁定。
+
+```sql
+BEGIN TRANSACTION;
+SELECT * FROM table_name WHERE column_name = 'value' FOR UPDATE;
+-- 对查询结果进行操作
+COMMIT;
+```
 
 ### 乐观锁
+
+- 假设并发访问时不会发生冲突，允许多个线程同时进行操作，但在更新数据时会检查是否与其他线程的操作冲突。
+- 在读取数据时，会记录当前的版本号或时间戳。
+- 在更新数据时，会检查当前的版本号或时间戳是否与记录的一致，如果一致则更新成功，否则操作失败需要重试或放弃更新。
+- 适用于读多写少的场景，例如缓存、乐观并发控制算法（如CAS）等。
+- **使用乐观锁可以避免阻塞和等待，但可能需要重试操作，且无法保证数据的一致性。**
+
+举个例子：
+
+在SQL数据库中
+
+版本号（Versioning）：为数据表添加一个表示版本的字段，每次更新数据时都会对该字段进行更新。当事务提交时，会比较版本号是否一致，如果一致则更新成功，否则表示数据已被修改，需要回滚事务并重试。
+
+```sql
+-- 创建带版本号的表
+CREATE TABLE table_name (
+  id INT PRIMARY KEY,
+  data VARCHAR(255),
+  version INT DEFAULT 1
+);
+
+-- 更新数据时更新版本号
+UPDATE table_name SET data = 'new_data', version = version + 1 WHERE id = 1 AND version = old_version;
+
+-- 提交事务时检查版本号
+COMMIT;
+
+```
+
+
 
 
 
@@ -132,6 +189,16 @@ tcc
 ### half 消息
 
 
+
+
+
+## RabbitMQ
+
+
+
+
+
+# grafana
 
 
 
