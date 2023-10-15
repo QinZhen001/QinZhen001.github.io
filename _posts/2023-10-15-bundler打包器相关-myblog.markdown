@@ -13,9 +13,13 @@ tags:
 
 
 
+# esbuild
 
 
-# 基础
+
+
+
+## 基础
 
 [https://esbuild.github.io/](https://esbuild.github.io/)
 
@@ -33,15 +37,13 @@ bundle：打包
 
 outfile： 输出地址
 
-
-
-## serve
+### serve
 
 [https://esbuild.github.io/api/#serve](https://esbuild.github.io/api/#serve)
 
 
 
-## Inject 
+### Inject
 
 [https://esbuild.github.io/api/#inject](https://esbuild.github.io/api/#inject)
 
@@ -49,7 +51,7 @@ outfile： 输出地址
 
 
 
-## tree-shaking
+### tree-shaking
 
 [https://esbuild.github.io/api/#tree-shaking](https://esbuild.github.io/api/#tree-shaking)
 
@@ -57,31 +59,35 @@ outfile： 输出地址
 
 
 
-## analyze
+### analyze
 
 [https://esbuild.github.io/api/#analyze](https://esbuild.github.io/api/#analyze)
 
 
 
-# 问题
+## 问题
 
 
 
 
 
-## target es5
+### target es5
 
 [Lowering for ES5?](https://github.com/evanw/esbuild/issues/297)
 
 **结论：esbuild 还不支持将代码转为es5**
 
-
-
-
-
-
-
 If you use a syntax feature that esbuild doesn't yet have support for transforming to your current language target, esbuild will generate an error where the unsupported syntax is used. This is often the case when targeting the es5 language version, for example, since esbuild only supports transforming most newer JavaScript syntax features to es6.
 
 如果您使用的语法特性esbuild还不支持转换到当前语言目标，则esbuild将在使用不支持的语法时生成一个错误。例如，当目标是es5语言版本时，通常会出现这种情况，因为esbuild只支持将大多数较新的JavaScript语法特性转换为es6。
+
+
+
+
+
+# swc
+
+[https://swc.nodejs.cn/](https://swc.nodejs.cn/)
+
+SWC 是一个基于 Rust 的可扩展平台，适用于下一代快速开发工具。 它被 Next.js、Parcel 和 Deno 等工具以及 Vercel、字节跳动、腾讯、Shopify 等公司使用。
 
