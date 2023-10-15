@@ -35,6 +35,12 @@ outfile： 输出地址
 
 
 
+## serve
+
+[https://esbuild.github.io/api/#serve](https://esbuild.github.io/api/#serve)
+
+
+
 ## Inject 
 
 [https://esbuild.github.io/api/#inject](https://esbuild.github.io/api/#inject)
