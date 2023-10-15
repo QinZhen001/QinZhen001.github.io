@@ -287,6 +287,22 @@ Package bufio implements buffered I/O. It wraps an io.Reader or io.Writer object
 
 
 
+## os
+
+在Go语言中，os包是用于提供与操作系统交互的函数和变量的标准库。
+
+
+
+### os.Signal
+
+在 Go 语言中，os.Signal 是一个表示来自操作系统的信号的类型。它用于处理操作系统级别的事件，比如收到一个中断信号（SIGINT）或终止信号（SIGTERM）等。
+
+使用场景：
+
+优雅退出：通过监听 SIGINT 和 SIGTERM 信号，程序可以在接收到中断信号时，先进行一些清理工作，如关闭数据库连接、释放资源等，再优雅地退出。
+
+
+
 
 
 ## goroutine
