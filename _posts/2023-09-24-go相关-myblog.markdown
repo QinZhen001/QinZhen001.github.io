@@ -186,7 +186,7 @@ go mod init 名称
 
 
 
-## log 
+## log
 
 
 
@@ -284,6 +284,22 @@ func main() {
 ## bufio
 
 Package bufio implements buffered I/O. It wraps an io.Reader or io.Writer object, creating another object (Reader or Writer) that also implements the interface but provides buffering and some help for textual I/O.
+
+
+
+## os
+
+在Go语言中，os包是用于提供与操作系统交互的函数和变量的标准库。
+
+
+
+### os.Signal
+
+在 Go 语言中，os.Signal 是一个表示来自操作系统的信号的类型。它用于处理操作系统级别的事件，比如收到一个中断信号（SIGINT）或终止信号（SIGTERM）等。
+
+使用场景：
+
+优雅退出：通过监听 SIGINT 和 SIGTERM 信号，程序可以在接收到中断信号时，先进行一些清理工作，如关闭数据库连接、释放资源等，再优雅地退出。
 
 
 
@@ -419,6 +435,25 @@ num := new(int)
 
 
 
+## & 和 * 
+
+`&`是取地址符号，用于获取变量的内存地址。例如：
+
+```go
+x := 10
+p := &x  // 取出变量x的内存地址，赋值给指针p
+```
+
+`*`是指针取值符号，用于获取指针指向的变量的值。例如：
+
+```go
+x := 10
+p := &x  // 取出变量x的内存地址，赋值给指针p
+fmt.Println(*p)  // 输出10，*p表示取出指针p指向的变量的值
+```
+
+
+
 ## int32和int
 
 在Go语言中，int32和int是两种不同的数字类型。
@@ -430,6 +465,47 @@ int是int的默认类型，它根据操作系统的架构决定位数，可以�
 因此，在大多数情况下，int32和int可以视为相同的东西，但在某些特定的环境下，它们可能会有不同的大小。为了保持代码的可移植性，建议明确指定所需的整数类型。
 
 
+
+# grpc
+
+[https://grpc.io/docs/what-is-grpc/](https://grpc.io/docs/what-is-grpc/)
+
+In gRPC, a client application can directly call a method on a server application on a different machine as if it were a local object, making it easier for you to create distributed applications and services
+
+##  gRPC-Go
+
+[https://pkg.go.dev/google.golang.org/grpc#section-readme](https://pkg.go.dev/google.golang.org/grpc#section-readme)
+
+```go
+	conn, err := grpc.Dial(dialAddr,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robbin"}`),
+	)
+```
+
+`grpc.WithTransportCredentials`是gRPC客户端的选项之一，用于指定要使用的传输层安全凭据（Transport Credentials）。传输层安全是一种通过加密和身份验证来保护通信的协议，用于在客户端和服务器之间建立安全连接。
+
+使用`grpc.WithTransportCredentials`选项，可以在创建gRPC客户端时指定要使用的安全凭据，以确保通信的机密性和完整性。可以将其与TLS（传输层安全）或其他身份验证机制一起使用，以根据需求配置gRPC连接的安全性。
+
+`grpc.WithDefaultServiceConfig`函数的作用是设置客户端连接的默认服务配置（service config）。
+
+gRPC的服务配置是一组JSON格式的字符串，用于指定一些特定的行为，例如：最大消息大小、流控、超时等。
+
+
+
+
+
+# jwt-go
+
+
+
+# zap
+
+
+
+
+
+# gin
 
 
 
@@ -493,35 +569,6 @@ protoc book.proto --go_out=. --go-grpc_out=.
 Viper is a complete configuration solution for Go applications
 
 Viper是一个完整的Go应用程序配置解决方案
-
-
-
-# consul
-
-Identity-based networking with Consul
-
-[https://www.consul.io/](https://www.consul.io/)
-
-Consul uses service identities and traditional networking practices to help organizations securely connect applications running in any environment.
-
-Consul使用服务身份和传统的网络实践来帮助组织安全地连接在任何环境中运行的应用程序。
-
-Consul提供了一组用于注册、发现和连接服务的功能，支持多种服务发现机制，包括DNS、HTTP和gRPC。它还提供了一种分布式一致性协议来确保服务注册数据的一致性和可靠性。Consul还具有丰富的可视化界面、健康检查功能和基于ACL的权限控制。总体来说，Consul提供了一种可靠的方法来管理和连接微服务架构中的各个服务。
-
-
-
-
-
-### Consul和Etcd
-
-Consul和Etcd都是分布式键值存储系统，用于在集群中存储和同步数据，但它们也有一些区别。
-
-1. 一致性模型：Consul采用了强一致性模型，即读取和写入数据都会等待集群中的大多数节点确认。而Etcd则采用了弱一致性模型，即可能会存在短暂的数据不一致性。
-2. 功能特性：Consul提供了一些高级功能，如服务发现、健康检查、负载均衡、故障转移等。而Etcd则更加专注于分布式键值存储的基本功能。
-3. 架构设计：Consul采用Raft协议来实现一致性，每个节点都有相同的角色，可以进行读写操作。而Etcd也使用Raft协议，但采用了主从架构，其中的Leader节点用于处理写入请求，而Follower节点则用于处理读取请求。
-4. 数据模型：Consul支持键值对存储，同时还提供了额外的功能如短生命周期的会话、事件等。而Etcd则只支持简单的键值对存储。
-
-综上所述，Consul适用于需要更高级功能的场景，如服务发现和负载均衡等；而Etcd则更适用于简单的键值存储需求。
 
 
 

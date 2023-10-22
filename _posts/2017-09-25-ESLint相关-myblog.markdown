@@ -444,7 +444,7 @@ eslint src/** --fix
 
 
 
-### ESLint 结合 Prettier
+### ESLint 和 Prettier 区别
 
 [搞懂 ESLint 和 Prettier](https://zhuanlan.zhihu.com/p/80574300)
 
@@ -452,15 +452,17 @@ eslint src/** --fix
 
 [为什么我不使用 Prettier](https://antfu.me/posts/why-not-prettier-zh)
 
-
-
-
-
 ESLint 主要解决了两类问题
 
 - 代码质量规则 (code-quality rules)
 
 - 代码风格规则 (code-formatting rules)
+
+ESLint是一个JavaScript代码静态分析工具，用于检查代码中的错误、潜在问题和编码规范等，可以通过配置文件对代码进行自定义规则和扩展。
+
+Prettier是一个代码格式化工具，旨在统一、美化代码的风格和格式，能够自动调整代码的缩进、换行和其他格式选项，让代码保持一致易读。
+
+
 
 **Prettier 接管了两个问题其中的代码格式的问题，而使用 Prettier + ESLint 就完完全全解决了两个问题**。
 
