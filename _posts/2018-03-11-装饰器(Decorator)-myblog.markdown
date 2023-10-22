@@ -15,7 +15,12 @@ tags:
 
 [网页链接](http://es6.ruanyifeng.com/#docs/decorator#%E7%B1%BB%E7%9A%84%E4%BF%AE%E9%A5%B0)
 
+[Exploring EcmaScript Decorators](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841)
+
+
+
 ### 类的修饰
+
 许多面向对象的语言都有修饰器（Decorator）函数，用来修改类的行为。目前，有一个提案将这项功能，引入了 ECMAScript。
 ```
 @testable
@@ -377,6 +382,42 @@ myClass.annotations = [
 
 
 # 补充
+
+
+
+## 原理
+
+```tsx
+function readonly(target, name, descriptor){
+    descriptor.writable = false;
+    return descriptor;
+}
+
+class Cat{
+ @readonly
+  meow(){
+    return 'meow';
+  }
+}
+
+
+// transform ...
+// the engine first invokes the decorator:
+let descriptor = {
+  value:specifiedFunction,
+  enumerable:false,
+  configurable:true,
+  writable:true
+}
+
+descriptor = readonly(Cat.prototype, 'meow', descriptor) || descriptor;
+Object.defineProperty(Cat.prototype, 'meow', descriptor);
+
+```
+
+
+
+
 
 
 

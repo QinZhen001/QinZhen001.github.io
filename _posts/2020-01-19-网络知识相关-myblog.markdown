@@ -1097,6 +1097,12 @@ application/json，随着json规范的越来越流行，并且浏览器支持程
 
 
 
+## RTT
+
+在计算机网络中，RTT指的是往返时延（Round-Trip Time），即从发送方发送数据到接收方再返回发送方所经历的时间。RTT可以用来衡量网络通信的延迟，从而判断网络的性能。
+
+
+
 ## CSP
 
 [http://www.ruanyifeng.com/blog/2016/09/csp.html](http://www.ruanyifeng.com/blog/2016/09/csp.html)
