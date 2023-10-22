@@ -1217,6 +1217,26 @@ Plyr是一个简单，轻量级，可访问和可定制的HTML5, YouTube和Vimeo
 
 
 
+
+
+### throttle
+
+[https://github.com/sitespeedio/throttle](https://github.com/sitespeedio/throttle)
+
+Throttle uses *pfctl* on Mac and *tc* on Linux to simulate different network speeds
+
+设置不同网络速度 和 丢包率
+
+模拟各种网络情况 用于测试各种弱网
+
+----
+
+[https://www.speedtest.net/](https://www.speedtest.net/)
+
+在线测试当前的网络质量
+
+
+
 # react
 
 
