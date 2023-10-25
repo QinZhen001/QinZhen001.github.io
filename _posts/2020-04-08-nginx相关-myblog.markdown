@@ -135,13 +135,40 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 nginx -s reload
 ```
 
-
-
-
-
 这样就可以做到不停服务，平滑的更新 nginx 的配置文件。这样做的好处就是客户体验好，比如我正在数据传输，如果你这时重启 nginx，可能就会造成数据丢失。这个时候，我们就可以温柔的采用 nginx -s reload 命令加载配置文件。
 
 
+
+
+
+### gzip 压缩
+
+1. 打开 Nginx 配置文件。一般位于 `/etc/nginx/nginx.conf` 或者 `/etc/nginx/conf.d/default.conf`。
+
+2. 在 http 配置块中添加如下行，开启 gzip 压缩功能：
+
+   ```
+   gzip on;
+   ```
+
+   这会启用服务器端的 gzip 压缩功能。
+
+3. 配置 gzip 的压缩级别和压缩类型。添加如下行：
+
+   ```
+   gzip_comp_level n;
+   gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+   ```
+
+   其中 `n` 是压缩级别，可以是一个介于 1 和 9 之间的数字。数字越大，压缩率越高，但也会占用更多的 CPU 资源。压缩类型列表中指定了要压缩的 MIME 类型。
+
+4. 重启 Nginx 服务，使配置生效。
+
+   ```
+   sudo systemctl restart nginx
+   ```
+
+现在你的 Nginx 服务器应该已经开启了 gzip 压缩功能。
 
 
 

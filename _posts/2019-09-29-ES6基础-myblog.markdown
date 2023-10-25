@@ -1127,7 +1127,59 @@ var obj = new Proxy({}, {
 
 ### Reflect
 
+[https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect)
+
+> vue3 proxy劫持数据的幕后支持者之一。
+
+**反射的原理是通过编译阶段对对象注入元数据信息，在运行阶段读取注入的元数据，从而得到对象信息。**
+
 将`Object`对象的一些明显属于语言内部的方法（比如`Object.defineProperty`），放到`Reflect`对象上。让`Object`操作都变成函数行为。某些`Object`操作是命令式，比如`name in obj`和`delete obj[name]`，而`Reflect.has(obj, name)`和`Reflect.deleteProperty(obj, name)`让它们变成了函数行为。
+
+
+
+元数据反射（Reflect Metadata） 是 ES7 的一个提案，它主要用来在声明的时候添加和读取元数据。
+
+要在 ts 中启用元数据反射相关功能需要：
+
+- `npm i reflect-metadata --save`。
+- 在 `tsconfig.json` 里配置 `emitDecoratorMetadata` 选项为`true`。
+
+
+
+内置元数据
+
+TypeScript 结合自身语言的特点，为使用了装饰器的代码声明注入了 3 组元数据：
+
+- `design:type`：成员类型
+- `design:paramtypes`：成员所有参数类型
+- `design:returntype`：成员返回类型
+
+
+
+
+
+
+
+#### reflect-metadata
+
+[https://www.npmjs.com/package/reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+
+Reflect Metadata 是 ES7 的一个提案，它主要用来在声明的时候添加和读取元数据，可以被用于类，类成员以及参数。
+
+`reflect-metadata`是一种增强描述，我们可以在不侵入原类、原函数或者原属性的前提下，对其进行额外的描述，例如这样：
+
+```ts
+class A {
+  b: {}
+}
+
+Reflect.defineMetadata('test', '1', A)
+Reflect.defineMetadata('testb', '2', A, 'b')
+
+console.log(Reflect.getMetadata('test', A)) // '1'
+console.log(Reflect.getMetadata('testb', A, 'b')) // '2'
+
+```
 
 
 

@@ -37,6 +37,30 @@ tags:
 
 
 
+#### Content-Type
+
+[https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Type)
+
+1. text/plain：表示纯文本，没有格式或样式。
+2. text/html：表示 HTML 文档，用于网页。
+3. application/json：表示 JSON 数据。
+4. application/xml：表示 XML 数据。
+5. application/octet-stream：表示二进制数据，常用于文件下载。
+6. multipart/form-data：用于上传文件，常用于表单提交。
+7. image/png、image/jpeg、image/gif：表示图片的不同格式。
+8. application/pdf：表示 PDF 文档。
+9. application/zip：表示压缩文件。
+
+---
+
+"multipart/form-data" 是一种在 HTTP 请求中使用的数据编码格式。它允许将不同类型的数据（如文本、文件等）作为多部分数据来发送。
+
+当使用 "multipart/form-data" 编码格式时，请求消息的主体被分割为多个部分，每个部分都包含一个头部和一个数据段。每个数据段可以是文本或文件，并可以附加额外的元数据。
+
+
+
+
+
 ### http常用响应头
 
 * Access-Control-Allow-Origin   指定哪些网站可以跨域源资源共享	

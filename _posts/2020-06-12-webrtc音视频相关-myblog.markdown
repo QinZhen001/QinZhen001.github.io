@@ -153,6 +153,8 @@ WebRTC底层使用UDP协议主要有以下几个原因：
 
 
 
+
+
 # video.js
 
 
@@ -219,6 +221,8 @@ videojs.use('video/my-catalog', function(player) {
 
 ## hls
 
+HLS（HTTP Live Streaming）
+
 [https://juejin.cn/post/6968628379213889550](https://juejin.cn/post/6968628379213889550)
 
 关于 Hls 的支持，videojs 官方目前提供的最新支持是 [videojs-http-streaming](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fvideojs%2Fhttp-streaming)，简称 VHS，替代过去的 [videojs-contrib-hls](https://link.juejin.cn/?target=https%3A%2F%2Fgithub.com%2Fvideojs%2Fvideojs-contrib-hls)。
@@ -228,6 +232,8 @@ Github 上也有一些第三方实现，基于 hls.js 的扩展，例如基于 `
 对比这两个第三方库，可以发现使用 `Tech.registerTech` 会比使用  `registerSourceHandler` 代码更简单。
 
 **videojs 较新的版本已经默认内置了 VHS**，只有 videojs.core.js 才是剔除了 VHS 的核心代码。
+
+
 
 ## 显示当前时间 
 
@@ -630,7 +636,19 @@ browserHlsSupported(): boolean {
 
 相对于常见的流媒体协议，HLS 最大的不同在于它并不是一下请求完整的数据流。它会在服务器端将流媒体数据切割成连续的时长较短的 ts 小文件，并通过 M3U8 索引文件按序访问 ts 文件。客户端只要不停的按序播放从服务器获取到的文件，从而实现播放音视频。
 
+HLS支持AES加密，可以对视频内容进行加密保护；FLV的安全性较差，容易被破解和盗取。
+
+HLS在传输过程中有一定的延迟，通常为几秒到十几秒；FLV的传输延迟较低，可以实现较低的实时性。
+
+HLS使用了自适应码率技术，根据网络条件动态调整码率和缓冲区大小，以提供更好的播放体验；FLV没有自适应码率技术，网络不稳定时容易出现卡顿和缓冲。
+
+总体来说，HLS更适用于移动设备和各种平台的流媒体传输，具有更好的兼容性和安全性；FLV在过去常用于Flash平台上的流媒体传输，现在已经逐渐被其他传输协议所取代。
+
 **RTMP 协议为流媒体而设计，在推流中用的比较多，同时大多 CDN 厂商支持RTMP 协议。**
+
+
+
+
 
 
 

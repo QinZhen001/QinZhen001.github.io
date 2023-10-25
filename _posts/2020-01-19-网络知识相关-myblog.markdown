@@ -1103,6 +1103,14 @@ application/json，随着json规范的越来越流行，并且浏览器支持程
 
 
 
+
+
+## TTL
+
+TTL (Time to Live) 表示在网络中数据包在传输过程中被允许存在的时间或跳数的最大值。每次数据包经过一个路由器或网络设备，其 TTL 值会减少一次。当 TTL 值减少到0时，该数据包将被丢弃或返回源 IP 地址。TTL 的主要目的是防止数据包在网络中无限循环，以保证数据包能够正常到达目标主机并在一定时间内传递完成。
+
+
+
 ## CSP
 
 [http://www.ruanyifeng.com/blog/2016/09/csp.html](http://www.ruanyifeng.com/blog/2016/09/csp.html)
@@ -1216,3 +1224,20 @@ CORB 是一种判断是否要在跨站资源数据到达页面之前阻断其到
 [https://www.speedtest.net/](https://www.speedtest.net/)
 
 在线测试当前的网络质量
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
