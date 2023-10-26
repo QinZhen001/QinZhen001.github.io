@@ -1043,7 +1043,6 @@ _defineProperty(Yideng, "aaa", "aaa");
 
 ### 计算属性
 
-
 [网页链接](http://blog.csdn.net/kittyjie/article/details/50447535)
 
 ```
