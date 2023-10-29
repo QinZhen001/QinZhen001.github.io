@@ -454,7 +454,13 @@ export default defineConfig({
 
 ## 依赖注入
 
+[https://angular.cn/guide/dependency-injection](https://angular.cn/guide/dependency-injection)
+
 **将创建对象的任务转移给其他 class，并直接使用依赖项的过程，被称为“依赖项注入”。**（DI）
+
+DI 系统中存在两个主要角色：依赖使用者和依赖提供者。
+
+
 
 
 

@@ -1448,6 +1448,17 @@ SSL 采用一种 叫做公开密钥加密（Public-key cryptography）的加密�
 
 
 
+### PUT和PATCH请求的区别
+
+PUT和PATCH请求的主要区别在于资源的更新方式和幂等性。
+
+1. 更新方式：PUT请求用于替换整个资源，即客户端提供完整的新资源表示来替换服务器上的资源。而PATCH请求用于部分更新资源，即客户端提供只包含需要修改字段的新资源表示，服务器根据该表示进行局部更新。
+2. 幂等性：PUT请求是幂等的，即多次执行相同的PUT请求会得到相同的结果。因为PUT请求替换整个资源，所以多次执行相同的PUT请求不会对服务器端资源造成额外影响。而PATCH请求不一定是幂等的，因为多次执行相同的PATCH请求可能会对同一资源进行多次局部更新，从而导致最终结果不同。
+
+**总结：PUT请求用于替换整个资源，是幂等的；而PATCH请求用于部分更新资源，不一定是幂等的。**
+
+
+
 ### 避免 CDN 为 PC 端缓存移动端页面
 
 [https://juejin.im/post/5f0d19b6f265da230f2848c3?utm_source=gold_browser_extension](https://juejin.im/post/5f0d19b6f265da230f2848c3?utm_source=gold_browser_extension)

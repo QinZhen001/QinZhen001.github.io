@@ -581,6 +581,10 @@ try {
 
 [https://babeljs.io/docs/en/babel-plugin-proposal-decorators](https://babeljs.io/docs/en/babel-plugin-proposal-decorators)
 
+
+
+
+
 #### @babel/plugin-proposal-class-properties
 
 [https://babel.docschina.org/docs/en/babel-plugin-proposal-class-properties/](https://babel.docschina.org/docs/en/babel-plugin-proposal-class-properties/)
@@ -605,7 +609,12 @@ try {
 
 Use the legacy (stage 1) decorators syntax and behavior.
 
+
+
+
+
 ### use strict
+
 [https://blog.csdn.net/qq_40259641/article/details/84106252](https://blog.csdn.net/qq_40259641/article/details/84106252)
 
 这是babelES6转译ES5自动加上的,使用严格模式的意思;

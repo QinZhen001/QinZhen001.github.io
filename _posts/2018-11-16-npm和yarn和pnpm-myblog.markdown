@@ -518,8 +518,12 @@ pnpm --filter <package_selector> <command>
 
 例子：
 
+```ts
+"demo:dev": "pnpm --filter=demo run dev"
+```
+
 ```bash
-"build": "pnpm -r --filter='./packages/*' run build",
+"build": "pnpm --filter='./packages/*' run build",
 ```
 
 
@@ -533,7 +537,7 @@ pnpm --filter <package_selector> <command>
 并发执行多个命令
 
 ```bash
-"dev": "pnpm -r --parallel --filter='./packages/*' run dev",
+"dev": "pnpm --parallel --filter='./packages/*' run dev",
 ```
 
 

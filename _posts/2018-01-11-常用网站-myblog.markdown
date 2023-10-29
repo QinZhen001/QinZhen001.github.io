@@ -347,6 +347,20 @@ vue 单文件组件的编译结果
 
 
 
+### bundlephobia
+
+bundlephobia
+
+[https://bundlephobia.com/](https://bundlephobia.com/)
+
+find the cost of adding a npm package to your bundle
+
+找出在你的项目中添加一个NPM包的体积
+
+
+
+
+
 ## 性能
 
 

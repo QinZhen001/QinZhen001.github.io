@@ -206,6 +206,19 @@ The stroke and fill determines how the shape is drawn.
 
 
 
+### globalCompositeOperation
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation)
+
+Canvas 2D API 的 **`CanvasRenderingContext2D.globalCompositeOperation`** 属性设置要在绘制新形状时应用的合成操作的类型，其中 type 是用于标识要使用的合成或混合模式操作的字符串。
+
+利用好这个属性，可以玩很多好玩的，比如刮刮卡，就是使用了"destination-out"这一属性。
+[刮刮卡](https://github.com/laoxielearnsth/ilovejs/tree/master/canvas/guaguaka)
+
+
+
+
+
 ## html2canvas
 
 [http://html2canvas.hertzen.com/](http://html2canvas.hertzen.com/)
@@ -762,6 +775,16 @@ ctx.scale(dpr,dpr);
 把stoke调用放到循环外，减少stoke的调用
 
 
+
+### 避免使用浮点数
+
+使用浮点数做坐标，往往会出现奇奇怪怪的结果，计算机处理浮点数的运算也比整数要来的慢。
+
+
+
+### requestAnimationFrame执行动画
+
+requestAnimationFrame是个好东西，他能根据屏幕的刷新率来调整绘图次数，而且在页面不激活的情况下暂停调用，提升性能与节省电量，与定时器相比，在时间上也更准确。
 
 
 
