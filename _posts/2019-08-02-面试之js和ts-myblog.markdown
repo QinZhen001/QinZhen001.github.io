@@ -3663,11 +3663,70 @@ module.exports 是nodejs对commonjs的具体实现。exports 只是它的一个�
 
 
 
-### async await 和 promise 的关系
+### async/await 实现原理
 
-async await 是 promise 和 generator 函数组合的一个语法糖
+async/await 是 promise 和 generator 函数组合的一个语法糖
+
+- **async 函数执行结果返回的是一个 Promise**
+- **async 函数就是将 Generator 函数的星号（\*）替换成 async，将 yield 替换成 await**
+- **async/await 就是 Generator 的语法糖，其核心逻辑是迭代执行 next 函数**
 
 
+
+手写一个：
+
+[https://juejin.cn/post/7007031572238958629#heading-13]()
+
+```ts
+//接受一个Generator函数作为参数
+function generatorToAsync(gen) {
+  // 返回一个函数
+  return function () {
+    // 返回一个promise
+    return new Promise((resolve, reject) => {
+      let g = gen();
+      const next = (context) => {
+        try {
+          res = g.next(context);
+        } catch (error) {
+          reject(error)
+        }
+        if (res.done) {
+          resolve(res.value)
+        } else {
+          return Promise.resolve(res.value).then(val => next(val))
+        }
+      }
+      next()
+    })
+  }
+}
+
+```
+
+测试：
+
+```ts
+const getFetch = (nums) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(nums + 1);
+    }, 1000);
+  });
+
+function* gen() {
+  let res1 = yield getFetch(1);
+  let res2 = yield getFetch(res1);
+  let res3 = yield getFetch(res2);
+  return res3;
+}
+const asyncGen = generatorToAsync(gen)
+console.log(asyncGen()) //Promise {<pending>}
+asyncGen().then(res=>{
+  console.log(res)
+})
+
+```
 
 
 
@@ -3999,8 +4058,6 @@ ts是js的超集。ts一方面是对js加上了很多条条框框的限制，另
 ### ts的泛型
 
 泛型决定了一个类型在不同的场景下能够在每个场景下从始至终的保持类型一致
-
-
 
 对于泛型，我是这样理解的，编写一个方法，让方法可以传入任意的参数，但是参数与参数，参数与结果之间存在一定的约束，以保证传入某个类型的参数就能得到确定类型的返回值，或者保证了我们传入值的正确性
 
@@ -5460,10 +5517,6 @@ A
 
 
 
-
-## async和await 的es5实现
-
-[https://www.zhihu.com/question/39571954](https://www.zhihu.com/question/39571954)
 
 
 

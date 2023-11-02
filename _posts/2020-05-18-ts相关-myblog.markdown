@@ -492,8 +492,6 @@ let lie = 0;
 
 ###  声明一个 void 类型的变量 
 
-
-
 声明一个 void 类型的变量没有什么作用，因为它的值只能为 `undefined` 或 `null`：
 
 ```tsx
