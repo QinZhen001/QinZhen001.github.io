@@ -296,6 +296,14 @@ Consul和Etcd都是分布式键值存储系统，用于在集群中存储和同�
 
 
 
+### docker-compose
+
+[https://pythondjango.cn/python/tools/3-docker-compose/](https://pythondjango.cn/python/tools/3-docker-compose/)
+
+https://www.cnblogs.com/davis12/p/14312267.html
+
+
+
 ### run
 
 [https://docs.docker.com/engine/reference/commandline/run/](https://docs.docker.com/engine/reference/commandline/run/)
@@ -387,6 +395,16 @@ Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以
 # shell 编程
 
 [https://wangdoc.com/bash/intro](https://wangdoc.com/bash/intro)
+
+
+
+
+
+# 云计算
+
+在数字化时代，互联网已经成为基础设施。云计算使得数据中心能够像一台计算机一样去工作。通过互联网将算力以按需使用、按量付费的形式提供给用户，包括：**计算、存储、网络、数据库、大数据计算、大模型**等算力形态。
+
+云计算两个最明显的优势是弹性和敏捷：弹性能让您按需使用各类服务，灵活扩缩容，从容应对业务流量的不确定性。敏捷能让您快速部署应用而无需购买任何物理资源即可完成业务创新。
 
 
 
