@@ -829,6 +829,16 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 
 
 
+
+
+### 基础
+
+```ts
+toBeCloseTo(8.135869643784943, 3)
+```
+
+
+
 ### vscode中Debugger
 
 [https://cn.vitest.dev/guide/debugging.html#vscode](https://cn.vitest.dev/guide/debugging.html#vscode)
@@ -841,6 +851,7 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 
 [https://cn.vitest.dev/guide/snapshot.html](https://cn.vitest.dev/guide/snapshot.html)
 
+toMatchInlineSnapshot
 
 
 ### 模拟对象

@@ -407,6 +407,43 @@ Electron Builder 是一个完备的Electron应用打包和分发解决方案，�
 
 
 
+
+
+#### arch 
+
+[https://www.electron.build/cli](https://www.electron.build/cli)
+
+arch 架构的选择并不在配置中，而在 Command 中 
+
+```bash
+Building:
+  --mac, -m, -o, --macos   Build for macOS, accepts target list (see
+                           https://goo.gl/5uHuzj).                       [array]
+  --linux, -l              Build for Linux, accepts target list (see
+                           https://goo.gl/4vwQad)                        [array]
+  --win, -w, --windows     Build for Windows, accepts target list (see
+                           https://goo.gl/jYsTEJ)                        [array]
+  --x64                    Build for x64                               [boolean]
+  --ia32                   Build for ia32                              [boolean]
+  --armv7l                 Build for armv7l                            [boolean]
+  --arm64                  Build for arm64                             [boolean]
+
+```
+
+例子：
+
+```bash
+electron-builder  --x64
+```
+
+
+
+
+
+
+
+
+
 #### build
 
 package.json 中 build 字段

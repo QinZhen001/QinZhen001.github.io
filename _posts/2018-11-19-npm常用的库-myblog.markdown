@@ -1237,6 +1237,24 @@ Throttle uses *pfctl* on Mac and *tc* on Linux to simulate different network spe
 
 
 
+
+
+### es-check
+
+[https://www.npmjs.com/package/es-check](https://www.npmjs.com/package/es-check)
+
+根据指定的ES版本检查JavaScript文件的ES版本
+
+---
+
+使用场景：
+
+[关于低端机型上 H5 页面白屏](https://www.baobangdong.cn/the-troubleshooting-of-h5-blank-screen/)
+
+低端机白屏大多时候由于使用了ES6
+
+
+
 # react
 
 

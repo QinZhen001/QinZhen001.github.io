@@ -15,6 +15,10 @@ tags:
 ## 正文
 [网页链接](https://juejin.im/post/5c17ad756fb9a049ff4e0a62?utm_source=gold_browser_extension)
 
+[JavaScript 模块](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Modules)
+
+
+
 
 ### AMD
 
@@ -334,33 +338,30 @@ commonjs 规范只定义了exports，而 module.exports是nodejs对commonjs的�
 
 
 
-### __esModule 的作用
 
-[https://toyobayashi.github.io/2020/06/29/ESModule/](https://toyobayashi.github.io/2020/06/29/ESModule/)
 
-[简要说明 Webpack 和 TypeScript 编译器对__esModule的处理方式](https://toyobayashi.github.io/2020/06/29/ESModule/)
+### script 模块
 
-**`__esModule` 是用来兼容 ES 模块导入 CommonJS 模块默认导出方案**
+[https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script)
 
-CommonJS 的 `module.exports` 没法对应 ES 模块
+[`module`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script#module)
 
-然后为了解决这个问题，不知道是 JS 圈子里的谁最先提出了 `__esModule` 这个解决方案，现在市面上的打包器都非常默契地遵守了这个约定。
+此值导致代码被视为 JavaScript 模块。其中的代码内容会延后处理。`charset` 和 `defer` 属性不会生效。对于使用 `module` 的更多信息，请参见 [JavaScript 模块](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Modules)指南。与传统代码不同的是，模块代码需要使用 CORS 协议来跨源获取。
 
-表面上看就是把一个导出对象标识为一个 ES 模块：
 
-```javascript
-exports.__esModule = true
-```
 
-或
+举个例子：
 
 ```tsx
-Object.defineProperty(exports, '__esModule', { value: true })
+  <script type="module">
+    import { h, Component, render } from 'https://esm.sh/preact';
+
+    // Create your app
+    const app = h('h1', null, 'Hello World!');
+
+    render(app, document.body);
+  </script>
 ```
-
-Webpack 会根据 __esModule 标识来自动处理 CommonJS 的模块导出对象，兼容 ES 模块中的导入。
-
-
 
 
 
@@ -580,6 +581,38 @@ export * from "./xxx.ts"
 ```ts
 export { default as xxx } from './xxx.ts';
 ```
+
+
+
+
+
+
+
+### __esModule 的作用
+
+[https://toyobayashi.github.io/2020/06/29/ESModule/](https://toyobayashi.github.io/2020/06/29/ESModule/)
+
+[简要说明 Webpack 和 TypeScript 编译器对__esModule的处理方式](https://toyobayashi.github.io/2020/06/29/ESModule/)
+
+**`__esModule` 是用来兼容 ES 模块导入 CommonJS 模块默认导出方案**
+
+CommonJS 的 `module.exports` 没法对应 ES 模块
+
+然后为了解决这个问题，不知道是 JS 圈子里的谁最先提出了 `__esModule` 这个解决方案，现在市面上的打包器都非常默契地遵守了这个约定。
+
+表面上看就是把一个导出对象标识为一个 ES 模块：
+
+```javascript
+exports.__esModule = true
+```
+
+或
+
+```tsx
+Object.defineProperty(exports, '__esModule', { value: true })
+```
+
+Webpack 会根据 __esModule 标识来自动处理 CommonJS 的模块导出对象，兼容 ES 模块中的导入。
 
 
 
