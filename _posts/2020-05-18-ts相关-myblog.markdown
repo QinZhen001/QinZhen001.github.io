@@ -2141,6 +2141,8 @@ class Cat extends Animal {
 
 
 
+
+
 ### 抽象类
 
 [https://ts.xcatliu.com/advanced/class.html](https://ts.xcatliu.com/advanced/class.html)
@@ -4791,6 +4793,39 @@ export type UserInfo = {
   };
 };
 ```
+
+----
+
+
+
+-----
+
+**constructor does not exist on type**
+
+当我们不使用protected时：
+
+```ts
+class Test{
+  constructor(aaa:number){
+    // Property 'aaa' does not exist on type 'Test'.ts(2339)   有ts报错
+    this.aaa = aaa;
+  }
+}
+```
+
+解决：
+
+```ts
+class Test{
+  constructor(protected aaa:number){
+    this.aaa = aaa;
+  }
+}
+```
+
+[Constructor must be set `public`, `protected`, or `private`](https://github.com/angular/angularfire/issues/3173)
+
+
 
 ## ts(2779)
 
