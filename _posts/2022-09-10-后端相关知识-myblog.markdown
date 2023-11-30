@@ -376,19 +376,66 @@ docker kill 973322dc1872
 
 
 
-## 镜像
-
-
-
-
-
 ## Daemon
 
 Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以分为Docker Server、Engine和Job三部分。 Docker Daemon可以认为是通过Docker Server模块接受Docker Client的请求，并在Engine中处理请求，然后根据请求类型，创建出指定的Job并运行
 
 
 
+
+
+## 镜像
+
+
+
+
+
+# nacos
+
+[https://nacos.io/zh-cn/docs/what-is-nacos.html](https://nacos.io/zh-cn/docs/what-is-nacos.html)
+
+Nacos /nɑ:kəʊs/ 是 Dynamic Naming and Configuration Service的首字母简称，一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+
+
+
+
+
 # k8s
+
+
+
+
+
+# 平台工程
+
+https://platformengineering.org/slack-rd
+
+
+
+# 云原生
+
+在包括公有云、私有云、混合云等动态环境中构建和运行规模化应用的能力。 
+
+云原生是一种思想，是技术、企业管理方法的集合。
+
+云原生是从云的概念上衍生出来的。云原生不仅仅是一种技术，更是一种思想，它依托于一堆的技术和流程配合，使得应用能够更好地在云平台上运行。云原生鼓励一种动态的环境，使得应用能够更好地适应云平台的变化，从而保证应用的高可用性。因此，云原生和云是紧密相关的，云原生是为了更好地利用云平台提供的资源和服务而发展出来的一种技术和思想。 
+
+- 技术层面
+  - 应用程序从设计之初就为在云上运行而做好准备。
+  - 云平台基于自动化体系。
+- 流程层面
+  * 基于 DevOps, CI/CD。
+- 基于多种手段
+  - 应用容器化封装;
+  - 服务网格;
+  - 不可变基础架构;
+  - 声明式 API。
+-  云原生的意义
+  - 提升系统的适应性、可管理性、可观察性;
+  - 使工程师能以最小成本进行频繁和可预测的系统变更。
+  - 提升速度和效率，助力业务成长，缩短 I2M(Idea to Market)。
+
+
 
 
 

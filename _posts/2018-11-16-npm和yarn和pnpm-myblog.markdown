@@ -498,9 +498,15 @@ package.json:
 
 [https://www.pnpm.cn/](https://www.pnpm.cn/)
 
+[https://www.kochan.io/nodejs/why-should-we-use-pnpm.html](https://www.kochan.io/nodejs/why-should-we-use-pnpm.html)
+
 节约磁盘空间并提升安装速度
 
 [平铺的结构不是 node_modules 的唯一实现方式](https://pnpm.io/zh/blog/2020/05/27/flat-node-modules-is-not-the-only-way)
+
+**对于大多数操作系统来说，硬链接通常只能用于文件，而不能用于文件夹 =>   所以pnpm既需要软链接也需要硬链接。**
+
+
 
 
 
@@ -547,6 +553,18 @@ pnpm --filter <package_selector> <command>
 ```bash
 pnpm store path
 ```
+
+
+
+### prune
+
+裁剪。 从store中删除当前未被引用的包，来释放store空间
+
+```
+pnpm store prune
+```
+
+
 
 
 
@@ -1091,13 +1109,21 @@ https://jingsam.github.io/2016/11/01/peerDependencies-in-Vue-components.html
 
 ## 解决Error: Cannot find module 'node-sass'问题
 
-
-
  https://blog.csdn.net/sliver1836/article/details/95950284 
-
-
 
 1.在项目目录cmd下运行 npm install -g cnpm --registry=https://registry.npm.taobao.org
 
 2.下载成功后再运行 cnpm install node-sass
 
+
+
+
+
+## 扁平化结构
+
+扁平化结构意味着npm将不同版本的模块安装在项目的顶级node_modules目录下，而不是按照它们在依赖树中的位置进行安装。这可能会导致以下问题：
+
+1. 版本冲突：当一个模块的不同版本同时存在于项目中时，可能会导致依赖模块出现冲突，因为它们可能对不同版本的模块有不同的依赖要求。
+2. 模块重复：同一个模块的多个版本的副本会被安装到不同的位置，导致项目中存在多个相同的模块。（分身）
+
+**原本存在于孙子节点的包，顶部项目能直接访问到 （幽灵依赖）**

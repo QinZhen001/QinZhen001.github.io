@@ -574,11 +574,7 @@ Viper是一个完整的Go应用程序配置解决方案
 
 
 
-# nacos
 
-[https://nacos.io/zh-cn/docs/what-is-nacos.html](https://nacos.io/zh-cn/docs/what-is-nacos.html)
-
-Nacos /nɑ:kəʊs/ 是 Dynamic Naming and Configuration Service的首字母简称，一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
 
 
 
