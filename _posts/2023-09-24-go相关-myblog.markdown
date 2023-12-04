@@ -309,9 +309,23 @@ Package bufio implements buffered I/O. It wraps an io.Reader or io.Writer object
 
 go中的goroutins并不是同时在运行。事实上，如果没有在代码中通过runtime.GOMAXPROCS(n) 其中n是整数，指定使用多核的话，goroutins都是在一个线程里的，它们之间通过不停的让出时间片轮流运行，达到类似同时运行的效果。
 
+**当一个goroutine发生阻塞，Go会自动地把与该goroutine处于同一系统线程的其他goroutines转移到另一个系统线程上去，以使这些goroutines不阻塞。**
 
+Go语言中的并发模型是基于goroutine的，goroutine是一种轻量级的线程，可以在Go语言中轻松创建和销毁，也可以高效地在多个核心上调度。当一个Go程序被执行时，Go运行时系统会为该程序创建一个主goroutine，从主goroutine开始运行。当主goroutine创建其他goroutine时，这些goroutine会被放入一个可运行的Goroutine队列中。Go运行时系统会根据一些调度策略来选择一个goroutine执行。当一个goroutine发生了阻塞（比如等待I/O操作完成）时，Go运行时系统会将该goroutine从运行状态切换到阻塞状态，并将其放入一个等待队列中。当阻塞条件满足时，Go运行时系统会将该goroutine重新放入可运行队列中，等待被调度执行。
 
-**当一个goroutine发生阻塞，Go会自动地把与该goroutine处于同一系统线程的其他goroutines转移到另一个系统线程上去，以使这些goroutines不阻塞**
+Go运行时系统的调度策略采用了M:N线程模型，即将M个goroutine调度到N个线程上执行。每个线程（M）都持有一个或多个goroutine（G），并在它们之间进行切换。线程的数量（N）由Go运行时系统动态决定，通常与当前计算机的CPU核心数量相当。
+
+Go语言的线程调度采用的是抢占式调度，即Go运行时系统会控制线程的调度，并根据一些条件和算法来决定是否切换执行的goroutine。在Go语言中，一段代码的执行时间是不确定的，因此，Go运行时系统会在某个goroutine执行时间过长时，抢占该goroutine，并重新调度其他更为需要执行的goroutine。
+
+总的来说，Go语言的线程调度是由Go运行时系统负责的，通过M:N线程模型来实现goroutine的调度，采用抢占式调度策略来提高并发性能。
+
+---
+
+Go 语言基于 GMP 模型实现用户态线程
+
+* G：表示 goroutine，每个 goroutine 都有自己的栈空间，定时器，初始化的栈空间在 2k 左右，空间会随着需求增长。
+* M：抽象化代表内核线程，记录内核线程栈信息，当 goroutine 调度到线程时，使用该 goroutine 自己的栈信息。
+* P：代表调度器，负责调度 goroutine，维护一个本地 goroutine 队列，M 从 P 上获得 goroutine 并执行，同时还负责部分内存的管理。
 
 
 
@@ -584,6 +598,10 @@ Viper是一个完整的Go应用程序配置解决方案
 表达式 new(Type) 和 &Type{} 是等价的。
 
 new 关键字时 t := new(T)，变量 t 则是一个指向 T 的指针
+
+
+
+
 
 
 
