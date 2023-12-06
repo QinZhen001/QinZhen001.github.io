@@ -292,11 +292,10 @@ Consul和Etcd都是分布式键值存储系统，用于在集群中存储和同�
 
 # docker
 
-* 基于 Linux 内核的 Cgroup，Namespace，以及 Union FS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术，由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。
+* 基于 Linux 内核的 Cgroup，Namespace，以及 Union FS  （docker 使用 Overlay FS）等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术，由于隔离的进程独立于宿主和其它的隔离的进程，因此也称其为容器。
 * 最初实现是基于 LXC，从 0.7 以后开始去除 LXC，转而使用自行开发的 Libcontainer，从 1.11 开始，则进一步演进为使用 runC 和 Containerd。
 * Docker 在容器的基础上，进行了进一步的封装，从文件系统、网络互联到进程隔离等等，极大的简化了容器的创建和维护，使得 Docker 技术比虚拟机技术更为轻便、快捷。
-
-
+* 
 
 为什么要用 Docker? 
 
@@ -327,17 +326,20 @@ https://www.cnblogs.com/davis12/p/14312267.html
 
 [https://docs.docker.com/engine/reference/commandline/run/](https://docs.docker.com/engine/reference/commandline/run/)
 
-docker run -it alpine sh
+* -it 交互
+* -d 后台运行  （守护进程模式）
+* -p 端口映射 
+* -v 磁盘挂载 
 
 例子：
 
-docker run -d -p 80:80 nginx    
+docker run -it alpine sh
 
--d   后台一直运行 daemon  （守护进程模式）
-
- -p 映射到物理机器的80端口
+docker run -d -p 80:80 nginx   
 
 ---
+
+### ps
 
 查看进程
 
@@ -427,7 +429,16 @@ Nacos /nɑ:kəʊs/ 是 Dynamic Naming and Configuration Service的首字母简�
 
 
 
-# k8s
+# kubernetes
+
+
+
+## kubeadm 和 kubectl
+
+1. kubeadm（Kubernetes Admin）是一个命令行工具，用于创建和管理Kubernetes集群。它提供一种简化部署过程的方式，可以快速创建一个Kubernetes集群的初始配置，并安装必要的组件。kubeadm还可以用于升级Kubernetes版本，管理集群的网络和存储配置，以及添加或删除节点等操作。
+2. kubectl是Kubernetes的命令行控制工具，用于与Kubernetes集群进行交互。它可以用来管理集群中的各种资源，如Pod、Deployment、Service等。kubectl可以执行各种操作，如创建、删除、更新和查询资源对象，以及查看集群状态和事件等。它还支持通过命令行或YAML文件来配置和部署应用程序。
+
+总结来说，kubeadm用于集群的创建和管理，而kubectl用于与集群进行交互和管理集群中的资源。
 
 
 
@@ -558,6 +569,57 @@ elastic.SetSniff(false)
 
 
 # linux
+
+
+
+## Union FS
+
+Union FS（Unified File System）是一种文件系统层叠技术，可以将不同文件系统挂载到同一个目录下，形成一个统一的虚拟文件系统。它通过将多个目录合并成一个逻辑上的目录，实现对这些目录进行统一管理和访问。
+
+在Linux中，Union FS可以通过在mount命令中使用unionfs参数来挂载多个文件系统。挂载多个文件系统的过程中，Union FS会将这些文件系统的文件和目录按照指定的优先级进行合并，用户可以像访问一个普通文件系统一样访问这些合并后的文件和目录。
+
+Union FS提供了以下几种层叠策略：
+
+1. Union：将多个文件系统的文件和目录合并，如果有冲突则使用最近挂载的文件系统中的文件。
+2. **Overlay：将一个文件系统作为上层文件系统，其他文件系统作为下层文件系统，上层文件系统的文件会覆盖下层文件系统中相同路径的文件。(docker 中使用)**
+3. Aufs：类似于Overlay，但可以将文件系统以只读或读写的方式挂载。
+
+Union FS在Linux系统中被广泛应用于容器技术中，可以实现将多个文件系统合并到一个容器镜像中，为容器提供独立的文件系统环境。它还可以用于管理系统中的分层文件系统，提供更灵活的文件管理和访问方式。
+
+
+
+
+
+## namespace
+
+在Linux中，namespace是一种将系统资源隔离开的机制。它可以将一组系统资源（例如进程、网络、文件系统、IPC等）视为独立的单元，在不同的namespace中运行，互相之间不会产生干扰。
+
+在Linux中，有以下几种类型的namespace：
+
+1. PID Namespace：用于隔离进程ID，每个进程在不同的PID namespace中都有唯一的ID，使得进程无法感知到其他namespace中的进程存在。
+2. Network Namespace：用于隔离网络资源，每个network namespace都有自己的网络设备、IP地址、路由表等，使得不同的network namespace之间拥有独立的网络栈。
+3. Mount Namespace：用于隔离文件系统资源，每个mount namespace可以有不同的文件系统挂载点和文件系统层次结构。
+4. UTS Namespace：用于隔离主机名和域名，每个UTS namespace可以拥有不同的主机名和域名。
+5. IPC Namespace：用于隔离进程间通信资源，每个IPC namespace都有独立的共享内存、信号量和消息队列。
+6. User Namespace：用于隔离用户和用户组，每个user namespace都有自己独立的用户和用户组ID，使得不同的user namespace中的用户和用户组互相不可见。
+
+通过使用这些namespace，可以将不同的进程隔离开，使得它们在不同的环境中运行，提高系统的安全性和稳定性。
+
+
+
+
+
+## cgroup
+
+cgroup（Control Group）是一个Linux内核特性，用于限制、控制和隔离进程组的资源使用。它可以对进程组分配和管理资源，如CPU、内存、磁盘I/O等，以实现资源的可控制、可监视、可限制和可隔离。
+
+通过使用cgroup，可以将一组相关的进程组织在同一个cgroup中，并为其分配一定的资源。这样可以实现资源的分配和管理，确保不同进程组不会互相影响，提高系统的稳定性和性能。
+
+cgroup提供了一套API和命令行工具，使用户可以创建、管理和监视cgroup。用户可以通过设置cgroup参数，限制进程组的资源使用，例如设置CPU使用率、内存限制和IO带宽限制等。
+
+cgroup的应用场景非常广泛，特别适用于容器技术（如Docker）中的资源隔离和管理。它可以帮助在容器环境中实现对各个容器的资源控制，保证各个容器之间的运行不会相互干扰。同时，也可以用于虚拟化环境中，以实现对虚拟机的资源管理和隔离。
+
+总之，cgroup是Linux内核提供的一个强大的资源控制和分配机制，可以实现进程组的资源管理、限制和隔离，为系统的稳定性和性能提供支持。
 
 
 
