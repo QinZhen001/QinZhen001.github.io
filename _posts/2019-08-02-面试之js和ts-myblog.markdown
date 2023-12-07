@@ -5725,3 +5725,17 @@ console.log(obj.s2());  // obj
 
 
 
+## 跨页面通信
+
+1. 使用 localStorage ：可以将数据存储在本地存储对象中，在不同页面之间进行读写操作。
+2. 使用 postMessage API：可以在不同窗口或 iframe 之间发送消息，并通过事件监听器获取消息。
+3. 使用 Broadcast Channel API：可以创建一个广播通道，不同页面可以通过该通道进行消息传递。
+4. 使用 SharedWorker：可以创建一个共享的 Web Worker，并在不同页面间进行通信。
+5. 使用 WebRTC 数据通道：可以通过 WebRTC 技术建立一个点对点的数据通道，在不同页面之间传输数据。
+6. webSocket
+
+**LocalStorage会受同源策略的影响。**
+
+**BroadcastChannel会受同源策略的影响**
+
+**window.postMessage()** 方法可以在不同源的情况下，任意页面之间进行通信
