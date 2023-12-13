@@ -3061,7 +3061,19 @@ const data:Dictionary<number> = {
 
 
 
+## object 和 Object
 
+`object`：在 TypeScript 中，`object`是指非原始类型（即除了number、string、boolean、symbol、null和undefined之外的类型）的值。它包括对象、数组、函数和其他复杂类型。在类型注解或泛型中，可以使用`object`来表示任意非原始类型。
+
+`Object`：`Object`是 TypeScript 内置的基本类型之一，它是所有对象类型的父类型。在 JavaScript 中，所有引用类型都是继承自`Object`的，包括对象、数组、函数等。在类型注解或泛型中，可以使用`Object`来表示任意对象类型。
+
+**在平常的开发过程中，推荐使用`object`来表示一般的对象类型，而不使用`Object`。**
+
+**当你想用到object 的时候，可能你需要的是 Record<string, any>**
+
+**当你想用到object 的时候，可能你需要的是 Record<string, any>**
+
+**当你想用到object 的时候，可能你需要的是 Record<string, any>**
 
 
 
