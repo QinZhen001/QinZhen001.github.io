@@ -91,6 +91,25 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 
 
+## 补充
+
+
+
+### bootstrap sourceMap 404
+
+[https://stackoverflow.com/questions/21773376/bootstrap-trying-to-load-map-file-how-to-disable-it-do-i-need-to-do-it](https://stackoverflow.com/questions/21773376/bootstrap-trying-to-load-map-file-how-to-disable-it-do-i-need-to-do-it)
+
+bootstrap ui 库会自己去查找sourceMap，导致console控制台会有 404 error
+
+```basic
+http://localhost:3001/assets/bootstrap.min.css.mapFailed to load resource: the server responded with a status of 404 (Not Found)
+
+/assets/bootstrap.min.css.map
+```
+
+解决：
+
+Delete the line `/*# sourceMappingURL=bootstrap.css.map */` from bootstrap.css
 
 
 
@@ -98,9 +117,4 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 
 
-
-
-
-
-
-  [1]: http://www.ruanyifeng.com/blogimg/asset/201301/bg2013012204.png
+[1]: http://www.ruanyifeng.com/blogimg/asset/201301/bg2013012204.png

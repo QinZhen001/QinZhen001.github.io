@@ -3159,8 +3159,6 @@ const circles = myShapes.filter(isCircle);
 
 
 
-
-
 ## 函数重载
 
 *不要*把一般的重载放在精确的重载前面：
@@ -3197,12 +3195,6 @@ var x = fn(myElem); // x: string, :)
 另外加上 as const 会推导出 readonly
 
 另外加上 as const 会推导出 readonly
-
-
-
-
-
-
 
 ### 限制class实例
 
