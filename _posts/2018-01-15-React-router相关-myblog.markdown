@@ -150,6 +150,10 @@ const FadingRoute = ({ component: Component, ...rest }) => (
 
 ### IndexRoute
 
+> TIP:  在 react-router-dom v6 中 IndexRoute 已经被干掉了，请用index属性代替
+>
+> https://reactrouter.com/en/main/route/route#index
+
 [网页链接](http://www.mycode.net.cn/language/javascript/2198.html)
 
 通常情况下，我们会建立如下情况的路由：

@@ -43,7 +43,9 @@ DTO的设计目的是减少在不同层之间传输数据时的数据冗余和�
 
 ## 12-factor apps
 
-[https://12factor.net/](https://12factor.net/)
+[https://12factor.net/zh_cn/](https://12factor.net/zh_cn/)
+
+
 
 
 

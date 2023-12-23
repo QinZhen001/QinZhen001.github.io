@@ -167,6 +167,19 @@ npm dist-tag rm <pkg> <tag>
 
 
 
+## npm ci
+
+> **尤其在 CI/CD 流程中请使用npm ci**
+
+[https://juejin.cn/post/7089058201814958116](https://juejin.cn/post/7089058201814958116)
+
+- 首先，它会删除 `node_modules` 文件夹；
+- 然后，依照 `package-lock.json`（或 `npm-shrinkwrap.json`）文件 创建新得`node_modules` 文件夹并**精准安装对应的依赖版本**；
+
+`npm i` 不能精准安装依赖主要是因为`package.json`文件里面的依赖版本往往是一个范围，并不是一个固定的版本，它允许依赖的升级；而`package-lock.json` 文件，是对`package.json`文件，做了依赖的版本检查以及梳理后生成的，所以`npm ci`能够快速精确的安装依赖；
+
+
+
 ## workspaces
 
 npm workspaces是npm 7.0.0版本中新引入的功能，它允许您在具有相互依赖关系的多个包之间进行协同工作。
