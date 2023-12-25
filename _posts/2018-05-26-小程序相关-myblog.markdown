@@ -364,6 +364,19 @@ test.constructor.name 变成了 "t"  无法判断这个函数是否是async函�
 
 
 
+### webSocket
+
+[https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.sendSocketMessage.html](https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.sendSocketMessage.html)
+
+#### 并发数
+
+- **1.7.0 及以上版本，每个小程序端上最多可以同时存在 5 个 WebSocket 连接。**
+- 1.7.0 以下版本，一个小程序同时只能有一个 WebSocket 连接，如果当前已存在一个 WebSocket 连接，会自动关闭该连接，并重新创建一个 WebSocket 连接。
+
+Android cronet 的错误返回可以参考: https://chromium.googlesource.com/chromium/src/+/master/net/base/net_error_list.h
+
+
+
 
 
 ### web-view
@@ -637,6 +650,27 @@ try {
 > Virtual DOM 相信大家都已有了解，大概是这么个过程：用JS对象模拟DOM树 -> 比较两棵虚拟DOM树的差异 -> 把差异应用到真正的DOM树上。
 
 
+
+## 网络调优
+
+[https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/network.html)
+
+原有的 wx.connectSocket 接口在新版本设计中承载了创建实例 `new SocketTask` 的用途, 所以除了 wx.connectSocket 以外, **不应该**使用其它任何挂在 wx 上的 WebSocket 接口; 在 wx.connectSocket 调用后, **请立即同步监听** SocketTask.onOpen, 否则可能会漏掉 onOpen 通知
+
+```ts
+    this.ws = wx.connectSocket({
+      url: url,
+      fail: res => {
+
+      },
+      success: res => {
+      }
+    });
+		// 同步形式
+    this.ws.onOpen(this._onopen.bind(this));
+    this.ws.onMessage(this._onmessage.bind(this));
+    this.ws.onError(this._onError.bind(this));
+```
 
 
 
