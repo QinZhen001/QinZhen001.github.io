@@ -811,6 +811,31 @@ PVC（Perceptual Video Coding）视频感知编码，是一种在保障同等画
 
 
 
+### video.js
+
+[https://videojs.com/getting-started](https://videojs.com/getting-started)
+
+Video.js is an extendable framework/library around the native video element. 
+
+
+
+#### 全屏 screenfull
+
+videojs的源码，发现可以用screenfull.js这个库直接实现全屏，非常方便。
+
+```ts
+// 无需自己做浏览器兼容
+import screenfull from "screenfull";
+
+if (screenfull.isEnabled) {
+    screenfull.request(video);
+}
+```
+
+
+
+
+
 ## 科普
 
 [「完全理解」video 标签到底能播放什么](https://juejin.cn/post/7018373086072766472)

@@ -4994,6 +4994,44 @@ beforeunload事件：
 
 
 
+### protobuf.js
+
+安装依赖：
+
+```
+"protobufjs":"^7.2.5",  // dependencies
+"protobufjs-cli":"^1.1.2"  // devDependencies
+```
+
+利用 pb cli 将proto 文件转为 静态js文件
+
+[https://github.com/protobufjs/protobuf.js/blob/HEAD/cli/README.md#pbjs-for-javascript](https://github.com/protobufjs/protobuf.js/blob/HEAD/cli/README.md#pbjs-for-javascript)
+
+```ts
+"build:proto": "pbjs -t static-module --no-verify --no-convert -w es6 -o src/proto/proto.js src/proto/LrcTime.proto"
+
+// tip: no-decode  如果不需要解码的话 => 节省体积
+```
+
+使用例子：
+
+```ts
+import { LrcTime } from "../proto/proto.js"
+
+const msg = LrcTime.create({
+	// ....
+})
+// encode
+const encodeData = LrcTime.encode(msg).finish()
+// decode 
+```
+
+
+
+
+
+
+
 ## V8引擎
 
 [https://juejin.cn/post/6844904186165870606](https://juejin.cn/post/6844904186165870606)

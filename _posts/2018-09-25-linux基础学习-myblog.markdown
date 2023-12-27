@@ -893,6 +893,40 @@ BusyBox是一个开源项目，它提供了一个精简的可执行程序集合�
 
 
 
+### systemd
+
+> system daemon
+
+[https://www.freedesktop.org/wiki/Software/systemd/](https://www.freedesktop.org/wiki/Software/systemd/)
+
+`systemd` is a suite of basic building blocks for a Linux system
+
+It provides a system and service manager that runs as PID 1 and starts the rest of the system. `systemd` provides aggressive parallelization capabilities, uses socket and D-Bus activation for starting services, offers on-demand starting of daemons, keeps track of processes using Linux control groups, maintains mount and automount points, and implements an elaborate transactional dependency-based service control logic
+
+
+
+### Signal (IPC)
+
+**Signals** are standardized messages sent to a running [program](https://en.wikipedia.org/wiki/Computer_program) to trigger specific behavior, such as quitting or error handling. They are a limited form of [inter-process communication](https://en.wikipedia.org/wiki/Inter-process_communication) (IPC), typically used in [Unix](https://en.wikipedia.org/wiki/Unix), [Unix-like](https://en.wikipedia.org/wiki/Unix-like), and other [POSIX](https://en.wikipedia.org/wiki/POSIX)-compliant operating systems.
+
+
+
+#### SIGTERM
+
+> Signal terminate
+>
+> 进程优雅退出一般利用SIGTERM信号。
+
+[https://en.wikipedia.org/wiki/Signal_(IPC)#SIGTERM](https://en.wikipedia.org/wiki/Signal_(IPC)#SIGTERM)
+
+The SIGTERM signal is sent to a process to request its **termination**. Unlike the SIGKILL signal, it can be caught and interpreted or ignored by the process. This allows the process to perform nice termination releasing resources and saving state if appropriate. SIGINT is nearly identical to SIGTERM.
+
+SIGTERM是一个软件中断信号，用来请求进程正常终止。当收到SIGTERM信号时，进程可以做一些清理工作，然后优雅地退出。
+
+与之相反，SIGKILL信号（进程终止信号）是一个不能被忽略、阻塞或者捕获的信号，一旦进程接收到SIGKILL信号，就会立即被终止，无法进行清理工作。
+
+因此，为了保证进程能够优雅退出，一般会先发送SIGTERM信号给进程，然后等待一段时间（例如几秒钟），如果进程仍未退出，则再发送SIGKILL信号强制终止进程。这样可以给进程一个机会先进行清理工作，避免数据丢失或其他问题。
+
 
 
 # 问题
