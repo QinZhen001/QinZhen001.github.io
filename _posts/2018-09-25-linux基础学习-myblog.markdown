@@ -599,11 +599,27 @@ systemd对应的进程管理命令是systemctl
 lsof -i:80
 ```
 
-
-
 > 其中，80为端口号
 
 
+
+
+
+### export
+
+export will make the variable appear in the environment of subsequently executed commands
+
+```bash
+TEST=foo your-application
+```
+
+The shell syntax describes this as being *functionally* equivalent to:
+
+```ts
+export TEST=foo
+your-application
+unset TEST
+```
 
 
 
@@ -1052,3 +1068,24 @@ Warning: Group basic-desktop does not have any packages to install.
 
 
 
+### set an environment variable
+
+[https://unix.stackexchange.com/questions/56444/how-do-i-set-an-environment-variable-on-the-command-line-and-have-it-appear-in-c](https://unix.stackexchange.com/questions/56444/how-do-i-set-an-environment-variable-on-the-command-line-and-have-it-appear-in-c)
+
+```bash
+TEST=foo echo $TEST  
+// 执行结果 ""
+```
+
+This is because the shell expands the variable in the command line **before** it actually runs the command and at that time the variable doesn't exist. If you use
+
+shell会展开变量在他执行命令之前
+
+改正：
+
+```bash
+TEST=foo; echo $TEST
+// 输出 ”foo“
+```
+
+it will work.
