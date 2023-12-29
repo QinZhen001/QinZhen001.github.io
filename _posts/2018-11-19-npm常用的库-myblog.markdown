@@ -268,6 +268,12 @@ node 版本管理工具
 
 
 
+### is-node-process
+
+[https://www.npmjs.com/package/is-node-process](https://www.npmjs.com/package/is-node-process)
+
+Reliably determines if the code is running in Node.js
+
 
 
 ### async
