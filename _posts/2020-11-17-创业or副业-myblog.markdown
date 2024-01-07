@@ -14,6 +14,12 @@ tags:
 
 
 
+[程序员第二曲线手册副业](https://github.com/BetaSu/second-curve)
+
+
+
+
+
 # 前序
 
 > 2021.2.12 

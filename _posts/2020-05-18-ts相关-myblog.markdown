@@ -752,7 +752,16 @@ P<'x' | 'y'> => P<'x'> | P<'y'>
 
 
 
+## PropertyKey
 
+> TypeScript 内置属性
+
+[https://www.totaltypescript.com/concepts/propertykey-type](https://www.totaltypescript.com/concepts/propertykey-type)
+
+```ts
+// string | number | symbol
+type Example = PropertyKey;
+```
 
 
 

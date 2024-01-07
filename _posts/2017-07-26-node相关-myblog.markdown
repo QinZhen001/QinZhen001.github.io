@@ -66,7 +66,7 @@ Node.js 是一个基于Chrome JavaScript 运行时建立的一个平台。
 Node.js是一个事件驱动I/O服务端JavaScript环境，基于Google的V8引擎，V8引擎执行Javascript的速度非常快，性能非常好。
 
 
-### Node.js REPL(交互式解释器)
+### REPL(交互式解释器)
 
 Node.js REPL(Read Eval Print Loop:交互式解释器) 表示一个电脑的环境，类似 Window 系统的终端或 Unix/Linux shell，我们可以在终端中输入命令，并接收系统的响应。
 
@@ -81,7 +81,7 @@ Node 的交互式解释器可以很好的调试 Javascript 代码。
 
 
 
-### Node.js事件循环
+### 事件循环
 
 [https://juejin.cn/post/6844904007270563848](https://juejin.cn/post/6844904007270563848)
 
@@ -125,7 +125,22 @@ Node.js 使用事件驱动模型，当web server接收到请求，就把它关�
 整个事件驱动的流程就是这么实现的，非常简洁。有点类似于观察者模式，事件相当于一个主题(Subject)，而所有注册到这个事件上的处理函数相当于观察者(Observer)。
 
 
-### Node.js Buffer(缓冲区)
+
+### 监听文件 watch
+
+[如何利用 Nodejs 监听文件夹](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/59.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8%20Nodejs%20%E7%9B%91%E5%90%AC%E6%96%87%E4%BB%B6%E5%A4%B9%E3%80%8B.md)
+
+利用 nodejs 监听文件夹变化很容易，但提供准确的回调却很难，主要难在两点：
+
+1. 抹平操作系统间的差异，这需要在结合 `fs.watch` 的同时，增加一些额外校验机制与延时机制。
+2. 分清楚操作系统预期与用户预期，比如编辑器的额外操作、操作系统的多次读写都应该被忽略，用户的预期不会那么频繁，会忽略极小时间段内的连续触发。
+
+另外还有兼容性、权限、软连接等其他因素要考虑，`fs.watch` 并不是一个开箱可用的工程级别 api。
+
+
+
+### Buffer(缓冲区)
+
 JavaScript 语言自身只有字符串数据类型，没有二进制数据类型。
 
 但在处理像TCP流或文件流时，必须使用到二进制数据。因此在 Node.js中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区。
@@ -414,7 +429,11 @@ http://localhost:8888/start?foo=bar&hello=world
 
 
 
-### **node 查看平台和架构**
+
+
+
+
+### **查看平台和架构**
 
 有的时候我们需要确保当前node使用的是x86架构
 
@@ -463,7 +482,7 @@ process {
 
 
 
-### Node.js 中的进程
+### 进程
 
 >在 Web 服务器方面，著名的 Nginx 也是采用此模式（事件驱动），避免了多线程的线程创建、线程上下文切换的开销，Nginx 采用 C 语言进行编写，主要用来做高性能的 Web 服务器，不适合做业务。
 

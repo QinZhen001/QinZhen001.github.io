@@ -1038,6 +1038,11 @@ requestAnimationFrame打印时机不稳定，因为不是每次事件循环都�
 
 
 
+### key
+
+* object的key只能是 string/Symbol (number类型会隐式转换成string)
+* map的key可以是任何js类型
+
 
 
 ## 补充

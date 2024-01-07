@@ -44,8 +44,6 @@ tags:
 4、可通过添加defaultValue指定value值
 ```
 
-
-
 **受控组件需要主动维护一个内部state状态的，而非受控组件是无需维护组件的state状态的，二者有冲突。**
 
 * 受控元素，一般用在需要动态设置其初始值的情况；例如某些form表单信息编辑时，input表单元素需要初始显示服务器返回的某个值然后进行编辑。
@@ -59,19 +57,11 @@ tags:
 
 ### PureComponent
 
-
-
 默认渲染行为的问题
-
-
 
 在React Component的生命周期中，有一个shouldComponentUpdate方法。这个方法默认返回值是true。
 
-
-
 这意味着就算没有改变组件的props或者state，也会导致组件的重绘。这就经常导致组件因为不相关数据的改变导致重绘，这极大的降低了React的渲染效率。比如下面的例子中，任何options的变化，甚至是其他数据的变化都可能导致所有cell的重绘
-
-
 
 ```jsx
 //Table Component
@@ -79,8 +69,6 @@ tags:
     <Cell data={i} option={this.props.options[i]} />
 )}
 ```
-
-
 
 为了避免这个问题，我们可以在Cell中重写shouldComponentUpdate方法，只在option发生改变时进行重绘。
 
@@ -106,10 +94,6 @@ class Cell extends React.Component {
 
 使用PureComponent与immutable.js
 
-
-
-
-
 因为上面的情况十分通用，React创建了PureComponent组件创建了默认的shouldComponentUpdate行为。这个默认的shouldComponentUpdate行为会一一比较props和state中所有的属性，只有当其中任意一项发生改变是，才会进行重绘。
 
 **需要注意的是，PureComponent使用浅比较判断组件是否需要重绘**
@@ -122,15 +106,9 @@ options.splice(0, 1)
 options[i].name = "Hello"
 ```
 
-
-
 这些例子都是在原对象上进行修改，由于浅比较是比较指针的异同，所以会认为不需要进行重绘。
 
-
-
 为了避免出现这些问题，推荐使用immutable.js。
-
-
 
 **immutable.js会在每次对原对象进行添加，删除，修改时返回新的对象实例。任何对数据的修改都会导致数据指针的变化。**
 

@@ -308,6 +308,26 @@ function App(data) {
 
 
 
+### **Capture Value**
+
+[useEffect 完全指南](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/96.%E7%B2%BE%E8%AF%BB%E3%80%8AuseEffect%20%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97%E3%80%8B.md)
+
+每次 Render 都有自己的 Props 与 State.
+
+**可以认为每次 Render 的内容都会形成一个快照并保留下来，因此当状态变更而 Rerender 时，就形成了 N 个 Render 状态，而每个 Render 状态都拥有自己固定不变的 Props 与 State。(闭包)**
+
+---
+
+**由于 useEffect 符合 Capture Value 的特性，不要对useEffect Dependencies 撒谎。**
+
+
+
+
+
+
+
+
+
 ## 补充
 
 
