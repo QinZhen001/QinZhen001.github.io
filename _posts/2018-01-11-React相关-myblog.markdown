@@ -23,26 +23,21 @@ tags:
 
 #### 受控组件
 
-```text
-1、每当表单的状态发生变化时，都会被写入到组件的state中
-2、在受控组件中，组件渲染出的状态与它的value或checked prop相对应
-3、react受控组件更新state的流程
+[https://zh-hans.legacy.reactjs.org/docs/forms.html#controlled-components](https://zh-hans.legacy.reactjs.org/docs/forms.html#controlled-components)
 
-    流程：
-    <1> 通过在初始state中设置表单的默认值
-    <2> 每当表单的值发生变化时，调用onChange事件处理器
-    <3> 事件处理器通过合成对象e拿到改变后的状态，并更新应用的state
-    <4> SetState触发视图的重新渲染，完成表单组件值的更新
-```
+受控组件是指表单元素的值由React组件的state来控制。当用户输入数据时，React组件的state会更新，然后通过props将新值传递给表单元素。这样，每次输入变化都会触发组件的重新渲染。受控组件提供了更精确的控制和验证，可以通过表单元素的值来实时更新其他组件状态。
 
 #### 非受控组件
 
-```
-1、如果一个表单组件没有value prop就可以称为非受控组件
-2、非受控组件是一种反模式，它的值不受组件自身的state或props控制
-3、通常需要为其添加ref来访问渲染后的底层DOM元素
-4、可通过添加defaultValue指定value值
-```
+[https://zh-hans.legacy.reactjs.org/docs/uncontrolled-components.html](https://zh-hans.legacy.reactjs.org/docs/uncontrolled-components.html)
+
+**外部无法直接控制 state 的方式，我们称为非受控**
+
+非受控组件是指表单元素的值不受React组件state的控制。通常使用非受控组件可以减少一些冗余的代码。**在非受控组件中，可以通过ref属性来获取表单元素的值，然后在需要时进行处理。**
+
+---
+
+
 
 **受控组件需要主动维护一个内部state状态的，而非受控组件是无需维护组件的state状态的，二者有冲突。**
 
@@ -52,6 +47,21 @@ tags:
 **在大多数情况下，我们推荐使用 受控组件 来实现表单。**
 
 
+
+
+
+### 默认值
+
+在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下, 你可以指定一个 `defaultValue` 属性，而不是 `value`。在一个组件已经挂载之后去更新 `defaultValue` 属性的值，不会造成 DOM 上值的任何更新。
+
+```html
+ <input
+   defaultValue="Bob"
+   type="text"
+   ref={this.input} />
+```
+
+同样，`<input type="checkbox">` 和 `<input type="radio">` 支持 `defaultChecked`，`<select>` 和 `<textarea>` 支持 `defaultValue`。
 
 
 
@@ -396,56 +406,24 @@ interface MutableRefObject<T> {
 
 ### render prop
 
-```tsx
-class Mouse extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.state = { x: 0, y: 0 };
-  }
+`someExpensiveComputation` 是一个相对耗时的操作。如果我们直接采用
 
-  handleMouseMove(event) {
-    this.setState({
-      x: event.clientX,
-      y: event.clientY
-    });
-  }
-
-  render() {
-    return (
-      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
-
-        {/*
-          使用 `render`prop 动态决定要渲染的内容，
-          而不是给出一个 <Mouse> 渲染结果的静态表示
-        */}
-        {this.props.render(this.state)}
-      </div>
-    );
-  }
-}
+```ts
+const initialState = someExpensiveComputation(props);
+const [state, setState] = useState(initialState);
 ```
 
-使用
+注意，虽然 `initialState` 只在初始化时有其存在的价值，但是 `someExpensiveComputation` 在每一帧都被调用了。只有当使用惰性初始化的方法：
 
-```tsx
-class MouseTracker extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>移动鼠标!</h1>
-        <Mouse render={mouse => (
-          <Cat mouse={mouse} />
-        )}/>
-      </div>
-    );
-  }
-}
+```ts
+const [state, setState] = useState(() => {
+    const initialState = someExpensiveComputation(props);
+    return initialState;
+});
+
 ```
 
-更具体地说，**render prop 是一个用于告知组件需要渲染什么内容的函数 prop。**
-
-
+因 `someExpensiveComputation` 运行在一个匿名函数下，该函数当且仅当初始化时被调用，从而优化性能。
 
 
 

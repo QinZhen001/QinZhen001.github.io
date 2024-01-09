@@ -347,7 +347,7 @@ let b = a !== null && a !== void 0 ? a : 10;
 
 keyof 可以获取一个类型所有键值，返回一个联合类型，如下：
 
-```
+```ts
 type Person = {
   name: string;
   age: number;
@@ -3745,7 +3745,44 @@ Do not emit compiler output files like JavaScript source code, source-maps or de
 
 
 
+## 字典工厂函数
 
+[使用 TypeScript 定义业务字典](https://juejin.cn/post/7187963986875252795)
+
+[https://gist.github.com/jsonleex/123396dc33b41dc1c332653213ac03f9](https://gist.github.com/jsonleex/123396dc33b41dc1c332653213ac03f9)
+
+我们可以实现一个工具函数，将一份定义转换成多种格式的字典。
+
+首先考虑入参的格式。显然作为原始数据，入参必须能够包含完整的字典信息，包括键，值，所有扩展字段，甚至列表场景中的展示顺序。
+
+```ts
+const { KV, VK, LIST, MAP_BY_KEY, MAP_BY_VALUE } = defineConstants([
+  {
+    key: 'POP',
+    value: 1,
+    name: '流行音乐',
+  },
+  {
+    key: 'ROCK',
+    value: 2,
+    name: '摇滚音乐',
+  },
+  // ...
+]);
+
+KV; // { POP: 1, ROCK: 2, ... }
+VK; // { 1: 'POP', 2: 'ROCK', ... }
+LIST; // [{ key: 'POP', value: 1, name: '流行音乐' }, { key: 'ROCK', value: 2, name: '摇滚音乐' }, ...]
+MAP_BY_KEY; // { POP: { key: 'POP', value: 1, name: '流行音乐' }, ROCK: { key: 'ROCK', value: 2, name: '摇滚音乐' }, ... }
+MAP_BY_VALUE; // { 1: { key: 'POP', value: 1, name: '流行音乐' }, 2: { key: 'ROCK', value: 2, name: '摇滚音乐' }, ... }
+
+```
+
+这给开发者在两个层面带来了不便
+
+一是在定义字典时需要对工具函数的使用和实现有一定了解，这样才能正确传入参数和解构返回值。
+
+二是在使用字典时无法获得类型提示，使用字典的开发者需要回来查看定义了哪些字段和值，同时还需要了解工具函数的使用方式。
 
 
 
@@ -4988,3 +5025,4 @@ exported class expression may not be private or protected
 ## ts(2527)
 
 The inferred type of 'createEventBase' references an inaccessible 'unique symbol' type. A type annotation is necessary.ts(2527)
+
