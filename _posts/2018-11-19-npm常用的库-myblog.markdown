@@ -1261,6 +1261,48 @@ Throttle uses *pfctl* on Mac and *tc* on Linux to simulate different network spe
 
 
 
+
+
+### @commitlint
+
+> 处理 git commit message
+
+[https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
+
+[https://www.npmjs.com/package/@commitlint/prompt-cli](https://www.npmjs.com/package/@commitlint/prompt-cli)
+
+[https://commitlint.js.org/#/guides-use-prompt](https://commitlint.js.org/#/guides-use-prompt)
+
+举个例子：
+
+```json
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.2",   // 与commitlint交互的主要方式
+    "@commitlint/config-conventional": "^17.7.0",  // 可共享的常规commitlint提交配置
+    "@commitlint/prompt-cli": "^17.7.2",  // 提交提示用于 commitlint
+  },
+```
+
+创建 .commitlintrc
+
+```json
+{
+  "extends": ["@commitlint/config-conventional"]
+}
+```
+
+To make prompt-cli easy to use, add a npm run-script to your `package.json`
+
+```json
+  "scripts": {
+    "commit": "commit"  // 触发 @commitlint/prompt-cli
+  }
+```
+
+
+
+
+
 # react
 
 
