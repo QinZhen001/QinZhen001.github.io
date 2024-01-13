@@ -23,26 +23,19 @@ tags:
 
 #### 受控组件
 
-```text
-1、每当表单的状态发生变化时，都会被写入到组件的state中
-2、在受控组件中，组件渲染出的状态与它的value或checked prop相对应
-3、react受控组件更新state的流程
+[https://zh-hans.legacy.reactjs.org/docs/forms.html#controlled-components](https://zh-hans.legacy.reactjs.org/docs/forms.html#controlled-components)
 
-    流程：
-    <1> 通过在初始state中设置表单的默认值
-    <2> 每当表单的值发生变化时，调用onChange事件处理器
-    <3> 事件处理器通过合成对象e拿到改变后的状态，并更新应用的state
-    <4> SetState触发视图的重新渲染，完成表单组件值的更新
-```
+受控组件是指表单元素的值由React组件的state来控制。当用户输入数据时，React组件的state会更新，然后通过props将新值传递给表单元素。这样，每次输入变化都会触发组件的重新渲染。受控组件提供了更精确的控制和验证，可以通过表单元素的值来实时更新其他组件状态。
 
 #### 非受控组件
 
-```
-1、如果一个表单组件没有value prop就可以称为非受控组件
-2、非受控组件是一种反模式，它的值不受组件自身的state或props控制
-3、通常需要为其添加ref来访问渲染后的底层DOM元素
-4、可通过添加defaultValue指定value值
-```
+[https://zh-hans.legacy.reactjs.org/docs/uncontrolled-components.html](https://zh-hans.legacy.reactjs.org/docs/uncontrolled-components.html)
+
+**外部无法直接控制 state 的方式，我们称为非受控**
+
+非受控组件是指表单元素的值不受React组件state的控制。通常使用非受控组件可以减少一些冗余的代码。**在非受控组件中，可以通过ref属性来获取表单元素的值，然后在需要时进行处理。**
+
+---
 
 
 
@@ -57,21 +50,28 @@ tags:
 
 
 
+### 默认值
+
+在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下, 你可以指定一个 `defaultValue` 属性，而不是 `value`。在一个组件已经挂载之后去更新 `defaultValue` 属性的值，不会造成 DOM 上值的任何更新。
+
+```html
+ <input
+   defaultValue="Bob"
+   type="text"
+   ref={this.input} />
+```
+
+同样，`<input type="checkbox">` 和 `<input type="radio">` 支持 `defaultChecked`，`<select>` 和 `<textarea>` 支持 `defaultValue`。
+
+
+
 ### PureComponent
-
-
 
 默认渲染行为的问题
 
-
-
 在React Component的生命周期中，有一个shouldComponentUpdate方法。这个方法默认返回值是true。
 
-
-
 这意味着就算没有改变组件的props或者state，也会导致组件的重绘。这就经常导致组件因为不相关数据的改变导致重绘，这极大的降低了React的渲染效率。比如下面的例子中，任何options的变化，甚至是其他数据的变化都可能导致所有cell的重绘
-
-
 
 ```jsx
 //Table Component
@@ -79,8 +79,6 @@ tags:
     <Cell data={i} option={this.props.options[i]} />
 )}
 ```
-
-
 
 为了避免这个问题，我们可以在Cell中重写shouldComponentUpdate方法，只在option发生改变时进行重绘。
 
@@ -106,10 +104,6 @@ class Cell extends React.Component {
 
 使用PureComponent与immutable.js
 
-
-
-
-
 因为上面的情况十分通用，React创建了PureComponent组件创建了默认的shouldComponentUpdate行为。这个默认的shouldComponentUpdate行为会一一比较props和state中所有的属性，只有当其中任意一项发生改变是，才会进行重绘。
 
 **需要注意的是，PureComponent使用浅比较判断组件是否需要重绘**
@@ -122,15 +116,9 @@ options.splice(0, 1)
 options[i].name = "Hello"
 ```
 
-
-
 这些例子都是在原对象上进行修改，由于浅比较是比较指针的异同，所以会认为不需要进行重绘。
 
-
-
 为了避免出现这些问题，推荐使用immutable.js。
-
-
 
 **immutable.js会在每次对原对象进行添加，删除，修改时返回新的对象实例。任何对数据的修改都会导致数据指针的变化。**
 
@@ -418,56 +406,24 @@ interface MutableRefObject<T> {
 
 ### render prop
 
-```tsx
-class Mouse extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.state = { x: 0, y: 0 };
-  }
+`someExpensiveComputation` 是一个相对耗时的操作。如果我们直接采用
 
-  handleMouseMove(event) {
-    this.setState({
-      x: event.clientX,
-      y: event.clientY
-    });
-  }
-
-  render() {
-    return (
-      <div style={{ height: '100vh' }} onMouseMove={this.handleMouseMove}>
-
-        {/*
-          使用 `render`prop 动态决定要渲染的内容，
-          而不是给出一个 <Mouse> 渲染结果的静态表示
-        */}
-        {this.props.render(this.state)}
-      </div>
-    );
-  }
-}
+```ts
+const initialState = someExpensiveComputation(props);
+const [state, setState] = useState(initialState);
 ```
 
-使用
+注意，虽然 `initialState` 只在初始化时有其存在的价值，但是 `someExpensiveComputation` 在每一帧都被调用了。只有当使用惰性初始化的方法：
 
-```tsx
-class MouseTracker extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>移动鼠标!</h1>
-        <Mouse render={mouse => (
-          <Cat mouse={mouse} />
-        )}/>
-      </div>
-    );
-  }
-}
+```ts
+const [state, setState] = useState(() => {
+    const initialState = someExpensiveComputation(props);
+    return initialState;
+});
+
 ```
 
-更具体地说，**render prop 是一个用于告知组件需要渲染什么内容的函数 prop。**
-
-
+因 `someExpensiveComputation` 运行在一个匿名函数下，该函数当且仅当初始化时被调用，从而优化性能。
 
 
 

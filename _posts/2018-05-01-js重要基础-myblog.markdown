@@ -1038,6 +1038,11 @@ requestAnimationFrame打印时机不稳定，因为不是每次事件循环都�
 
 
 
+### key
+
+* object的key只能是 string/Symbol (number类型会隐式转换成string)
+* map的key可以是任何js类型
+
 
 
 ## 补充
@@ -4989,6 +4994,44 @@ beforeunload事件：
 
 * **beforeunload：在此事件中执行的操作可能会阻塞页面的关闭或离开，因此必须谨慎使用。**
 * **pagehide事件不会阻塞页面的关闭或离开，因此可用于执行一些较轻量级的操作。**
+
+
+
+
+
+### protobuf.js
+
+安装依赖：
+
+```
+"protobufjs":"^7.2.5",  // dependencies
+"protobufjs-cli":"^1.1.2"  // devDependencies
+```
+
+利用 pb cli 将proto 文件转为 静态js文件
+
+[https://github.com/protobufjs/protobuf.js/blob/HEAD/cli/README.md#pbjs-for-javascript](https://github.com/protobufjs/protobuf.js/blob/HEAD/cli/README.md#pbjs-for-javascript)
+
+```ts
+"build:proto": "pbjs -t static-module --no-verify --no-convert -w es6 -o src/proto/proto.js src/proto/LrcTime.proto"
+
+// tip: no-decode  如果不需要解码的话 => 节省体积
+```
+
+使用例子：
+
+```ts
+import { LrcTime } from "../proto/proto.js"
+
+const msg = LrcTime.create({
+	// ....
+})
+// encode
+const encodeData = LrcTime.encode(msg).finish()
+// decode 
+```
+
+
 
 
 

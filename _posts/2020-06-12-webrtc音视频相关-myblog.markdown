@@ -173,6 +173,16 @@ WebRTC底层使用UDP协议主要有以下几个原因：
 
 
 
+## Janus
+
+[https://janus.conf.meetecho.com/docs/](https://janus.conf.meetecho.com/docs/)
+
+General purpose WebRTC server
+
+
+
+
+
 
 
 # video.js
@@ -796,6 +806,31 @@ PVC（Perceptual Video Coding）视频感知编码，是一种在保障同等画
 #### 帧率、码率与分辨率之间关系
 
 码率和帧率没有半毛钱关系
+
+
+
+
+
+### video.js
+
+[https://videojs.com/getting-started](https://videojs.com/getting-started)
+
+Video.js is an extendable framework/library around the native video element. 
+
+
+
+#### 全屏 screenfull
+
+videojs的源码，发现可以用screenfull.js这个库直接实现全屏，非常方便。
+
+```ts
+// 无需自己做浏览器兼容
+import screenfull from "screenfull";
+
+if (screenfull.isEnabled) {
+    screenfull.request(video);
+}
+```
 
 
 

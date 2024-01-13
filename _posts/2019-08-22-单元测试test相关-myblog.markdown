@@ -860,6 +860,14 @@ toMatchInlineSnapshot
 
 
 
+### 模拟请求
+
+[https://cn.vitest.dev/guide/mocking#%E8%AF%B7%E6%B1%82](https://cn.vitest.dev/guide/mocking#%E8%AF%B7%E6%B1%82)
+
+因为 Vitest 运行在 Node 环境中，所以模拟网络请求是一件非常棘手的事情；由于没有办法使用 Web API，因此我们需要一些可以为我们模拟网络行为的包。推荐使用 [Mock Service Worker](https://mswjs.io/) 来进行这个操作。它可以模拟 `REST` 和 `GraphQL` 网络请求，并且与框架无关。
+
+
+
 ### 测试覆盖率
 
 [https://cn.vitest.dev/guide/coverage.html](https://cn.vitest.dev/guide/coverage.html)
@@ -890,11 +898,70 @@ Code-coverage using [Node.js' built in functionality](https://nodejs.org/dist/la
 
 
 
+### config
+
+
+
+#### environment
+
+[https://cn.vitest.dev/config/#environment](https://cn.vitest.dev/config/#environment)
+
+
+
+#### setupFiles
+
+> TIP: 重要
+
+[https://cn.vitest.dev/config/#setupfiles](https://cn.vitest.dev/config/#setupfiles)
+
+setup 文件的路径。它们将运行在每个测试文件之前。
+
+
+
+### vi
+
+
+
+#### advanceTimersByTime
+
+vi的advanceTimersByTime方法用于模拟时间的推进。它会将时间前进指定的毫秒数，并且触发任何在此期间到期的计时器或计划任务。
+
+对于使用vi进行单元测试的代码，如果存在需要模拟时间流逝并执行计时器或计划任务的情况，可以使用advanceTimersByTime方法。
+
+
+
 ## ts-jest
 
 [https://www.npmjs.com/package/ts-jest](https://www.npmjs.com/package/ts-jest)
 
 A Jest transformer with source map support that lets you use Jest to test projects written in TypeScript.
+
+
+
+## 补充
+
+
+
+### msw 
+
+[https://mswjs.io/docs/getting-started](https://mswjs.io/docs/getting-started)
+
+Mock Service Worker (MSW)是一个用于浏览器和Node.js的API模拟库。使用MSW，您可以拦截发出的请求，观察它们，并使用模拟响应对它们进行响应。
+
+例子：
+
+https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib-msw
+
+
+
+### happy-dom 和 jsdom
+
+happy-dom 和 jsdom 都是 JavaScript 库，用于在服务器上模拟浏览器的 DOM 环境。它们的主要区别在于它们的设计理念和用法：
+
+1. 设计理念：happy-dom 被设计为一个轻量级、快速和稳定的 DOM 实现，它专注于提供简单的 DOM 操作和查询功能，以及对 CSSOM 的一些支持。而 jsdom 更加强大和复杂，它提供了一整套完整的浏览器环境，包括 DOM、CSSOM、XMLHttpRequest、WebSocket 等，可以在服务器端模拟完整的浏览器环境。
+2. 用法：happy-dom 提供了一个与浏览器兼容的 API，可以通过 `document.createElement()`、`document.querySelector()` 等方式对 DOM 进行操作，但它不支持像浏览器那样的事件处理和 CSS 样式计算。而 jsdom 提供了一个更加完整的浏览器环境，可以通过 `window.document.createElement()`、`window.document.querySelector()` 等方式对 DOM 进行操作，并支持完整的事件处理和 CSS 样式计算。
+
+**总体而言，如果只需要进行简单的 DOM 操作和查询，或者对性能要求较高，则可以选择 happy-dom。如果需要模拟完整的浏览器环境，包括事件处理和 CSS 样式计算等功能，则可以选择 jsdom。**
 
 
 

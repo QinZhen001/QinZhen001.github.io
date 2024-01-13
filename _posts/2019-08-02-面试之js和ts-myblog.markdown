@@ -4388,13 +4388,7 @@ machine('ygy').waitFirst(5).do('eat').execute();
   // 2 3 5 4 1 
 ```
 
-
-
-----
-
-
-
-
+---
 
 ```js
 setTimeout(()=>{
@@ -4420,6 +4414,30 @@ new Promise(function(resolve,reject){
 
    
 // 3 1 2 4 6 5 
+```
+
+---
+
+```ts
+setTimeout(() => {
+  console.log("timeout")
+}, 0)
+
+new Promise((resolve, reject) => {
+  console.log("hi")
+  resolve(111)
+}).then((res) => {
+  console.log(res)
+  return 222
+}).then((res) => {
+  console.log(res)
+})
+
+// hi => 111 => 222 => timeout
+
+// TIP: 微任务会深度执行完才退出
+// TIP: 微任务会深度执行完才退出
+// TIP: 微任务会深度执行完才退出
 ```
 
 
