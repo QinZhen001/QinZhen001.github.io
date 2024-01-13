@@ -625,6 +625,86 @@ Kubernetes 是谷歌开源的容器集群管理系统，是 Google 多年大规�
 
 
 
+## 基础
+
+
+
+### cluster
+
+**在Kubernetes（k8s）中，cluster是指由一组物理或虚拟机器组成的集群，用于托管和运行应用程序。**它是Kubernetes的核心部分，负责管理和调度容器化应用程序的部署、扩展和故障恢复。
+
+一个Kubernetes集群由若干个主节点（master node）和工作节点（worker node）组成。主节点负责整个集群的管理和控制，包括调度应用程序、监控集群状态和处理部署的请求等。工作节点是运行容器化应用程序的机器，它们接收主节点的指令并执行相应的任务。
+
+在一个Kubernetes集群中，主节点和工作节点之间通过网络进行通信。主节点通过API服务器接收和处理来自用户和管理员的命令，并将这些命令转化为集群的操作。工作节点运行Kubernetes代理（kubelet）和容器运行时（如Docker），负责管理和执行容器化应用程序的任务。
+
+
+
+### service
+
+在Kubernetes中，Service(服务)是一个抽象层，用于将一组具有相同功能的Pod(容器)提供给其他应用或者用户。Service通过为Pod分配一个稳定的虚拟IP地址和一个DNS名称，为应用提供了一个稳定的访问入口。
+
+
+
+
+
+### Deployment
+
+Kubernetes (k8s) 中的 Deployment 是一种资源对象，用于定义和管理应用程序的容器副本。它提供了一个声明式方式来管理容器化应用程序的部署。
+
+---
+
+expose deployment
+
+expose deployment 是一种将 Deployment （部署）中的 Pods 暴露给集群内外其他应用访问的方法。通过使用 expose 命令，可以创建一个 Service（服务），该 Service 将为 Deployment 创建一个唯一的 DNS 名称，使其他应用能够通过该名称轻松地访问 Deployment 中的 Pods。
+
+**当使用kubectl expose deployment命令创建Service时，它会自动创建一个Service对象，将Deployment中的Pod暴露到Kubernetes集群内部网络上。你可以通过指定不同的Service类型和端口配置来控制外部访问。**
+
+
+
+
+
+### LoadBalancer
+
+在 Kubernetes (k8s) 中，LoadBalancer 是一种用于将网络流量均匀分发到多个后端服务的负载平衡器。它是 Kubernetes 的一种服务类型，用于向外部暴露集群中运行的服务。
+
+在 Kubernetes 中，一个 LoadBalancer 服务通过分配一个可公开访问的外部 IP 地址，并将流量转发到该 IP 地址的后端服务上来实现负载均衡。这个外部 IP 地址由托管 Kubernetes 集群的云服务提供商来分配和维护。同时，LoadBalancer 还会监控后端服务的健康状态，根据需求对流量进行动态调整，以保证服务的可用性和可伸缩性。
+
+在 k8s 中，用户可以通过定义一个 LoadBalancer 服务类型来创建一个负载均衡器。这个负载均衡器会使用云服务提供商的负载均衡器服务来实现负载均衡功能。用户可以指定不同的负载均衡算法和策略，以满足自己的需求。
+
+
+
+### tunnel
+
+在Kubernetes中，tunnel（隧道）用于在不同的网络之间建立通信连接。具体来说，它可以用于以下用途：
+
+1. Pod之间的通信：Kubernetes集群中的Pod可能分布在不同的节点上，而节点可能属于不同的网络。通过使用隧道技术，可以在不同网络之间建立通信连接，使得Pod之间可以互相通信。这种隧道通信可以使用各种协议，如VXLAN、GRE等。
+2. Pod与Service之间的通信：Kubernetes的Service可以将一个逻辑上的一组Pod映射到一个虚拟的IP地址，并通过负载均衡将请求转发到实际的Pod上。通过隧道技术，可以将服务的虚拟IP和实际的Pod之间建立通信连接，使得外部请求可以通过服务IP访问到实际的Pod。
+3. 跨集群通信：在多集群的Kubernetes环境中，不同的集群可能属于不同的网络。通过隧道技术，可以在不同网络之间建立通信连接，实现集群之间的互相通信。
+
+总的来说，隧道在Kubernetes中起到了连接不同网络的作用，使得Pod、Service或集群之间可以互相通信，并提供了网络隔离和安全性。
+
+
+
+### addon
+
+Kubernetes（简称k8s）的addon是一组可选的功能插件，它们为k8s集群提供了一些附加功能和扩展能力。这些插件可以通过简单的配置方式安装和管理，以增强集群的功能和灵活性。
+
+一些常见的k8s addon包括：
+
+1. Dashboard：一个基于Web的图形化用户界面，可以用于监控和管理k8s集群。
+2. DNS：为k8s集群中的Pod提供DNS解析功能，使得Pod可以通过域名进行通信。
+3. Ingress Controller：实现对k8s集群中的应用程序的访问控制和负载均衡，通过定义Ingress资源来配置应用程序的路由规则。
+4. Metrics Server：收集k8s集群中的资源利用率和性能指标，用于监控和自动扩展Pod。
+5. Logging and Monitoring：提供实时日志和监控的能力，以帮助运维人员快速诊断和解决问题。
+6. Storage Class：定义持久化存储的类型和属性，使得应用程序可以方便地使用存储卷进行数据持久化。
+7. Cluster Autoscaler：自动调整k8s集群中的节点数量，以匹配当前工作负载的需求。
+
+这些addon可以根据实际需求进行选择和配置，以扩展和增强k8s集群的功能。
+
+
+
+
+
 ## 声明式系统
 
 Kubernetes 的所有管理能力构建在对象抽象的基础上，核心对象包括：
