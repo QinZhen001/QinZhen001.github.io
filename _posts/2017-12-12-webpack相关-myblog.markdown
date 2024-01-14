@@ -1316,11 +1316,13 @@ determineDate();
 
 
 
-## Tree shaking
+## tree shaking
+
+> Rather than *excluding dead code*, we’re *including live code*.
+
+[https://wangtunan.github.io/blog/webpack/webpack/advanced.html](https://wangtunan.github.io/blog/webpack/webpack/advanced.html)
 
 Tree shaking是一种通过清除多余代码方式来优化项目打包体积的技术，专业术语叫 Dead code elimination
-
-
 
 `tree shaking`只能在静态`modules`下工作。`ECMAScript 6` 模块加载是静态的,因此整个依赖树可以被静态地推导出解析语法树。所以在 `ES6` 中使用 `tree shaking` 是非常容易的。
 
@@ -1882,6 +1884,16 @@ In this example, the export `b` can be removed in production mode.
 - 主要是通过 `__webpack_require__ `来模拟 `import` 一个模块，并在最后返回模块 `export` 的变量
 - `webpack` 是如何支持 `ES Module` 的
 - 动态加载 `import()` 的实现主要是使用 `JSONP` 动态加载模块，并通过 `webpackJsonpCallback` 判断加载的结果
+
+
+
+## 打包的过程
+
+* 读取文件，分析模块依赖
+* 对模块进行解析执行（深度遍历）
+* 针对不同的模块使用不同的 loader
+* 编译模块，生成抽象语法树（AST）
+* 遍历 AST，输出 JS
 
 
 

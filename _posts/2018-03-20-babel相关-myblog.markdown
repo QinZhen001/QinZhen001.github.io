@@ -520,6 +520,34 @@ env会取`process.env.BABEL_ENV`的值，如果这个变量没有设置，会取
 
 
 
+### babel-polyfill和babel-runtime
+
+babel-polyfill解决了Babel不转换新API的问题，但是直接在代码中插入帮助函数，**会导致污染了全局环境，不建议在第三方库中使用**，并且不同的代码文件中包含重复的代码，导致编译后的代码体积变得很大
+
+babel-runtime
+
+```javascript
+var _defineProperty2 = __webpack_require__("./node_modules/babel-runtime/helpers/defineProperty.js");
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _assign = __webpack_require__("./node_modules/babel-runtime/core-js/object/assign.js");
+
+var _assign2 = _interopRequireDefault(_assign);
+
+function _interopRequireDefault(obj) { 
+    return obj && obj.__esModule ? obj : { default: obj }; 
+}
+
+var key = 'babel';
+var obj = (0, _defineProperty3.default)(
+            {}, key, (0, _assign2.default)({}, { key: 'polyfill' })
+          );
+
+```
+
+_defineProperty帮助函数是通过babel-runtime下的模块引用的， 同时Object.assign也变成了模块引用, 这样可以避免自行引入polyfill时导致的污染全局命名空间的问题。
+
 
 
 ### loose-mode

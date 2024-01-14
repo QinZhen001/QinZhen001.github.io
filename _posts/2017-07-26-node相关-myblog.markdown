@@ -544,7 +544,24 @@ cluster模块使用内置的负载均衡来更好地处理线程之间的压力�
 
 
 
-#### child_process 模块与cluster 模块总结
+#### child_process
+
+[https://nodejs.org/docs/latest/api/child_process.html](https://nodejs.org/docs/latest/api/child_process.html)
+
+`spawn` 和 `fork` 都是 Node.js 中用于创建子进程的方法，两者有以下几点区别：
+
+1. **执行环境不同**：`spawn` 创建的子进程在一个新的命令行窗口中执行，而 `fork` 创建的子进程在一个新的 Node.js 实例中执行。
+2. **进程间通信机制不同**：`spawn` 使用标准输入输出流（stdin/stdout）进行进程间通信，而 `fork` 则使用 IPC 通信管道。
+3. **传递参数方式不同**：`spawn` 可以通过命令行参数的形式传递参数给子进程，而 `fork` 可以通过消息对象的形式传递参数给子进程。
+4. **返回值不同**：`spawn` 方法返回一个可写流对象，通过该对象可以向子进程写入数据；而 `fork` 方法返回一个代表子进程的 ChildProcess 对象，通过该对象可以与子进程进行交互。
+
+综上所述，`spawn` 适用于创建独立的命令行进程，可以通过输入输出流与子进程通信；而 `fork` 主要用于创建新的 Node.js 进程，并且可以通过消息传递机制与子进程进行通信。
+
+
+
+
+
+#### child_process 与cluster 
 
 无论是 child_process 模块还是 cluster 模块，为了解决 Node.js 实例单线程运行，无法利用多核 CPU 的问题而出现的。核心就是**父进程（即 master 进程）负责监听端口，接收到新的请求后将其分发给下面的 worker 进程。**
 
@@ -870,7 +887,7 @@ console.log(__dirname);
 
 
 
-## 后记
+## 补充
 
 Node.js的应用是通过javascript开发的，然后直接在Google的变态V8引擎上跑。用了Node.js，你就不用担心用户端的请求会在服务器里跑了一段能够造成阻塞的代码了。因为javascript本身就是事件驱动的脚本语言。你回想一下，在给前端写javascript的时候，更多时候你都是在搞事件处理和回调函数。javascript本身就是给事件处理量身定制的语言。
 
@@ -967,6 +984,16 @@ kill xxx
 ```
 
 
+
+
+
+### Pure ESM package
+
+[https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)
+
+The package that linked you here is now pure [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules). It cannot be `require()`'d from CommonJS.
+
+[how-to-use-an-es6-import-in-node-js](https://www.geeksforgeeks.org/how-to-use-an-es6-import-in-node-js/)
 
 
 

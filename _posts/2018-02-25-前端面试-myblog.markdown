@@ -11,238 +11,30 @@ tags:
 
 > “Yeah It's on. ”
 
+[前端工程师手册](https://leohxj.gitbooks.io/front-end-database/content/html-and-css-basic/semantic-html.html)
 
-## HTML5类
+[前端面试基础](https://yuchengkai.cn/docs/frontend/#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87)
 
-### 语义化标签
+[20道大厂面试题等你查收](https://juejin.im/post/5d124a12f265da1b9163a28d?utm_source=gold_browser_extension)
 
-引入语义化标签的优点：
-1. 比`<div>`标签有更加丰富的含义，方便开发与维护
-2. 搜索引擎能更方便的识别页面的每个部分
-3. 方便其他设备解析（如移动设备、盲人阅读器等）
 
-所谓语义化标签就是一种我们仅通过标签名就能判断出该标签内容的语义的标签
-如：`<article>,<section>,<nav>,<aside>,<header>,<footer>`
 
-**header**
-通常被放置在页面或者页面中某个区块元素的顶部，包含整个页面或者区块的标题、简介等信息，起到引导与导航的作用。
+## 并发和并行的区别 
 
+**并发：concurrent** 
 
-我们不但可以放置页面或者页面中某个区块的标题，还可以放置搜索表单、logo图片等元素，按照最新的W3C标准，我们还可以放置`<nav>`导航栏。
+**并行：parallel** 
 
-**nav**
-表示页面的导航，可以通过导航连接到网站的其他页面，或者当前页面的其它部分。
+并发在微观时间层面不是同时进行的，而并行是平行的意思，就是一直同时推进的。 
 
-`<nav>`不但可以作为页面独立的导航区域存在，我们还可以`<header>`标签中使用。此外，`<nav>`标签还可以显示在侧边栏中。由此可见，一个页面之中可以有多个`<nav>`标签。
+你吃饭吃到一半，电话来了，你一直到吃完了以后才去接，这就说明你不支持并发也不支持并行。
+你吃饭吃到一半，电话来了，你停了下来接了电话，接完后继续吃饭，这说明你支持并发。
+你吃饭吃到一半，电话来了，你一边打电话一边吃饭，这说明你支持并行。并发的关键是你有处理多个任务的能力，不一定要同时。
+并行的关键是你有同时处理多个任务的能力。所以我认为它们最关键的点就是：**是否是『同时』。**
 
 
-根据HTML5标准，`<nav>`标签只用于页面的主要导航部分。因为搜索引擎或者屏幕阅读器会根据`<nav>`标签来确定网站的主体内容，所以并不是任意一组超链接都适合放置在`<nav>`标签中,我们只要将主要的，基本的链接组放进`<nav>`即可,对于有辅助性的页脚链接则不推荐使用`<nav>`标签。
 
->HTML5规范不允许将`<nav>`标签嵌套在`<address>`标签中使用。
 
-**aside**
-所包含的内容不是页面的主要内容、具有独立性，是对页面的补充。
-
-`<aside>`标签一般使用在页面、文章的侧边栏、广告、友情链接等区域。
-
-
-**footer**
-一般被放置在页面或者页面中某个区块的底部，包含版权信息、联系方式等信息。
-
-跟`<header>`标签一样，`<footer>`标签的使用个数没有限制，可以在任意需要的区块底部使用。
-
-
-**article**
-表示包含于一个文档、页面、应用程序或网站中的一段独立的内容，可以被独立的发布或者重新使用文章标记标签。
-
-`<article>`标签应该使用在相对比较独立、完整的的内容区块，所以我们可以在一篇博客、一个论坛帖子、一篇新闻报道或者一个用户评论中使用它。通常情况下，一个`<article>`元素包括标题、正文和脚注。和`<nav>`标签一样，该标签同样不能用在`<address>`标签中；
-
->`<article>`标签还可以嵌套使用，但是它们必须是部分与整体的关系
-
-
-**section**
-是一个主题性的内容分组，**通常用于对页面进行分块或者对文章等进行分段**
-
-`<section>`标签所包裹的是有一组相似的主题的内容，可以用这个标签来实现文章的章节、标签式对话框中的各种标签页等类似的功能。
-
-`<section>`通常包含一个头部`<header>`、可能还会包含一个尾部`<footer>`。
-
-`<div> <section> <article>`三者的比较：
-* `<div>`：应用广泛，只要我们想为一个区域定义一个样式或者为其添加JS行为，就可以使用div标签
-* `<section>`：包含的内容是一个明确的主题，通常有标题区域
-* `<article>`:如果我们的页面中需要一个单独的模块来实现一个单独的功能，就用`<article>`，其他的时候都用`<section>`。
-
-
-
-## DOM事件类
-
-### 事件级别
-
-| DOM0 | element.onclick = function(){}                                           |
-| ---- | ------------------------------------------------------------------------ |
-| DOM2 | element.addEventListener('click',function(){},false)                     |
-| DOM3 | element.addEventListener('keyup',function(){},false)(事件类型增加了很多) |
-
-
->addEventListener()的第三个参数
->* true - 事件句柄在捕获阶段执行
->* false- 默认。事件句柄在冒泡阶段执行
-
-
-
-（第三个参数是）A Boolean indicating whether events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree.
-
-
-
-**当没有下级结点，这个参数失去意义，谁先注册事件，谁就先执行**
-
-
-
-```
-<div id="outer">
-	<div id="inner">
-		gogo
-	</div>
-</div>
-
-get('inner').addEventListener('click',function(e){
-	console.log('inner,false');
-},false);
-get('inner').addEventListener('click',function(e){
-	console.log('inner,true');
-},true);
-
-get('outer').addEventListener('click',function(e){
-	console.log('outer,false');
-},false);
-get('outer').addEventListener('click',function(e){
-	console.log('outer,true');
-},true);
-
-
-```
-
-```
-// 输出
-
-outer,true
-inner,false
-inner,true
-outer,false
-```
-
-
-
-
-
-
-
-
-### 描述DOM事件捕获的具体流程
-window -> document -> html -> body -> ... -> 目标元素
-
-### Event对象的常见应用
-* event.preventDefault()
-* event.stopPropagation() //阻止冒泡
-* event.stopImmediatePropagation() 
-* event.currentTarget //返回绑定事件的元素(和this 的作用是差不多的)
-* event.target //当前被触发的元素
-
-#### event.stopImmediatePropagation()
-
-如果某个元素有多个相同类型事件的事件监听函数,则当该类型的事件触发时,多个事件监听函数将按照顺序依次执行.如果某个监听函数执行了 event.stopImmediatePropagation()方法,则除了该事件的冒泡行为被阻止之外(event.stopPropagation方法的作用),该元素绑定的后序相同类型事件的监听函数的执行也将被阻止.
-
-#### event.currentTarget用来事件委托(事件代理)
-target事件委托的定义：本来该自己干的事，但是自己不干，交给别人来干。一般用到for循环遍历节点添加事件的时候都可以用事件委托来做，可以提高性能。
-
-```html
-<input type="text" id="text">
-    <input type="button" value="添加" id="button">
-    <ul>
-        <li>第1个<button class="btn" id="1">删除</button></li>
-        <li>第2个<button class="btn" id="2">删除</button></li>
-        <li>第3个<button class="btn" id="3">删除</button></li>
-    </ul>
-    <script>
-            var button = document.getElementById("button");
-            var text = document.getElementById("text");
-            var ul = document.getElementsByTagName("ul")[0];
-            var btnClass = document.getElementsByClassName("btn");        
-        button.onclick = function(){
-            var deleteButton = document.createElement("button");    
-            var value = text.value;
-                deleteButton.setAttribute("class","btn");
-            var deleteText = document.createTextNode("删除");
-                deleteButton.appendChild(deleteText);
-            var li = document.createElement("li");
-            var liText = document.createTextNode(value);
-                li.appendChild(liText);
-                li.appendChild(deleteButton);
-                ul.appendChild(li);
-            for(var i=0;i<btnClass.length;i++){
-                btnClass[i].onclick=function(){
-                this.parentNode.parentNode.removeChild(this.parentNode);
-            }
-        }
-        }
-
-            for(var i=0;i<btnClass.length;i++){
-                btnClass[i].onclick=function(){
-                    this.parentNode.parentNode.removeChild(this.parentNode);
-                }
-            }
-    </script>
-```
-
-
-为什么在button.onclick里面也需要一个for循环，给每个删除按钮添加事件呢？因为外面的for循环，在文档刷新时给页面中存在的三个删除按钮添加了点击事件，而后来添加的删除按钮并没有绑定事件，导致页面中存在的三个li标签可以删除，而后来新添加的li不能删除这个问题。我们使用事件委托来做就不用这么麻烦了
-
-```html
-<script>
-            var button = document.getElementById("button");
-            var text = document.getElementById("text");
-            var ul = document.getElementsByTagName("ul")[0];
-            var btnClass = document.getElementsByClassName("btn");        
-        button.onclick = function(){
-            var deleteButton = document.createElement("button");    
-            var value = text.value;
-                deleteButton.setAttribute("class","btn");
-            var deleteText = document.createTextNode("删除");
-                deleteButton.appendChild(deleteText);
-            var li = document.createElement("li");
-            var liText = document.createTextNode(value);
-                li.appendChild(liText);
-                li.appendChild(deleteButton);
-                ul.appendChild(li);
-            }
-            ul.onclick = function(event){
-                var tar = event.target;
-                if(tar.nodeName.toLowerCase() == "button"){
-                    tar.parentNode.parentNode.removeChild(tar.parentNode);
-                }
-            }
-</script>
-```
-
-给ul添加了点击事件，点击ul里面的子元素，event.target都会返回当前点击的元素节点，做一个判断，如果点击了button标签，删除这个li节点。由于添加的li都在ul节点里面，所以并不用再去添加li事件里面去写代码了
-
-
->* event.target.nodeName  　　//获取事件触发元素标签name(全大写)
->* event.target.id　　　　　　　//获取事件触发元素id
->* event.target.className　　//获取事件触发元素classname
->* event.target.innerHTML　　//获取事件触发元素的内容
-
-
-
-### 自定义事件
-```js
-var eve = new Event('custome')
-
-element.addEventListener('custome',function(){
-    console.log('custome')
-})
-element.dispatchEvent(eve)
-```
 
 
 
@@ -262,156 +54,35 @@ element.dispatchEvent(eve)
 
 
 
+### 解释型语言和编译型语言的区别
 
+[http://c.biancheng.net/view/4136.html](http://c.biancheng.net/view/4136.html)
 
-## 面向对象类
+- 有的编程语言要求必须提前将所有源代码一次性转换成二进制指令，也就是生成一个可执行程序（Windows 下的 .exe），比如C语言、[C++](http://c.biancheng.net/cplus/)、Golang、Pascal（Delphi）、汇编等，这种编程语言称为编译型语言，使用的转换工具称为编译器。
+- 有的编程语言可以一边执行一边转换，需要哪些源代码就转换哪些源代码，不会生成可执行程序，比如 [Python](http://c.biancheng.net/python/)、[JavaScript](http://c.biancheng.net/js/)、[PHP](http://c.biancheng.net/php/)、Shell、[MATLAB](http://c.biancheng.net/matlab/) 等，这种编程语言称为解释型语言，使用的转换工具称为解释器。
 
-### new运算符
-
->foo为构造函数
-1. 一个对象被创建。**它继承foo.prototype**
-2. 构造函数foo被执行。执行时，相应的参数会被传入，同时上下文(this)会被指定为这个新实例(也就是步骤1创建的对象)。**new foo等同于new foo(),只能用在不传递任何参数的情况。**
-3. 如果构造函数返回了一个"对象"，那么这个对象会取代整个new出来的结果。如果构造函数没有返回对象，那么new出来的结果为步骤1创建的对象。
-
-----------
-
-var a = new A()
-
-显而易见， 对象a是继承于A.prototype的， 那么A.prototype这个自动生成的对象，又是从哪出来的呢？
-
-答案是： A.prototype 这个对象是Object和Object.prototype的产物， 当我们
-
-```js
-function A() {
-    
-}
-```
-
-
-的时候， 系统后台调用new Object()这样生成了对象A.prototype， 另外A.prototype这个函数会自带一个属性construcor，这个属性的值是函数A
+>  [Java](http://c.biancheng.net/java/) 和 [C#](http://c.biancheng.net/csharp/) 是一种比较奇葩的存在，它们是半编译半解释型的语言，源代码需要先转换成一种中间文件（字节码文件），然后再将中间文件拿到虚拟机中执行。Java 引领了这种风潮，它的初衷是在跨平台的同时兼顾执行效率；C# 是后来的跟随者，但是 C# 一直止步于 Windows 平台，在其它平台鲜有作为。
 
 
 
-### 原型和原型链
-**所有的引用类型（数组、对象、函数），都有一个__proto__属性，属性值是一个普通的对象**
+#### 编译型语言
 
-**所有的函数，都有一个 prototype 属性，属性值也是一个普通的对象**
+编译型语言一般是不能跨平台的，也就是不能在不同的操作系统之间随意切换。
 
-所有的引用类型（数组、对象、函数），`__proto__`属性值指向它的构造函数的 ”prototype“ 属性值
-
-当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的 `__proto__`（即它的构造函数的prototype）中寻找。
-
-![enter description here][9]
-
-举个栗子:
-```tsx
-    var obj = {};
-    obj.a = 100;
-    var arr = [];
-    arr.a = 100;
-    function fn() {
-    }
-    fn.a = 100;
-
-    console.log(obj.__proto__); //Object{}
-    console.log(arr.__proto__); //[Symbol(Symbol.unscopables):Object]
-    console.log(fn.__proto__); //function(){}
-    console.log(fn.prototype); //Object{}
-    console.log(obj.__proto__ === Object.prototype) //true
-```
-
-----------
-
-```tsx
-   // 构造函数
-    function Foo(name, age) {
-        this.name = name
-    }
-
-    Foo.prototype.alertName = function () {
-        alert(this.name)
-    };
-    //创建事例
-    var f = new Foo('zhangsan')
-    f.printName = function () {
-        console.log(this.name)
-    };
-    // 测试
-    f.printName();
-    f.alertName();
-```
-
-----------
+* 可执行程序不能跨平台
+* 源代码不能跨平台
 
 
-```tsx
-    //动物
-    function Animal() {
-        this.eat = function () {
-            console.log('animal eat');
-        }
-    }
-    // 狗
-    function Dog() {
-        this.bark = function () {
-            console.log('dog bark')
-        }
-    }
-    Dog.prototype = new Animal();
-    // 哈士奇
-    var hashiqi = new Dog()
-```
+
+#### 解释型语言
+
+因为每次执行程序都需要重新转换源代码，所以解释型语言的执行效率天生就低于编译型语言，甚至存在数量级的差距。计算机的一些底层功能，或者关键算法，一般都使用 C/C++ 实现，只有在应用层面（比如网站开发、批处理、小工具等）才会使用解释型语言。
+
+在运行解释型语言的时候，我们始终都需要源代码和解释器，所以说它无法脱离开发环境。
 
 
 
 
-### 创建对象的三种方式
-1. 字面量
-var o1 = {name:"o1"}
-2. 构造函数
-var M = function(name){
-    this.name = name
-}
-var o2 = new M("o2")
-3. Object.create
-var p = {name:"p"}
-var o3 = Object.create(p)
-
-**o3.\_\_proto === p 
-p是o3的原型对象
-o3本身自己是空对象，并没有name属性**
-
-### Object.create 和new区别(扩展)
-
-[网页链接](http://blog.csdn.net/blueblueskyhua/article/details/73135938)
-
-Object.create 创建的对象是用原型链来连接的
-
-Object.create的实现方式：
-```js
-Object.create =  function (o) {
-    var F = function () {};
-    F.prototype = o;
-    return new F();
-};
-```
-
-**这种方法比"构造函数法"简单，但是不能实现私有属性和私有方法，实例对象之间也不能共享数据，对"类"的模拟不够全面。**
-
-可以看出来。Object.create是内部定义一个对象，并且让F.prototype对象 赋值为引进的对象/函数 o，并return出一个新的对象。
-
-简单实现new:
-```js
-var new2 = function(func){
-    var o = Object.create(func.prototype)
-    var k = func.call(o) //转移上下文 this指向o实例
-    if(typeof k === 'object'){
-        return k
-    }else{
-        return o
-    }
-}
-```
 
 
 ## 渲染机制类
@@ -767,10 +438,6 @@ window.addEventListener('error',function(e){
 
 
 
-
-
-
-
 ## 逻辑题
 
 
@@ -803,8 +470,6 @@ window.addEventListener('error',function(e){
 
 
 
-
-
 ### 赛马
 
 [https://www.zhihu.com/question/19856916](https://www.zhihu.com/question/19856916)
@@ -812,8 +477,6 @@ window.addEventListener('error',function(e){
 25匹马，5个赛道，最快可以多少次找到最快的三匹马？
 
 **答案: 7次**
-
-
 
 
 
@@ -832,6 +495,150 @@ d1，e1不可能是前三的马，所以d1，e1不用参加最后一场
 同时推理出可能是第二第三的马是：a2,a3,b1,b2,c1
 
 然后a2,a3,b1,b2,c1再赛一场，其中前二的马即是第二，第三的马。
+
+
+
+### 来回运水
+
+```
+【11】有一人有240公斤水，他想运往干旱地区赚钱。他每次最多携带60公斤，并且每前进一公里须耗水1公斤（均匀耗水）。假设水的价格在出发地为0，以后，与运输路程成正比，（即在10公里处为10元/公斤，在20公里处为20元/公斤......），又假设他必须安全返回，请问，他最多可赚多少钱？
+
+1350
+```
+
+
+
+### 马驮石头
+
+```
+【12】现在共有100匹马跟100块石头，马分3种，大型马；中型马跟小型马。其中一匹大马一次可以驮3块石头，中型马可以驮2块，而小型马2头可以驮一块石头。问需要多少匹大马，中型马跟小型马？（问题的关键是刚好必须是用完100匹马）
+
+12 20 48
+```
+
+
+
+### 排队买票
+
+```js
+【14】有2n个人排队进电影院，票价是50美分。在这2n个人当中，其中n个人只有50美分，另外n个人有1美元（纸票子）。愚蠢的电影院开始卖票时1分钱也没有。
+问： 有多少种排队方法 使得 每当一个拥有1美元买票时，电影院都有50美分找钱
+注： 
+1美元=100美分
+拥有1美元的人，拥有的是纸币，没法破成2个50美分 
+```
+
+
+
+### 体育竞赛
+
+```js
+【16】有一种体育竞赛共含M个项目，有运动员A，B，C参加，在每一项目中，第一,第二,第三名分别的X，Y，Z分，其中X,Y,Z为正整数且X>Y>Z。最后A得22分，B与C均得9分，B在百米赛中取得第一。求M的值，并问在跳高中谁得第二名。
+
+
+
+M=5 C得第二名
+
+因为ABC三人得分共40分,三名得分都为正整数且不等,所以前三名得分最少为6分,40=5*8=4*10=2*20=1*20,不难得出项目数只能是5.即M=5.
+
+A得分为22分,共5项,所以每项第一名得分只能是5,故A应得4个第一名一个第二名.22=5*4 2,第二名得2分,又B百米得第一,9=5 1 1 1 1 所以跳高中只有C得第二名
+
+B的5项共9分,其中百米第一5分,其它4项全是1分,9=5 1=1 1 1.即B除百米第一外全是第三,跳高第二必定是C所得
+
+```
+
+
+
+### 女孩概率
+
+```
+【22】一个家庭有两个小孩，其中有一个是女孩，问另一个也是女孩的概率
+（假定生男生女的概率一样） 
+
+正常： 男男 男女 女男 女女
+其中有一个是女孩： 男女 女男 女女
+另一个也是女孩的概率： 1/3
+```
+
+
+
+### 砝码称盐
+
+```
+【24】有7克、2克砝码各一个，天平一只，如何只用这些物品三次将140克的盐分成50、90克各一份？ 
+
+
+1. 天平一边放7 2=9克砝码，另一边放9克盐。
+2. 天平一边放7克砝码和刚才得到的9克盐，另一边放16克盐。
+3. 天平一边放刚才得到的16克盐和再刚才得到的9克盐，另一边放25克盐。
+```
+
+
+
+### 找出坏鸡蛋
+
+```js
+【26】话说有十二个鸡蛋，有一个是坏的（重量与其余鸡蛋不同），现要求用天平称三次，称出哪个鸡蛋是坏的！ 
+
+```
+
+### 及格人数
+
+```js
+【27】100个人回答五道试题，有81人答对第一题，91人答对第二题，85人答对第三题，79人答对第四题，74人答对第五题，答对三道题或三道题以上的人算及格， 那么，在这100人中，至少有（ ）人及格。
+
+```
+
+
+
+### 下一行输出
+
+```
+【29】 
+1 
+1 1 
+2 1 
+1 2 1 1 
+1 1 1 2 2 1 
+下一行是什么？
+
+
+下行是对上一行的解释 所以新的应该是3个1 2个2 1个1 ：312211
+```
+
+
+
+### 选硬币
+
+```
+【41】有23枚硬币在桌上，10枚正面朝上。假设别人蒙住你的眼睛，而你的手又摸不出硬币的 
+反正面。让你用最好的方法把这些硬币分成两堆，每堆正面朝上的硬币个数相同。 
+```
+
+
+
+### 汽车概率
+
+```\
+【10】某城市发生了一起汽车撞人逃跑事件
+该城市只有两种颜色的车,蓝色15% 绿色85%
+事发时有一个人在现场看见了
+他指证是蓝车
+但是根据专家在现场分析,当时那种条件能看正确的可能性是80%
+那么,肇事的车是蓝车的概率到底是多少? 
+
+```
+
+
+
+### 罐子选球
+
+```
+【61】你有两个罐子，50个红色弹球，50个蓝色弹球，随机选出一个罐子，随机选取出一个弹球放入罐子，怎么给红色弹球最大的选中机会？在你的计划中，得到红球的准确几率是多少？
+
+```
+
+
 
 
 
@@ -1108,6 +915,261 @@ JD描述(job description)
 **不要一味低头做事，多思考，学会沟通。**
 
 校招看潜力，社招看价值
+
+
+
+
+## 其他
+
+
+### 什么是前端工程化
+
+**所有能降低成本，并且能提高效率的事情总称为工程化。**
+
+
+在前端项目中能够减少重复工作、扩展 javascript\html\css 本身的语言能力、解决功能复用和变更问题、解决开发和产品环境差异问题、任何时间任何地点生成可部署的软件、解决发布流程问题，都属于前端工程化。
+
+
+
+
+### 什么是持续集成
+
+持续集成是前端工程化中的一部分，是一种软件开发实践，即团队开发成员经常集成他们的工作，通常每个成员每天至少集成一次，也就意味着每天可能会发生多次集成。每次集成都通过自动化的构建（包括自动化编译，自动化测试，自动化发布）来验证项目代码，从而尽早地发现错误。
+
+
+
+### Web项目持续集成怎么做
+
+Web项目的持续集成方案选择比较多，并且相对成熟，这里介绍一下 gitlab-ci 持续集成方案。
+
+这种方式的原理就是为项目在自己的 linux 服务器安装并注册 gitlab-runner ，注册会有一个 token ，服务器上运行 gitlab-runner 后， runner 会轮询的发送带 token 的 http 请求给 gitlab ,如果 gitlab 有任务了，（一般是 git push ），那么会把任务信息返回给 runner ，然后 runner 就开始调用注册时选的 Executor 来执行项目根目录下的配置文件 .gitlab-ci.yml ，执行后把结果反馈给 gitlab 。
+
+
+此时我们可以编写 .gitlab-ci.yml 脚本，比如设定当 test 分支发生 push 时，自动运行测试用例、自动构建代码、自动将代码更新到测试人员在测的环境等任何你想在提测时需要做的事情。当 merge 到 master 时，自动更新线上代码完成上线等各种你想在上线时做的事情。
+
+
+这里只要考虑的足够全面，那么之后的项目开发你只需要 push 到对应的分支，gitlab-runner 会自动完成你想做的所有构建、提测、上线操作。减少重复工作，这就是持续集成的意义所在。
+
+
+
+### npm install 原理
+
+[https://juejin.cn/post/6844904022080667661#heading-49](https://juejin.cn/post/6844904022080667661#heading-49)
+
+
+
+### 一道export import 题目
+
+> 来自：微信小程序 前端面试星球 Day214
+
+写出下面代码的输出结果：
+
+```js
+// counter.js
+let counter = 10
+const add = () => {
+  console.log(conter)
+}
+export {
+  counter,add
+}
+```
+
+```js
+// index.js
+add()
+import {conter,add} from './counter'
+counter += 1 
+console.log(counter)
+```
+
+```js
+// 答案：
+10 报错
+```
+
+解析:
+
+* **引入模块是只读的，不能修改。并且import命令具有提升效果**
+* import是静态执行，所以不能使用表达式和变量
+* import语句是Singleton模式
+
+
+
+### 如何实现选中复制的功能
+
+它一般可以使用第三方库 [clipboard.js](https://github.com/zenorocha/clipboard.js) 来实现，源码很简单，可以读一读
+
+主要有两个要点
+
+1. 选中: `Selection API`
+2. 复制: `document.execCommand`
+
+
+
+[Selection API](https://developer.mozilla.org/en-US/docs/Web/API/Selection)
+
+```js
+const selection = window.getSelection();
+const range = document.createRange();
+
+range.selectNodeContents(element);
+selection.removeAllRanges();
+selection.addRange(range);
+
+selectedText = selection.toString();
+```
+
+复制: execCommand
+
+```js
+document.execCommand('copy')
+```
+
+
+
+### 大文件快速上传
+
+[怎么实现大文件快速上传？](https://juejin.cn/post/7074534222748188685)
+
+* 首先是选择上传的文件资源，接着就可以得到对应的文件对象 **File**，而 **File.prototype.slice** 方法可以实现资源的分块
+* 由于前端会将资源分块，然后单独发送请求，也就是说，原来1个文件对应 1 个上传请求，现在可能会变成1个文件对应 n 个上传请求，基于 Promise.allSettled 将这多个接口整合，上传完成在发送一个合并的请求，通知服务端进行合并。 
+* 后端合并时可通过 nodejs 中的读写流（readStream/writeStream），将所有切片的流通过管道（pipe）输入最终文件的流中。
+
+> 在发送请求资源时，前端会定好每个文件对应的序号，并将当前分块、序号以及文件 hash 等信息一起发送给服务端，服务端在进行合并时，通过序号进行依次合并即可。
+
+>  注意不要使用Promise.all  这样万一reject 会影响后面的任务 
+
+
+
+```tsx
+// 获取文件分块
+const getFileChunk = (file, chunkSize = DefualtChunkSize) => {
+  return new Promise((resovle) => {
+    let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+      chunks = Math.ceil(file.size / chunkSize),
+      currentChunk = 0,
+      spark = new SparkMD5.ArrayBuffer(),
+      fileReader = new FileReader();
+
+    fileReader.onload = function (e) {
+      console.log('read chunk nr', currentChunk + 1, 'of');
+
+      const chunk = e.target.result;
+      spark.append(chunk);
+      currentChunk++;
+
+      if (currentChunk < chunks) {
+        loadNext();
+      } else {
+        let fileHash = spark.end();
+        console.info('finished computed hash', fileHash);
+        resovle({ fileHash });
+      }
+    };
+
+    fileReader.onerror = function () {
+      console.warn('oops, something went wrong.');
+    };
+
+    function loadNext() {
+      let start = currentChunk * chunkSize,
+        end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
+      let chunk = blobSlice.call(file, start, end);
+      fileChunkList.value.push({ chunk, size: chunk.size, name: currFile.value.name });
+      fileReader.readAsArrayBuffer(chunk);
+    }
+
+    loadNext();
+  });
+}
+```
+
+
+
+
+
+#### 秒传
+
+其实所谓的秒传就是不用传，在正式发起上传请求时，先发起一个检查请求，这个请求会携带对应的文件 hash 给服务端，服务端负责查找是否存在一模一样的文件 hash，如果存在此时直接复用这个文件资源即可，不需要前端在发起额外的上传请求.
+
+
+
+
+
+#### 断点续传
+
+断点续传其实就是让请求可中断，然后在接着上次中断的位置继续发送，此时要保存每个请求的实例对象，以便后期取消对应请求，并将取消的请求保存或者记录原始分块列表取消位置信息等，以便后期重新发起请求.
+
+**取消请求的几种方式**
+
+- 如果使用原生 **XHR** 可使用 `(new XMLHttpRequest()).abort()` 取消请求
+- 如果使用 **axios** 可使用 `new CancelToken(function (cancel) {})` 取消请求
+- 如果使用 **fetch** 可使用 `(new AbortController()).abort()` 取消请求
+
+
+
+### 扫码登录
+
+
+
+
+
+
+
+### 进程通信
+
+[进程之间有哪些通信方式](https://github.com/iamshuaidi/algo-basic/blob/master/%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95%EF%BC%9A%E8%BF%9B%E7%A8%8B%E4%B9%8B%E9%97%B4%E7%A9%B6%E7%AB%9F%E6%9C%89%E5%93%AA%E4%BA%9B%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F%EF%BC%9F%E5%A6%82%E4%BD%95%E9%80%9A%E4%BF%A1%EF%BC%9F.md)
+
+**管道：**
+
+```bash
+mkfifo  test
+echo "this is a pipe" > test   // 写数据
+cat < test  // 读数据
+```
+
+**消息队列：**
+
+例如 a 进程要给 b 进程发送消息，只需要把消息放在对应的消息队列里就行了，b 进程需要的时候再去对应的 消息队列里取出来
+
+**共享内存:**
+
+系统加载一个进程的时候，分配给进程的内存并不是**实际物理内存**，而是**虚拟内存空间**。那么我们可以让两个进程各自拿出一块虚拟地址空间来，然后映射到相同的物理内存中，这样，两个进程虽然有着独立的虚拟内存空间，但有一部分却是映射到相同的物理内存，这就完成了**内存共享**机制了。
+
+**信号量:**
+
+信号量的本质就是一个计数器，用来实现进程之间的互斥与同步
+
+例如信号量的初始值是 1，然后 a 进程来访问**内存1**的时候，我们就把信号量的值设为 0，然后进程b 也要来访问**内存1**的时候，看到信号量的值为 0 就知道已经有进程在访问**内存1**了，这个时候进程 b 就会访问不了**内存1**。所以说，信号量也是进程之间的一种通信方式。
+
+**Socket:**
+
+那两个相隔几千里的进程能够进行通信吗？
+
+这个时候 Socket 这家伙就派上用场了
+
+
+
+### Socket通信原理
+
+[Socket通信原理](https://juejin.cn/post/6844904022567026695)
+
+**`Socket`**通信则是在双方**建立连接后**，可以**直接**进行**数据的传输**，在连接时可实现信息的**主动推送**，而**不需要**每次由**客户端**向服务器**发送请求**。
+
+socket又称套接字，在程序内部提供了与外界通信的端口，即端口通信。
+
+通过建立**`socket`**连接，可为通信双方的**数据传输提供通道**。socket的**主要特点**有**数据丢失率低**，**使用简单且易于移植**。
+
+简单来说，Socket提供了程序内部与外界通信的端口并为**通信双方**提供**数据传输通道**。
+
+
+
+Socket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议。
+
+
+
+### web rtc 的理解 
 
 
 

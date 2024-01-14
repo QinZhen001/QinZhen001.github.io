@@ -901,8 +901,6 @@ checkScope()() // 'local scope'
 
 作用域负责收集和维护由所有声明的标识符（变量）组成的一系列查询，并实施一套非常严格的规则，确定当前执行的代码对这些标识符的访问权限。—— 摘录自《你不知道的JavaScript》(上卷)
 
-
-
 作用域有两种工作模型：词法作用域和动态作用域，**JS采用的是词法作用域工作模型**，词法作用域意味着作用域是由书写代码时变量和函数声明的位置决定的。(with 和 eval 能够修改词法作用域，但是不推荐使用，对此不做特别说明)
 
 
@@ -927,6 +925,38 @@ checkScope()() // 'local scope'
 
 
 ## 原型链
+
+[原型和原型链--图解](https://juejin.cn/post/7255605810453217335)
+
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f2b435c6ed064418969d80abcddb44e6~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp)
+
+**所有的引用类型（数组、对象、函数），都有一个`__proto__`属性，属性值是一个普通的对象**
+
+**所有的函数，都有一个 prototype 属性，属性值也是一个普通的对象**
+
+所有的引用类型（数组、对象、函数），`__proto__`属性值指向它的构造函数的 ”prototype“ 属性值
+
+当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的 `__proto__`（即它的构造函数的prototype）中寻找。
+
+---
+
+举个例子：
+
+```ts
+    var obj = {};
+    obj.a = 100;
+    var arr = [];
+    arr.a = 100;
+    function fn() {
+    }
+    fn.a = 100;
+
+    console.log(obj.__proto__); //Object{}
+    console.log(arr.__proto__); //[Symbol(Symbol.unscopables):Object]
+    console.log(fn.__proto__); //function(){}
+    console.log(fn.prototype); //Object{}
+    console.log(obj.__proto__ === Object.prototype) //true
+```
 
 
 
@@ -955,10 +985,9 @@ checkScope()() // 'local scope'
 
 ```js
   function Person() { }
-
   Person.prototype.name = "John";
-
   var man = new Person();
+
   // 对象字面量 改变了prototype的地址
   Person.prototype = {
     name: "Mike"
@@ -983,25 +1012,6 @@ checkScope()() // 'local scope'
 
   console.log(man.name); // Tom
 ```
-
-
-
-```js
-  function Person() { }
-  Person.prototype.name = "John";
-  var man = new Person();
-  // man 已经生成 man对应的Person.prototype已经固化	
-  Person.prototype = {
-    name: "Tom"
-  };
-  console.log(man.name); // Tom
-```
-
-
-
-
-
-
 
 ---
 
@@ -1141,7 +1151,48 @@ Foo.a() //1
 
 
 
+## 事件
 
+
+
+### 自定义事件
+
+```js
+var eve = new Event('custome')
+
+element.addEventListener('custome',function(){
+    console.log('custome')
+})
+element.dispatchEvent(eve)
+```
+
+### 描述DOM事件捕获的具体流程
+
+window -> document -> html -> body -> ... -> 目标元素
+
+### Event对象的常见应用
+
+* event.preventDefault()
+* event.stopPropagation() //阻止冒泡
+* event.stopImmediatePropagation() 
+* event.currentTarget //返回绑定事件的元素(和this 的作用是差不多的)
+* event.target //当前被触发的元素
+
+#### event.stopImmediatePropagation()
+
+如果某个元素有多个相同类型事件的事件监听函数,则当该类型的事件触发时,多个事件监听函数将按照顺序依次执行.如果某个监听函数执行了 event.stopImmediatePropagation()方法,则除了该事件的冒泡行为被阻止之外(event.stopPropagation方法的作用),该元素绑定的后序相同类型事件的监听函数的执行也将被阻止.
+
+#### event.currentTarget用来事件委托(事件代理)
+
+target事件委托的定义：本来该自己干的事，但是自己不干，交给别人来干。一般用到for循环遍历节点添加事件的时候都可以用事件委托来做，可以提高性能。
+
+给ul添加了点击事件，点击ul里面的子元素，event.target都会返回当前点击的元素节点，做一个判断，如果点击了button标签，删除这个li节点。由于添加的li都在ul节点里面，所以并不用再去添加li事件里面去写代码了
+
+
+>* event.target.nodeName  　　//获取事件触发元素标签name(全大写)
+>* event.target.id　　　　　　　//获取事件触发元素id
+>* event.target.className　　//获取事件触发元素classname
+>* event.target.innerHTML　　//获取事件触发元素的内容
 
 
 
@@ -1153,8 +1204,6 @@ Foo.a() //1
 
 
 ## this全面解析
-
-
 
  **在 ES5 中 ,** **this 永远指向 最后调用它的那个对象**  
 
@@ -2191,26 +2240,56 @@ function isEmptyObj(obj) {
 
 >new 运算符创建一个用户定义的对象类型的实例或具有构造函数的内置对象的实例。 ——（来自于MDN）
 
-
-
-
-
 使用new来调用函数，或者说发生构造函数调用时，会自动执行下面的操作
-
-
 
 1. 创建（或者说构造）一个新对象。
 2. 这个新对象会被执行[[Prototype]]连接。
 3. 这个新对象会绑定到函数调用的this。
 4. 如果函数没有返回其他对象，那么new表达式中的函数调用会自动返回这个新对象。
 
-
-
 >在 JavaScript 中，new 操作符并不像其他面向对象的语言一样，而是一种模拟出来的机制。在 JavaScript 中，所有的函数都可以被 new 调用，这时候这个函数一般会被称为 “构造函数”，实际上并不存在所谓“构造函数”，更确切的理解应该是对于函数的 “构造器调用模式”。
 >
->
->
 >以上关于 new 绑定来源于你不知道的js上卷 2.2绑定规则。
+
+举个例子：
+
+foo为构造函数
+
+1. 一个对象被创建。**它继承foo.prototype**
+2. 构造函数foo被执行。执行时，相应的参数会被传入，同时上下文(this)会被指定为这个新实例(也就是步骤1创建的对象)。
+3. 如果构造函数返回了一个"对象"，那么这个对象会取代整个new出来的结果。如果构造函数没有返回对象，那么new出来的结果为步骤1创建的对象。
+
+var a = new foo()
+
+foo.prototype这个自动生成的对象，又是从哪出来的呢？
+
+foo.prototype 这个对象是Object和Object.prototype的产物
+
+**foo() 的时候， 系统后台调用new Object()这样生成了对象foo.prototype， 另外foo.prototype这个函数会自带一个属性construcor，这个属性的值是函数foo**
+
+
+
+### Object.create 和new区别
+
+[网页链接](http://blog.csdn.net/blueblueskyhua/article/details/73135938)
+
+Object.create 创建的对象是用原型链来连接的
+
+Object.create的实现方式：
+
+```js
+Object.create =  function (o) {
+    var F = function () {};
+    F.prototype = o;
+    return new F();
+};
+```
+
+**这种方法比"构造函数法"简单，但是不能实现私有属性和私有方法，实例对象之间也不能共享数据，对"类"的模拟不够全面。**
+
+可以看出来。Object.create是内部定义一个对象，并且让F.prototype对象 赋值为引进的对象/函数 o，并return出一个新的对象。
+
+
 
 ### 手写一个new
 
@@ -2360,34 +2439,12 @@ new (Foo.getName());
 
 ### 构造函数中的this指向
 
-
-
  JS里没有类.
 构造函数是个**函数**,this指向的是个**对象**,this蒙上眼睛指也指不到构造函数去. 
 
-
-
  **构造函数的this指向创建的实例对象无疑** 
 
-
-
-
-
  原本的构造函数是window对象的方法，如果不用new操作符而直接调用，那么构造函数的执行对象就 是window，即this指向了window。现在用new操作符后，this就指向了新生成的对象。理解这一步至关重要。 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3585,10 +3642,10 @@ function foo() {
 
 [https://juejin.cn/post/6844904191840747533](https://juejin.cn/post/6844904191840747533)
 
-* commonjs输出拷贝
-* esm输出引用
+它们有两个重大差异。
 
-- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
+* CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
+* CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
 
  **esm 的 import read-only 特性**
 

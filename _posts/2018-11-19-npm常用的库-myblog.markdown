@@ -233,6 +233,20 @@ setTimeout(() => {
 
 
 
+### open
+
+[https://www.npmjs.com/package/open](https://www.npmjs.com/package/open)
+
+> Open stuff like URLs, files, executables. Cross-platform.
+
+打开url，文件，可执行文件。跨平台的。
+
+[详解NodeJs中open库唤起浏览器原理](https://juejin.cn/post/7078656397319241736)
+
+
+
+
+
 ### Inquirer
 [https://www.npmjs.com/package/inquirer](https://www.npmjs.com/package/inquirer)
 
