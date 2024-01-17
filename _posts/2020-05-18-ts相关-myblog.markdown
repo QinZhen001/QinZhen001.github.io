@@ -3298,6 +3298,50 @@ let iMArray: Tuple50<number> = [0,...,50];
 
 
 
+## 注解
+
+[https://github.com/QinZhen001/injector-demo](https://github.com/QinZhen001/injector-demo)
+
+[TS从装饰器到注解到元编程](https://www.jianshu.com/p/e280d916495b)
+
+[https://github.com/rbuckton/reflect-metadata](https://github.com/rbuckton/reflect-metadata)
+
+- **装饰器（Decorator）** 仅提供定义劫持，能够对类及其方法、方法入参、属性的定义并没有提供任何附加元数据的功能。
+- **注解（Annotation）** 仅提供附加元数据支持，并不能实现任何操作。需要另外的 Scanner 根据元数据执行相应操作。
+
+
+
+之所以要给注解添加引号，是因为注解的概念是要进行元数据的修改，而这里仅仅是动态改变原型上的属性。要进行元数据的修改，我们需要利用反射**Reflect**。 ES6提供的Refelct并不满足修改元数据，我们要额外引入一个库**reflect-metadata**
+
+```ts
+import 'reflect-metadata'
+
+@modifyClass('param')
+class A {
+
+}
+
+function modifyClass(param) {
+  return target => {
+      Reflect.defineMetadata(Symbol.for('META_PARAM'), param, target.prototype)
+  }
+}
+
+```
+
+这个时候就是真正的注解了，我们通过装饰器和Reflect对要修饰的类注入了元数据，注意我们这里是注入到`target.prototype`，类的实例上。因为不同的实例是获得的不同的数据，因此不能注入到target上。
+
+```
+Reflect.defineMetadata`方法第一个入参可以是string 类型或者 symbol 类型。建议使用symbol类型,这样避免被覆盖掉。而这里的param可以是任意类型。我们不仅能在类上定义元数据，也可以在类的属性上定义
+ `Relect.defineMetadata(metadataKey: any, metadataValue: any, target: any, propertyKey)
+```
+
+接下来我们就可以在任意的地方通过`Reflect.getMetadata(metadataKey, target)`获取元数据了。
+
+**反射给了我们在类及其属性、方法、入参上存储读取数据的能力**
+
+
+
 ## 额外的属性检查
 
 ```js
