@@ -16,6 +16,8 @@ tags:
 
 # 正文
 
+[探索 RxJS - Observable](https://github.com/ecmadao/Coding-Guide/blob/master/Notes/RxJS/%E6%8E%A2%E7%B4%A2RxJS-Observable.md)
+
 [80 行代码实现简易 RxJS](https://mp.weixin.qq.com/s/ECI3tniwucE2Tpv4eWw7iA)
 
 RxJS 是一个响应式的库，它接收从事件源发出的一个个事件，经过处理管道的层层处理之后，传入最终的接收者，这个处理管道是由操作符组成的，**开发者只需要选择和组合操作符就能完成各种异步逻辑，极大简化了异步编程**。除此以外，RxJS 的设计还遵循了函数式、流的理念。
@@ -65,5 +67,33 @@ setTimeout(() => {
     subscription.unsubscribe();
 }, 4500);
 
+```
+
+
+
+## 监听对象set
+
+```ts
+import { Subject } from 'rxjs';
+
+const subject = new Subject()
+const obj = {
+  aaa: "aaa"
+}
+const handler = {
+  set(target: any, key: string, value: any) {
+    target[key] = value;
+    subject.next(target);
+    return true;
+  },
+};
+const proxy = new Proxy(obj, handler);
+
+subject.subscribe((val) => {
+  console.log("subject", JSON.stringify(val))
+})
+
+proxy.aaa = "asdads"
+proxy.ccc = "ccc"
 ```
 

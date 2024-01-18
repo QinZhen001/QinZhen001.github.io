@@ -616,3 +616,22 @@ Webpack 会根据 __esModule 标识来自动处理 CommonJS 的模块导出对�
 
 
 
+
+
+### import相同文件多次
+
+假设：
+
+```ts
+// index.js
+console.log(111)
+```
+
+我们在 a.js/b.js/c.js 中 import 上面文件 index.js
+
+一个页面中同时 import  a.js/b.js/c.js
+
+**console.log 只会打印一次**
+
+因为： 第一次加载 index.js 后，之后在import index.js 就会从cache缓存中获取，不会走再次加载index.js的逻辑了
+
