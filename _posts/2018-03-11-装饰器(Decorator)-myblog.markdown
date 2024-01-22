@@ -489,6 +489,12 @@ DI 系统中存在两个主要角色：依赖使用者和依赖提供者。
 
 [typescript decorator async function](https://juejin.cn/s/typescript%20decorator%20async%20function)
 
+**下面是错误例子**
+
+**下面是错误例子**
+
+**下面是错误例子**
+
 ```ts
 function asyncDecorator(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
@@ -505,6 +511,40 @@ function asyncDecorator(target: any, propertyKey: string, descriptor: PropertyDe
       // ...
     }
   }
+}
+```
+
+TIP:  descriptor.value 只能判断出是函数，无法判断出AsyncFunction
+
+正确方式：
+
+```ts
+
+export const AsyncDecorator: MethodDecorator = (target, propertyKey, descriptor: PropertyDescriptor) => {
+  const originalMethod = descriptor.value;
+
+  const before = () => {
+    console.log("[test] before", new Date())
+  }
+
+  const after = () => {
+    console.log("[test] after", new Date())
+  }
+
+
+  descriptor.value = async function (...args: any[]) {
+    before()
+    const result = originalMethod.apply(this, args);
+    if (result instanceof Promise) {
+      result.then((res)=>{
+        after()
+      })
+    }else{
+      after
+    }
+    return result;
+  }
+
 }
 ```
 

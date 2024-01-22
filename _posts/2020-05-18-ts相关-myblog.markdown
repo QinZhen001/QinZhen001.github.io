@@ -3306,6 +3306,10 @@ let iMArray: Tuple50<number> = [0,...,50];
 
 [https://github.com/rbuckton/reflect-metadata](https://github.com/rbuckton/reflect-metadata)
 
+[https://www.typescriptlang.org/docs/handbook/decorators.html#metadata](https://www.typescriptlang.org/docs/handbook/decorators.html#metadata)
+
+
+
 - **装饰器（Decorator）** 仅提供定义劫持，能够对类及其方法、方法入参、属性的定义并没有提供任何附加元数据的功能。
 - **注解（Annotation）** 仅提供附加元数据支持，并不能实现任何操作。需要另外的 Scanner 根据元数据执行相应操作。
 
