@@ -946,12 +946,6 @@ export const useClassroomStyle = ({
 
 ```
 
-
-
-
-
-
-
 使用： 
 
 ```tsx
@@ -979,6 +973,106 @@ const FixedAspectRatioContainer: React.FC<FixedAspectRatioProps> = observer(
 
 
 
+
+#### useMap
+
+中央区域保持恒定的宽高比
+
+```ts
+// page
+export const PAGE_RATIO = 1.777778 // page ratio  16:9
+export const PAGE_MIN_WIDTH = 1440 // page min width 1440
+export const PAGE_MIN_HEIGHT = Math.floor(PAGE_MIN_WIDTH / PAGE_RATIO) // page min height
+export const PAGE_MAX_WIDTH = PAGE_MIN_WIDTH * 2 // page max width
+export const PAGE_MAX_HEIGHT = Math.floor(PAGE_MAX_WIDTH / PAGE_RATIO) // page max height
+```
+
+
+
+```ts
+export const useMap = () => {
+  const { width: pageWidth, height: pageHeight } = useSelector((state: RootState) => state.globalInfo.pageInfo);
+  const position = useSelector((state: RootState) => state.globalInfo.position)
+
+  let mapWidth = 0
+  let mapHeight = 0
+  let scale = 1 // 和 min width/height 的比例
+
+  if (pageWidth / pageHeight >= PAGE_RATIO) {
+    mapWidth = pageHeight * PAGE_RATIO;
+    mapHeight = pageHeight;
+    scale = pageHeight / PAGE_MIN_HEIGHT
+  } else {
+    mapWidth = pageWidth;
+    mapHeight = pageWidth / PAGE_RATIO;
+    scale = pageWidth / PAGE_MIN_WIDTH
+  }
+
+  if (mapWidth < PAGE_MIN_WIDTH || mapHeight < PAGE_MIN_HEIGHT) {
+    mapWidth = PAGE_MIN_WIDTH
+    mapHeight = PAGE_MIN_HEIGHT
+    scale = 1
+  } else if (mapWidth > PAGE_MAX_WIDTH || mapHeight > PAGE_MAX_HEIGHT) {
+    mapWidth = PAGE_MAX_WIDTH
+    mapHeight = PAGE_MAX_HEIGHT
+    scale = mapWidth / PAGE_MIN_WIDTH
+  }
+
+  mapWidth = Math.floor(mapWidth)
+  mapHeight = Math.floor(mapHeight)
+
+  const { bgPositionX, bgPositionY } = useMemo(() => {
+    let [x, y] = position
+    // bgPositionX/bgPositionY 均需要负值
+    let bgPositionX = 0
+    let bgPositionY = 0
+    if (pageHeight && mapHeight) {
+      if (pageWidth < mapWidth) {
+        // map need move
+        let centerX = pageWidth / 2 // 到达 centerX 时背景开始移动
+        let max = -(mapWidth - pageWidth) // 负值
+        if (x > centerX) {
+          bgPositionX = centerX - x // 负值
+          bgPositionX = bgPositionX <= max ? max : bgPositionX
+        }
+      }
+      if (pageHeight < mapHeight) {
+        // map need move
+        let centerY = pageHeight / 2 // 到达 centerY 时背景开始移动
+        let max = -(mapHeight - pageHeight) / 2 // 负值
+        bgPositionY = -max
+        if (y > centerY) {
+          const dis = centerY - y// 负值
+          bgPositionY = bgPositionY + dis
+          bgPositionY = bgPositionY <= max ? max : bgPositionY
+        }
+      }
+    }
+
+    return {
+      bgPositionX,
+      bgPositionY
+    }
+
+  }, [mapWidth, mapHeight, position, pageWidth, pageHeight])
+
+
+
+  return {
+    // page
+    pageWidth: pageWidth,  // 页面宽度
+    pageHeight: pageHeight, // 页面高度
+    // map
+    mapWidth: mapWidth,  // 中央地图宽度
+    mapHeight: mapHeight, // 中央地图高度
+    bgPositionX, // 中央地图背景X偏移值 
+    bgPositionY, // 中央地图背景X偏移值 
+ 		// TIP: when scale, width/height will change,figure x/y will not change
+    scale: Number(scale.toFixed(4)) // 地图缩放值
+  }
+
+}
+```
 
 
 

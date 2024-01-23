@@ -113,8 +113,6 @@ babelrc: false}).code;
 
 也可以指定插件的相对/绝对路径
 
-
-
 ```javascript
 {
     "plugins": ["./node_modules/@babel/plugin-transform-arrow-functions"]
@@ -132,8 +130,6 @@ babelrc: false}).code;
 [https://github.com/airbnb/babel-plugin-dynamic-import-node](https://github.com/airbnb/babel-plugin-dynamic-import-node)
 
 它只做一件事就是：将所有的`import()`转化为`require()`，这样就可以用这个插件将所有异步组件都用同步的方式引入了，并结合 [BABEL_ENV](https://babeljs.io/docs/usage/babelrc/#env-option) 这个`bebel`环境变量，让它只作用于开发环境下。
-
-
 
 将开发环境中所有`import()`转化为`require()`，这种方案解决了之前重复打包的问题，同时对代码的侵入性也很小，你平时写路由的时候只需要按照官方[文档](https://router.vuejs.org/zh/guide/advanced/lazy-loading.html)路由懒加载的方式就可以了，其它的都交给`babel`来处理，当你不想用这个方案的时候，也只需要将它从`babel` 的 `plugins`中移除就可以了。
 
@@ -312,47 +308,6 @@ const x = 0;
 
 
 
-## config
-
-> babel.config.js
-
-
-
-### 区分环境
-
-```js
-module.exports = (api) => {
-  // 缓存
-  // https://www.babeljs.cn/docs/config-files#apiversion
-  api.cache(true)
-  return {
-    presets: [
-    // https://github.com/vuejs/vue-cli/tree/master/packages/@vue/babel-preset-app
-      '@vue/cli-plugin-babel/preset'
-    ], 
-    'env': {
-      // 开发环境  
-      'development': {
-      // babel-plugin-dynamic-import-node plugin only does one thing by converting all import() to require().
-      // This plugin can significantly increase the speed of hot updates, when you have a large number of pages.
-      // https://panjiachen.github.io/vue-element-admin-site/guide/advanced/lazy-loading.html
-        'plugins': ['dynamic-import-node']
-      },
-      // 正式环境  
-      'production': {
-        plugins: [
-          // 正式环境清楚console.log
-          ['transform-remove-console', { exclude: ['error', 'warn'] }]
-        ]
-      }
-    }
-  }
-}
-
-```
-
-
-
 ## preset
 
 通过使用或创建一个 preset 即可轻松使用一组插件。
@@ -362,12 +317,6 @@ module.exports = (api) => {
 ## polyfill
 
 **语法转换只是将高版本的语法转换成低版本的，但是新的内置函数、实例方法无法转换**。这时，就需要使用 polyfill，顾名思义，polyfill的中文意思是垫片，所谓垫片就是垫平不同浏览器或者不同环境下的差异，让新的内置函数、实例方法等在低版本浏览器中也可以使用。
-
-
-
-------
-
-
 
 很重要的点，再次强调一下
 
@@ -394,38 +343,9 @@ Babel 默认只转换新的 JavaScript 语法，而不转换新的 API。例如�
 **为开发框架而准备**
 不会污染全局变量
 
-
 ### babel-runtime 使用场景
-Babel 转译后的代码要实现源代码同样的功能需要借助一些帮助函数，例如，{ [name]: 'JavaScript' } 转译后的代码如下所示：
-```
-'use strict';
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-var obj = _defineProperty({}, 'name', 'JavaScript');
-```
 
-类似上面的帮助函数 _defineProperty 可能会重复出现在一些模块里，导致编译后的代码体积变大。Babel 为了解决这个问题，提供了单独的包 babel-runtime 供编译模块复用工具函数。
-
-启用插件 babel-plugin-transform-runtime 后，Babel 就会使用 babel-runtime 下的工具函数，转译代码如下：
-```
-'use strict';
-// 之前的 _defineProperty 函数已经作为公共模块 `babel-runtime/helpers/defineProperty` 使用
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-var obj = (0, _defineProperty3.default)({}, 'name', 'JavaScript');
-```
+参考 babel7 blog 中的 **@babel/runtime**
 
 思考：babel-runtime 为什么适合 JavaScript 库和工具包的实现？
 
@@ -434,22 +354,26 @@ var obj = (0, _defineProperty3.default)({}, 'name', 'JavaScript');
 
 
 
-
-
 ## core-js
+
+[https://github.com/zloirock/core-js](https://github.com/zloirock/core-js)
 
 [https://juejin.cn/post/6844904055005773831](https://juejin.cn/post/6844904055005773831)
 
-- **它是JavaScript标准库的 polyfill，它支持**
-  - 最新的 [ECMAScript](https://en.wikipedia.org/wiki/ECMAScript) 标准
-  - ECMAScript 标准库提案
-  - 一些 [WHATGW](https://en.wikipedia.org/wiki/WHATWG) / [W3C](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium) 标准（跨平台或者 ECMAScript 相关）
+利用 core-js，开发者可以在旧版本的 JavaScript 环境中使用最新的 ECMAScript 标准的特性，而无需考虑浏览器的兼容性问题。
 
-- 它最大限度的模块化：你能仅仅加载你想要使用的功能
-- 它能够不污染全局命名空间
-- 它[和babel紧密集成](https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#Babel)：这能够优化`core-js`的导入
+一些 core-js 的常见用途包括：
+
+1. 支持 ECMAScript 中新增的方法和功能，如箭头函数、类、模块、Promise、Set、Map 等。
+2. 提供一致的 API，使得开发者可以在不同 JavaScript 环境中编写具有高度一致性的代码。
+3. 简化代码的编写和维护，避免手动编写兼容性代码。
+4. 帮助开发者逐步迁移到最新的 JavaScript 版本，降低代码迁移的难度。
+
+总之，core-js 的主要用途是提供对 ECMAScript 标准特性的兼容性支持，使开发者可以在各种 JavaScript 环境中编写一致且具有最新特性的代码。
 
 
+
+它[和babel紧密集成](https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#Babel)：这能够优化`core-js`的导入
 
 它是最普遍、[最流行](https://www.npmtrends.com/core-js-vs-es5-shim-vs-es6-shim-vs-airbnb-js-shims-vs-polyfill-library-vs-polyfill-service-vs-js-polyfills)给 JavaScript 标准库打补丁的方式，但是有很大一部分开发者并不知道他们间接的使用了`core-js`🙂
 
@@ -461,21 +385,17 @@ var obj = (0, _defineProperty3.default)({}, 'name', 'JavaScript');
 
 ---
 
-[`@babel/polyfill`](https://babeljs.io/docs/en/next/babel-polyfill.html) 是一个包裹的包，里面仅仅包含 `core-js` 稳定版的引入（在Babel 6 中也包含提案）和 `regenerator-runtime/runtime`，用来转译 generators 和 async 函数。这个包没有提供从 `core-js@2` 到 `core-js@3` 平滑升级路径：因为这个原因，决定弃用 `@babel/polyfill` 代之以分别引入需要的 `core-js` 和 `regenerator-runtime` 。
 
 
+`core-js` is integrated with `babel` and is the base for polyfilling-related `babel` features:
 
-原来
+[`@babel/polyfill`](https://babeljs.io/docs/usage/polyfill) [**IS** just the import of stable `core-js` features and `regenerator-runtime`](https://github.com/babel/babel/blob/c8bb4500326700e7dc68ce8c4b90b6482c48d82f/packages/babel-polyfill/src/index.js) for generators and async functions, so if you load `@babel/polyfill` - you load the global version of `core-js` without ES proposals.
 
-```js
-import "@babel/polyfill";
+As a full equal of `@babel/polyfill`, you can use this:
+
 ```
-
-现在使用两行代替：
-
-```js
-import "core-js/stable";
-import "regenerator-runtime/runtime";
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 ```
 
 
@@ -491,11 +411,23 @@ import "regenerator-runtime/runtime";
 
 
 
-## regenerator-runtime 和 core-js
+
+
+## regenerator-runtime
+
+[https://www.npmjs.com/package/regenerator-runtime](https://www.npmjs.com/package/regenerator-runtime)
+
+Standalone runtime for [Regenerator](https://github.com/facebook/regenerator)-compiled generator and `async` functions.
+
+
+
+
+
+#### regenerator-runtime 和 core-js
 
 regenerator-runtime 是一个由 Facebook 团队开发的专门用于支持 ECMAScript 6+ async/await、yield、generator 函数的运行时库，它是在 core-js 库的基础上构建的。
 
-而 core-js 则是一个非常全面的 JavaScript 标准库，用于模拟 ECMAScript 最新标准中提到的新特性，比如 Promise、Map、Set、Symbol、Array.from 等，以及各种 polyfill，可以实现在旧浏览器上使用最新的语言特性。在实现 async/await、yield、generator 函数时，需要使用 regenerator-transform 插件，它会将源代码中的 yield、async/await 等代码转换成通过 regenerator-runtime 运行的代码。
+而 core-js 则是一个非常全面的 JavaScript 标准库，用于模拟 ECMAScript 最新标准中提到的新特性，比如 Promise、Map、Set、Symbol、Array.from 等，以及各种 polyfill，可以实现在旧浏览器上使用最新的语言特性。**在实现 async/await、yield、generator 函数时，需要使用 regenerator-transform 插件，它会将源代码中的 yield、async/await 等代码转换成通过 regenerator-runtime 运行的代码。**
 
 因此，可以说 regenerator-runtime 是 core-js 库的一部分，是其在 async/await、yield、generator 函数方面的补充。
 

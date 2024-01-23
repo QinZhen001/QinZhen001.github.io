@@ -673,3 +673,12 @@ componentDidMount呢？
 * `useCallback` 和 `useMemo` 作用于 `props` 并不能避免组件重渲染。只有当每一个 `prop` 都被缓存，且组件本身也被缓存的情况下，重渲染才能被避免。只要有一丁点疏忽，那么你做的一切努力就打水漂了。所以说，简单点，把它们都删了吧。
 
 - 把包裹了“纯 js 操作“的 `useMemo` 也都删了吧。与组件本身的渲染相比，它缓存数据带来的耗时减少是微不足道的，并且会在初始渲染时消耗额外的内存，造成可以被观察到的延迟。
+
+
+
+### JSX
+
+[https://www.typescriptlang.org/docs/handbook/jsx.html](https://www.typescriptlang.org/docs/handbook/jsx.html)
+
+[JSX](https://facebook.github.io/jsx/) is an embeddable XML-like syntax. It is meant to be transformed into valid JavaScript, though the semantics of that transformation are implementation-specific. JSX rose to popularity with the [React](https://reactjs.org/) framework, but has since seen other implementations as well. TypeScript supports embedding, type checking, and compiling JSX directly to JavaScript.
+
