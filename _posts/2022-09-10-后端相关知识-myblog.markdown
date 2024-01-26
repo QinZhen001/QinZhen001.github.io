@@ -529,6 +529,10 @@ docker inspect命令的作用是返回有关Docker对象的详细信息，包括
 
 
 
+### volume
+
+[https://docs.docker.com/engine/reference/commandline/volume_create/](https://docs.docker.com/engine/reference/commandline/volume_create/)
+
 
 
 ### kill
@@ -560,6 +564,14 @@ docker kill 973322dc1872
 
 
 ## Dockerfile
+
+[https://docs.docker.com/engine/reference/builder/#dockerfile-reference](https://docs.docker.com/engine/reference/builder/#dockerfile-reference)
+
+Docker can build images automatically by reading the instructions from a Dockerfile
+
+Docker可以通过读取Dockerfile中的指令来自动构建镜像
+
+
 
 
 

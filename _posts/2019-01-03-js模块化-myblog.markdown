@@ -635,3 +635,7 @@ console.log(111)
 
 因为： 第一次加载 index.js 后，之后在import index.js 就会从cache缓存中获取，不会走再次加载index.js的逻辑了
 
+
+
+
+

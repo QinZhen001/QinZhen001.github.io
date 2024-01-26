@@ -560,6 +560,24 @@ function uint8ArrayToString(arr) {
 
 
 
+
+
+
+
+### 获取插件信息
+
+[https://developers.weixin.qq.com/community/develop/doc/0006445710c678ad974e46ce359c00](https://developers.weixin.qq.com/community/develop/doc/0006445710c678ad974e46ce359c00)
+
+```ts
+console.log(__wxConfig)  // 里面有 plugins 相关信息
+```
+
+
+
+
+
+
+
 ## mpvue相关
 
 [http://mpvue.com/mpvue/](http://mpvue.com/mpvue/)
