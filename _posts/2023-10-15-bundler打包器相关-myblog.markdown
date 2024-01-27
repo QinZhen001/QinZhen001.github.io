@@ -13,9 +13,261 @@ tags:
 
 
 
+
+
+# rollup
+
+[https://rollupjs.org/guide/en/](https://rollupjs.org/guide/en/)
+
+[中文文档](https://www.rollupjs.com/)
+
+
+
+
+
+
+
+## 基础 
+
+
+
+### -- configPlugin
+
+**Allows specifying Rollup plugins to transpile or otherwise control the parsing of your configuration file.** The main benefit is that it allows you to use non-JavaScript configuration files. For instance the following will allow you to write your configuration in TypeScript, provided you have `@rollup/plugin-typescript` installed:
+
+使用Rollup plugin 处理 配置文件
+
+例子：
+
+```bash
+rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript
+```
+
+
+
+
+
+ 
+
+## repl
+
+[https://rollupjs.org/repl](https://rollupjs.org/repl)
+
+> REPL 是一种编程环境，全称为"Read-Eval-Print Loop"，意为"读取-求值-输出循环"。它是一种交互式的编程环境，可以逐行读取代码，对代码进行求值或执行，并将结果输出到屏幕上。
+
+
+
+## multiple input
+
+多入口打包
+
+```tsx
+// rollup.config.ts
+import { defineConfig } from 'rollup'
+
+const config1 = defineConfig({})
+// ...
+
+export default (commandLineArgs: any): RollupOptions[] => {
+  const isDev = commandLineArgs.watch
+
+  return defineConfig([
+    config1,
+    config2,
+    config3
+  ])
+}
+```
+
+
+
+
+
+## support *CommonJS*
+
+Rollup supports *ES modules* out of the box. However, to support *CommonJS*, the following plugins are required:
+
+- [@rollup/plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs)
+- [@rollup/plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
+
+`@rollup/plugin-commonjs` 应该在其他插件 *之前* 使用——这是为了防止其他插件进行的更改破坏了 CommonJS 检测。
+
+
+
+
+
+## 集成三方库
+
+[https://www.rollupjs.com/guide/tools](https://www.rollupjs.com/guide/tools)
+
+有时候，您的项目可能需要依赖于一些 NPM 包。与 webpack 和 Browserify 等其他打包器不同，Rollup 并不能“开箱即用”地处理 NPM 包的依赖关系——我们需要添加一些配置。
+
+当出现 Unresolved dependencies
+
+因为 `import` 声明被转换成为 CommonJS 规范的 `require` 语句，但是三方库**并未** 被打包在 bundle 中。为此，我们需要一个插件@rollup/plugin-node-resolve,可以让 Rollup 查找到外部模块
+
+
+
+## plugin 
+
+
+
+### rollup-plugin-esbuild
+
+[https://www.npmjs.com/package/rollup-plugin-esbuild](https://www.npmjs.com/package/rollup-plugin-esbuild)
+
+[esbuild](https://github.com/evanw/esbuild) is by far one of the fastest TS/ESNext to ES6 compilers and minifier, this plugin replaces `rollup-plugin-typescript2`, `@rollup/plugin-typescript` and `rollup-plugin-terser` for you.
+
+
+
+### rollup-plugin-visualizer
+
+[https://www.npmjs.com/package/rollup-plugin-visualizer](https://www.npmjs.com/package/rollup-plugin-visualizer)
+
+分析打包体积
+
+
+
+### @rollup/plugin-commonjs
+
+[https://www.npmjs.com/package/@rollup/plugin-commonjs](https://www.npmjs.com/package/@rollup/plugin-commonjs)
+
+🍣 A Rollup plugin to convert CommonJS modules to ES6, so they can be included in a Rollup bundle
+
+
+
+### @rollup/plugin-node-resolve
+
+🍣 A Rollup plugin which locates modules using the [Node resolution algorithm](https://nodejs.org/api/modules.html#modules_all_together), for using third party modules in `node_modules`
+
+可以让 Rollup 找到外部模块
+
+加载node_modules里面的三方库
+
+```ts
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+
+ nodeResolve({
+    browser: true,  // browser module resolutions 解析浏览器的包
+    mainFields: ['browser', 'module', 'main'],
+    preferBuiltins: false,
+    extensions: [".mjs", ".js", ".json", ".ts"]
+ }),
+```
+
+### @rollup/pluginutils
+
+[https://www.npmjs.com/package/@rollup/pluginutils](https://www.npmjs.com/package/@rollup/pluginutils)
+
+A set of utility functions commonly used by 🍣 Rollup plugins.
+
+为写 rollup plugin 提供的 utils 工具函数
+
+```tsx
+export {
+  addExtension,   // 增加后缀
+  attachScopes,   // 依附作用域 （ast处理）
+  createFilter, // 处理 include 和 exclude  (用于 transform 钩子)
+  dataToEsm,  // data =>  esmodule
+  extractAssignedNames,  // 获取ast的node的names
+  makeLegalIdentifier, // 变成下滑线命名
+  normalizePath  // 规范化路径
+};
+```
+
+### Inter-plugin communication
+
+[https://rollupjs.org/guide/en/#inter-plugin-communication](https://rollupjs.org/guide/en/#inter-plugin-communication)
+
+```tsx
+function parentPlugin() {
+  return {
+    name: 'parent',
+    api: {
+      //...methods and properties exposed for other plugins
+      doSomething(...args) {
+        // do something interesting
+      }
+    }
+    // ...plugin hooks
+  };
+}
+
+function dependentPlugin() {
+  let parentApi;
+  return {
+    name: 'dependent',
+    buildStart({ plugins }) {
+      const parentName = 'parent';
+      const parentPlugin = plugins.find(plugin => plugin.name === parentName);
+      if (!parentPlugin) {
+        // or handle this silently if it is optional
+        throw new Error(`This plugin depends on the "${parentName}" plugin.`);
+      }
+      // now you can access the API methods in subsequent hooks
+      parentApi = parentPlugin.api;
+    },
+    transform(code, id) {
+      if (thereIsAReasonToDoSomething(id)) {
+        parentApi.doSomething(id);
+      }
+    }
+  };
+}
+```
+
+通过提供api 一个插件可以调用另外一个插件提供的方法。
+
+## 问题
+
+### embed all dependencies into one fat target bundle
+
+[embed all dependencies into one fat target bundle](https://stackoverflow.com/questions/52125190/how-to-embed-all-dependencies-into-one-fat-target-bundle-with-rollup-js)
+
+Use [rollup-plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve) (and [rollup-plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs) if you have CommonJS dependencies).
+
+
+
+
+
+# unbuild
+
+[https://github.com/unjs/unbuild](https://github.com/unjs/unbuild)
+
+> A unified javascript build system
+
+Robust [rollup](https://rollupjs.org/) based bundler that supports typescript and generates commonjs and module formats + type declarations.
+
+
+
+```tsx
+// build.config.ts
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  entries: [
+    './src/index'
+  ],
+  clean: true,
+  declaration: true, // generate .d.ts files
+  rollup: {
+    emitCJS: true,  // generate .cjs files
+    inlineDependencies: true,
+  },
+})
+```
+
+
+
+
+
+
+
+
+
+
+
 # esbuild
-
-
 
 
 
