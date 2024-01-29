@@ -28,13 +28,7 @@ tags:
 
 Nginx更长于底层服务器端资源的处理（静态资源处理转发、反向代理，负载均衡等），Node.js更擅长于上层具体业务逻辑的处理。两者可以实现完美组合，助力前端开发。
 
-
-
  但实际上，Nginx种看似简单的配置，实则学问深深。在Nginx实现一个同样的功能，不同的配置编写写法，效率上可能差上好几倍。而这些完全是在建立在对Nginx原理的深入理解和常年的配置运维经验上，哪怕是你们公司的后端都可能对Nginx的了解并不深入 
-
-
-
-
 
 常见场景：
 
@@ -48,25 +42,13 @@ nginx模块一般被分成三大类：handler、filter和upstream
 
 
 
-
-
-
-
-
-
-
-
 ### 安装 
 
 [https://juejin.im/post/5ea931866fb9a043815146fb](https://juejin.im/post/5ea931866fb9a043815146fb)
 
-
-
 ```bash
 yum install nginx 
 ```
-
-
 
 来安装 Nginx，然后我们在命令行中 `nginx -v` 就可以看到具体的 Nginx 版本信息，也就安装完毕了。
 
@@ -76,15 +58,7 @@ yum install nginx
 
 * `/usr/share/nginx/html/` 文件夹，通常静态文件都放在这个文件夹，也可以根据你自己的习惯放其他地方；
 
-
-
-
-
-
-
 ### 配置
-
-
 
 #### location
 
@@ -104,8 +78,6 @@ yum install nginx
 
 #### 校验配置
 
-
-
 ```bash
 nginx -t
 ```
@@ -119,15 +91,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 
 
 
-
-
-
-
-
-
 ### 重新加载
-
-
 
 向主进程发送信号，重新加载配置文件，热重启
 
@@ -139,15 +103,13 @@ nginx -s reload
 
 
 
-
-
 ### gzip 压缩
 
 1. 打开 Nginx 配置文件。一般位于 `/etc/nginx/nginx.conf` 或者 `/etc/nginx/conf.d/default.conf`。
 
 2. 在 http 配置块中添加如下行，开启 gzip 压缩功能：
 
-   ```
+   ```bash
    gzip on;
    ```
 
@@ -155,7 +117,7 @@ nginx -s reload
 
 3. 配置 gzip 的压缩级别和压缩类型。添加如下行：
 
-   ```
+   ```bash
    gzip_comp_level n;
    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
    ```
@@ -172,21 +134,13 @@ nginx -s reload
 
 
 
-
-
 ### 反向代理
 
  安全及权限。可以看出，使用反向代理后，用户端将无法直接通过请求访问真正的内容服务器，而必须首先通过Nginx。可以通过在Nginx层上将危险或者没有权限的请求内容过滤掉，从而保证了服务器的安全。 
 
-
-
-----
-
-
-
 在前端服务地址为 `fe.sherlocked93.club` 的页面请求 `be.sherlocked93.club` 的后端服务导致的跨域，可以这样配置：
 
-```
+```nginx
 server {
   listen 9001;
   server_name fe.sherlocked93.club;
@@ -197,17 +151,11 @@ server {
 }
 ```
 
-
-
 这样就将对前一个域名 `fe.sherlocked93.club` 的请求全都代理到了 `be.sherlocked93.club`，前端的请求都被我们用服务器代理到了后端地址下，绕过了跨域。
-
-
 
 这里对静态文件的请求和后端服务的请求都以 `fe.sherlocked93.club` 开始，不易区分，所以为了实现对后端服务请求的统一转发，通常我们会约定对后端服务的请求加上 `/apis/` 前缀或者其他的 path 来和对静态资源的请求加以区分，此时我们可以这样配置：
 
-
-
-```
+```nginx
 # 请求跨域，约定代理后端服务请求path以/apis/开头
 location ^~/apis/ {
     # 这里重写了请求，将正则匹配中的第一个分组的path拼接到真正的请求后面，并用break停止后续匹配
@@ -219,11 +167,7 @@ location ^~/apis/ {
 }
 ```
 
-
-
 这样，静态资源我们使用 `fe.sherlocked93.club/xx.html`，动态资源我们使用 `fe.sherlocked93.club/apis/getAwo`，浏览器页面看起来仍然访问的前端服务器，绕过了浏览器的同源策略，毕竟我们看起来并没有跨域。
-
-
 
 也可以统一一点，直接把前后端服务器地址直接都转发到另一个 `server.sherlocked93.club`，只通过在后面添加的 path 来区分请求的是静态资源还是后端服务，看需求了。
 
@@ -242,21 +186,16 @@ location ^~/apis/ {
 
 
 
-
-
 ###  rewrite  
 
-```
+```bash
     #请求跨域，这里约定代理请求url path是以/apis/开头
     location ^~/apis/ {
         # 这里重写了请求，将正则匹配中的第一个()中$1的path，拼接到真正的请求后面，并用break停止后续匹配
         rewrite ^/apis/(.*)$ /$1 break;
         proxy_pass https://www.kaola.com/;
     }  
-
 ```
-
-
 
 
 
