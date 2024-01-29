@@ -106,7 +106,17 @@ server {
 
 
 
+## try_files
 
+nginx try_files 是一个指令，用于指定服务器如何处理静态文件。它用于在请求的URL与实际服务器上的文件路径之间进行映射和匹配。
+
+try_files 主要功能如下：
+
+1. 根据指定的路径尝试访问服务器上的文件或目录。可以指定多个路径，按照顺序尝试。
+2. 当访问的文件或目录不存在时，可以指定一个后备的路径或处理方式。
+3. 可以通过设置错误处理页面来处理请求的URL找不到的情况。
+
+通过 try_files 指令，可以在请求中自动处理静态文件和目录的访问，提高服务器的性能和效率。它对于处理静态资源的网站非常有用，可以有效地优化用户的访问体验。
 
 
 
@@ -180,6 +190,44 @@ nginx -s reload
 
 现在你的 Nginx 服务器应该已经开启了 gzip 压缩功能。
 
+---
+
+
+
+
+
+```nginx
+# /etc/nginx/conf.d/gzip.conf
+
+gzip on; # 默认off，是否开启gzip
+gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+# 上面两个开启基本就能跑起了，下面的愿意折腾就了解一下
+gzip_static on;
+gzip_proxied any;
+gzip_vary on;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+# gzip_min_length 1k;
+gzip_http_version 1.1;
+
+```
+
+* **gzip_types**：要采用 gzip 压缩的 MIME 文件类型，其中 text/html 被系统强制启用；
+* **gzip_static**：默认 off，该模块启用后，Nginx 首先检查是否存在请求静态文件的 gz 结尾的文件，如果有则直接返回该 `.gz` 文件内容；
+* **gzip_proxied**：默认 off，nginx做为反向代理时启用，用于设置启用或禁用从代理服务器上收到相应内容 gzip 压缩；
+* **gzip_vary**：用于在响应消息头中添加 `Vary：Accept-Encoding`，使代理服务器根据请求头中的 `Accept-Encoding` 识别是否启用 gzip 压缩；
+* **gzip_comp_level**：gzip 压缩比，压缩级别是 1-9，1 压缩级别最低，9 最高，级别越高压缩率越大，压缩时间越长，建议 4-6；
+* **gzip_buffers**：获取多少内存用于缓存压缩结果，16 8k 表示以 8k*16 为单位获得；
+* **gzip_min_length**：允许压缩的页面最小字节数，页面字节数从header头中的 `Content-Length` 中进行获取。默认值是 0，不管页面多大都压缩。建议设置成大于 1k 的字节数，小于 1k 可能会越压越大；
+* **gzip_http_version**：默认 1.1，启用 gzip 所需的 HTTP 最低版本；
+
+
+
+
+
+
+
 ## 反向代理
 
  安全及权限。可以看出，使用反向代理后，用户端将无法直接通过请求访问真正的内容服务器，而必须首先通过Nginx。可以通过在Nginx层上将危险或者没有权限的请求内容过滤掉，从而保证了服务器的安全。 
@@ -234,25 +282,13 @@ location ^~/apis/ {
 
 
 
+## **适配PC端与移动端** 
 
+**境** 现在很多网站都存在PC站和H5站两个站点，因此根据用户的浏览环境自动切换站点是很常见的需求。Nginx可以通过内置变量$http_user_agent，获取到请求客户端的userAgent，从而知道用户处于移动端还是PC，进而控制重定向到H5站还是PC站。 以笔者本地为例，pc端站点是mysite-base.com，H5端是mysite-base-H5.com。
 
+Nginx配置如下：
 
-
-###  **适配PC与移动环境** 
-
-
-
-
-
-**境** 现在很多网站都存在PC站和H5站两个站点，因此根据用户的浏览环境自动切换站点是很常见的需求。Nginx可以通过内置变量$http_user_agent，获取到请求客户端的userAgent，从而知道用户处于移动端还是PC，进而控制重定向到H5站还是PC站。 以笔者本地为例，[pc端站点是mysite-base.com](http://xn--pcmysite-base-qr11aj07i537axka.com)，[H5端是mysite-base-H5.com](http://xn--H5mysite-base-H5-yi57a459t.com)。
-
-
-
-pc端Nginx配置如下：
-
-
-
-```
+```nginx
     location / {
         # 移动、pc设备适配
         if ($http_user_agent ~* '(Android|webOS|iPhone|iPod|BlackBerry)') {
@@ -267,128 +303,24 @@ pc端Nginx配置如下：
 
 
 
-### 动态匹配（请求过滤）
-
-
+## 动态匹配（请求过滤）
 
 >通常在开发环境或者测试环境的时候呢我们修改了代码，因为浏览器缓存，可能不会生效，需要手动清除缓存，才能看到修改后的效果，这里我们做一个配置让浏览器不缓存相关的资源。
 >
->
 
-```
+```nginx
 location ~* \.(js|css|png|jpg|gif)$ {
     add_header Cache-Control no-store;
 }
 ```
 
-
-
 `~* \.(js|css|png|jpg|gif)$` 是匹配以相关文件类型然后单独处理。 `add_header` 是给请求的响应加上一个头信息`Cache-Control no-store`，告知浏览器禁用缓存，每次都从服务器获取 
 
 
 
+## 图片防盗链
 
-
-
-
-###  开启 gzip 压缩
-
-[网页GZIP压缩检测](http://tool.chinaz.com/gzips/)
-
-
-
-gzip 是一种常用的网页压缩技术，传输的网页经过 gzip 压缩之后大小通常可以变为原来的一半甚至更小（官网原话），更小的网页体积也就意味着带宽的节约和传输速度的提升，特别是对于访问量巨大大型网站来说，每一个静态资源体积的减小，都会带来可观的流量与带宽的节省。
-
-
-
-使用 gzip 不仅需要 Nginx 配置，浏览器端也需要配合，需要在请求消息头中包含 `Accept-Encoding: gzip`（IE5 之后所有的浏览器都支持了，是现代浏览器的默认设置）。一般在请求 html 和 css 等静态资源的时候，支持的浏览器在 request 请求静态资源的时候，会加上 `Accept-Encoding: gzip` 这个 header，表示自己支持 gzip 的压缩方式，Nginx 在拿到这个请求的时候，如果有相应配置，就会返回经过 gzip 压缩过的文件给浏览器，并在 response 相应的时候加上 `content-encoding: gzip` 来告诉浏览器自己采用的压缩方式（因为浏览器在传给服务器的时候一般还告诉服务器自己支持好几种压缩方式），浏览器拿到压缩的文件后，根据自己的解压方式进行解析。
-
-
-
-先来看看 Nginx 怎么进行 gzip 配置，和之前的配置一样，为了方便管理，还是在 `/etc/nginx/conf.d/` 文件夹中新建配置文件 `gzip.conf` ：
-
-
-
-
-
-```
-# /etc/nginx/conf.d/gzip.conf
-
-gzip on; # 默认off，是否开启gzip
-gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-
-# 上面两个开启基本就能跑起了，下面的愿意折腾就了解一下
-gzip_static on;
-gzip_proxied any;
-gzip_vary on;
-gzip_comp_level 6;
-gzip_buffers 16 8k;
-# gzip_min_length 1k;
-gzip_http_version 1.1;
-
-```
-
-
-
-* **gzip_types**：要采用 gzip 压缩的 MIME 文件类型，其中 text/html 被系统强制启用；
-* **gzip_static**：默认 off，该模块启用后，Nginx 首先检查是否存在请求静态文件的 gz 结尾的文件，如果有则直接返回该 `.gz` 文件内容；
-* **gzip_proxied**：默认 off，nginx做为反向代理时启用，用于设置启用或禁用从代理服务器上收到相应内容 gzip 压缩；
-* **gzip_vary**：用于在响应消息头中添加 `Vary：Accept-Encoding`，使代理服务器根据请求头中的 `Accept-Encoding` 识别是否启用 gzip 压缩；
-* **gzip_comp_level**：gzip 压缩比，压缩级别是 1-9，1 压缩级别最低，9 最高，级别越高压缩率越大，压缩时间越长，建议 4-6；
-* **gzip_buffers**：获取多少内存用于缓存压缩结果，16 8k 表示以 8k*16 为单位获得；
-* **gzip_min_length**：允许压缩的页面最小字节数，页面字节数从header头中的 `Content-Length` 中进行获取。默认值是 0，不管页面多大都压缩。建议设置成大于 1k 的字节数，小于 1k 可能会越压越大；
-* **gzip_http_version**：默认 1.1，启用 gzip 所需的 HTTP 最低版本；
-
-
-
-
-
-#### Webpack 的 gzip 配置
-
-[https://juejin.im/post/5ea931866fb9a043815146fb#heading-22](https://juejin.im/post/5ea931866fb9a043815146fb#heading-22)
-
-
-
-```js
-// vue-cli3 的 vue.config.js 文件
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
-
-module.exports = {
-  // gzip 配置
-  configureWebpack: config => {
-    if (process.env.NODE_ENV === 'production') {
-      // 生产环境
-      return {
-        plugins: [new CompressionWebpackPlugin({
-          test: /\.js$|\.html$|\.css/,    // 匹配文件名
-          threshold: 10240,               // 文件压缩阈值，对超过10k的进行压缩
-          deleteOriginalAssets: false     // 是否删除源文件
-        })]
-      }
-    }
-  },
-  ...
-}
-
-```
-
-
-
-
-
-那么为啥这里 Nginx 已经有了 gzip 压缩，Webpack 这里又整了个 gzip 呢，因为如果全都是使用 Nginx 来压缩文件，会耗费服务器的计算资源，如果服务器的 `gzip_comp_level` 配置的比较高，就更增加服务器的开销，相应增加客户端的请求时间，得不偿失。
-
-
-
-如果压缩的动作在前端打包的时候就做了，把打包之后的高压缩等级文件作为静态资源放在服务器上，Nginx 会优先查找这些压缩之后的文件返回给客户端，**相当于把压缩文件的动作从 Nginx 提前给 Webpack 打包的时候完成，节约了服务器资源，所以一般推介在生产环境应用 Webpack 配置 gzip 压缩**。
-
-
-
-### 图片防盗链
-
-
-
-```
+```nginx
 server {
   listen       80;        
   server_name  *.sherlocked93.club;
@@ -396,10 +328,12 @@ server {
   # 图片防盗链
   location ~* \.(gif|jpg|jpeg|png|bmp|swf)$ {
     valid_referers none blocked server_names ~\.google\. ~\.baidu\. *.qq.com; 
-    # 只允许本机 IP 外链引用，感谢 @木法传 的提醒，将百度和谷歌也加入白名单
+    # 只允许本机 IP 外链引用，将百度和谷歌也加入白名单
+    
     if ($invalid_referer){
       return 403;
     }
+    
   }
 }
 
@@ -407,44 +341,17 @@ server {
 
 
 
+# 补充 
 
-
-## 补充 
-
-
-
-## 配合vue
-
-
-
-
-
-### vue-router History 模式
-
-
+## vue-router history 
 
 [https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90](https://router.vuejs.org/zh/guide/essentials/history-mode.html#后端配置例子)
-
-
 
 `vue-router` 默认 hash 模式 —— 使用 URL 的 hash 来模拟一个完整的 URL，于是当 URL 改变时，页面不会重新加载。
 
 如果不想要很丑的 hash，我们可以用路由的 **history 模式**，这种模式充分利用 `history.pushState` API 来完成 URL 跳转而无须重新加载页面。
 
-```js
-const router = new VueRouter({
-  mode: 'history',
-  routes: [...]
-})
-```
-
-
-
-
-
 不过这种模式要玩好，还需要后台配置支持。因为我们的应用是个单页客户端应用，如果后台没有正确的配置，当用户在浏览器直接访问 `http://oursite.com/user/id` 就会返回 404，这就不好看了。
-
-
 
 ```nginx
 location / {
@@ -452,29 +359,15 @@ location / {
 }
 ```
 
-####  
-
-
-
 当用户请求 `http://localhost/example` 时，这里的 `$uri` 就是 `/example`。 
 
-
-
 try_files 会到硬盘里尝试找这个文件。如果存在名为 `/$root/example`（其中 `$root` 是项目代码安装目录）的文件，就直接把这个文件的内容发送给用户。 显然，目录中没有叫 example 的文件。然后就看 `$uri/`，增加了一个 `/`，也就是看有没有名为 `/$root/example/` 的目录。 
-
-
 
 又找不到，就会 fall back 到 try_files 的最后一个选项 /index.html，发起一个内部 “子请求”，也就是相当于 nginx 发起一个 HTTP 请求到 `http://localhost/index.html`。 
 
 
 
-
-
-
-
-## 最佳实践
-
-
+# 最佳实践
 
 * 为了使 Nginx 配置更易于维护，建议为每个服务创建一个单独的配置文件，存储在 `/etc/nginx/conf.d` 目录，根据需求可以创建任意多个独立的配置文件。
 
