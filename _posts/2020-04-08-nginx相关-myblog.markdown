@@ -53,6 +53,42 @@ yum install nginx
 
 * `/usr/share/nginx/html/` 文件夹，通常静态文件都放在这个文件夹，也可以根据你自己的习惯放其他地方；
 
+
+
+## root
+
+oot指令用于设置服务器的根目录，即服务器上文件资源的存放位置。
+
+当客户端请求访问服务器上的文件时，nginx会根据请求的文件路径查找该文件。如果在请求的文件路径前面添加了root指令所设置的根目录路径，则nginx将会从根目录开始查找文件。
+
+例如，如果root指令设置为"/var/www/html"，而客户端请求访问的文件路径为"/index.html"，那么nginx将会从"/var/www/html/index.html"路径下查找对应的文件。
+
+
+
+## index
+
+index指令用于指定默认的文件名或者文件名的列表，当客户端请求一个目录时，Nginx会尝试依次查找配置的文件名列表中的文件，并返回找到的第一个文件作为默认页面。如果请求的目录中没有配置的文件，则返回403 Forbidden错误。
+
+index指令的语法为：
+
+```
+index file1 file2 ...;
+```
+
+具体含义如下：
+
+- file1, file2, ...：表示要配置的文件名或者文件名列表，可以配置多个，以空格分隔。
+
+例如，可以使用以下配置：
+
+```
+index index.html index.php;
+```
+
+这表示当客户端请求一个目录时，Nginx会首先尝试查找index.html文件，如果找不到，则查找index.php文件，并返回找到的第一个文件作为默认页面。
+
+
+
 ## proxy_pass
 
 在nginx中，proxy_pass用于将请求转发给其他服务器。其作用如下：
@@ -118,13 +154,7 @@ try_files 主要功能如下：
 
 通过 try_files 指令，可以在请求中自动处理静态文件和目录的访问，提高服务器的性能和效率。它对于处理静态资源的网站非常有用，可以有效地优化用户的访问体验。
 
-
-
-
-
-## 配置
-
-### location
+## location
 
 1. `=` 精确匹配路径，用于不含正则表达式的 uri 前，如果匹配成功，不再进行后续的查找；
 2. `^~` 用于不含正则表达式的 uri； 前，表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找；
@@ -137,6 +167,58 @@ try_files 主要功能如下：
 
 * “location / {} ” :  是普通location , 遵循最大前缀匹配, 如果后面还有正则匹配, 如果正则匹配到了,正则匹配就会覆盖此配置; 
 * “location = / {} ” :  用的是"="号, 是精确匹配, 只能匹配到  http://host:port/ 请求;
+
+
+
+## worker_processes
+
+> 一般设置为默认值 auto
+
+nginx 中的 worker_processes 指定了 Nginx 主进程的工作进程数目。这个参数决定了 Nginx 可以同时处理的连接数。通常情况下，这个数目应该设置为服务器的 CPU 核心数。
+
+如果设置为 1，那么 Nginx 主进程将负责接收和处理所有的连接请求。这会降低 Nginx 的并发处理能力，但在低负载情况下可能是足够的。
+
+如果设置为大于 1 的值，Nginx 主进程将创建多个工作进程，每个工作进程都能独立地接收和处理连接请求。这样可以提高 Nginx 的并发处理能力。每个工作进程将独立地监听端口并处理连接请求，通过负载均衡算法将请求分发给工作进程。
+
+
+
+## events
+
+```nginx
+events {
+  worker_connections 1024;
+}
+```
+
+events模块的作用是定义与客户端的连接相关的参数和事件处理方法。
+
+具体来说，events模块的作用包括以下几个方面：
+
+1. 定义连接的最大数量：通过设置`worker_connections`参数，可以限制客户端连接的最大数量。当客户端连接达到这个限制时，新的连接将被拒绝。
+2. 定义事件处理模型：通过设置`use`参数，可以选择Nginx使用哪种事件处理模型。常见的事件处理模型包括`epoll`、`kqueue`和`select`。
+3. 定义连接超时时间：通过设置`client_timeout`参数，可以定义客户端连接的超时时间。当客户端连接在指定的时间内没有活动时，连接将被关闭。
+4. 定义多个worker进程之间的事件处理方式：通过设置`multi_accept`参数，可以指定多个worker进程同时接受新的连接，而不是一个进程一个进程地接受。
+
+总之，events模块的作用是定义Nginx与客户端连接相关的参数，以及选择事件处理模型，以提高Nginx的性能和可靠性。
+
+
+
+## conf
+
+在nginx中，有两个常见的配置文件：
+
+1. nginx.conf：这是nginx主要的配置文件，用于全局配置nginx服务器的行为和设置。它包括了整个nginx服务器的基本配置信息，如worker_processes、pid等，还可以通过include指令来引入其他配置文件。
+2. conf.d/default.conf：这是nginx默认的虚拟主机配置文件。它可以被用作默认服务器，当没有其他的虚拟主机配置文件匹配请求时，将会使用这个文件中的配置作为默认配置。
+
+区别：
+
+- 位置：nginx.conf是nginx的主配置文件，位于nginx的安装目录下，而default.conf是虚拟主机配置文件，位于conf.d目录下。
+- 功能：nginx.conf包括了全局配置和引入其他配置文件的指令，而default.conf包含了虚拟主机的具体配置。
+- 使用场景：nginx.conf在整个nginx服务器的运行中起主要作用，而default.conf是用来配置默认的虚拟主机。
+
+
+
+
 
 ### 校验配置
 
@@ -151,7 +233,7 @@ nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
 ```
 
-## 重新加载
+### 重新加载
 
 向主进程发送信号，重新加载配置文件，热重启
 
@@ -160,6 +242,10 @@ nginx -s reload
 ```
 
 这样就可以做到不停服务，平滑的更新 nginx 的配置文件。这样做的好处就是客户体验好，比如我正在数据传输，如果你这时重启 nginx，可能就会造成数据丢失。这个时候，我们就可以温柔的采用 nginx -s reload 命令加载配置文件。
+
+
+
+
 
 ## gzip 压缩
 
@@ -377,25 +463,15 @@ try_files 会到硬盘里尝试找这个文件。如果存在名为 `/$root/exam
 
 * Nginx 日志相关目录，内以 `域名.type.log` 命名（比如 `be.sherlocked93.club.access.log` 和 `be.sherlocked93.club.error.log` ）位于 `/var/log/nginx/` 目录中，为每个独立的服务配置不同的访问权限和错误日志文件，这样查找错误时，会更加方便快捷。
 
+# 问题
 
 
 
-
-
-
-## 问题
-
-
-
-
-
-### 地址匹配
+## 地址匹配
 
 [https://blog.coding.net/blog/tips-in-configuring-Nginx-location](https://blog.coding.net/blog/tips-in-configuring-Nginx-location)
 
-
-
-```
+```nginx
         location / {
             root   html;
             index  index.html index.htm;
@@ -414,49 +490,52 @@ try_files 会到硬盘里尝试找这个文件。如果存在名为 `/$root/exam
         location ~ /ii/[^\/]+/[^\/]+ {
                 return 605;
         }
-        ##
         
         location ~ ^/helloworld/(scripts|styles|images).* {
                 return 606;
         }
 ```
 
-
-
 `http://localhost/helloworld/ii/hello/world` ==> 605 不符合预期，预期为【603】
-
-
-
-
 
 为何我一个以 /helloworld 开头的 URL 会被匹配到 605 这个以 /ii 开头的 location 里面来。在当时的生产环境中，以 /ii 的配置统一放在另外一个文件中，这里是很难直观的察觉出来这个 /ii 跟访问的 URL 里面的 /ii 的关系。
 
-
-
-
-
 最终选择了`~ "/ii/[^\/]+/[^\/]+"`这个作为最终的匹配项。
-
-
 
 到这里问题就完全展现出来了，我们本来的意思，是要以 /ii 开头，后面有两个或者更多的 / 分割的 URL 模型才匹配，但是这里的正则表达式匹配写的不够精准，导致了匹配错误。正则表达式没有限制必须从开头匹配，所以才会匹配到 /helloworld/ii/hello/world 这样的 URL 。
 
-
-
 解决办法就是在这个正则表达式前面加上 ^ 来强制 URL 必须以 /ii 开头才能匹配.
-
-
 
 由
 `/ii/[^\/]+/[^\/]+`
 变成
 `^/ii/[^\/]+/[^\/]+`
 
-
-
 总结：
 
 **location 尽量精确就尽量精确，否则出现问题的时候，非常难以查找**
 
 
+
+
+
+## [Return 301 vs Rewrite](https://stackoverflow.com/questions/30165746/nginx-return-301-vs-rewrite)
+
+[https://stackoverflow.com/questions/30165746/nginx-return-301-vs-rewrite](https://stackoverflow.com/questions/30165746/nginx-return-301-vs-rewrite)
+
+return 301用于返回一个HTTP 301重定向响应。这意味着当一个客户端请求一个URL时，服务器会返回一个永久重定向的响应，告诉客户端去请求另一个URL。这通常用于将一个网站的旧URL重定向到一个新的URL，以确保旧URL的搜索排名、链接和书签等能够保留并重定向到新URL（为了 SEO）。
+
+```nginx
+location /old-url {
+    return 301 http://example.com/new-url;
+}
+```
+
+rewrite则用于重新写入URL，通常用于内部重定向，而不是返回一个重定向响应。rewrite通过修改URL路径或查询字符串来处理请求。这可以用于根据某些条件将请求转发到不同的后端服务器或处理逻辑。重写后的URL将被发送给客户端，但是客户端不会意识到URL已经被重写过。
+
+````nginx
+location /old-url {
+    rewrite ^/old-url$ /new-url last;
+}
+````
 
