@@ -562,6 +562,8 @@ function uint8ArrayToString(arr) {
 
 
 
+## 插件
+
 
 
 ### 获取插件信息
@@ -571,6 +573,22 @@ function uint8ArrayToString(arr) {
 ```ts
 console.log(__wxConfig)  // 里面有 plugins 相关信息
 ```
+
+
+
+
+
+### 区分是否插件环境
+
+如何区分当前是 微信小程序环境 还是 微信小程序插件环境？
+
+[https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html)
+
+**使用 api： wx.getAccountInfoSync();**
+
+返回值中如果有plugin =>  标识当前环境为 微信小程序插件 
+
+
 
 
 

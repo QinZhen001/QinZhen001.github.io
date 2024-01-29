@@ -19,12 +19,7 @@ tags:
 
 
 
-
-# 正文
-
 > “Nginx是一款轻量级的HTTP服务器，采用事件驱动的异步非阻塞处理方式框架，这让其具有极好的IO性能，时常用于服务端的反向代理和负载均衡。”
-
-
 
 Nginx更长于底层服务器端资源的处理（静态资源处理转发、反向代理，负载均衡等），Node.js更擅长于上层具体业务逻辑的处理。两者可以实现完美组合，助力前端开发。
 
@@ -42,7 +37,7 @@ nginx模块一般被分成三大类：handler、filter和upstream
 
 
 
-### 安装 
+# 基础
 
 [https://juejin.im/post/5ea931866fb9a043815146fb](https://juejin.im/post/5ea931866fb9a043815146fb)
 
@@ -58,9 +53,68 @@ yum install nginx
 
 * `/usr/share/nginx/html/` 文件夹，通常静态文件都放在这个文件夹，也可以根据你自己的习惯放其他地方；
 
-### 配置
+## proxy_pass
 
-#### location
+在nginx中，proxy_pass用于将请求转发给其他服务器。其作用如下：
+
+1. 反向代理：当客户端通过nginx访问某个URL时，nginx将会使用proxy_pass指令将请求转发给其他服务器，并将服务器的响应返回给客户端。这样可以隐藏真实的服务器地址，提高安全性。
+2. 负载均衡：nginx支持负载均衡，proxy_pass可以将请求平均分发给多个后端服务器，从而提高系统的性能和可用性。
+3. 高可用性：当后端服务器出现故障时，proxy_pass可以根据配置的策略将请求转发给其他可用的后端服务器，保证系统的高可用性。
+4. 缓存：nginx可以作为缓存服务器，使用proxy_pass将请求转发给缓存服务器，并将缓存的响应返回给客户端，从而加快响应速度和减轻后端服务器的压力。
+
+总之，proxy_pass是nginx中一个非常强大的指令，可以实现反向代理、负载均衡、高可用性和缓存等功能。
+
+
+
+## rewrite  
+
+在Nginx中，rewrite是用于重写或修改URL的指令。它允许将一个URL重写为另一个URL，或者使用正则表达式匹配URL，并对匹配的部分进行替换。
+
+```nginx
+    #请求跨域，这里约定代理请求url path是以/apis/开头
+    location ^~/apis/ {
+        # 这里重写了请求，将正则匹配中的第一个()中$1的path，拼接到真正的请求后面，并用break停止后续匹配
+        rewrite ^/apis/(.*)$ /$1 break;
+        proxy_pass https://www.kaola.com/;
+    }  
+```
+
+## upstream
+
+在 Nginx 中，upstream 是用于定义负载均衡的服务器集群的模块。它的作用是将传入的请求分发给一组服务器，以达到提高系统的可用性和性能的目的。
+
+upstream 模块允许你按照一定的算法（如轮询、IP 哈希、最少连接数等）将请求分发到后端服务器。通过设置多个服务器，可以实现负载均衡，提高系统的并发处理能力，防止单点故障，并优化系统的性能和可靠性。
+
+upstream 在 Nginx 的配置文件中进行定义，可以指定一组服务器的地址和端口，并指定合适的负载均衡算法。Nginx 在接收到客户端请求后，根据指定的算法选择一个合适的后端服务器，并将请求转发给该服务器处理。
+
+当后端服务器发生故障或不可用时，upstream 模块会进行自动的健康检查，并将故障服务器排除在负载均衡的范围之外，以确保请求只会被发送到可用的服务器上。
+
+```nginx
+upstream nest-server {
+  server 192.168.1.6:3000;
+  server 192.168.1.6:3001;
+}
+
+server {
+  // ...
+
+  location ^~ /api {
+    proxy_pass nest-server;
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+## 配置
+
+### location
 
 1. `=` 精确匹配路径，用于不含正则表达式的 uri 前，如果匹配成功，不再进行后续的查找；
 2. `^~` 用于不含正则表达式的 uri； 前，表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找；
@@ -74,9 +128,7 @@ yum install nginx
 * “location / {} ” :  是普通location , 遵循最大前缀匹配, 如果后面还有正则匹配, 如果正则匹配到了,正则匹配就会覆盖此配置; 
 * “location = / {} ” :  用的是"="号, 是精确匹配, 只能匹配到  http://host:port/ 请求;
 
-
-
-#### 校验配置
+### 校验配置
 
 ```bash
 nginx -t
@@ -89,9 +141,7 @@ nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
 ```
 
-
-
-### 重新加载
+## 重新加载
 
 向主进程发送信号，重新加载配置文件，热重启
 
@@ -101,9 +151,7 @@ nginx -s reload
 
 这样就可以做到不停服务，平滑的更新 nginx 的配置文件。这样做的好处就是客户体验好，比如我正在数据传输，如果你这时重启 nginx，可能就会造成数据丢失。这个时候，我们就可以温柔的采用 nginx -s reload 命令加载配置文件。
 
-
-
-### gzip 压缩
+## gzip 压缩
 
 1. 打开 Nginx 配置文件。一般位于 `/etc/nginx/nginx.conf` 或者 `/etc/nginx/conf.d/default.conf`。
 
@@ -132,9 +180,7 @@ nginx -s reload
 
 现在你的 Nginx 服务器应该已经开启了 gzip 压缩功能。
 
-
-
-### 反向代理
+## 反向代理
 
  安全及权限。可以看出，使用反向代理后，用户端将无法直接通过请求访问真正的内容服务器，而必须首先通过Nginx。可以通过在Nginx层上将危险或者没有权限的请求内容过滤掉，从而保证了服务器的安全。 
 
@@ -173,7 +219,9 @@ location ^~/apis/ {
 
 
 
-###  负载均衡 
+## 负载均衡 
+
+[https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/)
 
  例如一网站的内容被部署在若干台服务器上，可以把这些机子看成一个集群，那么Nginx可以将接收到的客户端请求“均匀地”分配到这个集群中所有的服务器上（内部模块提供了多种负载均衡算法），从而实现服务器压力的负载均衡。此外，nginx还带有健康检查功能（服务器心跳检查），会定期轮询向集群里的所有服务器发送健康检查请求，来检查集群中是否有服务器处于异常状态，一旦发现某台服务器异常，那么在以后代理进来的客户端请求都不会被发送到该服务器上（直到后面的健康检查发现该服务器恢复正常），从而保证客户端访问的稳定性。
 
@@ -183,38 +231,6 @@ location ^~/apis/ {
 - weight：在轮询基础上增加权重，也就是轮询到的几率不同。
 - ip_hash：按照 ip 的 hash 分配，保证每个访客的请求固定访问一个服务器，解决 session 问题。
 - fair：按照响应时间来分配，这个需要安装 nginx-upstream-fair 插件。
-
-
-
-###  rewrite  
-
-```bash
-    #请求跨域，这里约定代理请求url path是以/apis/开头
-    location ^~/apis/ {
-        # 这里重写了请求，将正则匹配中的第一个()中$1的path，拼接到真正的请求后面，并用break停止后续匹配
-        rewrite ^/apis/(.*)$ /$1 break;
-        proxy_pass https://www.kaola.com/;
-    }  
-```
-
-
-
-### upstream
-
-```bash
-upstream nest-server {
-  server 192.168.1.6:3000;
-  server 192.168.1.6:3001;
-}
-
-server {
-  // ...
-
-  location ^~ /api {
-    proxy_pass http://nest-server;
-  }
-}
-```
 
 
 
@@ -390,6 +406,10 @@ server {
 ```
 
 
+
+
+
+## 补充 
 
 
 
