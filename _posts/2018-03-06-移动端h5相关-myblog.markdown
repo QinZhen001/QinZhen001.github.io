@@ -17,21 +17,21 @@ tags:
 
 ## 移动端适配
 
-
+让网页在各终端上的展示效果就像缩放设计稿图片一样，在不同屏幕上等比缩放，每一个元素与整体比例保持不变，真实还原设计稿。
 
 
 
 ### **flexible 实现**
 
+> 由于`viewport`单位得到众多浏览器的兼容，`lib-flexible`这个过渡方案已经可以放弃使用
+
+[https://github.com/amfe/lib-flexible](https://github.com/amfe/lib-flexible)
+
 [https://www.toyou.xyz/posts/flexible.js.html](https://www.toyou.xyz/posts/flexible.js.html)
 
-让网页在各终端上的展示效果就像缩放设计稿图片一样，在不同屏幕上等比缩放，每一个元素与整体比例保持不变，真实还原设计稿。
+lib-flexible + postcss-pxtorem
 
-
-
-
-
-### 设置根字体
+设置根字体
 
 设置根字体 = UI设计稿尺寸/100
 
@@ -46,6 +46,7 @@ tags:
     document.querySelector('html').style.fontSize =  rem + 'px';
   };
 
+// 也可以使用库 amfe-flexible 
 ```
 
 所以：
@@ -67,6 +68,8 @@ tags:
 
 ### vw 实现
 
+> 新一代解决方案 =>  使用vw来替代以前Flexible中的rem缩放方案。
+
 
 首要解决的是适配终端。回想一下，以前的Flexible方案是通过JavaScript来模拟vw的特性，那么到今天为止，vw已经得到了众多浏览器的支持，也就是说，可以直接考虑将vw单位运用于我们的适配布局中。
 
@@ -82,47 +85,7 @@ tags:
 
 >vmin和vmax是根据Viewport中长度偏大的那个维度值计算出来的，如果window.innerHeight > window.innerWidth则vmin取百分之一的window.innerWidth，vmax取百分之一的window.innerHeight计算。
 
-使用vw来替代以前Flexible中的rem缩放方案。
-
-目前出视觉设计稿，我们都是使用750px宽度的，从上面的原理来看，那么100vw = 750px，即1vw = 7.5px。那么我们可以根据设计图上的px值直接转换成对应的vw值。看到这里，很多同学开始感到崩溃，又要计算，能不能简便一点，能不能再简单一点，其实是可以的，我们可以使用PostCSS的插件postcss-px-to-viewport，让我们可以直接在代码中写px，比如：
-
-```css
-[w-369]{
-    width: 369px;
-}
-
-[w-369] h2 span {
-    background: #FF5000;
-    color: #fff;
-    display: inline-block;
-    border-radius: 4px;
-    font-size: 20px;
-    text-shadow: 0 2px 2px #FF5000;
-    padding: 2px 5px;
-    margin-right: 5px;
-}
-```
-
-PostCSS编译之后就是我们所需要的带vw代码：
-
-```css
-[w-369] {
-    width: 49.2vw;
-}
-[w-369] h2 span {
-    background: #ff5000;
-    color: #fff;
-    display: inline-block;
-    border-radius: .53333vw;
-    text-shadow: 0 0.26667vw 0.26667vw #ff5000;
-    padding: .26667vw .66667vw;
-}
-[w-369] h2 span,
-[w-369] i {
-    font-size: 2.66667vw;
-    margin-right: .66667vw;
-}
-```
+目前出视觉设计稿，我们都是使用750px宽度的，从上面的原理来看，那么100vw = 750px，即1vw = 7.5px。那么我们可以根据设计图上的px值直接转换成对应的vw值。看到这里，很多同学开始感到崩溃，又要计算，能不能简便一点，能不能再简单一点，其实是可以的，我们可以使用PostCSS的插件 **postcss-px-to-viewport**，让我们可以直接在代码中写p
 
 在实际使用的时候，你可以对该插件进行相关的参数配置：
 
@@ -138,15 +101,19 @@ PostCSS编译之后就是我们所需要的带vw代码：
 }
 ```
 
-假设你的设计稿不是750px而是1125px，那么你就可以修改vewportWidth的值
-
-**总结**
-
-* 使用vw来实现页面的适配，并且通过PostCSS的插件postcss-px-to-viewport把px转换成vw。这样的好处是，我们在撸码的时候，不需要进行任何的计算，你只需要根据设计图写px单位
-* 为了更好的实现长宽比，特别是针对于img、vedio和iframe元素，通过PostCSS插件postcss-aspect-ratio-mini来实现，在实际使用中，只需要把对应的宽和高写进去即可
-* 为了解决1px的问题，使用PostCSS插件postcss-write-svg,自动生成border-image或者background-image的图片
+假设你的设计稿不是750px而是375px，那么你就可以修改vewportWidth的值
 
 
+
+#### postcss-px-to-viewport的问题
+
+[include配置不生效问题](https://juejin.cn/post/7309290887363297321)
+
+**postcss-px-to-viewport插件已弃用，使用postcss-px-to-viewport-8-plugin代替**
+
+---
+
+**如果 要 使用 exclude/include option 和 支持 vite 的话  使用 @minko-fe/postcss-pxtoviewport 代替**
 
 
 
@@ -163,16 +130,12 @@ PostCSS编译之后就是我们所需要的带vw代码：
 物理分辨率：硬件所支持的
 逻辑分辨率：软件可以达到的    
 
-
-
 window.devicePixelRatio是设备上物理像素和设备独立像素(device-independent pixels (dips))的比例。
 
 
 >公式表示就是：window.devicePixelRatio = 物理像素 / dips
 
 > CSS像素也就是逻辑像素
-
-
 
 而对于视网膜屏幕的iphone，如iphone4s, 纵向显示的时候，屏幕物理像素640像素。同样，当用户设置`<meta name="viewport" content="width=device-width">`的时候，其视区宽度并不是640像素，而是320像素，这是为了有更好的阅读体验 – 更合适的文字大小。
 
