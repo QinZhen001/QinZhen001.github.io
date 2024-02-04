@@ -423,6 +423,68 @@ In *react-router-dom* v6, "Switch" is replaced by routes "Routes"
 
 
 
+# 最佳实践
+
+```ts
+
+const routerItems = [
+  <Route path="/" element={<RootPage />}>
+    <Route path="/welcome" element={<WelcomePage />}></Route>,
+    <Route path="/main" element={<MainPage />} >
+      <Route path="home" element={
+        <Homepage />
+      } />
+      <Route path="discovery" element={
+        <DiscoveryPage />
+      } />
+      <Route path="mine" element={
+        <MinePage />
+      } />
+    </Route>,
+    <Route path="/login" element={<LoginPage />} />,
+    <Route path="/verify" element={<VerifyPage />} />,
+    <Route path="*" element={<NotFoundPage />} />,
+  </Route>,
+]
+
+
+const router = createHashRouter(createRoutesFromElements(routerItems))
+
+export const RouteContainer = () => {
+  return <RouterProvider router={router} future={{ v7_startTransition: true }}></RouterProvider>
+}
+```
+
+----
+
+```tsx
+// RootPage.tsx
+
+const RootPage = () => {
+  useAuth() // 鉴权
+  const nav = useNavigate() // tip:这里
+
+  useEffect(() => {
+    nav("welcome")
+  }, [])
+
+
+  return <div className={styles.rootPage}>
+    <Outlet></Outlet>
+  </div>
+}
+```
+
+为什么 需要   `<Route path="/" element={<RootPage />}>`  这一层包裹，其他都作为children呢？
+
+因为 useNavigate() may be used only in the context of a router component
+
+[https://stackoverflow.com/questions/70491774/usenavigate-may-be-used-only-in-the-context-of-a-router-component](https://stackoverflow.com/questions/70491774/usenavigate-may-be-used-only-in-the-context-of-a-router-component)
+
+useNavigate 只能在router 包裹里面使用， 所有当我们有 全局鉴权 全局路由钩子时，一定要使用RootPage 在 `path="/" ` 包裹一层
+
+
+
 
 
 # 问题

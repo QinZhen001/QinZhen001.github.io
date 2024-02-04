@@ -404,7 +404,7 @@ interface MutableRefObject<T> {
 
 
 
-### render prop
+### render prop 惰性初始化
 
 `someExpensiveComputation` 是一个相对耗时的操作。如果我们直接采用
 
@@ -426,6 +426,108 @@ const [state, setState] = useState(() => {
 因 `someExpensiveComputation` 运行在一个匿名函数下，该函数当且仅当初始化时被调用，从而优化性能。
 
 
+
+### css 样式隔离 
+
+
+
+#### css module
+
+[https://github.com/css-modules/css-modules](https://github.com/css-modules/css-modules)
+
+探究了一些方式，最终采用 css module 的方式 
+
+```tsx
+import style from './index.module.scss'
+
+const WelcomePage = () => {
+  return <div className={style.welcomePage}></div>
+}
+```
+
+vite.config.ts
+
+```tsx
+export default defineConfig({
+  plugins: [react()],
+  css: {
+  	// 可配置 css module 相关
+    // https://vitejs.dev/config/shared-options.html#css-modules
+    modules: {
+      globalModulePaths: [
+        /.*\\.global\\..*/
+      ]
+    },
+  }
+})
+```
+
+
+
+##### Multiple Classes
+
+[Using Multiple Classes With React CSS Modules](https://www.codeconcisely.com/posts/react-css-modules-multiple-classes/)
+
+```tsx
+// 使用多个styles
+
+<button type="button" className={`${styles.button} ${styles.filled}`}>
+  Click here
+</button>
+```
+
+
+
+##### 全局作用域
+
+凡是使用global声明的class，都不会按照我们定义的格式进行转换，简单点说就是css module 不去处理
+
+使用gloabl 此时我们就不能再这样些了className={style.demo}，二是写出这样 className='demo'
+
+例如
+
+```css
+:global(.demo) {
+  margin: 50px;
+  border: 1px solid red;
+  width: 300px;
+  height: 40px;
+  height: 300px;
+}
+```
+
+等同于
+
+```css
+:global {
+  .demo {
+    margin: 50px;
+    border: 1px solid red;
+    width: 300px;
+    height: 40px;
+    height: 300px;
+  }
+}
+```
+
+
+
+##### hot reload
+
+[Configure CSS module class ](https://stackoverflow.com/questions/77072008/configure-css-module-class-name-in-vue-project-with-vite-js)
+
+热更新导致 代码中的class name 和 style 的 class name 对应不上来，导致页面样式丢失
+
+解决：
+
+```tsx
+  css: {
+    ...
+    modules: {
+      generateScopedName: "[name]__[local]__[hash:base64:2]"
+    }
+  },
+```
 
 
 
@@ -848,9 +950,17 @@ useImperativeHandle(ref, createHandle, [deps])
   const [isPending, startTransition] = useTransition()
 ```
 
+---
 
+[https://react.dev/reference/react/startTransition](https://react.dev/reference/react/startTransition)
 
+startTransition lets you update the state without blocking the UI.
 
+startTransition 的作用是告诉 React 在下一个渲染周期中，有一些优先级较低的更新，可以推迟执行，以便在同一渲染周期内将多个更新批量处理，以提高性能。
+
+使用 startTransition 在函数组件内部对某个代码块进行包装，可以将该代码块标记为优先级较低，React 将在下一个渲染周期内异步执行这个代码块，以避免阻塞更重要的任务。
+
+通过使用 startTransition，React 可以根据需求进行优化，比如将多个状态更新批量执行，减少不必要的渲染，并与浏览器的空闲时间协作，以提升用户体验。
 
 
 
