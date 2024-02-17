@@ -901,6 +901,33 @@ const res = chunk(["a", "b", "c", "d", "e", "f", "g"], 3);
 
 
 
+### 元素的尺寸
+
+[Determining the dimensions of elements](https://developer.mozilla.org/zh-CN/docs/Web/API/CSS_Object_Model/Determining_the_dimensions_of_elements)
+
+clientWidth 和 getBoundingClientRect().width
+
+getBoundingClientRect().width获取到的其实是父级的右边距离浏览器原点(0,0)减去左边距离浏览器原点(0,0)的距离,
+**即宽度+2padding+2border**
+
+**clientWidth等于宽度+2padding,不包括边框的宽度**
+
+---
+
+#### offsetWidth和offsetHeight
+
+**If you need to know the total amount of space an element occupies, including the width of the visible content, scrollbars (if any), padding, and border**
+
+一般情况 getBoundingClientRect等于对应offset属性
+
+例如：
+**getBoundingClientRect().width === offsetWidth**
+
+但是
+In case of transforms, the `offsetWidth` and `offsetHeight` returns the element's **layout width and height**, while `getBoundingClientRect()` returns the **rendering width and height**.
+
+
+
 
 
 ### 屏蔽属性
@@ -4015,34 +4042,6 @@ ready = ()=>{
         return `${this.element} is ready for attaching `
  }
 ```
-
-
-
-
-
-
-
-### window.innerWidth
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/Window/innerWidth](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/innerWidth)
-
-
-
-只读的 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window) 属性 `**innerWidth**` 返回以像素为单位的窗口的内部宽度。**如果垂直滚动条存在，则这个属性将包括它的宽度。**
-
-
-
-如果你需要获取除去滚动条和边框的窗口宽度，请使用根元素`<html>`的[`clientWidth`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/clientWidth) 属性。
-
-```js
-document.documentElement.clientWidth
-```
-
-
-
-同理，window.innerHeight也是一样的道理
-
-
 
 
 

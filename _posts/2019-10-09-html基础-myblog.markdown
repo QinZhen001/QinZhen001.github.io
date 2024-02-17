@@ -32,29 +32,16 @@ MutationObserver接口提供了监视对DOM树所做更改的能力。它被设�
 
 ## document.currentScript
 
-
-
 >在学习vue-cli3时发现了currentScript这个知识点
 
 
 >在库模式中，项目的 publicPath 是根据主文件的加载路径动态设置的（用以支持动态的资源加载能力）。但是这个功能用到了 document.currentScript，而 IE 浏览器并不支持这一特性。所以如果网站需要支持 IE 的话，建议使用库之前先在页面上引入 current-script-polyfill。
 
-
-
 >https://cli.vuejs.org/zh/guide/build-targets.html#%E5%BA%94%E7%94%A8
-
-
-
-
-
-
 
 ----------------
 
-
 [https://developer.mozilla.org/zh-CN/docs/Web/API/Document/currentScript](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/currentScript)
-
-
 
 返回其所包含的脚本中正在被执行的 `<script>` 元素.
 
@@ -81,35 +68,15 @@ if (document.currentScript.async) {
 
 ##  **Range** 
 
-
-
 [ https://developer.mozilla.org/zh-CN/docs/Web/API/Range ]( https://developer.mozilla.org/zh-CN/docs/Web/API/Range )
 
-
-
- Range对象代表页面上一段连续的区域，通过Range对象可以获取或者修改页面上任何区域的内容。也可以通过Range的方法进行复制和移动页面任何区域的元素。 
-
-
+Range对象代表页面上一段连续的区域，通过Range对象可以获取或者修改页面上任何区域的内容。也可以通过Range的方法进行复制和移动页面任何区域的元素。 
 
 **`Range`** 接口表示一个包含节点与文本节点的一部分的文档片段。
 
-
-
-
-
 可以用 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 对象的 [`Document.createRange`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createRange) 方法创建 Range，也可以用 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象的 [`getRangeAt`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection/getRangeAt) 方法获取 Range。另外，还可以通过 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 对象的构造函数 [`Range()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/Range) 来得到 Range。
 
-
-
-
-
----
-
-
-
 ### 属性
-
-
 
 [`Range.collapsed`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/collapsed) 只读
 
@@ -142,10 +109,6 @@ if (document.currentScript.async) {
 
 
 ### 例子
-
-
-
-
 
 ```html
 <body>
@@ -183,17 +146,9 @@ if (document.currentScript.async) {
 
 
 
-
-
-
-
 ### 兼容性
 
-
-
  https://www.caniuse.com/#search=createRange 
-
-
 
  createRange 兼容性非常好，可以使用
 
@@ -203,23 +158,13 @@ if (document.currentScript.async) {
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/API/Selection ]( https://developer.mozilla.org/zh-CN/docs/Web/API/Selection )
 
-
-
-
-
  表示用户选择的文本范围或光标的当前位置。 
-
-
 
 ```js
 const selection = window.getSelection() ;
 ```
 
 - `selection` 是一个 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象。 如果想要将 `selection` 转换为字符串，可通过连接一个空字符串（""）或使用 [`String.toString()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/toString) 方法。
-
-
-
-
 
  一般来说，插入光标的位置可通过 Selection 获取，这时它被标记为 `Collapsed`，这表示选区被压缩至一点，即光标位置。但要注意它与 `focus` 事件或 [`Document.activeElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement) 等的值没有必然联系。 
 
@@ -233,15 +178,9 @@ const selection = window.getSelection() ;
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_settings_attributes ]( https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_settings_attributes )
 
-
-
 [ https://www.chrisyue.com/what-the-hell-is-crossorigin-attribute-in-html-script-tag.html ]( https://www.chrisyue.com/what-the-hell-is-crossorigin-attribute-in-html-script-tag.html )
 
-
-
 在HTML5中，一些 HTML 元素提供了对 [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) 的支持， 例如`<audio> <img> <link> <script> <video>`均有一个跨域属性 (`crossOrigin` property)，它允许你配置元素获取数据的 CORS 请求。 
-
-
 
 | 关键字            | 描述                                                         |
 | ----------------- | ------------------------------------------------------------ |
@@ -249,32 +188,16 @@ const selection = window.getSelection() ;
 | `use-credentials` | 对此元素的CORS请求将设置凭证标志；这意味着请求将提供凭据。   |
 | `""`              | 设置一个空的值，如 `crossorigin` 或 `crossorigin=""`，和设置 `anonymous` 的效果一样。 |
 
-
-
-
-
-
-
 从谷歌的结果来看，比较一致的说法是，当引入跨域的脚本（比如用了 apis.google.com 上的库文件）时，如果这个脚本有错误，因为浏览器的限制（根本原因是协议的规定），是拿不到错误信息的。当本地尝试使用 `window.onerror` 去记录脚本的错误时，跨域脚本的错误只会返回 `Script error`。
-
- 
-
-
 
 而 HTML5 新的规定，是可以允许本地获取到跨域脚本的错误信息的，但有两个条件：一是跨域脚本的服务器必须通过 `Access-Control-Allow-Origin` 头信息允许当前域名可以获取错误信息，二是网页里的 `script` 标签也必须指明 `src` 属性指定的地址是支持跨域的地址，也就是 crossorigin 属性。有了这两个条件，就可以获取跨域脚本的错误信息：
 
 
- 但事情还是不够明朗，看起来跨域脚本报个错也没什么啊，为什么浏览器（准确说是 HTTP 协议）这么轴，非要规定默认情况页面是不能获取跨域脚本错误信息的呢？
-
-
+但事情还是不够明朗，看起来跨域脚本报个错也没什么啊，为什么浏览器（准确说是 HTTP 协议）这么轴，非要规定默认情况页面是不能获取跨域脚本错误信息的呢？
 
 这其实跟网络安全有关，不妨举一个例子来说明。
 
-
-
 我们先假设浏览器默认可以将跨域脚本的错误信息返回。
-
-
 
 这个时候我在我的博客里写下如下代码：
 
@@ -390,7 +313,69 @@ if (document.readyState != 'loading') {
 
 
 
-## audio标签
+
+
+## input
+
+
+
+### 上传文件
+
+
+
+[https://juejin.im/post/5aacc64e6fb9a028c6757bab](https://juejin.im/post/5aacc64e6fb9a028c6757bab)
+
+
+```html
+<input class="addPicInput" type="file" ref="uploadFile"
+       @change="fileChange" accept="image/*" multiple>
+```
+
+
+>multiple
+
+
+在实际开发过程中，会遇到上传文件的一些需求。但是使用原生的`<input type="file" />`在使用中存在一些问题
+
+* 在未上传文件时，显示"no file choosen"，用户界面不友好，不可配置
+* 上传同一个文件，不会触发change事件，即使该文件做过修改
+* 用户如果在上传过程中点击了“取消”，已经上传的文件会被移除
+
+
+
+### 解决思路
+
+
+在阅读了一些源码之后，总结了如下的解决方案。有点偷梁换柱的意思:
+
+* 将真正的`<input type="file" />`隐藏，使用自定义的button通过$refs去触发文件上传，实现自定义显示
+* 文件上传之后，处理完文件，将`<input type="file" />`的value设置为null，这样下次即使上传的是同一个文件，仍然会触发change事件
+* 使用上述方法，点击取消文件被移除，但是不影响页面展示
+
+
+
+### 监听中文输入
+
+[https://juejin.cn/post/6844903950634713096](https://juejin.cn/post/6844903950634713096)
+
+compositionstart和compositionend
+
+> The compositionstart event is fired when a text composition system such as an `input method editor starts a new composition session`.For example, this event could be fired after a user starts entering a Chinese character using a Pinyin IME.
+
+> The compositionend event is fired when a text composition system such as an `input method editor completes or cancels the current composition session`.For example, this event could be fired after a user finishes entering a Chinese character using a Pinyin IME.
+
+- `positionstart` 事件,当用户使用拼音输入法开始输入汉字时，这个事件就会被触发。
+- `compositionend` 事件, 当文中文输入完成时, compositionend 事件将被触发。
+
+
+
+
+
+
+
+
+
+## audio
 
 
 
