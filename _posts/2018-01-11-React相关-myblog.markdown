@@ -976,6 +976,8 @@ startTransition 的作用是告诉 React 在下一个渲染周期中，有一些
 
 #### usePrevious 
 
+[uidotdev/usehooks 是怎么实现 usePrevious 的？](https://blog.shadowfish0.top/2023-06-10-useprevious.html)
+
 [https://react.docschina.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state](https://react.docschina.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state)
 
 > 自定义 hook
@@ -1001,6 +1003,14 @@ function Counter() {
   return <h1>Now: {count}, before: {prevCount}</h1>;
 }
 ```
+
+`usePrevious`就是利用了`useRef`的值更改后不会触发重渲染的特性，来实现的保存变量的上个状态
+
+并且`useEffect`内的函数是在完成了渲染后再执行
+
+由于`useRef`的值不会触发重新渲染，所以页面上渲染的previous的值和它现在实际存的值是**不一样**的。
+
+
 
 
 
@@ -1612,6 +1622,14 @@ declare module 'react' {
 
 
 
+
+### useRef不能作为依赖项
+
+[useRef不能作为依赖项](https://juejin.cn/s/useref%20%E8%83%BD%E4%BD%9C%E4%B8%BA%E4%BE%9D%E8%B5%96%E9%A1%B9%E5%90%97)
+
+React 中的 `useRef` 不能作为依赖项。
+
+`useRef` 返回的是一个稳定的对象引用，不会在组件重新渲染时发生变化。因此，在函数组件中使用 `useRef` 创建的引用不会触发组件重新渲染。与此相反，依赖项应该是组件中可能会导致重新渲染的状态变量、props、函数等等。**如果使用 `useRef` 作为依赖项，React 将无法检测到变化并触发重新渲染，这会导致问题。**
 
 
 
