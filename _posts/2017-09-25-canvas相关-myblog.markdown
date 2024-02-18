@@ -12,7 +12,21 @@ tags:
 > “Yeah It's on. ”
 
 
+
+## canvas 对比 svg
+
+Canvas 相比 SVG 在性能上有一些优势的原因：
+
+1. **绘图方式**：Canvas 使用基于像素的绘图方式，而 SVG 使用基于矢量的绘图方式。在 Canvas 中，图形被转换为像素，并直接绘制在画布上。而在 SVG 中，图形是通过数学公式和几何描述来定义的，需要在每次渲染时重新计算和绘制。这使得 Canvas 在处理大量图形元素时更高效。
+2. **渲染方式**：Canvas 绘制后的图形是静态的位图，不会保留图形的结构信息。而 SVG 保留了图形的结构和属性信息，因此在每次渲染时都需要解析和计算这些信息。这使得 Canvas 在动态更新和频繁重绘时更快。
+3. **复杂性**：由于 SVG 保留了图形的结构信息，它可以更容易地进行交互和修改。但这也增加了渲染的复杂性和计算量。相比之下，Canvas 简单地将图形绘制在画布上，不需要处理图形的结构信息，因此更高效。
+
+Canvas 相比 SVG 在性能上更好，主要是因为绘图方式和渲染方式的差异。
+
+
+
 ## 基础
+
 [网页链接](http://www.w3school.com.cn/tags/html_ref_canvas.asp)
 
 
@@ -831,6 +845,18 @@ const offscreen = new OffscreenCanvas(200, 200);
 const canvas = document.getElementById('canvas');
 const offscreen = canvas.transferControlToOffscreen();
 ```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
