@@ -102,43 +102,6 @@ return num == 0 && 1 / num > 0
 ```
 
 
-### find()和findIndex()
-
-
-
-[网页链接](http://blog.csdn.net/qq_30100043/article/details/53303768)
-
-数组实例的find方法，用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为true的成员，然后返回该成员。如果没有符合条件的成员，则返回undefined。
-
-```
-[1, 4, -5, 10].find((n) => n < 0)  
-// -5  
-[1, 5, 10, 15].find(function(value, index, arr) {  
-return value > 9;  
-}) // 10  
-```
-
-上面代码中，find方法的回调函数可以接受三个参数，依次为当前的值、当前的位置和原数组。
-
-数组实例的findIndex方法的用法与find方法非常类似，返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1。
-```
-[1, 5, 10, 15].findIndex(function(value, index, arr) {  
-return value > 9;  
-}) // 2  
-```
-
-这两个方法都可以接受第二个参数，用来绑定回调函数的this对象。
-另外，这两个方法都可以发现NaN，弥补了数组的IndexOf方法的不足。
-```
-[NaN].indexOf(NaN)  
-// -1  
-[NaN].findIndex(y => Object.is(NaN, y))  
-// 0  
-```
-
-上面代码中，indexOf方法无法识别数组的NaN成员，但是findIndex方法可以借助Object.is方法做到。
-
-
 
 ### Decorator
 
@@ -649,11 +612,7 @@ var A = /*#__PURE__*/function () {
 
 #### 引申出class知识点
 
-
-
  **class 对于 = 号声明的方法、变量，都会将其作为实例的属性，而对于非 = 号声明的属性，则是放在原型链上** 
-
-
 
 ```js
 class A {
@@ -666,19 +625,9 @@ class A {
 }
 ```
 
-
-
 对于这个类， 在实例化的时候，b, c 会作为实例的属性，而 a 则是放在原型链上。
 
-
-
-----
-
-
-
 举个例子：
-
-
 
 ```js
 class Yideng {
@@ -712,41 +661,7 @@ laoyuan.sayStr()   // Error("Need to implement")
 
 
 
-
-
-
-### for in
-
-
-遍历对象 通常用for in来遍历对象的键名
-
-
-
-for in 可以遍历到myObject的原型方法method,如果不想遍历原型方法和属性的话，可以在循环内部判断一下,**hasOwnPropery方法可以判断某属性是否是该对象的实例属性**
-
-```javascript
-for (var key in myObject) {
-　　if（myObject.hasOwnProperty(key)){
-　　　　console.log(key);
-　　}
-}
-```
-
-
-
->**可以通过ES5的Object.keys(myObject)获取对象的实例属性组成的数组，不包括原型方法和属性**
-
-
-
-
-
-for..of和for..in可以正确响应break、continue和return语句
-
-
-
 ### class
-
-
 
 > es6 的类在初始化的时候，如果有基类会先执行基类的构造函数，之后再执行本身的构造函数。 
 
@@ -1439,19 +1354,49 @@ function SymbolPolyfill(description) {
 
 
 
+### Array
+
+#### find()和findIndex()
+
+[网页链接](http://blog.csdn.net/qq_30100043/article/details/53303768)
+
+数组实例的find方法，用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为true的成员，然后返回该成员。如果没有符合条件的成员，则返回undefined。
+
+```
+[1, 4, -5, 10].find((n) => n < 0)  
+// -5  
+[1, 5, 10, 15].find(function(value, index, arr) {  
+return value > 9;  
+}) // 10  
+```
+
+上面代码中，find方法的回调函数可以接受三个参数，依次为当前的值、当前的位置和原数组。
+
+数组实例的findIndex方法的用法与find方法非常类似，返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1。
+
+```
+[1, 5, 10, 15].findIndex(function(value, index, arr) {  
+return value > 9;  
+}) // 2  
+```
+
+这两个方法都可以接受第二个参数，用来绑定回调函数的this对象。
+另外，这两个方法都可以发现NaN，弥补了数组的IndexOf方法的不足。
+
+```
+[NaN].indexOf(NaN)  
+// -1  
+[NaN].findIndex(y => Object.is(NaN, y))  
+// 0  
+```
+
+上面代码中，indexOf方法无法识别数组的NaN成员，但是findIndex方法可以借助Object.is方法做到。
 
 
 
-
-### Array.from
-
-
-
-
+#### Array.from
 
 在 `JavaScript` 中有很多克隆数组的方法。正如你所想，`Array.from()` 可以很容易的实现数组的**浅拷贝。**
-
-
 
 
 ```js
@@ -1460,11 +1405,28 @@ const numbersCopy = Array.from(numbers);
 numbers === numbersCopy; // => false
 ```
 
-
-
-
-
 `Array.from(numbers)` 创建了对 `numbers` 数组的浅拷贝，`numbers === numbersCopy` 的结果是 `false`，意味着虽然 `numbers` 和 `numbersCopy` 有着相同的项，但是它们是不同的数组对象。
+
+#### for in
+
+
+遍历对象 通常用for in来遍历对象的键名
+
+for in 可以遍历到myObject的原型方法method,如果不想遍历原型方法和属性的话，可以在循环内部判断一下,**hasOwnPropery方法可以判断某属性是否是该对象的实例属性**
+
+```javascript
+for (var key in myObject) {
+　　if（myObject.hasOwnProperty(key)){
+　　　　console.log(key);
+　　}
+}
+```
+
+>**可以通过ES5的Object.keys(myObject)获取对象的实例属性组成的数组，不包括原型方法和属性**
+
+for..of和for..in可以正确响应break、continue和return语句
+
+
 
 
 
@@ -1472,17 +1434,9 @@ numbers === numbersCopy; // => false
 
 ### try catch能捕获到哪些 JS 异常
 
-
-
 能捕捉到的异常， **必须是在报错的时候** ,线程执行已经进入 try catch 但 try catch 未执行完的时候抛出来的。
 
-
-
  **异步方法无法捕捉到** 
-
-
-
-
 
 ```js
 
