@@ -1614,6 +1614,16 @@ type noNulls = NonNullable<myType>   // string | number
 
 
 
+### Function
+
+
+
+#### CallableFunction
+
+它表示一个具有函数签名的类型，该函数可以被调用。
+
+在 CallableFunction 类型中，函数签名包含了函数的参数类型和返回类型。
+
 
 
 ## 泛型 
