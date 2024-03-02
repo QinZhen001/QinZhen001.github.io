@@ -2118,6 +2118,45 @@ background-origin: padding-box|border-box|content-box;
 
 
 
+### Data URL
+
+使用Data URL技术，图片数据以base64字符串格式嵌入到了页面中，与HTML成为一体
+
+```html
+ <img src="data:image/gif;base64,R0...">
+```
+
+一个完整的 dataURI 应该是这样的：
+
+`data:[<mediatype>][;base64],<data>`
+
+其中mediatype声明了文件类型，遵循MIME规则，如“image/png”、“text/plain”；之后是编码类型，这里我们只涉及 base64
+
+优点：
+
+* 减少请求
+
+缺点：
+
+
+* Base64编码的数据体积通常是原数据的体积4/3，也就是Data URL形式的图片会比二进制格式的图片体积大1/3。
+* Data URL形式的图片一般情况下不会被浏览器缓存，这意味着每次访问这样页面时都被下载一次。这是一个使用效率方面的问题——尤其当这个图片被整个网站大量使用的时候。
+
+---
+
+Data URL如何浏览器缓存中？
+
+**答案是：通过CSS样式文件。CSS中的url操作符是用来指定网页元素的背景图片的，而浏览器并不在意URL里写的是什么——只要能通过它获取需要的数据。所以，我们就有了可以将Data URL形式的图片存储在CSS样式表中的可能。而所有浏览器都会积极的缓存CSS文件来提高页面加载效率。**
+
+```css
+.test
+  {
+  width: 100px;
+  height: 100px;
+  background-image: url("data:image/gif;base64,R0lGODlhAwADAIAAAP///8zMzCH5BAAAAAAALAAAAAADAAMAAAIEBHIJBQA7");
+  }
+```
+
 
 
 

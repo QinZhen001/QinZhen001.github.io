@@ -16,6 +16,8 @@ tags:
 
 # 正文
 
+[从 0 打造通用型低代码产品](https://juejin.cn/book/6918979822425210891/section)
+
 https://mp.weixin.qq.com/s/_dyeI-X-9Q2BNlaCAyH3Yg
 
 **「低代码平台作用在于降本增效提质，核心在于模型设计，降低各个功能点的耦合度，让平台支持跨平台」**。

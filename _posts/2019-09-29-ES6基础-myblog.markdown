@@ -1356,7 +1356,7 @@ function SymbolPolyfill(description) {
 
 ### Array
 
-#### find()和findIndex()
+#### find和findIndex
 
 [网页链接](http://blog.csdn.net/qq_30100043/article/details/53303768)
 
@@ -1427,6 +1427,74 @@ for (var key in myObject) {
 for..of和for..in可以正确响应break、continue和return语句
 
 
+
+#### forEach
+
+无法return和break
+
+**我们都知道for循环里要跳出整个循环是使用break，但在数组中用forEach循环如要退出整个循环使用break会报错，使用return也不能跳出循环。**
+
+之所以不能break, return
+
+是因为它不是简单的for循环。内部实现类似callback(context, arg1, arg2)。
+
+```ts
+Array.prototype.forEach = function (callback) {
+  // this represents our array
+  for (let index = 0; index < this.length; index++) {
+    // We call the callback for each entry
+    callback(this[index], index, this);
+  }
+}
+```
+
+async/await 与 forEach 也没法结合使用
+
+
+
+
+
+#### map
+
+```ts
+const result = [{ aa: "aa" }, { bb: "bb" }]
+const res = result.map(item => item)
+res[0].aa = "test"
+console.log(res)  // 改变
+console.log(result)  // 同时改变
+```
+
+证明map循环中是浅拷贝
+
+正确用法:
+
+```ts
+const result = [{ aa: "aa" }, { bb: "bb" }]
+const res = result.map(item => ({
+  ...item
+}))
+res[0].aa = "test"
+console.log(res) // 改变
+console.log(result) // 不会改变
+```
+
+
+
+
+
+#### forEach和map
+
+map方法体现的是数据不可变的思想。该思想认为所有的数据都是不能改变的，只能通过生成新的数据来达到修改的目的，因此直接对数组元素或对象属性进行操作的行为都是不可取的。这种思想其实有很多好处，最直接的就是避免了数据的隐式修改。immutable.js是实现数据不可变的一个库，可通过专属的API对引用类型进行操作，每次形成一个新的对象。
+
+
+forEach和map还存在一个编程思想的区别，前者是命令式编程，后者是声明式编程，如果项目的风格是声明式的，比如React，那么后者显然更统一。
+
+共同点：
+
+1. 都是循环遍历数组中的每一项。
+2. forEach()和map()里面每一次执行匿名函数都支持3个参数：数组中的当前项item,当前项的索引index,原始数组input。
+3. 匿名函数中的this都是指Window。
+4. 只能遍历数组。
 
 
 
