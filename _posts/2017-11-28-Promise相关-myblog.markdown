@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "ES6中的Promise"
+title:      "Promise相关"
 date:       2017-11-28 20:36:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

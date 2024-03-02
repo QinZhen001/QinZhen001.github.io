@@ -263,6 +263,10 @@ export default defineBuildConfig({
 
 
 
+# turbopack
+
+[https://turbo.build/pack/docs/why-turbopack](https://turbo.build/pack/docs/why-turbopack)
+
 
 
 

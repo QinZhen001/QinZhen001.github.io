@@ -87,14 +87,22 @@ module.exports = {
 
 
 
+### postcss-preset-env
 
+[https://www.npmjs.com/package/postcss-preset-env](https://www.npmjs.com/package/postcss-preset-env)
+
+[postcss-preset-env vs autoprefixer](https://juejin.cn/s/postcss-preset-env%20vs%20autoprefixer)
+
+PostCSS Preset Env 可以将现代 CSS 转换为大多数浏览器可以理解的内容，并根据目标浏览器或运行时环境确定所需的 polyfill
+
+The `browsers` option determines which polyfills are required based upon the browsers you are supporting.
+
+[PostCSS Preset Env](https://github.com/csstools/postcss-preset-env) supports any standard [browserslist](https://github.com/browserslist/browserslist#readme) configuration, which can be a `.browserslistrc` file, a `browserslist` key in `package.json`, or `browserslist` environment variables.
 
 
 
 ### postcss-import
 [https://www.npmjs.com/package/postcss-import](https://www.npmjs.com/package/postcss-import)
-
-
 
 PostCSS plugin to transform @import rules by inlining content.
 
@@ -112,8 +120,16 @@ Notes:
 
 
 
-
 ### autoprefixer
+
+> 现在被 postcss-preset-env 代替了
+
+[autoprefixer](https://github.com/postcss/autoprefixer) has [complex logic to fix CSS Grid in IE and older Edge](https://github.com/postcss/autoprefixer#grid-autoplacement-support-in-ie).
+
+autoprefixer在IE和旧版Edge中有复杂的逻辑来修复CSS Grid。
+
+----
+
 **PostCSS plugin** to parse CSS and add vendor prefixes to CSS rules using values from Can I Use. It is recommended by Google and used in Twitter and Taobao.
 
 
