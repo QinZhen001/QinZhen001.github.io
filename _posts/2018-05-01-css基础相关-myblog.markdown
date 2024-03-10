@@ -759,6 +759,35 @@ header {
 
 
 
+## @viewport
+
+[https://udn.realityripple.com/docs/Web/CSS/@viewport](https://udn.realityripple.com/docs/Web/CSS/@viewport)
+
+
+
+### viewport-fit
+
+[https://udn.realityripple.com/docs/Web/CSS/@viewport/viewport-fit](https://udn.realityripple.com/docs/Web/CSS/@viewport/viewport-fit)
+
+```html
+// 效果同
+<meta name="viewport"content="viewport-fit=cover"/>
+```
+
+- `auto`
+
+  This value doesn’t affect the initial layout viewport, and the whole web page is viewable.
+
+- `contain`
+
+  The viewport is scaled to fit the largest rectangle inscribed within the display.  (视口被缩放以适应显示内的最大矩形。)
+
+- `cover`
+
+  The viewport is scaled to fill the device display. It is highly recommended to make use of the [safe area inset variables](https://udn.realityripple.com/docs/Web/CSS/env) to ensure that important content doesn't end up outside the display.  (视口被缩放以填充设备显示)  (需要自己手动处理 safe area)
+
+
+
 # 滚动条
 
 ## 隐藏滚动条
@@ -1470,6 +1499,12 @@ animation-delay:-2s
 transform-origin 属性允许您改变被转换元素的位置。
 默认值： 50% 50% 0
 2D 转换元素能够改变元素 x 和 y 轴。3D 转换元素还能改变其 Z 轴。
+
+
+
+## matrix
+
+[理解CSS3 transform中的Matrix(矩阵)](https://www.zhangxinxu.com/wordpress/2012/06/css3-transform-matrix-%E7%9F%A9%E9%98%B5/)
 
 
 

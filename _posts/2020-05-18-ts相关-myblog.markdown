@@ -806,11 +806,15 @@ console.log(Test.bbb) // ok
 
 ## reference 
 
+在`.d.ts`文件中，`<reference>`指令用于指定对其他类型声明文件的依赖关系。它告诉编译器在构建过程中需要引入其他的类型声明文件。
+
 [https://www.tslang.cn/docs/handbook/triple-slash-directives.html](https://www.tslang.cn/docs/handbook/triple-slash-directives.html)
 
-
+使用`<reference>`指令可以确保在编译时，相关的类型声明文件能够正确地被引入。这对于使用外部库或框架的项目特别有用，因为类型声明文件能够提供有关这些库或框架的类型信息。
 
 ### types 和 path 的区别
+
+`<reference>`指令通常出现在`.d.ts`文件的顶部，其语法如下：
 
 ```
 /// <reference path="..." />  对指定路径的文件引入
@@ -821,17 +825,9 @@ console.log(Test.bbb) // ok
 
 对这些包的名字的解析与在 `import`语句里对模块名的解析类似。 可以简单地把三斜线类型引用指令当做 `import`声明的包。
 
-
-
 例如，把 `/// <reference types="node" />`引入到声明文件，表明这个文件使用了 `@types/node/index.d.ts`里面声明的名字； 并且，这个包需要在编译阶段与声明文件一起被包含进来。
 
-
-
 **仅当在你需要写一个`d.ts`文件时才使用这个指令。**
-
-
-
-
 
 
 

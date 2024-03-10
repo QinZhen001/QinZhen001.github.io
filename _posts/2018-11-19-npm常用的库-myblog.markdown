@@ -565,11 +565,7 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
 
 Run linters against staged git files and don't let 💩 slip into your code base!
 
-
-
 **对暂存的git文件运行**，不要让它滑入您的代码库
-
-
 
 ```
 // package.json

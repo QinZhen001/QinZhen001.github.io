@@ -449,3 +449,10 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 
 
+# next.js
+
+
+
+## component-hierarchy
+
+[https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy](https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy)
