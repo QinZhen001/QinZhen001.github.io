@@ -203,7 +203,9 @@ export const invert: InvertColor;
 
 [导入/导出](https://jkchao.github.io/typescript-book-chinese/new/typescript-3.8.html#%E4%BB%85%E4%BB%85%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E5%A3%B0%E6%98%8E)
 
-`import type` 仅仅导入被用于类型注解或声明的声明语句，**它总是会被完全删除，因此在运行时将不会留下任何代码**。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
+import type 是TypeScript 和Flow 中特有的语法，它**允许你导入类型而不导入运行时的值**。 这通常用于导入类型定义，例如接口、类型别名或类类型。 这种导入方式不会影响生成的JavaScript 代码，因为类型信息在编译时会被移除。与此相似，`export type` 仅仅提供一个用于类型的导出，在 JavaScript 输出文件中，它也将会被删除。
+
+
 
 
 
