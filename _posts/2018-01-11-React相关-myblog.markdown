@@ -1363,8 +1363,6 @@ setState(prevState => {
 
 ## React 18
 
-
-
 ### **useTransition**
 
 [https://juejin.cn/post/7038402899860258847](https://juejin.cn/post/7038402899860258847)
@@ -1379,6 +1377,83 @@ setState(prevState => {
 - 不需要开发人员去做额外的考虑，整个优化过程交给 **react** 和**浏览器**即可；
 
 
+
+###  SSR
+
+[Next.js 14 Tutorial - 48 - Suspense for SSR](https://www.youtube.com/watch?v=NdSthd1Ek8Q&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=48)
+Use the `<Suspense>` component to unlock two major SSR features:
+
+1. HTML streaming on the server  (Suspense)
+1. Selective hydration on the client
+
+---
+
+HTML streaming on the Server
+
+You don't have to fetch everything befor you can show anything 
+
+If a particular section delays the initial HIML, it can be seamlessly integrated into the stream later
+
+**This is the essence of how Suspense facilitates server-side HTML streaming**
+
+---
+
+Selective Hydration on the Client contd  (选择性水合)
+
+Selective Hydration offers a solution to the third issue: the necessity to "hydrate everything to interact with anything'
+
+React begins hydrating as soon as possible, enabling interactions with elements like the header and side navigation without waiting for the main content to be hydrated.(无需等待主要内容水合) This process is managed automatically by React
+
+In scenarios where multiple components are awaiting hydration, React prioritizeshydration based on user interactions (React 根据用户交互优先考虑水合作用)
+
+
+
+### React Server Components(RSC)
+
+> CSR => SSR => Suspense for SSR
+
+Suspense for SSR brought us closer to a seamless rendering experience
+Challenges:
+
+* Increased bundle sizes leading to excessive downloads for users  (捆绑包大小增加导致用户下载过多)
+* Unnecessary hydration delaying interactivity  (不必要的水合会延迟互动)
+* Extensive client-side processing that could result in poor performance (大量的客户端处理可能会导致性能不佳)
+
+----
+
+This approach aims to leverage the strengths of both server and clientenvironments, optimizing for efficiency, load times, and interactivity
+
+这种方法旨在利用服务器和客户端环境的优势，优化效率、加载时间和交互性
+
+The architecture introduces a dual-component model
+
+* Client Components  **(rendered once on the server and then on the client)**
+* Server Components  **(rendered only on the server)**
+
+This distinction is not based on the functionality of the components but rather onwhere they execute and the specific environments they are designed to interact with (这种区别不是基于组件的功能，而是基于它们执行的位置以及它们设计用于交互的特定环境)
+
+#### Benefits 优点
+
+**Reduced Bundle Sizes** (减少打包体积)
+
+* code to the client, allowing large dependencies ServerComponents do not send to remain server-side (服务器组件不向客户端发送代码，从而允许较大的依赖关系保持在服务器端)
+* This benefits users with slower internet connections or less capable devices by eliminating the need to download parse, and execute JavaScript for these components (这使互联网连接速度较慢或设备性能较差的用户无需为这些组件下载、解析和执行JavaScript，从而受益匪浅)
+
+**Direct Access to server-side Resources** (直接访问服务器端资源)
+
+**Enhanced Security** (增强的安全性)
+
+* Server Components' exclusive server-side execution enhances security by keeping sensitive data and logic, including tokens and APl keys, away from the client-side
+
+**Improved Data Fetching** (改进的数据获取)
+
+**Caching** (高速缓存)
+
+**Faster Initial Page Load and First Contentful Paint** (更快的初始页面加载和第一次内容绘制)
+
+**Improved SEO**
+
+**Efficient Streaming** (高效流媒体)
 
 
 

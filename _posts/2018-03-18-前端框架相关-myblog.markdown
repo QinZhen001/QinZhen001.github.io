@@ -429,11 +429,7 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 
 
 
-
-
-
-
-## svelte
+# svelte
 
 [https://juejin.cn/post/7185433911437033531](https://juejin.cn/post/7185433911437033531)
 
@@ -453,6 +449,48 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 
 
+## SSR
+
+Drawbacks of SSR -  All or Nothing Waterfall  （缺点）
+
+1. Data fetching must be completed before the server can begin rendering HTML
+2. The JavaScript required for the components needs to be fully loaded on the client side before the hydration process can start
+3. All components have to be hydrated before they become interactive. (所有组件在变得具有交互性之前都必须先水合)
+
+create an "all or nothing" waterfall problem that spans from the server to the client where each issue must be resolved before moving to the next one This is inefficient if some parts of your app are slower than others, as is often the case in real-world apps
+
+
+
 ## component-hierarchy
 
 [https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy](https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy)
+
+
+
+## Server Rendering Strategies
+
+> As a developer, you do not need to choose between static and dynamic rendering Next,js will automatically choose the best rendering strategy for each route basedon the features and APls used
+
+渲染策略
+
+* Static rendering 静态渲染  (default)  (HTML is generated at build time) 
+* Dynamic rendering 动态渲染  (HTML is generated at request time 每次请求)
+* Streaming 流式传输  (allows for progressive Ul rendering from the server 允许从服务器进行渐进U渲染)
+
+---
+
+Static rendering:
+
+Along with the HTML, the RSC payload is created for each component, and JavaScript chunks are produced for client-side component hydration in the browser
+
+如果您直接导航到页面路由，则会提供相应的HTML文件如果您从另一个路由导航到该路由，则会在客户端使用RSC有效负载和JavaScript块创建该路由，而不会向服务器发出任何额外的请求
+
+---
+
+Dynamic rendering:
+
+if a dynamic function is discovered, Next.js will switch todynamically rendering the whole route
+In Next.js, these dynamic functions are: cookies(), headers(), and searchParams
+
+---
+
