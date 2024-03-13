@@ -494,3 +494,14 @@ In Next.js, these dynamic functions are: cookies(), headers(), and searchParams
 
 ---
 
+
+
+
+
+## font
+
+[Why optimize fonts?](https://nextjs.org/learn/dashboard-app/optimizing-fonts-images#why-optimize-fonts)
+
+Next.js automatically optimizes fonts in the application when you use the `next/font` module. It downloads font files at build time and hosts them with your other static assets. This means when a user visits your application, there are no additional network requests for fonts which would impact performance.
+
+next/font模块时自动优化应用程序中的字体。在构建时下载字体文件，并将它们与其他静态资产一起托管。这意味着当用户访问您的应用程序时，不存在会影响性能的字体的额外网络请求。
