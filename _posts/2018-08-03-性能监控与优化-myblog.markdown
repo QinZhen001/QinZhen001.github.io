@@ -433,9 +433,16 @@ preconnect用于启动预链接，其中包含DNS查找，TCP握手，以及可�
 <link rel="preconnect" href="//cdn.example.com" crossorigin>
 ```
 
-### prefetch
+### prefetch 和 preload
 
-Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该资源，一旦将来请求该资源，浏览器可以提供更快的响应。
+> **preload 是告诉浏览器页面必定需要的资源，浏览器一定会加载这些资源。** **prefetch 是告诉浏览器页面可能需要的资源，浏览器不一定会加载这些资源**。 在 VUE SSR 生成的页面中，首页的资源均使用 preload ，而路由对应的资源，则使用 prefetch 。
+
+[preload](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/rel/preload)
+
+
+
+
+prefetch用于标识下一个导航可能需要的资源。浏览器会获取该资源，一旦将来请求该资源，浏览器可以提供更快的响应。
 ```ts
 <link rel="prefetch" href="//example.com/next-page.html" as="html" crossorigin="use-credentials">
 <link rel="prefetch" href="/library.js" as="script">
@@ -444,25 +451,22 @@ Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该
 
 as与crossorigin选项都是可选的。
 
-### Next.js next/link
+---
 
-[https://nextjs.org/docs/app/api-reference/components/link#prefetch](https://nextjs.org/docs/app/api-reference/components/link#prefetch)
-
-[next/link prefetch 实现原理](https://blog.csdn.net/VoisSurTonChemin/article/details/121587068)
-
-### Preload
+preload
 
 通过一个现有元素（例如：img，script，link）声明资源会将获取与执行耦合在一起。然而应用可能只是想要先获取资源，当满足某些条件时再执行资源。
 
 Preload提供了预获取资源的能力，可以将获取资源的行为从资源执行中分离出来。因此，Preload可以构建自定义的资源加载与执行。
 
 例如，应用可以使用Preload进行CSS资源的预加载、并且同时具备：高优先级、不阻塞渲染等特性。然后应用程序在合适的时间使用CSS资源：
-```
+
+```html
 <!-- 通过声明性标记预加载 CSS 资源 -->
 <link rel="preload" href="/styles/other.css" as="style">
 ```
 
-```
+```html
 <!-- 或，通过JavaScript预加载 CSS 资源 -->
 <script>
 var res = document.createElement("link");
@@ -473,10 +477,20 @@ document.head.appendChild(res);
 </script>
 ```
 
-```
+```html
 <!-- 使用HTTP头预加载 -->
 Link: <https://example.com/other/styles.css>; rel=preload; as=style
 ```
+
+
+
+
+
+### Next.js next/link
+
+[https://nextjs.org/docs/app/api-reference/components/link#prefetch](https://nextjs.org/docs/app/api-reference/components/link#prefetch)
+
+[next/link prefetch 实现原理](https://blog.csdn.net/VoisSurTonChemin/article/details/121587068)
 
 
 

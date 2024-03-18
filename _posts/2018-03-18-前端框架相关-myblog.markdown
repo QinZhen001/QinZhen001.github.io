@@ -461,7 +461,49 @@ create an "all or nothing" waterfall problem that spans from the server to the c
 
 
 
+## Static Rendering
+
+[https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering)
+
+静态渲染
+
+With static rendering, data fetching and rendering happens on the server at build time (when you deploy) or during [revalidation](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#revalidating-data). The result can then be distributed and cached in a [Content Delivery Network (CDN)](https://nextjs.org/docs/app/building-your-application/rendering/server-components#static-rendering-default).
+
+好处：
+
+- **Faster Websites** -
+- **Reduced Server Load** 
+- **SEO** 
+
+Static rendering is useful for UI with **no data** or **data that is shared across users**, such as a static blog post or a product page. It might not be a good fit for a dashboard that has personalized data that is regularly updated.
+
+静态渲染对于没有数据或数据在用户之间共享的 UI 非常有用，比如静态博客文章或产品页面。但对于包含个性化数据且经常更新的仪表盘可能不太合适。
+
+
+
+## Dynamic Rendering
+
+[https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-dynamic-rendering](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-dynamic-rendering)
+
+动态渲染
+
+With dynamic rendering, content is rendered on the server for each user at request time (when the user visits the page)
+
+使用动态呈现，内容在请求时(当用户访问页面时)在服务器上为每个用户呈现。
+
+好处：
+
+- **Real-Time Data** 
+- **User-Specific Content** 
+- **Request Time Information** 
+
+
+
+
+
 ## component-hierarchy
+
+组件等级结构
 
 [https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy](https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy)
 

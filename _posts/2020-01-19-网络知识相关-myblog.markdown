@@ -260,6 +260,18 @@ TCP粘包可能是因为TCP协议为了提高数据传输的效率而采用的�
 
 
 
+## **NTP**
+
+[网络时间协议](https://zh.wikipedia.org/zh-cn/%E7%B6%B2%E8%B7%AF%E6%99%82%E9%96%93%E5%8D%94%E5%AE%9A)
+
+[https://info.support.huawei.com/info-finder/encyclopedia/zh/NTP.html](https://info.support.huawei.com/info-finder/encyclopedia/zh/NTP.html)
+
+网络时间协议NTP（Network Time Protocol）是TCP/IP协议族里面的一个应用层协议，用来使客户端和服务器之间进行时钟同步，提供高精准度的时间校正。NTP服务器从权威时钟源（例如原子钟、GPS）接收精确的协调世界时UTC，客户端再从服务器请求和接收时间。
+
+
+
+
+
 ## SPDY 协议
 
 SPDY 是由 google 推行的改进版本的 HTTP1.1 （那时候还没有 HTTP2）。

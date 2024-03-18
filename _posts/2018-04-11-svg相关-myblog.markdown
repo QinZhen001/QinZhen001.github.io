@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "svg入门"
+title:      "svg相关"
 date:       2018-04-11 15:54:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -187,14 +187,6 @@ SVG的文本可以沿着一条自定义的Path来排布，比如曲线、圆形�
 
 
 
-
-
-
-
-
-
-## 补充
-
 ### stroke属性
 
 [网页链接](http://blog.csdn.net/ning0_o/article/details/54970474)
@@ -202,10 +194,13 @@ SVG的文本可以沿着一条自定义的Path来排布，比如曲线、圆形�
 定义一条线，文本或元素轮廓颜色
 
 #### stroke-width
+
 定义一条线，文本或元素轮廓厚度
 
 #### stroke-linecap
+
 描边端点表现形式
+
 ```
 <svg>
   <g fill='none' stroke='black' stroke-width='10'>
@@ -217,7 +212,9 @@ SVG的文本可以沿着一条自定义的Path来排布，比如曲线、圆形�
 ```
 
 #### **stroke-dasharray**
+
 用于创建虚线
+
 * stroke-dasharray = '10'
 * stroke-dasharray = '10, 10'
 * stroke-dasharray = '10, 10, 5, 5'
@@ -227,6 +224,7 @@ SVG的文本可以沿着一条自定义的Path来排布，比如曲线、圆形�
 两个参数或者多个参数时：一个表示长度，一个表示间距
 
 #### **stroke-dashoffset**
+
 定义一条线，文本或元素距离（相当于基于position：relative；**设置left值**。只是不像left单纯的基于x方向设置， stroke-dashoffset是基于svg路径设置的） 
 
 
@@ -258,16 +256,19 @@ SVG的文本可以沿着一条自定义的Path来排布，比如曲线、圆形�
 ```
 
 #### stroke-linejoin
+
 描边转角的表现方式
 stroke-linejoin = miter
 stroke-linejoin = round
 stroke-linejoin = bevel
 
 #### stroke-opacity
+
 描边透明度
 
 
 ### clipPathUnits属性
+
 [https://blog.csdn.net/leo8729/article/details/48374631](https://blog.csdn.net/leo8729/article/details/48374631)
 
 `<clipPath>`元素包括很多个属性，比如id,class,transform和fill和stroke等，其中最有用的是clipPathUnits属性。
@@ -284,6 +285,7 @@ display属性不能运用于`<clipPath>`元素上，因此，就算display设置
 
 
 ### 获取path的某点坐标和总长度
+
 ```css
 <svg class="volumn-controller" width="580" height="400" xmlns="http://www.w3.org/2000/svg">
   <path class="volumn-path" stroke="#000" d="m100,247c93,-128 284,-129 388,6" opacity="0.5" stroke-width="1"
@@ -305,4 +307,34 @@ display属性不能运用于`<clipPath>`元素上，因此，就算display设置
 [svg的path实现的控制音量](https://github.com/QinZhen001/animation-demo/blob/master/svg-path-volumn/index.html)
 
 
+
+
+
+
+
+# [svgr](https://github.com/gregberge/svgr)
+
+SVGR is an universal tool to transform SVG into React components.
+
+SVGR takes a raw SVG and transforms it into a ready-to-use React component.
+
+SVGR是将SVG转换为React组件的通用工具。
+
+
+
+## @svgr/webpack
+
+[https://www.npmjs.com/package/@svgr/webpack](https://www.npmjs.com/package/@svgr/webpack)
+
+Webpack loader for SVGR.
+
+
+
+
+
+## vite-plugin-svgr
+
+[https://www.npmjs.com/package/vite-plugin-svgr](https://www.npmjs.com/package/vite-plugin-svgr)
+
+Vite plugin to transform SVGs into React components. Uses [svgr](https://github.com/gregberge/svgr) under the hood.
 
