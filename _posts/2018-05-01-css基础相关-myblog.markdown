@@ -1643,9 +1643,36 @@ Ugly:
 
 * **With CSS-in-JS, there's a lot more that can go wrong, especially when using SSR and/or component libraries****使用 CSS-in-JS，还有很多可能出错的地方，尤其是在使用 SSR 和/或组件库时。
 
-  
+
+
+## css modules
+
+
+
+### [define a global class](https://stackoverflow.com/questions/34279517/using-css-modules-how-do-i-define-a-global-class)
+
+[Using css modules how do I define a global class](https://stackoverflow.com/questions/34279517/using-css-modules-how-do-i-define-a-global-class)
+
+```css
+:global(.tweet) {
+    text-align: left;
+}
+:global(.user) {
+    text-align: left;
+}
+
+.test:global(.StaticClass) {
+    background-color: orange;
+}
+```
+
+
+
+
 
 # 移动端border-1px
+
+
 
 ## 伪类实现
 
