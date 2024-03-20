@@ -497,7 +497,9 @@ With dynamic rendering, content is rendered on the server for each user at reque
 - **User-Specific Content** 
 - **Request Time Information** 
 
+With dynamic rendering, **your application is only as fast as your slowest data fetch.**
 
+使用动态呈现，应用程序的速度取决于最慢的数据获取速度。
 
 
 
@@ -535,6 +537,53 @@ if a dynamic function is discovered, Next.js will switch todynamically rendering
 In Next.js, these dynamic functions are: cookies(), headers(), and searchParams
 
 ---
+
+
+
+## Streaming
+
+Streaming is a data transfer technique that allows you to break down a route into smaller "chunks" and progressively stream them from the server to the client as they become ready.
+
+流是一种数据传输技术，它允许您将路由分解为更小的“块”，并在它们准备好时逐步将它们从服务器流式传输到客户端。
+
+Streaming works well with React's component model, as each component can be considered a *chunk*.
+
+流与React的组件模型配合得很好，因为每个组件都可以被视为一个块。
+
+There are two ways you implement streaming in Next.js:
+
+1. At the page level, with the `loading.tsx` file.
+2. For specific components, with `<Suspense>`.
+
+
+
+
+
+## Suspense
+
+[https://nextjs.org/learn/dashboard-app/streaming#practice-streaming-latestinvoices](https://nextjs.org/learn/dashboard-app/streaming#practice-streaming-latestinvoices)
+
+Where you place your Suspense boundaries will depend on a few things:
+
+Suspense设置取决于以下几点
+
+1. How you want the user to experience the page as it streams. (您希望用户如何体验流媒体页面。)
+2. What content you want to prioritize. (你想优先考虑哪些内容。)
+3. If the components rely on data fetching.  (如果组件依赖于数据获取。)
+
+---
+
+You could stream the **whole page** like we did with `loading.tsx`... but that may lead to a longer loading time if one of the components has a slow data fetch.
+
+你可以流式传输整个页面，就像我们在loading.tsx中做的那样……但是，如果其中一个组件的数据获取速度较慢，那么这可能会导致较长的加载时间。
+
+You could stream **every component** individually... but that may lead to UI *popping* into the screen as it becomes ready.
+
+你可以单独流式传输每个组件……但这可能会导致UI在准备就绪时弹出屏幕。
+
+**it's good practice to move your data fetches down to the components that need it, and then wrap those components in Suspense**
+
+最好的做法是将数据获取移到需要它的组件中，然后将这些组件封装在悬念中
 
 
 

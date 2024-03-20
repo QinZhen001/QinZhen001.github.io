@@ -48,6 +48,30 @@ tags:
 
 
 
+## defaultValue vs value
+
+Controlled vs. Uncontrolled
+
+If you're using state to manage the value of an input, you'd use the value attribute to make it a controlled component. This means React would manage the input's state.
+
+如果您使用state来管理输入的值，那么您将使用value属性使其成为受控组件。这意味着React将管理输入的状态。
+
+However, since you're not using state, you can use defaultValue. This means the native input will manage its own state. This is okay since you're saving the search query to the URL instead of state.
+
+但是，由于没有使用state，所以可以使用defaultValue。这意味着本机输入将管理自己的状态。这是可以的，因为您将搜索查询保存到URL而不是状态。
+
+```html
+<input
+  placeholder={placeholder}
+  onChange={(e) => {
+    handleSearch(e.target.value);
+  }}
+  defaultValue={searchParams.get('query')?.toString()}
+/>
+```
+
+
+
 
 
 ### 默认值

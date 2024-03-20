@@ -689,3 +689,43 @@ input[type="number"]{
 
 
 
+### 列表超出滚动
+
+结构： content  =>  list =>  litem 
+
+```html
+  <div class="content">
+    <div class="list">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+      <div class="item">4</div>
+    </div>
+  </div>
+```
+
+```css
+    .content {
+      position: relative;
+      height: calc(100vh - 500px);
+      overflow: hidden;
+    }
+
+    .list{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .item{
+      height: 100px;
+      width: 100%;
+    }
+```
+
+
+
