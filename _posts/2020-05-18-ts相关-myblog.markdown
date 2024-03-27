@@ -194,6 +194,45 @@ export const invert: InvertColor;
 
 
 
+### 获取interface所有值的类型
+
+使用
+
+```ts
+type ValueOf<T> = T[keyof T]
+```
+
+举个例子：
+
+```tsx
+enum RtmMessageType {
+  UserInfo = "UserInfo",
+  BeHost = "BeHost",
+}
+
+interface RtmMessageData {
+  [RtmMessageType.UserInfo]?: {
+    userName: string
+    userId: string
+    type: RtmMessageType.UserInfo
+  }
+  [RtmMessageType.BeHost]?: {
+    userId: string
+    type: RtmMessageType.BeHost
+  }
+}
+```
+
+用法：
+
+```tsx
+type Test = ValueOf<RtmMessageData>
+```
+
+
+
+
+
 
 ## type
 
@@ -426,11 +465,13 @@ function toArray(x: number): Array<number> {
 type Func = typeof toArray; // -> (x: number) => number[]
 ```
 
+
+
 #### keyof 结合 typeof 一起使用
 
 https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
 
-```
+```tsx
 const cats = {
   "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
   "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
@@ -443,6 +484,16 @@ function f(a: keyof typeof cats) {
 
 // f("x"); // error
 f("Coding Cat"); // ok
+```
+
+在遍历中尤其有用
+
+```tsx
+const state: Record<string, string> = {}
+for (const key in attr) {
+   const value = attr[key as keyof typeof attr]
+   state[key] = isString(value) ? value : JSON.stringify(value)
+}
 ```
 
 

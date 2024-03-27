@@ -26,6 +26,8 @@ tags:
 
 [自己的组件库](https://github.com/QinZhen001/qz-ui)
 
+[https://github.com/rte-design/rte-design](https://github.com/rte-design/rte-design)
+
 
 
 ## Icon 处理
@@ -34,15 +36,11 @@ tags:
 
 设计团队新增的每一个图标，都需要委托组件库开发者让图标入库、提交、发版本、业务侧更新组件库版本。这样的做法所带来的问题，就是操作繁琐，效率低下，还会导致组件库的版本号飞涨，CHANGELOG 几乎清一色的“新增一个图标”，不利于整体维护。
 
-
-
 为了解决这个问题，一个思路是让组件库和图标库进行解耦，分别维护，用的时候再组合起来
 
 借鉴：@ant-design/icons
 
  [anti design 图标升级](https://ant.design/docs/react/migration-v4-cn#图标升级)
-
-
 
 **tip：图标怎么按需加载 这个值得研究了**
 
@@ -150,7 +148,7 @@ npm install --save-dev webpack-chain
 当你安装了 webpack-chain， 你就可以开始创建一个webpack的配置。 对于本指南，我们的示例基本配置 webpack.config.js 将位于我们项目的根目录。
 
 
-```
+```tsx
 // 导入 webpack-chain 模块，该模块导出了一个用于创建一个webpack配置API的单一构造函数。
 const Config = require('webpack-chain');
 

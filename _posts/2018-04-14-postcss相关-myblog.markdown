@@ -83,6 +83,24 @@ module.exports = {
 
 
 
+## 配置
+
+
+
+### extract
+
+[https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#extract-css](https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#extract-css)
+
+
+
+### inject
+
+[https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#inject](https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#inject)
+
+Inject CSS into `<head>`, it's always `false` when `extract: true`.
+
+
+
 ## 插件
 
 
