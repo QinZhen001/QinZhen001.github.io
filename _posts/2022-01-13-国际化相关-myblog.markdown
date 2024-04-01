@@ -14,19 +14,13 @@ tags:
 
 
 
-# 正文
-
-
-
-## i18n
+# i18n
 
 [https://www.npmjs.com/package/i18n](https://www.npmjs.com/package/i18n)
 
 
 
-
-
-## i18next
+# i18next
 
 [https://www.i18next.com/overview/getting-started](https://www.i18next.com/overview/getting-started)
 
@@ -40,46 +34,91 @@ I18next是一个非常流行的国际化框架，适用于浏览器或任何其�
 
 
 
+# react-i18next
 
+```ts
+import i18n from "i18next"
+import Backend from "i18next-http-backend"
+import LanguageDetector from "i18next-browser-languagedetector"
+import { initReactI18next } from "react-i18next"
+import { name } from "../../package.json"
 
-## react-i18next
+const env = process.env.NODE_ENV
+let loadPath = ""
+let addPath = ""
 
-
-
-
-
-
-
-### peerDependencies
-
-```
-  "peerDependencies": {
-    "i18next": ">= 19.0.0",
-    "react": ">= 16.8.0"
-  },
-```
-
-
-
-### use
-
-```tsx
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+if (env === "production") {
+  loadPath = `/${name}/locales/{{lng}}/{{ns}}.json`
+  addPath = `/${name}/locales/add/{{lng}}/{{ns}}`
+} else {
+  loadPath = "/locales/{{lng}}/{{ns}}.json"
+  addPath = "/locales/add/{{lng}}/{{ns}}"
+}
 
 i18n
+  // load translation using http -> see /public/locales
+  // learn more: https://github.com/i18next/i18next-http-backend
+  .use(Backend)
+  // detect user language
+  // learn more: https://github.com/i18next/i18next-browser-languageDetector
+  .use(LanguageDetector)
+  // pass the i18n instance to react-i18next.
   .use(initReactI18next)
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    fallbackLng: 'en',
-    debug: true,
-
-    interpolation: {
-      escapeValue: false, // not needed for react as it escapes by default
+    load: "languageOnly",
+    fallbackLng: "en",
+    backend: {
+      // 根据不同环境加载不同路径
+      loadPath,
+      addPath,
     },
-  });
+    debug: true,   // 调试模式 （可以看到相关log，方便定位问题）
+  })
 
-export default i18n;
+export default i18n
+
 ```
 
+
+
+
+
+
+
+# 问题
+
+
+
+
+
+## need to pass in an i18next instance
+
+> react-i18next
+
+需要使用 I18nextProvider
+
+解决：
+
+```tsx
+import { I18nextProvider } from "react-i18next"
+
+import i18n from "./i18n"
+
+<I18nextProvider i18n={i18n}>
+  <Suspense fallback={"loading..."}>
+    <App />
+  </Suspense>
+</I18nextProvider>
+```
+
+
+
+
+
+## changeLanguage is not a function
+
+>  react-i18next
+
+大概率是 translation.json 请求的路径有问题，设置好 loadPath/addPath

@@ -207,6 +207,18 @@ title写法：
 
 
 
+### metadata
+
+In web development, metadata provides additional details about a webpage. Metadata is not visible to the users visiting the page. Instead, it works behind the scenes, embedded within the page's HTML, usually within the `<head>` element. This hidden information is crucial for search engines and other systems that need to understand your webpage's content better.
+
+在web开发中，元数据提供了关于网页的额外细节。元数据对于访问页面的用户是不可见的。相反，它在幕后工作，嵌入在页面的HTML中，通常在<head>元素中。这些隐藏的信息对于搜索引擎和其他需要更好地理解你网页内容的系统来说是至关重要的。
+
+Metadata plays a significant role in enhancing a webpage's SEO, making it more accessible and understandable for search engines and social media platforms
+
+元数据在增强网页搜索引擎优化方面发挥着重要作用，使其更容易被搜索引擎和社交媒体平台访问和理解
+
+
+
 ###   robots.txt 
 
 ​     robots.txt声明网站中哪些目录不让搜索引擎收录，**执行顺序从上到下**，robots.txt写法，添加sitemap链接。sitemap是谷歌创造出来的，搜索引擎会优先读取sitemap.xml文件，如果没有就逐个抓取URL。 
@@ -304,30 +316,14 @@ Disallow:/
 
 
 
-
-
-
-
-
-
 #### sitemap索引在robots.txt的位置
 
-
-
-​    sitamap索引的位置最好放在robots.txt的**最下面**，蜘蛛先遵循前面的原则，再按照网站地图爬取。
-
-
-
-
+ sitamap索引的位置最好放在robots.txt的**最下面**，蜘蛛先遵循前面的原则，再按照网站地图爬取。
 
 ```
 Sitemap: http://www.vi586.com/sitemap.xml
 Sitemap: http://www.vi586.com/sitemap.html
 ```
-
-
-
-
 
 
 

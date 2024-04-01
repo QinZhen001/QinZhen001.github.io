@@ -474,6 +474,14 @@ undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 
 
 
+## **redux-toolkit**
+
+[https://redux-toolkit.js.org/introduction/getting-started](https://redux-toolkit.js.org/introduction/getting-started)
+
+
+
+
+
 
 
 # MobX
@@ -724,6 +732,60 @@ name.set("Dave");
 
 
 # 补充
+
+
+
+## Immer
+
+[https://immerjs.github.io/immer/zh-CN/](https://immerjs.github.io/immer/zh-CN/)
+
+[Immer 简介：简单的方法实现不变性](https://medium.com/hackernoon/introducing-immer-immutability-the-easy-way-9d73d8f71cb3)
+
+Immer 简化了不可变数据结构的处理
+
+Immer 可以在需要使用不可变数据结构的任何上下文中使用。例如与 React state、React 或 Redux reducers 或者 configuration management 结合使用。不可变的数据结构允许（高效）的变化检测：如果对对象的引用没有改变，那么对象本身也没有改变。此外，它使克隆对象相对便宜：数据树的未更改部分不需要复制，并且在内存中与相同状态的旧版本共享
+
+一般来说，这些好处可以通过确保您永远不会更改对象、数组或映射的任何属性来实现，而是始终创建一个更改后的副本。
+
+
+
+### Immer 和 Immutable
+
+[Immutable.js了解一下](https://juejin.cn/post/6844903587458334733#heading-75)
+
+[immer.js:也许更适合你的immutable js库](https://juejin.cn/post/6844904111402385422)
+
+Immer.js 是一个基于 Proxy 实现的简化版不可变数据库，它提供了一种更简单的方式来创建和修改不可变数据。
+
+主要思想：
+
+通过使用 immer 函数，可以在修改不可变数据时编写可变代码。它允许你直接修改数据，而无需手动创建和返回新的数据对象。Immer.js 在内部利用了 JavaScript 的 Proxy 特性来捕获对象属性的修改，并对这些修改进行跟踪和记录，从而保证原始数据对象不会被修改。**使用 Immer.js 可以使代码更简洁、易于理解和维护**
+
+实现原理：
+
+使用了一个 ES6 的新特性 Proxy 对象
+
+immer 的做法就是维护一份 state 在内部，劫持所有操作，内部来判断是否有变化从而最终决定如何返回。
+
+----
+
+Immutable.js 是一个强大的库，用于创建不可变的数据结构。它提供了多种不可变数据类型，如 List（列表）、Map（映射）、Set（集合）等。
+
+核心思想：
+
+不可变的数据结构可以提高性能和可预测性，因为它们保证了数据不能被意外修改。Immutable.js 的数据操作是通过创建和返回新的不可变数据来实现的，这意味着每次操作都会生成一个新的数据对象，而不会修改原始数据对象。
+
+缺点：
+
+Immutable的API设计的和原生对象类似，而且非常多，容易混淆操作
+
+---
+
+**immutable逐渐被immer取代，redux-toolkit集成了immer**
+
+**与 immutable-js 最大的不同，immer 是使用原生数据结构的 API 而不是像 immutable-js 那样转化为内置对象之后使用内置的 API**
+
+Immer 最大的好处就在这里，我们的学习没有太多成本，因为它的 API 很少，无非就是把我们之前的操作放置到 produce 函数的第二参数函数中去执行。
 
 
 

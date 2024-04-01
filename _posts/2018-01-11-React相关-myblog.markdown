@@ -48,7 +48,15 @@ tags:
 
 
 
-## defaultValue vs value
+### React.ReactNode vs React.ReactNode
+
+React.ReactNode => 这是可以在 JSX 中作为子元素传递的所有可能类型的并集
+
+React.ReactElement => 它只包括 JSX 元素，而不包括 JavaScript 原始类型，如 string 或 number
+
+
+
+### defaultValue vs value
 
 Controlled vs. Uncontrolled
 
@@ -71,10 +79,6 @@ However, since you're not using state, you can use defaultValue. This means the 
 ```
 
 
-
-
-
-### 默认值
 
 在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下, 你可以指定一个 `defaultValue` 属性，而不是 `value`。在一个组件已经挂载之后去更新 `defaultValue` 属性的值，不会造成 DOM 上值的任何更新。
 
@@ -571,6 +575,29 @@ export default defineConfig({
 
 
 #### useEffect
+
+```tsx
+const countRef = useRef(0);
+
+useEffect(() => {
+  console.log('useEffect triggered',countRef.current);
+  // ref.current 的值发生变更不会触发re-render
+}, [countRef.current]);
+
+const handleIncrement = () => {
+    countRef.current += 1;
+};
+```
+
+不需要吧Ref相关的东西放到useEffect依赖之中
+
+
+
+
+
+#### useRef
+
+
 
 
 

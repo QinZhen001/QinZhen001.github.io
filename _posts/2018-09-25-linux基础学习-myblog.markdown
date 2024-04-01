@@ -336,6 +336,21 @@ free -h
 
 
 
+### openssl
+
+[https://wangchujiang.com/linux-command/c/openssl.html](https://wangchujiang.com/linux-command/c/openssl.html)
+
+**OpenSSL** 是一个强大的安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用
+
+```bash
+// 例子：
+openssl rand -base64 10
+```
+
+
+
+
+
 ### curl
 
 curl命令是一个利用URL规则在命令行下工作的文件传输工具。它支持文件的上传和下载，所以是综合传输工具，但按传统，习惯称curl为下载工具。作为一款强力工具，curl支持包括HTTP、HTTPS、ftp等众多协议，还支持POST、cookies、认证、从指定偏移处下载部分文件、用户代理字符串、限速、文件大小、进度条等特征。做网页处理流程和数据检索自动化，curl可以祝一臂之力。

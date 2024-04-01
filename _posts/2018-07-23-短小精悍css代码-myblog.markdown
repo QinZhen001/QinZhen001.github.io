@@ -729,3 +729,50 @@ input[type="number"]{
 
 
 
+
+
+### title 属性
+
+[HTML title 属性](https://www.w3school.com.cn/tags/att_standard_title.asp)
+
+`title` 属性规定关于元素的额外信息。
+
+这些信息通常会在鼠标移到元素上时显示一段工具提示文本（tooltip text）
+
+select中的option加入title属性后，鼠标悬浮会有文字提示效果：
+
+```html
+  <select id="mySelect">
+    <option value="option1">选项1</option>
+    <option value="option2">选项2</option>
+    <option value="option3" title="请输入您的姓名">选项3</option>
+  </select>
+```
+
+---
+
+title属性对应的ui效果是无法修改的
+
+如果要修改，只能使用自定义title
+
+```html
+  <style>
+    .tip {
+      position: relative;
+    }
+
+    .tip:hover:after {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      content: attr(data-title);
+      color: #000000;
+      border: 1px solid #242424;
+      border-radius: 5px;
+      background-color: #E5E5E5;
+    }
+  </style>  
+
+<div data-title="标题" class="tip">我是一个测试</div>
+```
+
