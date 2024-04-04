@@ -979,6 +979,18 @@ SIGTERM是一个软件中断信号，用来请求进程正常终止。当收到S
 
 
 
+### file descriptor
+
+[https://wiyi.org/linux-file-descriptor.html](https://wiyi.org/linux-file-descriptor.html)
+
+file descriptor(以下简称fd)又叫文件描述符，他是一个抽象的指示符，用一个整数表示(非负整数)。它指向了由系统内核维护的一个file table中的某个条目(entry)。
+
+本文描述的所有场景仅限于类unix系统环境，在windows中这玩意叫file handle(臭名昭著的翻译: 句柄)。
+
+
+
+
+
 # 问题
 
 

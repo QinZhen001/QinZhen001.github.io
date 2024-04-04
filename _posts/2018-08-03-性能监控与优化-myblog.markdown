@@ -957,6 +957,33 @@ keep-alive需要其包裹的组件有name属性，
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
+
+
+
+
+# Error
+
+
+
+
+
+## extend error
+
+[https://stackoverflow.com/questions/1382107/whats-a-good-way-to-extend-error-in-javascript](https://stackoverflow.com/questions/1382107/whats-a-good-way-to-extend-error-in-javascript)
+
+```ts
+class MyError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'MyError';
+  }
+}
+```
+
+
+
+
+
 # 其他
 
 其他一些值得考虑的优化点：
