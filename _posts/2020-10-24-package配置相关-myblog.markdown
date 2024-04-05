@@ -324,6 +324,16 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 
 
+## workspaces
+
+[https://docs.npmjs.com/cli/v10/using-npm/workspaces](https://docs.npmjs.com/cli/v10/using-npm/workspaces)
+
+**Workspaces** is a generic term that refers to the set of features in the npm cli that provides support for managing multiple packages from your local file system from within a singular top-level, root package.
+
+工作区是一个通用术语，指的是npm cli中的一组特性，这些特性支持从一个顶级根包中管理本地文件系统中的多个包。
+
+
+
 ## exports
 
 [https://www.cnblogs.com/taohuaya/p/15573719.html](https://www.cnblogs.com/taohuaya/p/15573719.html)

@@ -46,6 +46,24 @@ tags:
 
 
 
+
+
+
+
+# 文档
+
+
+
+## typedoc
+
+[https://www.npmjs.com/package/typedoc](https://www.npmjs.com/package/typedoc)
+
+Documentation generator for TypeScript projects.
+
+
+
+
+
 # 补充
 
 

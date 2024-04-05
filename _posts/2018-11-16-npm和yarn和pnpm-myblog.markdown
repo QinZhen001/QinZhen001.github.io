@@ -30,7 +30,7 @@ npm 脚本的退出码，也遵守 Shell 脚本规则。如果退出码不是`0`
 
 
 
-## 传参
+## 参数
 
 向 npm 脚本传入参数，要使用`--`标明。
 
@@ -43,6 +43,24 @@ npm 脚本的退出码，也遵守 Shell 脚本规则。如果退出码不是`0`
 ```
 $ npm run lint --  --reporter checkstyle > checkstyle.xml
 ```
+
+
+
+
+
+### --if-present
+
+[https://stackoverflow.com/questions/50683885/how-to-check-if-npm-script-exists](https://stackoverflow.com/questions/50683885/how-to-check-if-npm-script-exists)
+
+```bash
+npm run test --if-present
+```
+
+ if you only want to run the command if it exists, npm has an option for that
+
+如果你只想在命令存在的情况下运行它，npm有一个选项
+
+
 
 
 

@@ -480,7 +480,34 @@ undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 
 
 
+### in next.js
 
+[https://redux-toolkit.js.org/usage/nextjs](https://redux-toolkit.js.org/usage/nextjs)
+
+```tsx
+import { configureStore } from '@reduxjs/toolkit'
+
+export const makeStore = () => {
+  return configureStore({
+    reducer: {},
+  })
+}
+
+// Infer the type of makeStore
+export type AppStore = ReturnType<typeof makeStore>
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
+
+```
+
+We don't have a `store` variable exported, but we can infer the `RootState` and `AppDispatch` types from the return type of `makeStore`.
+
+---
+
+Any component that interacts with the Redux store (creating it, providing it, reading from it, or writing to it) needs to be a client component. This is because **accessing the store requires React context, and context is only available in client components.**
+
+任何与 Redux 存储交互（创建、提供、读取或写入）的组件都需要是客户端组件。这是因为**访问存储需要 React 上下文，而上下文仅在客户端组件中可用。**
 
 
 

@@ -272,6 +272,16 @@ Download and extract a git repository (GitHub, GitLab, Bitbucket) from node.
 
 
 
+
+
+### ts-node
+
+[https://www.npmjs.com/package/ts-node](https://www.npmjs.com/package/ts-node)
+
+TypeScript execution and REPL for node.js, with source map and native ESM support.
+
+
+
 ### n
 
 [https://www.npmjs.com/package/n](https://www.npmjs.com/package/n)
