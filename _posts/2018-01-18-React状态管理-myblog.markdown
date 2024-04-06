@@ -505,9 +505,11 @@ We don't have a `store` variable exported, but we can infer the `RootState` and 
 
 ---
 
-Any component that interacts with the Redux store (creating it, providing it, reading from it, or writing to it) needs to be a client component. This is because **accessing the store requires React context, and context is only available in client components.**
-
-任何与 Redux 存储交互（创建、提供、读取或写入）的组件都需要是客户端组件。这是因为**访问存储需要 React 上下文，而上下文仅在客户端组件中可用。**
+- **Create a Redux store per request by using `configureStore` wrapped in a `makeStore` function**
+- **Provide the Redux store to the React application components using a "client" component**
+- **Only interact with the Redux store in client components** because only client components have access to React context
+- **Use the store as you normally would using the hooks provided in React-Redux**
+- **You need to account for the case where you have per-route state in a global store located in the layout**
 
 
 
