@@ -282,6 +282,31 @@ TypeScript execution and REPL for node.js, with source map and native ESM suppor
 
 
 
+### yargs-parser
+
+[https://www.npmjs.com/package/yargs-parser](https://www.npmjs.com/package/yargs-parser)
+
+The mighty option parser used by [yargs](https://github.com/yargs/yargs).
+
+解析命令行的参数
+
+```ts
+// example.js
+const argv = require('yargs-parser')(process.argv.slice(2))
+console.log(argv)
+```
+
+执行
+
+```bash
+$ node example.js --foo=33 --bar hello
+{ _: [], foo: 33, bar: 'hello' }
+```
+
+
+
+
+
 ### n
 
 [https://www.npmjs.com/package/n](https://www.npmjs.com/package/n)
@@ -289,6 +314,18 @@ TypeScript execution and REPL for node.js, with source map and native ESM suppor
 Node.js version management: no subshells, no profile setup, no convoluted API, just **simple**.
 
 node 版本管理工具
+
+
+
+
+
+### np
+
+[https://www.npmjs.com/package/np](https://www.npmjs.com/package/np)
+
+> A better `npm publish`
+
+
 
 
 
@@ -1217,11 +1254,75 @@ git commit  和 git tag 和 git push
 
 
 
+
+
+### tsx
+
+> 在 antd5 中有使用
+
+[https://www.npmjs.com/package/tsx](https://www.npmjs.com/package/tsx)
+
+*TypeScript Execute (tsx)*: The easiest way to run TypeScript in Node.js
+
+
+
+### size-limit
+
+[https://www.npmjs.com/package/size-limit](https://www.npmjs.com/package/size-limit)
+
+Size Limit is a performance budget tool for JavaScript. It checks every commit on CI, calculates the real cost of your JS for end-users and throws an error if the cost exceeds the limit.
+
+Size Limit是一个JavaScript性能预算工具。它检查CI上的每次提交，为最终用户计算JS的实际成本，并在成本超过限制时抛出错误。
+
+```ts
+  "scripts": {
+        "size-limit": "size-limit"
+  },
+ "devDependencies":{
+       "@size-limit/file": "^11.1.2",
+       "size-limit": "^11.1.2",
+ },
+  "size-limit": [
+    {
+      "path": "./dist/antd.min.js",
+      "limit": "335 KiB"
+    },
+    {
+      "path": "./dist/antd-with-locales.min.js",
+      "limit": "382 KiB"
+    }
+  ],
+```
+
+
+
+
+
+
+
+
+
 ### protobufjs
 
 [https://www.npmjs.com/package/protobufjs](https://www.npmjs.com/package/protobufjs)
 
 [http://febeacon.com/protobuf_docs_zh_cn/routes/command_line.html](http://febeacon.com/protobuf_docs_zh_cn/routes/command_line.html)
+
+
+
+
+
+### gh-pages
+
+[https://www.npmjs.com/package/gh-pages](https://www.npmjs.com/package/gh-pages)
+
+Publish files to a `gh-pages` branch on GitHub (or any other branch anywhere else).
+
+```bash
+"scripts": {
+	 "deploy": "gh-pages -d build -b gh-pages -f",
+}
+```
 
 
 
@@ -1278,6 +1379,18 @@ Throttle uses *pfctl* on Mac and *tc* on Linux to simulate different network spe
 [关于低端机型上 H5 页面白屏](https://www.baobangdong.cn/the-troubleshooting-of-h5-blank-screen/)
 
 低端机白屏大多时候由于使用了ES6
+
+
+
+
+
+### node-notifier
+
+[https://www.npmjs.com/package/node-notifier](https://www.npmjs.com/package/node-notifier)
+
+Send cross platform native notifications using Node.js. Notification Center for macOS, `notify-osd`/`libnotify-bin` for Linux, Toasters for Windows 8/10, or taskbar balloons for earlier Windows versions.
+
+使用Node.js发送跨平台本地通知。
 
 
 

@@ -382,6 +382,55 @@ let b = a !== null && a !== void 0 ? a : 10;
 
 ## 操作符
 
+
+
+### asserts
+
+[https://blog.logrocket.com/assertion-functions-typescript/](https://blog.logrocket.com/assertion-functions-typescript/)
+
+asserts 关键字用于定义自定义的类型断言函数，用于告诉编译器某个表达式的类型，并在编译时进行类型检查。
+
+在使用 asserts 关键字进行类型断言时，编译器会进行类型检查，如果类型不匹配，将会抛出一个编译时错误。
+
+```typescript
+function isString(value: unknown): asserts value is string {
+  if (typeof value !== "string") throw new Error("Not a string")
+}
+```
+
+If we invoke the function above with a given parameter, and it returns correctly, TypeScript knows that value has type `string`. Hence, it will narrow down its type to `string`:
+
+```typescript
+const aValue: string|number = "Hello"
+isString(aValue)
+// The type of aValue is narrowed to string here
+```
+
+
+
+举个例子：
+
+```ts
+export function assertError(value: unknown): asserts value is Error {
+	if (value instanceof Error) return
+	throw value
+}
+```
+
+```ts
+export function assertNonNullable<T>(
+	value: T
+): asserts value is NonNullable<T> {
+	if (value === null) throw new Error(`Value was null`)
+	if (value === undefined) throw new Error(`Value was undefined`)
+}
+
+```
+
+
+
+
+
 ### keyof
 
 键值获取 keyof

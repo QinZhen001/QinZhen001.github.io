@@ -942,6 +942,16 @@ A Jest transformer with source map support that lets you use Jest to test projec
 
 
 
+## rc-test
+
+[https://www.npmjs.com/package/rc-test](https://www.npmjs.com/package/rc-test)
+
+test for react component
+
+
+
+
+
 ## 补充
 
 

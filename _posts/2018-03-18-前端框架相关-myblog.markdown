@@ -449,6 +449,16 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 
 
+## Pages Router 和 App Router
+
+[https://www.cnblogs.com/silva/p/17948723](https://www.cnblogs.com/silva/p/17948723)
+
+> Next.js 从 v13 起就使用了新的路由模式 —— App Router。之前的路由模式我们称之为“Pages Router”
+
+
+
+
+
 ## SSR
 
 Drawbacks of SSR -  All or Nothing Waterfall  （缺点）

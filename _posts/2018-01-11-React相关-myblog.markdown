@@ -651,6 +651,12 @@ export default React.memo(MyComponent, areEqual);
 
 #### useMemo 和 useEffect 的区别
 
+> 不能在useMemo中操作DOM之类的副作用操作，不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo
+
+> 在`useMemo`中使用`setState`你会发现会产生死循环，并且会有警告，因为`useMemo`是在渲染中进行的，你在其中操作`DOM`后，又会导致触发`memo`
+
+>  useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
+
 [useMemo 官方文档](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
 
 [useMemo和useEffect有什么区别](https://blog.csdn.net/hsany330/article/details/106122228)
@@ -661,27 +667,15 @@ export default React.memo(MyComponent, areEqual);
 
 
 
-
-
 * **当你调用 useEffect 时，就是在告诉 React 在完成对 DOM 的更改后运行你的“副作用”函数**。**effect只能在DOM更新后再触发**.
 * useMemo 的函数会在渲染期间执行，所以使用`useMemo`就能解决怎么在`DOM`改变的时候，控制某些函数不被触发。
 
-
-
-> 不能在useMemo中操作DOM之类的副作用操作，不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo
-
-
-
-> 在`useMemo`中使用`setState`你会发现会产生死循环，并且会有警告，因为`useMemo`是在渲染中进行的，你在其中操作`DOM`后，又会导致触发`memo`
-
-
-
-* **memo是在DOM更新前触发的，就像官方所说的，类比生命周期就是shouldComponentUpdate**
+* **
 * useEffect 可以看成 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的替代。
 
 
 
-> useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
+> 
 
 
 
@@ -883,6 +877,16 @@ function Counter() {
 > `useReducer` 返回的 `dispatch` 函数是自带了 `memoize` 的，不会在多次渲染时改变。所以如果你想同时把 `state` 作为 context 传递下去，请分成两个 context 来声明。
 
 
+
+
+
+#### useInsertionEffect
+
+[https://react.dev/reference/react/useInsertionEffect](https://react.dev/reference/react/useInsertionEffect)
+
+`useInsertionEffect` is for CSS-in-JS library authors. Unless you are working on a CSS-in-JS library and need a place to inject the styles, you probably want [`useEffect`](https://react.dev/reference/react/useEffect) or [`useLayoutEffect`](https://react.dev/reference/react/useLayoutEffect) instead.
+
+useInsertionEffect是为CSS-in-JS库作者准备的。除非你正在做一个CSS-in-JS库，并且需要一个地方来注入样式，否则你可能会想要useEffect或uselayouteeffect。
 
 
 

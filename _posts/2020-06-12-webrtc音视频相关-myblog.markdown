@@ -702,6 +702,18 @@ WAV文件和MP3是两种常见的音频文件格式。
 
 
 
+### webrtc-adapter
+
+[https://www.npmjs.com/package/webrtc-adapter](https://www.npmjs.com/package/webrtc-adapter)
+
+adapter.js is a shim to insulate apps from spec changes and prefix differences in WebRTC. The prefix differences are mostly gone these days but differences in behaviour between browsers remain.
+
+js是一种将应用程序与WebRTC中的规范变化和前缀差异隔离开来的机制。这些天，前缀的差异已经消失了，但浏览器之间的行为差异仍然存在。
+
+
+
+
+
 ## 视频
 
 

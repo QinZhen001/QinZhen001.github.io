@@ -1627,7 +1627,15 @@ filter(`<url>`, `<filter-function-list>`)
 
 
 
-# css in js
+# css in js 和 css Modules
+
+* CSS in JS 是一种将 CSS 样式直接写在 JavaScript 文件中的方式。通过这种方式，将组件的样式与逻辑紧密结合，使得组件更加独立和可复用。CSS in JS 还提供了一些额外的功能，比如动态生成样式、条件样式和 CSS 变量等，以及更好的性能和代码拆分。常见的 CSS in JS 方案有 Styled Components、Emotion 和 Radium 等。
+
+* 而 CSS Modules 是一种将 CSS 样式模块化的方式。通过使用 CSS Modules，可以为每个组件创建独立的样式文件，并通过导入和导出的方式在组件中使用。CSS Modules 通过在编译时对类名进行哈希处理，以避免类名冲突，并允许在组件中使用局部、全局和动态样式。而且，CSS Modules 还提供了一些其他的优势，比如更好的代码可读性、更好的管理和组织样式等。
+
+
+
+## css in js
 
 [https://dev.to/srmagura/why-were-breaking-up-wiht-css-in-js-4g9b](https://dev.to/srmagura/why-were-breaking-up-wiht-css-in-js-4g9b)
 
@@ -1641,13 +1649,23 @@ Ugly:
 
 * **Frequently inserting CSS rules forces the browser to do a lot of extra work** **频繁插入CSS规则迫使浏览器做很多额外的工作。**
 
-* **With CSS-in-JS, there's a lot more that can go wrong, especially when using SSR and/or component libraries****使用 CSS-in-JS，还有很多可能出错的地方，尤其是在使用 SSR 和/或组件库时。
+* **With CSS-in-JS, there's a lot more that can go wrong, especially when using SSR and/or component libraries**使用 CSS-in-JS，还有很多可能出错的地方，尤其是在使用 SSR 和/或组件库时。
+
+### 正在放弃 CSS-in-JS
+
+[精读《我们为何弃用 css-in-js》](https://juejin.cn/post/7165670146017591309)
+
+1. css-in-js 运行时解析的实现版本增加了运行时性能压力，尤其在 React18 调度机制模式下，存在无法解决的性能问题（运行时插入样式会导致 React 渲染暂停，浏览器解析一遍样式，渲染再继续，然后浏览器又解析一遍样式）。
+2. 增加了包体积。相比原生或者 css-modules 方案来说，增加了运行时框架代码 8kb 左右。
+3. 让 ReactDevTools 结构变得复杂，因为 css-in-js 会包裹额外的 React 组件层用来实现样式插入。
+
+
+
+
 
 
 
 ## css modules
-
-
 
 ### [define a global class](https://stackoverflow.com/questions/34279517/using-css-modules-how-do-i-define-a-global-class)
 
@@ -1785,73 +1803,6 @@ text-overflow只是用来说明文字溢出时用什么方式显示，要实现�
 例如：
 
 text-shadow: 0 1px 1px #fff;
-
-
-
-## 文字溢出显示省略号
-
-[https://www.daqianduan.com/6179.html](https://www.daqianduan.com/6179.html)
-
-### 单行文字
-
-如果实现单行文本的溢出显示省略号同学们应该都知道用text-overflow:ellipsis属性来，当然还需要加宽度width属来兼容部分浏览。
-
-```css
-overflow: hidden;
-text-overflow:ellipsis;
-white-space: nowrap;
-```
-
-### 多行文字
-
-```css
-display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp: 3;
-overflow: hidden;
-```
-
-因使用了WebKit的CSS扩展属性，该方法适用于WebKit浏览器及移动端；
-
-* -webkit-line-clamp用来限制在一个块元素显示的文本的行数。 为了实现该效果，它需要组合其他的WebKit属性。常见结合属性：
-* display: -webkit-box; 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
-* -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。
-
-
-
----
-
-
-
-after伪类元素实现
-
-```html
-  <div class="wrapper">
-    <div class="overflow">行溢出多行溢行溢出多行溢多行溢出多行溢出多行溢出多行溢出多行多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出</div>
-  </div>
-```
-
-```css
-    /* 最多两行 */
-    .overflow{
-      position: relative;
-      line-height: 20px;
-      max-height: 40px;
-      overflow: hidden;
-    }
-    .overflow::after{
-      content:'...';
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      /* 下面这两行可加可不加 */
-      /* padding-left: 10px;
-      background: linear-gradient(to right, transparent, red 55%); */
-    }
-```
-
-* 将height设置为line-height的整数倍，防止超出的文字露出。
-* 给p::after添加渐变背景可避免文字只显示一半。
 
 
 

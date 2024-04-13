@@ -271,6 +271,16 @@ export default defineBuildConfig({
 
 
 
+# father
+
+[https://github.com/umijs/father](https://github.com/umijs/father)
+
+father 是一款 NPM 包研发工具，能够帮助开发者更高效、高质量地研发 NPM 包、生成构建产物、再完成发布。
+
+
+
+
+
 # esbuild
 
 
@@ -353,7 +363,9 @@ SWC 是一个基于 Rust 的可扩展平台，适用于下一代快速开发工�
 
 # tsup
 
+[https://tsup.egoist.dev/](https://tsup.egoist.dev/)
 
+Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
 
 
 

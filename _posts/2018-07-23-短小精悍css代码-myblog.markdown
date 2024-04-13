@@ -46,13 +46,84 @@ body {
 
 antialiased - 平滑像素级别上的字体，而不是子像素。在深色背景上从子像素渲染切换到抗锯齿，使其看起来更轻。
 
-
-
 grayscale - 使用灰度抗锯齿渲染文本，而不是子像素。在深色背景上从子像素渲染切换到抗锯齿，使其看起来更轻。
 
-
-
 **说人话，也就是在深色背景中浅色字体会更加纤细**
+
+
+
+### 文字溢出显示省略号
+
+[https://www.daqianduan.com/6179.html](https://www.daqianduan.com/6179.html)
+
+#### 单行文字
+
+如果实现单行文本的溢出显示省略号同学们应该都知道用text-overflow:ellipsis属性来，当然还需要加宽度width属来兼容部分浏览。
+
+```css
+overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
+```
+
+#### 多行文字
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/-webkit-line-clamp](https://developer.mozilla.org/zh-CN/docs/Web/CSS/-webkit-line-clamp)
+
+[https://ant-design.antgroup.com/docs/blog/line-ellipsis-cn](https://ant-design.antgroup.com/docs/blog/line-ellipsis-cn)
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+```
+
+因使用了WebKit的CSS扩展属性，该方法适用于WebKit浏览器及移动端；
+
+* -webkit-line-clamp用来限制在一个块元素显示的文本的行数。 为了实现该效果，它需要组合其他的WebKit属性。常见结合属性：
+* display: -webkit-box; 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+* -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。
+
+
+
+---
+
+
+
+after伪类元素实现
+
+```html
+  <div class="wrapper">
+    <div class="overflow">行溢出多行溢行溢出多行溢多行溢出多行溢出多行溢出多行溢出多行多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出</div>
+  </div>
+```
+
+```css
+    /* 最多两行 */
+    .overflow{
+      position: relative;
+      line-height: 20px;
+      max-height: 40px;
+      overflow: hidden;
+    }
+    .overflow::after{
+      content:'...';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      /* 下面这两行可加可不加 */
+      /* padding-left: 10px;
+      background: linear-gradient(to right, transparent, red 55%); */
+    }
+```
+
+* 将height设置为line-height的整数倍，防止超出的文字露出。
+* 给p::after添加渐变背景可避免文字只显示一半。
+
+
+
+
 
 
 ### 优化渲染文本
