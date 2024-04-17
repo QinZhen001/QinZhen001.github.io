@@ -1512,6 +1512,24 @@ This distinction is not based on the functionality of the components but rather 
 
 
 
+
+
+
+
+# Performance Tools
+
+[https://legacy.reactjs.org/docs/perf.html](https://legacy.reactjs.org/docs/perf.html)
+
+```ts
+import Perf from 'react-addons-perf'; // ES6
+```
+
+
+
+
+
+
+
 ## 遇到的问题
 
 
@@ -1748,6 +1766,28 @@ declare module 'react' {
     custom?: string;
   }
 ```
+
+
+
+
+
+### 非必要渲染
+
+[https://ant-design.antgroup.com/docs/blog/render-times-cn](https://ant-design.antgroup.com/docs/blog/render-times-cn)
+
+在示例中，虽然 `prop1` 和 `prop2` 并没有变化，但是显然 MyContext 里的 `value` 是一个新的 Object 导致子组件即便 `prop1` 没有变化也会重新渲染。因而我们需要对 Context `value` 进行 Memo：
+
+```tsx
+const context = React.useMemo(() => ({ prop1, prop2 }), [prop1, prop2]);
+
+return (
+  <MyContext.Provider value={context}>
+    <Child />
+  </MyContext.Provider>
+);
+```
+
+
 
 
 

@@ -1895,6 +1895,24 @@ naturalWidth和naturalHeight是html5新增的属性，它们可以直接获取�
 
 
 
+### style width和offsetwidth
+
+[https://stackoverflow.com/questions/8133146/difference-between-style-width-and-offsetwidth-in-html](https://stackoverflow.com/questions/8133146/difference-between-style-width-and-offsetwidth-in-html)
+
+[`offsetWidth`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement.offsetWidth) returns computed element's width, while [`el.style.width`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement.style) just returns width property defined in *element.style* by `javascript` and does not reflect real element's dimensions.
+
+offsetWidth  = 元素宽度 + padding + border 
+
+style.width = 在 js 中定义的元素宽度（并不是实际的元素宽度）
+
+---
+
+transform: scale 不会改变offsetWidth 的值
+
+缩放是*不会改变*文档流的，也就是说页面元素的宽高布局*不会改变*，只会在渲染时显示缩放的大小。
+
+
+
 ### white-space
 
 [网页链接](http://www.w3school.com.cn/cssref/pr_text_white-space.asp)
