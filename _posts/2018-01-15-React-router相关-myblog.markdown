@@ -213,49 +213,36 @@ children），但这样配置路由有一个问题，就是我们访问 http://l
 
 ## 嵌套路由
 
-[http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu](http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu)
-Route组件还可以嵌套。
-
 ```tsx
-    <Router history={hashHistory}>
-      <Route path="/" component={App}>
-        <Route path="/repos" component={Repos}/>
-        <Route path="/about" component={About}/>
-      </Route>
-    </Router>
+
+const routerItems = [
+  <Route path="/" element={<RootPage />}>
+    <Route path="/main" element={<MainPage />}>
+      // 默认路由
+      <Route path="" element={<div>1111</div>} />,   
+      <Route path="home" element={<HomePage />} />,
+      <Route path="1v1" element={<One2onePage />} />,
+    </Route>
+    ,
+    <Route path="/login" element={<LoginPage />} />,
+    <Route path="/verify" element={<VerifyPage />} />,
+    <Route path="*" element={<NotFoundPage />} />
+  </Route>,
+]
+
+const router = createHashRouter(createRoutesFromElements(routerItems))
+
+export const RouteContainer = () => {
+  return (
+    <RouterProvider
+      router={router}
+      future={{ v7_startTransition: true }}
+      fallbackElement={<div>loading...</div>}
+    ></RouterProvider>
+  )
+}
+
 ```
-上面代码中，用户访问/repos时，会先加载App组件，然后在它的内部再加载Repos组件。
-```tsx
-<App>
-  <Repos/>
-</App>
-```
-App组件要写成下面的样子。
-
-```tsx
-    export default React.createClass({
-      render() {
-        return <div>
-          {this.props.children}
-        </div>
-      }
-    })
-```
-上面代码中，App组件的this.props.children属性就是子组件。
-
-
-子路由也可以不写在Router组件里面，单独传入Router组件的routes属性。
-
-```tsx
- let routes = <Route path="/" component={App}>
-      <Route path="/repos" component={Repos}/>
-      <Route path="/about" component={About}/>
-    </Route>;
-
-  <Router routes={routes} history={browserHistory}/>
-```
-
-
 
 
 
@@ -431,6 +418,9 @@ const routerItems = [
   <Route path="/" element={<RootPage />}>
     <Route path="/welcome" element={<WelcomePage />}></Route>,
     <Route path="/main" element={<MainPage />} >
+        <Route path="" element={
+        // 默认路由
+      } />
       <Route path="home" element={
         <Homepage />
       } />

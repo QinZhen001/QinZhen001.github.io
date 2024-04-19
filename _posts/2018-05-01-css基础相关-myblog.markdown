@@ -245,7 +245,7 @@ document.body.addEventListener('touchstart', function noop() { })
 
 
 
-### where
+### where 和 is
 
 [https://developer.mozilla.org/zh-CN/docs/Web/CSS/:where](https://developer.mozilla.org/zh-CN/docs/Web/CSS/:where)
 
@@ -255,7 +255,47 @@ https://caniuse.com/?search=where
 
 **where 在某些android的微信浏览器会有兼容性问题。**
 
+---
 
+[深入了解 CSS 中的 :where() 和 :is() 函数](https://juejin.cn/post/7199235508665204796)
+
+两者功能基本上是一致的
+
+区别：
+
+`:where()` 函数的优先级总是零
+
+ `:is()` 函数的优先级取决于其最特定参数的优先级
+
+举个例子：
+
+```html
+  <header>
+    <p>This is a paragraph text.</p>
+  </header>
+```
+
+```css
+   p {
+      color: blue;
+    }
+
+		// 优先级相当于 section p
+    :is(header, section) p {
+      color: green;
+    }
+```
+
+```css
+// 优先级相当于 p   
+:where(header, section) p {
+      color: red;
+    }
+
+    p {
+      color: blue;
+    }
+```
 
 
 
