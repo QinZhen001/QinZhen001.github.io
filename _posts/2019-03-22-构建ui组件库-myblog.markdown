@@ -62,6 +62,23 @@ Documentation generator for TypeScript projects.
 
 
 
+### 配置
+
+typedoc.json
+
+```json
+{
+  "entryPoints": ["./src"],
+  "out": "./docs",
+  "exclude": ["**/node_modules/**"],
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "hideGenerator": true
+}
+```
+
+
+
 
 
 ## dumi

@@ -495,6 +495,25 @@ Habit = Trigger -> Rouine -> Reward
 
 
 
+## GTM
+
+GTM英文是go to market ，字面翻译是**产品进入市场**。 一般GTM后面都会有策略、计划等词。 不同于市场营销计划、业务战略，GTM策略更强调把某个特定的产品推向市场，并取得很好的销售成绩（对于全新的企业，一个产品的推向市场也是一个企业在客户面前的曝光）。
+
+
+
+
+
+## 0-1
+
+[https://www.woshipm.com/pd/882508.html](https://www.woshipm.com/pd/882508.html)
+
+* 第一阶段：定义用户的需求
+* 第二阶段：符合市场预期 PMF（Product-Market Fit）
+* 第三阶段：调和
+* 第四阶段：增长
+
+
+
 # 问答
 
 [https://juejin.cn/pin/6921559268848041998](https://juejin.cn/pin/6921559268848041998)
