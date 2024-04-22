@@ -2210,6 +2210,31 @@ Point.prototype.toString = function (): string {
 
 
 
+### 构造函数
+
+
+
+#### 私有构造函数
+
+在类的构造函数中设置为私有访问修饰符（private）的作用是禁止在外部直接实例化类的对象。这样做的目的通常是为了实现类的单例模式或者实现类的对象唯一性。
+
+举个例子：
+
+```ts
+export abstract class AgoraWidgetBase {
+  private _instanceId = ""
+
+  constructor(
+    private _widgetController: AgoraWidgetController,
+    private _classroomStore: EduClassroomStore,
+  ) {}
+}
+```
+
+
+
+
+
 ### public private 和 protected
 
 - `public` 修饰的属性或方法是公有的，可以在任何地方被访问到，默认所有的属性和方法都是 `public` 的
@@ -2260,13 +2285,18 @@ class Cat extends Animal {
 
 
 
-### 抽象类
+### abstract 抽象类
 
 [https://ts.xcatliu.com/advanced/class.html](https://ts.xcatliu.com/advanced/class.html)
 
 `abstract` 用于定义抽象类和其中的抽象方法。
 
+1. 定义其他类的基类（父类）。
+2. 提供一些共同的实现细节。
+3. 强制子类实现指定的抽象方法或遵循某些约定。
+4. 提高代码的重用性和可维护性。
 
+----
 
 首先，抽象类是不允许被实例化的：
 

@@ -71,8 +71,11 @@ typedoc.json
   "entryPoints": ["./src"],
   "out": "./docs",
   "exclude": ["**/node_modules/**"],
+  // 防止外部解析的TypeScript文件被文档化。默认为false。
   "excludeExternals": true,
+  // 从生成的文档中删除私有类成员。默认为false。
   "excludePrivate": true,
+  // 不要在页面末尾打印TypeDoc链接。默认为false。
   "hideGenerator": true
 }
 ```
