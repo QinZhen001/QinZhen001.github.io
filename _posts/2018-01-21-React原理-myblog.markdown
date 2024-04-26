@@ -625,6 +625,22 @@ render () {
 
 
 
+### 时间切片原理
+
+[时间切片原理](https://react.iamkasong.com/concurrent/scheduler.html#%E6%97%B6%E9%97%B4%E5%88%87%E7%89%87%E5%8E%9F%E7%90%86)
+
+`Scheduler`的`时间切片`功能是通过`task`（宏任务）实现的。
+
+最常见的`task`当属`setTimeout`了。但是有个`task`比`setTimeout`执行时机更靠前，那就是[MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/MessageChannel)。
+
+所以`Scheduler`将需要被执行的回调函数作为`MessageChannel`的回调执行。如果当前宿主环境不支持`MessageChannel`，则使用`setTimeout`。
+
+
+
+
+
+
+
 ### 父子组件更新
 
 [https://www.jianshu.com/p/ee122bb5b14b](https://www.jianshu.com/p/ee122bb5b14b)
