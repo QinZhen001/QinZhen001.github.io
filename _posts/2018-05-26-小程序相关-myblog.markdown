@@ -596,23 +596,51 @@ console.log(__wxConfig)  // 里面有 plugins 相关信息
 
 
 
-## mpvue相关
+
+
+# Taro
+
+[https://docs.taro.zone/docs/](https://docs.taro.zone/docs/)
+
+**Taro** 是一个开放式跨端跨框架解决方案，支持使用 React/Vue/Nerv 等框架来开发 [微信](https://mp.weixin.qq.com/) / [京东](https://mp.jd.com/?entrance=taro) / [百度](https://smartprogram.baidu.com/) / [支付宝](https://mini.open.alipay.com/) / [字节跳动](https://developer.open-douyin.com/) / [QQ](https://q.qq.com/) / [飞书](https://open.feishu.cn/document/uYjL24iN/ucDOzYjL3gzM24yN4MjN) 小程序 / H5 / RN 等应用。
+
+
+
+## 跨端原理
+
+1. 一套代码多端输出：开发者可以使用一套基于 React 的语法编写代码，而不需要关注不同平台的差异。Taro.js 提供了一套统一的 API 和组件，这些 API 和组件在运行时会根据目标平台进行转译，从而在不同的平台上实现相同的效果。
+2. 平台适配层：Taro.js 在运行时会根据当前的平台进行适配。它会根据目标平台的差异，例如小程序和 H5 在 API 使用、组件渲染等方面的差异，动态生成相应的代码来实现跨平台适配。
+3. 转译工具链：Taro.js 使用了一系列的转译和编译工具来实现跨平台的能力。这些工具链包括了基于 Babel 的代码转译器、基于 PostCSS 的样式转译器等。
+
+
+
+
+
+# mpvue
 
 [http://mpvue.com/mpvue/](http://mpvue.com/mpvue/)
 
-### 不支持函数
+
+
+## 不支持函数
+
 不支持在 template 内使用 methods 中的函数。
 
 解决方法:写在computed里
 
 
 
-### 滑动组件相关
+## 滑动组件相关
+
 [http://kuangpf.com/mpvue-weui/#/slider](http://kuangpf.com/mpvue-weui/#/slider)
 
 bindchange和bindchanging 在mpvue框架中的写法为: @change和@changing
 
 类型为事件的属性在完成触发事件后，取值的方式为：event.mp.detail = {value: value}
+
+
+
+
 
 
 
@@ -640,6 +668,8 @@ try {
   }
 }
 ```
+
+
 
 
 
@@ -707,6 +737,8 @@ try {
     this.ws.onMessage(this._onmessage.bind(this));
     this.ws.onError(this._onError.bind(this));
 ```
+
+
 
 
 

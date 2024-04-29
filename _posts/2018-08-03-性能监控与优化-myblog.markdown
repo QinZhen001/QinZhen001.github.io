@@ -435,14 +435,15 @@ preconnect用于启动预链接，其中包含DNS查找，TCP握手，以及可�
 
 ### prefetch 和 preload
 
-> **preload 是告诉浏览器页面必定需要的资源，浏览器一定会加载这些资源。** **prefetch 是告诉浏览器页面可能需要的资源，浏览器不一定会加载这些资源**。 在 VUE SSR 生成的页面中，首页的资源均使用 preload ，而路由对应的资源，则使用 prefetch 。
+[https://blog.fundebug.com/2019/04/11/understand-preload-and-prefetch/](https://blog.fundebug.com/2019/04/11/understand-preload-and-prefetch/)
 
 [preload](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/rel/preload)
 
+> **preload 是告诉浏览器页面必定需要的资源，浏览器一定会加载这些资源。** **prefetch 是告诉浏览器页面可能需要的资源，浏览器不一定会加载这些资源**。 在 VUE SSR 生成的页面中，首页的资源均使用 preload ，而路由对应的资源，则使用 prefetch 。
 
+* [preload](https://www.smashingmagazine.com/2016/02/preload-what-is-it-good-for/) 是一个声明式 `fetch`，可以强制浏览器在不阻塞 `document` 的 [onload](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload) 事件的情况下请求资源。
+* `Prefetch` 告诉浏览器这个资源将来可能需要，但是什么时间加载这个资源是由浏览器来决定的。
 
-
-prefetch用于标识下一个导航可能需要的资源。浏览器会获取该资源，一旦将来请求该资源，浏览器可以提供更快的响应。
 ```ts
 <link rel="prefetch" href="//example.com/next-page.html" as="html" crossorigin="use-credentials">
 <link rel="prefetch" href="/library.js" as="script">

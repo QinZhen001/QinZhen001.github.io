@@ -673,6 +673,10 @@ Technically speaking, mobx-state-tree (also known as MST) is a state container s
     ["@babel/plugin-proposal-class-properties", { "loose" : true }]
 ```
 
+
+
+
+
 ### **mobx6.0为什么移除装饰器**
 
 https://www.yuque.com/mosinng/blog/gmq6ra
@@ -830,8 +834,9 @@ Redux ：
 * 有时间回溯的特征，可以增强业务的可预测性与错误定位能力。
 * 对 typescript 支持困难
 * 有中间件机制
-* 使用纯函数修改状态
+* 使用纯函数修改状态，无副作用
 * JavaScript对象
+* **行为稳定可预测**，**易于测试**
 
 Mobx:
 
@@ -839,10 +844,23 @@ Mobx:
 * 没有时间回溯能力，因为数据只有一份引用。
 * 完美支持 typescript
 * 没有中间件机制
+* 面向对象编程，可以直接赋值更新状态对象，简单直接
 * 可观察对象 （是包裹的对象）
+* 存在Derivations(派生）  
 * Mobx 使用了 Object.defineProperty 拦截 getter 和 setter
 
 **前端数据流不太复杂的情况，使用 Mobx，因为更加清晰，也便于维护；如果前端数据流极度复杂，建议谨慎使用 Redux，通过中间件减缓巨大业务复杂度**
+
+---
+
+Derivations(派生)：
+
+* *Reactions*, 当 State 改变时需要自动运行的副作用
+* *Computed values*,总是可以通过纯函数从当前的可观测 State 中派生。
+
+
+
+
 
 
 

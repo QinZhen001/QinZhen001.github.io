@@ -1117,6 +1117,18 @@ padding-bottom: constant(safe-area-inset-bottom); }
 
 
 
+## UIWebView和WKWebView
+
+1. 技术实现：UIWebView是基于UIWebView类的，而WKWebView是基于WebKit框架的WKWebView类的。
+2. 性能：WKWebView相对于UIWebView在性能上有很大的提升。WKWebView引入了新的JavaScript引擎**（新的JavaScriptCore这是苹果公司自家的 JavaScript 引擎）**，能够实现更快的网页加载速度和更流畅的滚动操作。此外，WKWebView还支持多线程访问和边加载边解析的功能，能够更好地处理复杂的网页内容。
+3. 安全性：WKWebView拥有更高的安全性。由于WKWebView的JavaScript与应用程序的JavaScript运行在不同的进程中，使得恶意网页脚本无法访问应用程序的数据，提升了应用程序的安全性。
+4. 内存管理：WKWebView对于内存管理的优化也要优于UIWebView。UIWebView在加载大量网页时容易出现内存泄漏的问题，而WKWebView具备更好的内存管理能力，能够更好地处理内存的释放。
+5. 兼容性：由于WKWebView是在iOS 8中引入的，所以对于iOS 7以及更早的版本是不兼容的。而UIWebView是从iOS 2.0开始引入的，所以对于较旧的iOS版本是兼容的。
+
+
+
+WKWebView相对于UIWebView在性能、安全性、内存管理等方面具备较大的优势。因此，在iOS应用开发中，推荐使用WKWebView来显示网页内容。
+
 
 
 # 微信h5问题
@@ -1259,10 +1271,6 @@ JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Na
 - JS 向 Native 发送消息 : 调用相关功能、通知 Native 当前 JS 的相关状态等。
 - Native 向 JS 发送消息 : 回溯调用结果、消息推送、通知 JS 当前 Native 的状态等。
 
-
-
----
-
 ### **Native -> Web**
 
 `Native` 调用 `JavaScript` 的方式本质就是 **执行拼接 `JavaScript` 字符串**，这就好比我们通过 `eval()` 函数来执行 `JavaScript` 字符串形式的代码一样，不同的系统也有相应的方法执行 `JavaScript` 脚本。
@@ -1272,8 +1280,7 @@ JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Na
 Android 4.4之后提供了**evaluateJavascript**来执行JS代码，并且可以获取返回值执行回调：
 
 ```java
-String jsCode = String.format("window.showWebDialog('%s')", text);
-webView.evaluateJavascript(jsCode, new ValueCallback<String>() {
+webView.evaluateJavascript("javascriptCode", new ValueCallback<String>() {
   @Override
   public void onReceiveValue(String value) {
 
@@ -1284,9 +1291,24 @@ webView.evaluateJavascript(jsCode, new ValueCallback<String>() {
 iOS的UIWebView使用**stringByEvaluatingJavaScriptFromString**：
 
 ```objective-c
-NSString *jsStr = @"执行的JS代码";
+NSString *jsStr = "要执行的JS代码";
 [webView stringByEvaluatingJavaScriptFromString:jsStr];
 ```
+
+举个例子：
+
+```objective-c
+let webView = UIWebView()
+let javaScript = "document.getElementById('myElement').innerText"
+
+if let result = webView.stringByEvaluatingJavaScript(from: javaScript) {
+    print("JavaScript执行结果: \(result)")
+} else {
+    print("JavaScript执行出错")
+}
+```
+
+
 
 
 
@@ -1311,7 +1333,7 @@ NSString *jsStr = @"执行的JS代码";
 WebSettings webSettings = mWebView.getSettings();
 // Android容器允许js脚本，必须要
 webSettings.setJavaScriptEnabled(true);
-// Android 容器设置侨连对象
+// Android 容器设置侨连对象  (在js中注入全局变量)
 mWebView.addJavascriptInterface(getJSBridge(), "JSBridge");
 
 // Android中JSBridge的业务代码
@@ -1333,6 +1355,7 @@ private Object getJSBridge() {
 
 // js调用原生的代码
 // JSBridge 通过addJavascriptInterface已被注入到 window 对象上了
+// android 可以
 window.JSBridge.foo(); // 返回 'foo'
 window.JSBridge.foo2(); // 返回 'foo2:test'
 ```
@@ -1408,6 +1431,16 @@ native会劫持webview onJsAlert、onJsConfirm、onConsoleMessage、onJsPrompt�
 
 
 
+
+### WebViewJavascriptBridge
+
+[https://github.com/marcuswestin/WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)
+
+[JSBridge原理解析——以WebviewJavascriptBridge实现方式为例](https://juejin.cn/post/6981388210580488206)
+
+WebViewJavascriptBridge 是一个用于在 Android 和 iOS 同时使用的 WebView 和 JavaScript 进行通信的桥接库。它可以方便地在 WebView 中注册 JavaScript 函数和 Native 函数，从而实现 JavaScript 和 Native 之间的相互调用和数据传递。WebViewJavascriptBridge 可以解决 WebView 和 JavaScript 之间通信想复杂、局限性高的问题，提供了一个简单、高效的解决方案。
+
+原理：URL SCHEME
 
 
 
