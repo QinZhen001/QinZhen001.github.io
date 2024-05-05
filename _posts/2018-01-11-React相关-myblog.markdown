@@ -820,6 +820,8 @@ function useCustomHook() {
 #### useHistory
 
 > 从React Router v5.1.0开始，新增了useHistory钩子（hook），如果是使用React >16.8.0，使用useHistory即可实现编程时页面跳转导航。
+>
+> **React Router 6 已经废弃 使用useLocation代替**
 
 ```js
 const history = useHistory();
@@ -1024,6 +1026,149 @@ startTransition 的作用是告诉 React 在下一个渲染周期中，有一些
 > react 18
 
 延迟值
+
+
+
+
+
+
+
+### 自定义hook
+
+
+
+
+
+#### useCatchError
+
+监听全局错误信息
+
+```ts
+export const useCatchError = () => {
+  const TOAST_DURATION = 5000
+
+  const handleError = (e: ErrorEvent) => {
+    const { error } = e
+    if (error?.message) {
+      Toast.fail({
+        message: error.message,
+        duration: TOAST_DURATION,
+      })
+    }
+  }
+
+  const unhandledRejection = (e: PromiseRejectionEvent) => {
+    const { reason } = e
+    if (reason?.message) {
+      Toast.fail({
+        message: reason.message,
+        duration: TOAST_DURATION,
+      })
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("error", handleError, true)
+    window.addEventListener("unhandledrejection", unhandledRejection)
+
+    return () => {
+      window.removeEventListener("error", handleError, true)
+      window.removeEventListener("unhandledrejection", unhandledRejection)
+    }
+  }, [])
+}
+```
+
+
+
+#### useScreen 
+
+监听屏幕大小信息
+
+```ts
+export const useScreen = () => {
+  const dispatch = useAppDispatch()
+
+  const onResize = () => {
+    dispatch(
+      // redux store 
+      setScreenInfo({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }),
+    )
+  }
+
+  useEffect(() => {
+    onResize()
+    window.addEventListener("resize", onResize)
+    return () => {
+      window.removeEventListener("resize", onResize)
+    }
+  }, [])
+}
+```
+
+
+
+
+
+#### useRouteNavigation
+
+```ts
+export const useRouteNavigation = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  // 维护一个路由栈
+  const [locationArr, setLocationArr] = useState<Location[]>([])
+  const [locationIndex, setLocationIndex] = useState(0)
+
+  const calc = (location: Location) => {
+    const index = locationArr.findIndex(
+      (item) => item.pathname === location.pathname,
+    )
+    if (index === -1) {
+      setLocationArr((pre) => [...pre, location])
+      setLocationIndex((pre) => pre + 1)
+    } else {
+      setLocationIndex(index)
+    }
+  }
+
+  const canGoBack = useMemo(() => {
+    return locationIndex > 0 && locationArr.length > 1
+  }, [locationIndex, locationArr])
+
+  const canGoForward = useMemo(() => {
+    return locationIndex < locationArr.length - 1 && locationArr.length > 1
+  }, [locationIndex, locationArr])
+
+  useEffect(() => {
+    calc(location)
+  }, [location])
+
+  const goBack = () => {
+    if (canGoBack) {
+      navigate(-1)
+    }
+  }
+
+  const goForward = () => {
+    if (canGoForward) {
+      navigate(1)
+    }
+  }
+
+  return {
+    canGoBack,
+    canGoForward,
+    goBack,
+    goForward,
+  }
+}
+```
+
+
 
 
 

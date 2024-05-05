@@ -328,7 +328,13 @@ function Profile() {
 
 
 
+### 监听路由变化
 
+[监听路由变化](https://segmentfault.com/q/1010000043073192)
+
+useHistory 变为使用 useLocation 代替 
+
+https://reactrouter.com/en/main/hooks/use-location
 
 
 

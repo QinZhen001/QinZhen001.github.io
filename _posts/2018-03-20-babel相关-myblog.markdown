@@ -123,17 +123,15 @@ babelrc: false}).code;
 
 ## 常用插件
 
+### babel-plugin-dynamic-import-node
 
-
-### dynamic-import-node
+[https://www.npmjs.com/package/babel-plugin-dynamic-import-node](https://www.npmjs.com/package/babel-plugin-dynamic-import-node)
 
 [https://github.com/airbnb/babel-plugin-dynamic-import-node](https://github.com/airbnb/babel-plugin-dynamic-import-node)
 
 它只做一件事就是：将所有的`import()`转化为`require()`，这样就可以用这个插件将所有异步组件都用同步的方式引入了，并结合 [BABEL_ENV](https://babeljs.io/docs/usage/babelrc/#env-option) 这个`bebel`环境变量，让它只作用于开发环境下。
 
 将开发环境中所有`import()`转化为`require()`，这种方案解决了之前重复打包的问题，同时对代码的侵入性也很小，你平时写路由的时候只需要按照官方[文档](https://router.vuejs.org/zh/guide/advanced/lazy-loading.html)路由懒加载的方式就可以了，其它的都交给`babel`来处理，当你不想用这个方案的时候，也只需要将它从`babel` 的 `plugins`中移除就可以了。
-
-
 
 **具体代码：**
 
@@ -303,6 +301,14 @@ const x = 0;
 [https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros](https://babeljs.io/blog/2017/09/11/zero-config-with-babel-macros)
 
 
+
+
+
+### babel-plugin-module-resolver
+
+[https://www.npmjs.com/package/babel-plugin-module-resolver](https://www.npmjs.com/package/babel-plugin-module-resolver)
+
+用于在使用 Babel 编译代码时为模块添加新的解析器。该插件允许您添加包含模块的新“根”目录。它还允许您为目录、特定文件甚至其他 npm 模块设置自定义别名。
 
 
 
