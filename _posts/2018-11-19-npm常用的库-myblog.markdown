@@ -13,21 +13,6 @@ tags:
 
 
 
-
-### chalk 
-[http://www.8dou5che.com/2017/10/29/chalk](http://www.8dou5che.com/2017/10/29/chalk)
-
-
-控制台字符样式。
-
-#### 使用
-```javascript
-const chalk = require('chalk');  
-console.log(chalk.blue('Hello world!'));  
-```
-
-
-
 ### promisify
 **注意: Node.js 8 中在util中已经集成了promisify**
 
@@ -566,51 +551,6 @@ ES-Checker是一个针对node.js和浏览器中的ECMAScript的特性检测库�
 $ npm install -g es-checker
 $ es-checker
 ```
-
-
-### debug
-
-[https://www.npmjs.com/package/debug](https://www.npmjs.com/package/debug)
-
-A tiny JavaScript debugging utility modelled after Node.js core's debugging technique. Works in Node.js and web browsers.
-
-
-
-
-一个小型的JavaScript调试工具，模仿Node.js核心的调试技术。工作在Node.js和web浏览器。
-
-
-
-```javascript
-var debug = require('debug')('http')
-  , http = require('http')
-  , name = 'My App';
- 
-// fake app
- 
-debug('booting %o', name);
- 
-http.createServer(function(req, res){
-  debug(req.method + ' ' + req.url);
-  res.end('hello\n');
-}).listen(3000, function(){
-  debug('listening');
-});
- 
-// fake worker of some kind
- 
-require('./worker');
-```
-
-**一个非常重要的点 要想这个debug生效**
-
-首先执行
-
-```javascript
-set DEBUG=http
-```
-
-
 
 
 
@@ -1218,24 +1158,6 @@ Plyr是一个简单，轻量级，可访问和可定制的HTML5, YouTube和Vimeo
 
 
 
-### throttle
-
-[https://github.com/sitespeedio/throttle](https://github.com/sitespeedio/throttle)
-
-Throttle uses *pfctl* on Mac and *tc* on Linux to simulate different network speeds
-
-设置不同网络速度 和 丢包率
-
-模拟各种网络情况 用于测试各种弱网
-
-----
-
-[https://www.speedtest.net/](https://www.speedtest.net/)
-
-在线测试当前的网络质量
-
-
-
 
 
 ### es-check
@@ -1313,6 +1235,25 @@ To make prompt-cli easy to use, add a npm run-script to your `package.json`
 
 
 # node
+
+
+
+
+
+## minimist
+
+[https://www.npmjs.com/package/minimist](https://www.npmjs.com/package/minimist)
+
+parse argument options
+
+解析命令行参数
+
+```js
+var argv = require('minimist')(process.argv.slice(2));
+console.log(argv);
+```
+
+
 
 
 
@@ -1398,4 +1339,81 @@ A spring-physics first animation library giving you flexible tools to confidentl
 
 [https://mpv.io/](https://mpv.io/)
 
+媒体播放器
+
 mpv is a free (as in freedom) media player for the command line. It supports a wide variety of media file formats, audio and video codecs, and subtitle types.
+
+
+
+## throttle
+
+[https://github.com/sitespeedio/throttle](https://github.com/sitespeedio/throttle)
+
+Throttle uses *pfctl* on Mac and *tc* on Linux to simulate different network speeds
+
+设置不同网络速度 和 丢包率
+
+模拟各种网络情况 用于测试各种弱网
+
+----
+
+[https://www.speedtest.net/](https://www.speedtest.net/)
+
+在线测试当前的网络质量
+
+
+
+## chalk 
+
+[http://www.8dou5che.com/2017/10/29/chalk](http://www.8dou5che.com/2017/10/29/chalk)
+
+
+控制台字符样式。
+
+```javascript
+const chalk = require('chalk');  
+console.log(chalk.blue('Hello world!'));  
+```
+
+
+
+## debug
+
+[https://www.npmjs.com/package/debug](https://www.npmjs.com/package/debug)
+
+A tiny JavaScript debugging utility modelled after Node.js core's debugging technique. Works in Node.js and web browsers.
+
+
+一个小型的JavaScript调试工具，模仿Node.js核心的调试技术。工作在Node.js和web浏览器。
+
+```javascript
+var debug = require('debug')('http')
+  , http = require('http')
+  , name = 'My App';
+ 
+// fake app
+ 
+debug('booting %o', name);
+ 
+http.createServer(function(req, res){
+  debug(req.method + ' ' + req.url);
+  res.end('hello\n');
+}).listen(3000, function(){
+  debug('listening');
+});
+ 
+// fake worker of some kind
+ 
+require('./worker');
+```
+
+**一个非常重要的点 要想这个debug生效**
+
+首先执行
+
+```javascript
+set DEBUG=http
+```
+
+
+

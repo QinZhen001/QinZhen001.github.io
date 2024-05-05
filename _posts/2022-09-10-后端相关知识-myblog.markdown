@@ -101,7 +101,9 @@ webhook 是一种基于 HTTP 的回调函数，**可在 2 个[应用编程接口
 
 UUID是通用唯一标识符（Universally Unique Identifier）的缩写，也称为GUID（全局唯一标识符）。它是一种标识符，用于在计算机系统中唯一地标识信息，以便在不同的系统和网络中进行交流和识别。
 
-UUID是一个128位的，通常以字符串的形式表示，由32个十六进制数组成，并用连字符分隔。UUID的生成算法是根据计算机的MAC地址、当前时间戳、随机数等信息生成的，保证了生成的标识符在全球范围内的唯一性。
+**UUID是一个128位的，通常以字符串的形式表示，由32个十六进制数组成，并用连字符分隔。UUID的生成算法是根据计算机的MAC地址、当前时间戳、随机数等信息生成的，保证了生成的标识符在全球范围内的唯一性。**
+
+> 一个16进制数由4位二进制数表示，所以一个16进制数占用4位。
 
 UUID的主要优点是生成方便，几乎可以在任何地方生成一个全局唯一的标识符，而不需要中央注册机构进行管理。因此，UUID广泛应用于分布式系统、数据库、网络协议等领域，用于唯一标识不同的实体或数据。
 
@@ -109,7 +111,7 @@ UUID的主要优点是生成方便，几乎可以在任何地方生成一个全�
 
 A UUID – that’s short for Universally Unique IDentifier, by the way – is a 36-character alphanumeric string that can be used to identify information. They are often used, for example, to identify rows of data within a database table, with each row assigned a specific UUID.
 
-Here is one example of a UUID: `acde070d-8c4c-4f0d-9d8a-162843c10333`
+>  例子: `acde070d-8c4c-4f0d-9d8a-162843c10333`
 
 优点：
 
@@ -139,12 +141,11 @@ Here is one example of a UUID: `acde070d-8c4c-4f0d-9d8a-162843c10333`
 
 [什么是雪花ID](https://cloud.tencent.com/developer/article/1830698)
 
-snowflake是Twitter开源的分布式ID生成算法，结果是64bit的Long类型的ID，有着全局唯一和有序递增的特点。
+snowflake是Twitter开源的分布式ID生成算法，长度为 64 位，Long类型的ID，有着全局唯一和有序递增的特点。
 
-- 最高位是符号位，因为生成的 ID 总是正数，始终为0，不可用。
-- 41位的时间序列，精确到毫秒级，41位的长度可以使用69年。时间位还有一个很重要的作用是可以根据时间进行排序。
-- 10位的机器标识，10位的长度最多支持部署1024个节点。
-- 12位的计数序列号，序列号即一系列的自增ID，可以支持同一节点同一毫秒生成多个ID序号，12位的计数序列号支持每个节点每毫秒产生4096个ID序号。
+> **152075078181383514**  (雪花ID 比 UUID 更短)
+
+雪花 ID 的长度为 64 位，**1bit保留 + 41bit时间戳 + 10bit机器 + 12bit序列号**。
 
 **缺点也是有的，就是强依赖机器时钟，如果机器上时钟回拨，有可能会导致主键重复的问题。**
 

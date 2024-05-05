@@ -603,7 +603,13 @@ pnpm store prune
 
 [https://pnpm.io/zh/blog/2020/10/17/node-modules-configuration-options-with-pnpm](https://pnpm.io/zh/blog/2020/10/17/node-modules-configuration-options-with-pnpm)
 
-即使使用pnpm的默认配置，某些工具也可能无法工作，默认配置下所有内容都悬挂在虚拟存储的根目录中，而某些软件包则悬挂在根目录中。 在这种情况下，您可以将所有内容或部分依赖关系提升到modules目录的根目录。
+它的作用是将依赖项的公共模块移到项目的根目录下，以减少依赖项的嵌套层级。
+
+当一个项目中有多个依赖项时，每个依赖项通常会有自己的模块依赖关系。这些依赖项的模块可能会存在相同的依赖模块，导致模块的重复安装和冗余的磁盘空间使用。
+
+```bash
+pnpm install --shamefully-hoist
+```
 
 要将所有内容提升到node_modules的根目录：
 
