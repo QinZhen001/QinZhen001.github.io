@@ -339,7 +339,13 @@ outfile： 输出地址
 
 
 
-## 问题
+## 缺点
+
+
+
+### tree shaking 
+
+[esbuild doesn't remove unused imports from external modules](esbuild doesn't remove unused imports from external modules)
 
 
 
@@ -355,7 +361,17 @@ If you use a syntax feature that esbuild doesn't yet have support for transformi
 
 如果您使用的语法特性esbuild还不支持转换到当前语言目标，则esbuild将在使用不支持的语法时生成一个错误。例如，当目标是es5语言版本时，通常会出现这种情况，因为esbuild只支持将大多数较新的JavaScript语法特性转换为es6。
 
+---
 
+举个例子：
+
+当存在 async 函数时 使用esbuild build target 设为 es5
+
+会存在报错：
+
+**Transforming async functions to the configured target environment ("es5") is not supported yet**
+
+如果要支持es5 可以使用 tsup
 
 
 
@@ -365,6 +381,22 @@ If you use a syntax feature that esbuild doesn't yet have support for transformi
 
 SWC 是一个基于 Rust 的可扩展平台，适用于下一代快速开发工具。 它被 Next.js、Parcel 和 Deno 等工具以及 Vercel、字节跳动、腾讯、Shopify 等公司使用。
 
+缺点：
+
+* 开发一个 SWC 的插件，首先要学习 Rust 和 WebAssembly，上手门槛明显很高
+
+
+
+## @swc/wasm-web
+
+[https://swc.rs/docs/usage/wasm](https://swc.rs/docs/usage/wasm)
+
+@swc/wasm-web的作用是提供一个将JavaScript代码转换为WebAssembly二进制格式的工具。通过将JavaScript代码转换为WebAssembly，可以在Web浏览器中更高效地执行代码，提高性能和加载速度。这个工具还可以帮助开发人员利用WebAssembly的并行执行能力来加速应用程序。
+
+
+
+
+
 
 
 
@@ -373,7 +405,35 @@ SWC 是一个基于 Rust 的可扩展平台，适用于下一代快速开发工�
 
 [https://tsup.egoist.dev/](https://tsup.egoist.dev/)
 
+[必知必会tsup打包库原理分析](https://juejin.cn/post/7148442413420265485)
+
 Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
+
+可以快速打包 typescript 库，无需任何配置，并且基于`esbuild`进行打包，同时也可以快速生成`ts`类型(rollup进行打包，rollup-plugin-dts这个插件进行打包)，它还支持`Cli`脚手架运行，方便又高效
+
+
+
+## es5-support
+
+[https://tsup.egoist.dev/#es5-support](https://tsup.egoist.dev/#es5-support)
+
+your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rs/).
+
+
+
+
+
+## tree-shaking
+
+[https://tsup.egoist.dev/#tree-shaking](https://tsup.egoist.dev/#tree-shaking)
+
+esbuild has [tree shaking](https://esbuild.github.io/api/#tree-shaking) enabled by default, but sometimes it's not working very well, see [#1794](https://github.com/evanw/esbuild/issues/1794) [#1435](https://github.com/evanw/esbuild/issues/1435), so tsup offers an additional option to let you use Rollup for tree shaking instead:
+
+esbuild 默认启用 Tree Shaking，但有时效果不太好，请参阅 #1794 #1435，因此 tsup 提供了一个附加选项，让您可以使用 Rollup 进行 Tree Shaking
+
+
+
+
 
 
 

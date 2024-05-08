@@ -1077,3 +1077,31 @@ Site Reliability Engineer (SRE)：
 ## DevOps
 
 如果拿足球来打比方，研发，SRE ，运维对应的就是前锋，中场，后卫这样的位置，而 DevOps 则是诸如 4-3-3 这样的阵型。
+
+
+
+## 以太坊
+
+以太坊（Ethereum）是一种基于区块链技术的开源平台，旨在支持智能合约的创建和执行。与比特币等其他加密货币不同，以太坊提供了一个更加全面的区块链平台，可以通过智能合约构建和运行去中心化的应用程序（DApps）。
+
+以太坊平台的核心是以太币（Ether，简称ETH），作为平台上的虚拟货币，用于支付交易费用和奖励矿工。以太坊的智能合约是一种自动执行的合约，其中包含了事先定义好的规则和条件。这些合约可以用于各种应用，如数字资产的发行与管理、去中心化金融、供应链追溯、投票和身份验证等。以太坊的智能合约功能使得开发者可以构建各种不同类型的去中心化应用，从而实现更广泛的应用场景。
+
+以太坊的目标是建立一个去中心化的全球计算机，让任何人都能够建立和运行自己的应用程序，无需依赖传统中心化服务提供者。以太坊的区块链技术和智能合约功能为开发者和用户提供了更多的创新空间和自由度，目前已经成为最具活力和广泛应用的区块链平台之一。
+
+
+
+### **ethers.js**
+
+[https://learnblockchain.cn/ethers_v5/](https://learnblockchain.cn/ethers_v5/)
+
+ethers.js库旨在为以太坊区块链及其生态系统提供一个小而完整的 JavaScript API 库，它最初是与 [ethers.io](https://ethers.io/) 一起使用，现在已经扩展为更通用的库。
+
+
+
+### web3.js
+
+> 如果我们使用JavaScript 来开发 DApp时，很多时候需要使用到 web3.js （当然也可以选择使用 [ethers.js](https://learnblockchain.cn/docs/ethers.js/)）。
+
+[https://learnblockchain.cn/docs/web3.js/](https://learnblockchain.cn/docs/web3.js/)
+
+web3.js 是一组使用HTTP或IPC连接来和本地或远程以太坊节点进行交互的库。

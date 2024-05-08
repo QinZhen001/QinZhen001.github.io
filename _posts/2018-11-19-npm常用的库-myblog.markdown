@@ -1228,6 +1228,22 @@ To make prompt-cli easy to use, add a npm run-script to your `package.json`
 
 
 
+# browser
+
+
+
+## browserslist
+
+[https://www.npmjs.com/package/browserslist](https://www.npmjs.com/package/browserslist)
+
+The config to share target browsers and Node.js versions between different front-end tools
+
+
+
+
+
+
+
 # ts
 
 
@@ -1237,6 +1253,16 @@ To make prompt-cli easy to use, add a npm run-script to your `package.json`
 # node
 
 
+
+
+
+## cac
+
+[]
+
+**C**ommand **A**nd **C**onquer is a JavaScript library for building CLI apps.
+
+是一个用于构建 CLI 应用程序的 JavaScript 库。
 
 
 

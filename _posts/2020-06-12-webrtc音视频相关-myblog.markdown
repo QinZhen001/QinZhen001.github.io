@@ -14,6 +14,36 @@ tags:
 
 
 
+
+
+# 基础
+
+
+
+
+
+## AudioData
+
+> 兼容性差（Firefox 和 Safari 不支持）
+
+[AudioData](https://developer.mozilla.org/en-US/docs/Web/API/AudioData)
+
+表示未编码的音频数据。
+
+The **`AudioData`** interface of the [WebCodecs API](https://developer.mozilla.org/en-US/docs/Web/API/WebCodecs_API) represents an audio sample.
+
+
+
+## WebCodecs API
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/WebCodecs_API](https://developer.mozilla.org/zh-CN/docs/Web/API/WebCodecs_API)
+
+**WebCodecs API** 为 web 开发者提供了对视频流的单个帧和音频数据块的底层访问能力。这对于那些需要完全控制媒体处理方式的 web 应用程序非常有用。例如，视频或音频编辑器，以及视频会议。
+
+
+
+
+
 # web rtc
 
 [https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
@@ -339,11 +369,19 @@ a free, open source, and cross-platform media player
 
 # ffmpeg
 
+
+
+## copy 模式
+
+在FFmpeg中，复制（copy）模式是指直接复制输入文件的音频或视频流，不进行任何编码或解码操作。这种模式可以快速地将输入文件复制到输出文件中，而不会改变编码格式或压缩质量。使用复制模式可以节省时间和系统资源，并且可以保留原始的音视频质量。
+
+
+
+
+
 浏览器环境需要 [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm)
 
 [https://ffmpegwasm.netlify.app/#demo](https://ffmpegwasm.netlify.app/#demo)
-
-
 
 ```tsx
 export interface FFmpeg {

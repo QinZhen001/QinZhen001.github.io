@@ -105,5 +105,15 @@ proxy.ccc = "ccc"
 
 [https://www.npmjs.com/package/rxjs-etc](https://www.npmjs.com/package/rxjs-etc)
 
+A bunch of observables and operators for RxJS.
 
+
+
+
+
+## rxjs-websockets
+
+[https://www.npmjs.com/package/rxjs-websockets](https://www.npmjs.com/package/rxjs-websockets)
+
+An rxjs websocket library with a simple and flexible implementation. Supports the browser and node.js.
 
