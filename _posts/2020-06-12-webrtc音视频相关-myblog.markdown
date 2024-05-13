@@ -22,6 +22,16 @@ tags:
 
 
 
+## MediaStream
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream)
+
+**`MediaStream`** 接口是一个媒体内容的流.。一个流包含几个*轨道*，比如视频和音频轨道。
+
+
+
+
+
 ## AudioData
 
 > 兼容性差（Firefox 和 Safari 不支持）
@@ -492,6 +502,10 @@ const file = await fetchFile(mp4Src)
 
 
 
+
+# ffplay
+
+ffplay是FFmpeg项目中的一个简单的媒体播放器，可以用于播放各种音视频文件。它可以在命令行中使用，并提供一些基本的播放控制选项和特效设置。ffplay基于FFmpeg的多媒体框架构建，支持多种音视频格式，并可以通过命令行选项进行自定义设置。
 
 
 
