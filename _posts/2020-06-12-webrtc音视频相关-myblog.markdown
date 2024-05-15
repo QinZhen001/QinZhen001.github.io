@@ -140,6 +140,16 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
 > 音量🔊控制节点，一般放到最后
 
+[https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode](https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode)
+
+**`GainNode`** 接口表示音量的变化。它是一个 [`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode) 音频处理模块，在输出前使用给定*增益*应用到输入。一个 `GainNode` 始终只有一个输入和一个输出，两者拥有同样数量的声道。
+
+
+
+#### gain
+
+[`GainNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode) 接口的 `gain` 属性是一个 [a-rate](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioParam#a-rate) [`AudioParam`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioParam)，表示要应用的增益量。
+
 
 
 ### AnalyserNode
@@ -147,6 +157,20 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 **`AnalyserNode`** 接口表示了一个可以提供实时频域和时域分析信息的节点。它是一个不对音频流作任何改动的 [`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)，同时允许你获取和处理它生成的数据，从而创建音频可视化。
 
 `AnalyzerNode` 只有一个输入和输出，即使未连接到输出它也能正常工作。
+
+
+
+#### fftSize
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode/fftSize](https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode/fftSize)
+
+fftSize 是 Fast Fourier Transform（FFT，快速傅里叶变换）的大小。FFT 是一种用于将时域信号（例如音频）转换为频域信号的算法。fftSize 决定了频域分析的精度和频谱的分辨率。
+
+fftSize 的值必须是 2 的幂，并且在范围为 32 至 32768 之间。较大的 fftSize 值会提供更高的频谱分辨率，但也会增加计算量和内存消耗。较小的 fftSize 值会提供更快的分析速度，但可能会导致频谱分辨率较低。
+
+对于 AnalyserNode，默认的 fftSize 值是 2048。可以使用 AnalyserNode.fftSize 属性来获取或设置 fftSize 的值。
+
+需要注意的是，fftSize 的值会影响 AnalyserNode.getFloatFrequencyData() 和 AnalyserNode.getByteFrequencyData() 这两个方法返回的频谱数据的长度。频谱数据的长度等于 fftSize 的一半，也就是说 fftSize 为 2048 时，这两个方法返回的频谱数据长度为 1024。
 
 
 
@@ -163,6 +187,24 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 **在做任何其他操作之前，你需要创建一个`AudioContext`对象，因为所有事情都是在上下文中发生的。**
 
 建议创建一个`AudioContext`对象并复用它，而不是每次初始化一个新的`AudioContext`对象，并且可以对多个不同的音频源和管道同时使用一个`AudioContext`对象。
+
+
+
+
+
+### decodeAudioData
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData)
+
+[`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext)接口的 `decodeAudioData()` 方法可用于异步解码音频文件中的 [`ArrayBuffer`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)。`ArrayBuffer` 数据可以通过 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 和 [`FileReader`](https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader) 来获取。AudioBuffer 是通过 AudioContext 采样率进行解码的，然后通过回调返回结果。
+
+这是从音频轨道创建用于 web audio API 音频源的首选方法
+
+```tsx
+decodeAudioData(audioData: ArrayBuffer)  =>  return AudioBuffer
+```
+
+
 
 
 
@@ -195,6 +237,20 @@ var buffer = audioCtx.createBuffer(2, 22050, 44100);
 
 
 
+
+
+### currentTime
+
+> 以秒为单位
+
+[https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime)
+
+BaseAudioContext 接口的 currentTime 只读属性返回一个双精度值，表示不断增加的硬件时间戳
+
+可用于安排音频播放、可视化时间线等。它从 0 开始。
+
+
+
 ### createAnalyser
 
 创建一个[`AnalyserNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode)，它可以用来暴露音频时间和频率数据，以及创建数据可视化。
@@ -220,6 +276,16 @@ createMediaStreamSource(stream)
 ### createBufferSource
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBufferSource](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBufferSource)
+
+`createBufferSource()` 方法用于创建一个新的[`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)接口，该接口可以通过[`AudioBuffer`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer) 对象来播放音频数据。
+
+
+
+### createGain
+
+[https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)
+
+The `createGain()` method of the [`BaseAudioContext`](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext) interface creates a [`GainNode`](https://developer.mozilla.org/en-US/docs/Web/API/GainNode), which can be used to control the overall gain (or volume) of the audio graph.
 
 
 
@@ -250,7 +316,15 @@ createMediaStreamSource(stream)
 
 ## AudioBufferSourceNode
 
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)
+
 **`AudioBufferSourceNode`** 接口继承自 [`AudioScheduledSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioScheduledSourceNode)，表现为一个音频源，它包含了一些写在内存中的音频数据，通常储存在一个 ArrayBuffer 对象中。
+
+一个 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode) 只能被播放一次，也就是说，每次调用 [`start()`](https://developer.mozilla.org/en-US/docs/Web/API/AudioScheduledSourceNode/start) 之后，如果还想再播放一遍同样的声音，那么就需要再创建一个 `AudioBufferSourceNode`
+
+庆幸的是，创建该节点的代价并不大，并且想要多次播放声音的话，实际上 `AudioBuffer` 也可以被重用。
+
+
 
 
 
