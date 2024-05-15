@@ -45,6 +45,64 @@ new MediaStream([audioMediaStreamTrack]
 
 
 
+### addTrack
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream/addTrac](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream/addTrac)
+
+
+
+
+
+## MediaSource
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaSource](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaSource)
+
+**`MediaSource`** 是 [Media Source Extensions API](https://developer.mozilla.org/zh-CN/docs/Web/API/Media_Source_Extensions_API) 表示媒体资源 [`HTMLMediaElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement) 对象的接口。`MediaSource` 对象可以附着在 [`HTMLMediaElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement) 在客户端进行播放。
+
+
+
+
+
+
+
+## MediaRecorder
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder)
+
+
+
+### start 
+
+开始将媒体记录到一个或多个 Blob 对象中。
+
+```ts
+start(timeslice) // 记录到每个 Blob 中的毫秒数。
+```
+
+
+
+
+
+### stop 
+
+  用于停止媒体捕获。
+
+
+
+### state
+
+返回当前 MediaRecorder 对象的当前状态。
+
+inactive/recording/paused
+
+
+
+### ondataavailable
+
+
+
+
+
 
 
 ## MediaStreamTrack
@@ -369,6 +427,8 @@ AudioBuffer 接口表示存在内存里的一段短小的音频资源，利用[`
 [信令与视频通话](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling)
 
 [音视频流媒体原理以及基础入门知识](https://zhuanlan.zhihu.com/p/538790451)
+
+[快速入门 WebRTC：屏幕和摄像头的录制、回放、下载](https://mp.weixin.qq.com/s/u6MkezGj1o9h5-ACEkFcRQ)
 
 
 
