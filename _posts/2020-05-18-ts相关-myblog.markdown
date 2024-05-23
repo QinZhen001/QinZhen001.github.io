@@ -2612,6 +2612,134 @@ type ExtractActionCreaotrKey<T> = {
 
 
 
+## tsc
+
+TypeScript编译器（The TypeScript Compiler）
+
+TSC是TypeScript编译器的缩写。它是一个TypeScript语言的官方编译器，用于将TypeScript代码转换为可在浏览器或现代JavaScript环境中执行的JavaScript代码。
+
+
+
+[TSC编译时指定生成d.ts的目录 并解决无法导入package.json和alias别名的问题](https://chengpeiquan.com/article/tsc-compiles-dts.html)
+
+```tsx
+// ts config 
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "./dist/types"
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules"]
+}
+```
+
+
+
+### 无法导入package.json
+
+[https://chengpeiquan.com/article/tsc-compiles-dts.html](https://chengpeiquan.com/article/tsc-compiles-dts.html)
+
+尝试关闭 `tsconfig` 里的 `resolveJsonModule` 选项
+
+
+
+### 合并文件
+
+[https://github.com/SitePen/dts-generator](https://github.com/SitePen/dts-generator)
+
+这样构建出来的 DTS 文件只有一个，比如 `dist/types/index.d.ts` 。
+
+
+
+### 处理别名
+
+如果用了 `alias` 别名，会发现生成的 DTS 文件并不支持 `alias` （比如源码里通过 `@foo/bar` 来代替 `src/foo/bar` 或者 `../../foo/bar` ）。
+
+这个也是要借助外部插件来实现转换，这里测试了几款外部工具，最有效的是 [tscpaths](https://github.com/joonhocho/tscpaths) 。
+
+需要明确的是，它本身不支持编译生成 DTS 文件，而是在 TSC 编译时，根据 `tsconfig.json` 的 `paths` 配置，将 TypeScript 编译出来的 DTS 文件里的绝对路径替换为相对路径。
+
+```tsx
+tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/types
+```
+
+
+
+
+
+### 编译单文件
+
+```
+tsc --out final.js class.ts
+```
+
+* final.js 最终生成文件
+* class.ts 要转化的ts文件
+
+
+
+
+
+### --project，-p
+
+* 此命令接受一个string	
+
+Compile a project given a valid configuration file. The argument can be a file path to a valid JSON configuration file, or a directory path to a directory containing a `tsconfig.json` file. See [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) documentation for more details.
+
+
+
+```js
+script:{
+   "test:types": "tsc -p types/test",
+}
+```
+
+
+
+
+
+### 处理没有默认导出
+
+错误：
+
+```ts
+import inquirer from "inquirer"
+inquirer.prompt()
+// tsc 转换后
+const inquirer = require("inquirer");
+inquirer.default.prompt()
+```
+
+正确：
+
+```ts
+import * as inquirer from "inquirer"
+inquirer.prompt()
+// tsc 转换后
+const inquirer = require("inquirer");
+inquirer.prompt()
+```
+
+使用swc将模块转换时，如果模块中没有默认导出（default export），则需要使用以下语法来导入该模块：
+
+```ts
+import * as name from 'module';
+```
+
+
+
+
+
+
+
+
+
 
 
 ## tsconfig
@@ -3670,112 +3798,6 @@ const foo: Foo = ['1', '2', '3']; // OK
 
 
 
-## tsc命令
-
-[TSC编译时指定生成d.ts的目录 并解决无法导入package.json和alias别名的问题](https://chengpeiquan.com/article/tsc-compiles-dts.html)
-
-```tsx
-// ts config 
-{
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "noEmit": false,
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationDir": "./dist/types"
-  },
-  "include": ["./src"],
-  "exclude": ["node_modules"]
-}
-```
-
-
-
-### 无法导入package.json
-
-[https://chengpeiquan.com/article/tsc-compiles-dts.html](https://chengpeiquan.com/article/tsc-compiles-dts.html)
-
-尝试关闭 `tsconfig` 里的 `resolveJsonModule` 选项
-
-
-
-### 合并文件
-
-[https://github.com/SitePen/dts-generator](https://github.com/SitePen/dts-generator)
-
-这样构建出来的 DTS 文件只有一个，比如 `dist/types/index.d.ts` 。
-
-
-
-
-
-#### 处理别名
-
-如果用了 `alias` 别名，会发现生成的 DTS 文件并不支持 `alias` （比如源码里通过 `@foo/bar` 来代替 `src/foo/bar` 或者 `../../foo/bar` ）。
-
-这个也是要借助外部插件来实现转换，这里测试了几款外部工具，最有效的是 [tscpaths](https://github.com/joonhocho/tscpaths) 。
-
-需要明确的是，它本身不支持编译生成 DTS 文件，而是在 TSC 编译时，根据 `tsconfig.json` 的 `paths` 配置，将 TypeScript 编译出来的 DTS 文件里的绝对路径替换为相对路径。
-
-```tsx
-tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/types
-```
-
-
-
-
-
-### 编译单文件
-
-```
-tsc --out final.js class.ts
-```
-
-* final.js 最终生成文件
-* class.ts 要转化的ts文件
-
-
-
-
-
-### --project，-p
-
-* 此命令接受一个string	
-
-Compile a project given a valid configuration file. The argument can be a file path to a valid JSON configuration file, or a directory path to a directory containing a `tsconfig.json` file. See [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) documentation for more details.
-
-
-
-```js
-script:{
-   "test:types": "tsc -p types/test",
-}
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-### ts对应的错误码
-
-[https://www.tslang.cn/docs/handbook/error.html](https://www.tslang.cn/docs/handbook/error.html)
-
-
-
-
-
-
-
 
 
 
@@ -3985,6 +4007,16 @@ MAP_BY_VALUE; // { 1: { key: 'POP', value: 1, name: '流行音乐' }, 2: { key: 
 一是在定义字典时需要对工具函数的使用和实现有一定了解，这样才能正确传入参数和解构返回值。
 
 二是在使用字典时无法获得类型提示，使用字典的开发者需要回来查看定义了哪些字段和值，同时还需要了解工具函数的使用方式。
+
+
+
+## ts对应的错误码
+
+[https://www.tslang.cn/docs/handbook/error.html](https://www.tslang.cn/docs/handbook/error.html)
+
+
+
+
 
 
 

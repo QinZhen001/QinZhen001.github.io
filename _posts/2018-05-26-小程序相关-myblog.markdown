@@ -606,9 +606,33 @@ console.log(__wxConfig)  // 里面有 plugins 相关信息
 
 
 
+## 依赖预编译
+
+Taro 参考 [Vite](https://link.juejin.cn/?target=https%3A%2F%2Fcn.vitejs.dev%2F) 使用了 esbuild 收集用户使用到的第三方依赖，并分别进行打包。打包后的模块会作为 Webpack 的 entry，最终打包为模块联邦 Remote 应用，供主应用（Host）消费。
+
+
+
+## 小程序编译模式
+
+[https://github.com/NervJS/taro-rfcs/blob/feat/compile-mode/rfcs/0000-compile-mode.md](https://github.com/NervJS/taro-rfcs/blob/feat/compile-mode/rfcs/0000-compile-mode.md)
+
+**小程序编译模式（CompileMode）**通过在编译阶段对开发者的代码进行扫描，把 JSX、Vue template 代码提前编译为对应的小程序模板代码，达到减少小程序渲染层虚拟 DOM 树节点数量的效果，从而提升渲染性能。
+
+
+
+在小程序分层架构的限制下，Taro3 的渲染方式仍然是动态渲染节点的唯一写法，只有这样才能使真正的 React、Vue 等 Web 框架在小程序中运行起来。
+
+然而借鉴 Vue3 的思路，JSX、Vue template 中除了动态的部分外还会存在静态的部分。假设我们提前在编译阶段把静态部分识别出来，然后生成对应的小程序模板，就能使这部分对应的小程序渲染层虚拟 DOM 节点数趋近原生写法：
+
+
+
 ## 跨端原理
 
 [Taro3跨端跨框架原理初探](https://juejin.cn/post/6989968343163731981)
+
+[Taro源码解析（3.5.4）](https://onehacker.top/posts/taro%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%903.5.4/)
+
+
 
 1. 一套代码多端输出：开发者可以使用一套基于 React 的语法编写代码，而不需要关注不同平台的差异。Taro.js 提供了一套统一的 API 和组件，这些 API 和组件在运行时会根据目标平台进行转译，从而在不同的平台上实现相同的效果。
 2. 平台适配层：Taro.js 在运行时会根据当前的平台进行适配。它会根据目标平台的差异，例如小程序和 H5 在 API 使用、组件渲染等方面的差异，动态生成相应的代码来实现跨平台适配。

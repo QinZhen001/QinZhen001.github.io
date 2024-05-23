@@ -194,6 +194,12 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
 
 
+### MediaElementAudioSourceNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode)
+
+
+
 ### GainNode
 
 > 音量🔊控制节点，一般放到最后
@@ -329,6 +335,24 @@ createMediaStreamSource(stream)
 
 
 
+### createMediaElementSource
+
+> 返回 MediaElementAudioSourceNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/createMediaElementSource](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/createMediaElementSource)
+
+[`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext) 接口的 `createMediaElementSource()` 方法用于创建一个新的 [`MediaElementAudioSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode) 对象，输入某个存在的 HTML audio or video  元素，对应的音频即可被播放或者修改。
+
+```ts
+var audioCtx = new AudioContext();
+var source = audioCtx.createMediaElementSource(myMediaElement);
+// myMediaElement => 某个被期待被录入音频处理图修改的 HTMLMediaElement 对象。
+```
+
+
+
+
+
 
 
 ### createBufferSource
@@ -352,6 +376,10 @@ The `createGain()` method of the [`BaseAudioContext`](https://developer.mozilla.
 ## AudioWorkletNode
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/AudioWorkletNode](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioWorkletNode)
+
+[一文拿下Web端基于AudioWorkletNode录制音频](https://juejin.cn/post/7310787455112413219)
+
+
 
 **`AudioWorkletNode`** 接口代表了用户定义的[`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)的基类，该基类可以与其他节点一起连接到音频路由图。其
 

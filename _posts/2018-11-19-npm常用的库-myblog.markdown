@@ -268,11 +268,11 @@ Read a file line by line.
 
 一行一行读取文件
 
+
+
 ### browserify
+
 [https://www.npmjs.com/package/browserify](https://www.npmjs.com/package/browserify)
-
-
-
 
 **可以把nodejs的模块编译成浏览器可用的模块**
 
