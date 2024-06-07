@@ -73,107 +73,15 @@ console.log(promisified === doSomething[util.promisify.custom]);
 
 
 
-### open
-
-[https://www.npmjs.com/package/open](https://www.npmjs.com/package/open)
-
-> Open stuff like URLs, files, executables. Cross-platform.
-
-打开url，文件，可执行文件。跨平台的。
-
-[详解NodeJs中open库唤起浏览器原理](https://juejin.cn/post/7078656397319241736)
 
 
 
 
 
-### Inquirer
-[https://www.npmjs.com/package/inquirer](https://www.npmjs.com/package/inquirer)
-
-A collection of common interactive command line user interfaces.
-
-```javascript
-var inquirer = require('inquirer');
-inquirer
-  .prompt([
-    /* Pass your questions in here */
-  ])
-  .then(answers => {
-    // Use user feedback for... whatever!!
-  });
-```
-
-
-
-### download-git-repo
-[https://www.npmjs.com/package/download-git-repo](https://www.npmjs.com/package/download-git-repo)
-
-Download and extract a git repository (GitHub, GitLab, Bitbucket) from node.
 
 
 
 
-
-### ts-node
-
-[https://www.npmjs.com/package/ts-node](https://www.npmjs.com/package/ts-node)
-
-TypeScript execution and REPL for node.js, with source map and native ESM support.
-
-
-
-### yargs-parser
-
-[https://www.npmjs.com/package/yargs-parser](https://www.npmjs.com/package/yargs-parser)
-
-The mighty option parser used by [yargs](https://github.com/yargs/yargs).
-
-解析命令行的参数
-
-```ts
-// example.js
-const argv = require('yargs-parser')(process.argv.slice(2))
-console.log(argv)
-```
-
-执行
-
-```bash
-$ node example.js --foo=33 --bar hello
-{ _: [], foo: 33, bar: 'hello' }
-```
-
-
-
-
-
-### n
-
-[https://www.npmjs.com/package/n](https://www.npmjs.com/package/n)
-
-Node.js version management: no subshells, no profile setup, no convoluted API, just **simple**.
-
-node 版本管理工具
-
-
-
-
-
-### np
-
-[https://www.npmjs.com/package/np](https://www.npmjs.com/package/np)
-
-> A better `npm publish`
-
-
-
-
-
-### is-node-process
-
-[https://www.npmjs.com/package/is-node-process](https://www.npmjs.com/package/is-node-process)
-
-Reliably determines if the code is running in Node.js
 
 
 
@@ -374,19 +282,6 @@ Run scripts that set and use environment variables across platforms
 
 
 
-
-### commitizen
-
-[https://www.npmjs.com/package/commitizen](https://www.npmjs.com/package/commitizen)
-
-When you commit with Commitizen, you'll be prompted to fill out any required commit fields at commit time. No more waiting until later for a git commit hook to run and reject your commit (though that can still be helpful). No more digging through CONTRIBUTING.md to find what the preferred format is. Get instant feedback on your commit message formatting and be prompted for required fields.
-
-当您使用Commitizen提交时，系统将提示您在提交时填写任何必需的提交字段。不再等待git提交钩子运行并拒绝您的提交(尽管这仍然是有帮助的)。不再通过贡献来挖掘。找到md的首选格式是什么。获得关于提交消息格式的即时反馈，并提示输入所需字段。
-
-
-
-
-
 ### npkill
 
 [https://www.npmjs.com/package/npkill](https://www.npmjs.com/package/npkill)
@@ -518,22 +413,6 @@ A little supervisor script for nodejs. It runs your program, and watches for cod
 
 
 
-
-### es-checker
-
-[https://www.npmjs.com/package/es-checker](https://www.npmjs.com/package/es-checker)
-
-
-
-
-ES-Checker is a feature detection library for ECMAScript in node.js and browser. Please visit demo.
-
-ES-Checker是一个针对node.js和浏览器中的ECMAScript的特性检测库。请访问演示。
-
-```
-$ npm install -g es-checker
-$ es-checker
-```
 
 
 
@@ -831,32 +710,6 @@ rvm current
 
 
 
-### only-allow
-
-[https://www.npmjs.com/package/only-allow](https://www.npmjs.com/package/only-allow)
-
-> Force a specific package manager to be used on a project
-
-If you want to force [pnpm](https://pnpm.js.org/), add:
-
-```tsx
-{
-  "scripts": {
-    "preinstall": "npx only-allow pnpm"
-  }
-}
-```
-
-
-
-### just-scripts
-
-[https://microsoft.github.io/just/scripts/](https://microsoft.github.io/just/scripts/)
-
-Unlike other build libraries, Just strives to be useful from the beginning. You can choose to write your own tasks that call other Node.js tools like TypeScript, jest, and webpack. However, Just includes some script functions to get you up and running immediately.
-
-
-
 
 
 ### magic-string
@@ -909,62 +762,7 @@ Minimal and efficient cross-platform file watching library
 
 
 
-### unbuild
 
-[https://www.npmjs.com/package/unbuild](https://www.npmjs.com/package/unbuild)
-
-> A unified javascript build system.   (js 打包工具)
-
-Robust [rollup](https://rollupjs.org/) based bundler that supports typescript and generates commonjs and module formats + type declarations.
-
-* 支持 typescript 及其生成 
-
-* 支持 cjs 和 mjs
-
-```
-    "dev": "unbuild --stub",
-    "build": "unbuild",
-```
-
-Stub `dist` once using [jiti](https://github.com/unjs/jiti) and you can try and link your project without needing to watch and rebuild during development.
-
-
-
-例子：
-
-```tsx
-// build.config.ts
-import { defineBuildConfig } from 'unbuild'
-
-export default defineBuildConfig({
-  entries: ['src/index'],
-  externals: ['vite', 'vue/compiler-sfc', '@vue/compiler-sfc'],
-  clean: true,
-  declaration: true,
-  rollup: {
-    emitCJS: true,
-    inlineDependencies: true
-  }
-})
-```
-
-
-
-
-
-### esno
-
-[https://www.npmjs.com/package/esno](https://www.npmjs.com/package/esno)
-
-Node.js runtime enhanced with esbuild for loading TypeScript & ESM
-
-可以直接在node环境中运行.ts
-
-```tsx
-npm i -g esno
-
-esno index.ts
-```
 
 
 
@@ -1035,179 +833,11 @@ module.exports = require('jiti')(null, { interopDefault: true })('/Users/antfu/u
 
 
 
-### bumpp
 
-[https://www.npmjs.com/package/bumpp](https://www.npmjs.com/package/bumpp)
 
-用于自动版本号更新
 
-git commit  和 git tag 和 git push
 
-```tsx
-"release": "bumpp --commit --push --tag && npm publish"
-```
 
-
-
-
-
-### tsx
-
-> 在 antd5 中有使用
-
-[https://www.npmjs.com/package/tsx](https://www.npmjs.com/package/tsx)
-
-*TypeScript Execute (tsx)*: The easiest way to run TypeScript in Node.js
-
-
-
-### size-limit
-
-[https://www.npmjs.com/package/size-limit](https://www.npmjs.com/package/size-limit)
-
-Size Limit is a performance budget tool for JavaScript. It checks every commit on CI, calculates the real cost of your JS for end-users and throws an error if the cost exceeds the limit.
-
-Size Limit是一个JavaScript性能预算工具。它检查CI上的每次提交，为最终用户计算JS的实际成本，并在成本超过限制时抛出错误。
-
-```ts
-  "scripts": {
-        "size-limit": "size-limit"
-  },
- "devDependencies":{
-       "@size-limit/file": "^11.1.2",
-       "size-limit": "^11.1.2",
- },
-  "size-limit": [
-    {
-      "path": "./dist/antd.min.js",
-      "limit": "335 KiB"
-    },
-    {
-      "path": "./dist/antd-with-locales.min.js",
-      "limit": "382 KiB"
-    }
-  ],
-```
-
-
-
-
-
-
-
-
-
-### protobufjs
-
-[https://www.npmjs.com/package/protobufjs](https://www.npmjs.com/package/protobufjs)
-
-[http://febeacon.com/protobuf_docs_zh_cn/routes/command_line.html](http://febeacon.com/protobuf_docs_zh_cn/routes/command_line.html)
-
-
-
-
-
-### gh-pages
-
-[https://www.npmjs.com/package/gh-pages](https://www.npmjs.com/package/gh-pages)
-
-Publish files to a `gh-pages` branch on GitHub (or any other branch anywhere else).
-
-```bash
-"scripts": {
-	 "deploy": "gh-pages -d build -b gh-pages -f",
-}
-```
-
-
-
-
-
-### regenerator-runtime
-
-[https://www.npmjs.com/package/regenerator-runtime](https://www.npmjs.com/package/regenerator-runtime)
-
-Standalone runtime for [Regenerator](https://github.com/facebook/regenerator)-compiled generator and `async` functions.
-
-
-
-### plyr
-
-Plyr is a simple, lightweight, accessible and customizable HTML5, YouTube and Vimeo media player that supports modern browsers.
-
-Plyr是一个简单，轻量级，可访问和可定制的HTML5, YouTube和Vimeo媒体播放器，支持现代浏览器。
-
-
-
-
-
-
-
-### es-check
-
-[https://www.npmjs.com/package/es-check](https://www.npmjs.com/package/es-check)
-
-根据指定的ES版本检查JavaScript文件的ES版本
-
----
-
-使用场景：
-
-[关于低端机型上 H5 页面白屏](https://www.baobangdong.cn/the-troubleshooting-of-h5-blank-screen/)
-
-低端机白屏大多时候由于使用了ES6
-
-
-
-
-
-### node-notifier
-
-[https://www.npmjs.com/package/node-notifier](https://www.npmjs.com/package/node-notifier)
-
-Send cross platform native notifications using Node.js. Notification Center for macOS, `notify-osd`/`libnotify-bin` for Linux, Toasters for Windows 8/10, or taskbar balloons for earlier Windows versions.
-
-使用Node.js发送跨平台本地通知。
-
-
-
-
-
-### @commitlint
-
-> 处理 git commit message
-
-[https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
-
-[https://www.npmjs.com/package/@commitlint/prompt-cli](https://www.npmjs.com/package/@commitlint/prompt-cli)
-
-[https://commitlint.js.org/#/guides-use-prompt](https://commitlint.js.org/#/guides-use-prompt)
-
-举个例子：
-
-```json
-  "devDependencies": {
-    "@commitlint/cli": "^17.7.2",   // 与commitlint交互的主要方式
-    "@commitlint/config-conventional": "^17.7.0",  // 可共享的常规commitlint提交配置
-    "@commitlint/prompt-cli": "^17.7.2",  // 提交提示用于 commitlint
-  },
-```
-
-创建 .commitlintrc
-
-```json
-{
-  "extends": ["@commitlint/config-conventional"]
-}
-```
-
-To make prompt-cli easy to use, add a npm run-script to your `package.json`
-
-```json
-  "scripts": {
-    "commit": "commit"  // 触发 @commitlint/prompt-cli
-  }
-```
 
 
 
@@ -1223,6 +853,30 @@ The config to share target browsers and Node.js versions between different front
 
 
 
+## plyr
+
+[https://www.npmjs.com/package/plyr](https://www.npmjs.com/package/plyr)
+
+Plyr is a simple, lightweight, accessible and customizable HTML5, YouTube and Vimeo media player that supports modern browsers.
+
+Plyr是一个简单，轻量级，可访问和可定制的HTML5, YouTube和Vimeo媒体播放器，支持现代浏览器。
+
+
+
+## regenerator-runtime
+
+[https://www.npmjs.com/package/regenerator-runtime](https://www.npmjs.com/package/regenerator-runtime)
+
+Standalone runtime for [Regenerator](https://github.com/facebook/regenerator)-compiled generator and `async` functions.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1231,41 +885,84 @@ The config to share target browsers and Node.js versions between different front
 
 
 
+## tsx
+
+> 在 antd5 中有使用
+
+[https://www.npmjs.com/package/tsx](https://www.npmjs.com/package/tsx)
+
+*TypeScript Execute (tsx)*: The easiest way to run TypeScript in Node.js
 
 
-# node
+
+## ts-node
+
+[https://www.npmjs.com/package/ts-node](https://www.npmjs.com/package/ts-node)
+
+TypeScript execution and REPL for node.js, with source map and native ESM support.
 
 
 
-### ora 
+### esno
 
-[https://www.npmjs.com/package/ora](https://www.npmjs.com/package/ora)
+[https://www.npmjs.com/package/esno](https://www.npmjs.com/package/esno)
 
-Elegant terminal spinner
+Node.js runtime enhanced with esbuild for loading TypeScript & ESM
 
+可以直接在node环境中运行.ts
 
-```javascript
-const ora = require('ora');
- 
-const spinner = ora('Loading unicorns').start();
- 
-setTimeout(() => {
-    spinner.color = 'yellow';
-    spinner.text = 'Loading rainbows';
-}, 1000);
+```tsx
+npm i -g esno
+
+esno index.ts
 ```
 
 
 
 
 
-## cac
 
-[]
 
-**C**ommand **A**nd **C**onquer is a JavaScript library for building CLI apps.
+# node
 
-是一个用于构建 CLI 应用程序的 JavaScript 库。
+### n
+
+[https://www.npmjs.com/package/n](https://www.npmjs.com/package/n)
+
+Node.js version management: no subshells, no profile setup, no convoluted API, just **simple**.
+
+node 版本管理工具
+
+
+
+
+
+
+
+
+
+## yargs-parser
+
+[https://www.npmjs.com/package/yargs-parser](https://www.npmjs.com/package/yargs-parser)
+
+The mighty option parser used by [yargs](https://github.com/yargs/yargs).
+
+解析命令行的参数
+
+```ts
+// example.js
+const argv = require('yargs-parser')(process.argv.slice(2))
+console.log(argv)
+```
+
+执行
+
+```bash
+$ node example.js --foo=33 --bar hello
+{ _: [], foo: 33, bar: 'hello' }
+```
+
+
 
 
 
@@ -1281,8 +978,6 @@ parse argument options
 var argv = require('minimist')(process.argv.slice(2));
 console.log(argv);
 ```
-
-
 
 
 
@@ -1339,6 +1034,304 @@ if(program.remove) {
 [https://www.npmjs.com/package/mirror-config-china](https://www.npmjs.com/package/mirror-config-china)
 
 为中国内地的Node.js开发者准备的镜像配置，大大提高node模块安装速度。
+
+
+
+
+
+
+
+
+
+## Inquirer
+
+[https://www.npmjs.com/package/inquirer](https://www.npmjs.com/package/inquirer)
+
+A collection of common interactive command line user interfaces.
+
+```javascript
+var inquirer = require('inquirer');
+inquirer
+  .prompt([
+    /* Pass your questions in here */
+  ])
+  .then(answers => {
+    // Use user feedback for... whatever!!
+  });
+```
+
+
+
+## download-git-repo
+
+[https://www.npmjs.com/package/download-git-repo](https://www.npmjs.com/package/download-git-repo)
+
+Download and extract a git repository (GitHub, GitLab, Bitbucket) from node.
+
+
+
+
+
+
+
+## node-notifier
+
+[https://www.npmjs.com/package/node-notifier](https://www.npmjs.com/package/node-notifier)
+
+Send cross platform native notifications using Node.js. Notification Center for macOS, `notify-osd`/`libnotify-bin` for Linux, Toasters for Windows 8/10, or taskbar balloons for earlier Windows versions.
+
+使用Node.js发送跨平台本地通知。
+
+
+
+
+
+
+
+
+
+
+
+## open
+
+[https://www.npmjs.com/package/open](https://www.npmjs.com/package/open)
+
+> Open stuff like URLs, files, executables. Cross-platform.
+
+打开url，文件，可执行文件。跨平台的。
+
+[详解NodeJs中open库唤起浏览器原理](https://juejin.cn/post/7078656397319241736)
+
+
+
+## ora 
+
+[https://www.npmjs.com/package/ora](https://www.npmjs.com/package/ora)
+
+Elegant terminal spinner
+
+
+```javascript
+const ora = require('ora');
+ 
+const spinner = ora('Loading unicorns').start();
+ 
+setTimeout(() => {
+    spinner.color = 'yellow';
+    spinner.text = 'Loading rainbows';
+}, 1000);
+```
+
+
+
+
+
+## cac
+
+[]
+
+**C**ommand **A**nd **C**onquer is a JavaScript library for building CLI apps.
+
+是一个用于构建 CLI 应用程序的 JavaScript 库。
+
+
+
+
+
+### is-node-process
+
+[https://www.npmjs.com/package/is-node-process](https://www.npmjs.com/package/is-node-process)
+
+Reliably determines if the code is running in Node.js
+
+
+
+### 
+
+
+
+
+
+# package
+
+## unbuild
+
+[https://www.npmjs.com/package/unbuild](https://www.npmjs.com/package/unbuild)
+
+> A unified javascript build system.   (js 打包工具)
+
+Robust [rollup](https://rollupjs.org/) based bundler that supports typescript and generates commonjs and module formats + type declarations.
+
+* 支持 typescript 及其生成 
+
+* 支持 cjs 和 mjs
+
+```
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+```
+
+Stub `dist` once using [jiti](https://github.com/unjs/jiti) and you can try and link your project without needing to watch and rebuild during development.
+
+
+
+例子：
+
+```tsx
+// build.config.ts
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  entries: ['src/index'],
+  externals: ['vite', 'vue/compiler-sfc', '@vue/compiler-sfc'],
+  clean: true,
+  declaration: true,
+  rollup: {
+    emitCJS: true,
+    inlineDependencies: true
+  }
+})
+```
+
+
+
+
+
+## commitizen
+
+[https://www.npmjs.com/package/commitizen](https://www.npmjs.com/package/commitizen)
+
+When you commit with Commitizen, you'll be prompted to fill out any required commit fields at commit time. No more waiting until later for a git commit hook to run and reject your commit (though that can still be helpful). No more digging through CONTRIBUTING.md to find what the preferred format is. Get instant feedback on your commit message formatting and be prompted for required fields.
+
+当您使用Commitizen提交时，系统将提示您在提交时填写任何必需的提交字段。不再等待git提交钩子运行并拒绝您的提交(尽管这仍然是有帮助的)。不再通过贡献来挖掘。找到md的首选格式是什么。获得关于提交消息格式的即时反馈，并提示输入所需字段。
+
+
+
+## @commitlint
+
+> 处理 git commit message
+
+[https://github.com/conventional-changelog/commitlint](https://github.com/conventional-changelog/commitlint)
+
+[https://www.npmjs.com/package/@commitlint/prompt-cli](https://www.npmjs.com/package/@commitlint/prompt-cli)
+
+[https://commitlint.js.org/#/guides-use-prompt](https://commitlint.js.org/#/guides-use-prompt)
+
+举个例子：
+
+```json
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.2",   // 与commitlint交互的主要方式
+    "@commitlint/config-conventional": "^17.7.0",  // 可共享的常规commitlint提交配置
+    "@commitlint/prompt-cli": "^17.7.2",  // 提交提示用于 commitlint
+  },
+```
+
+创建 .commitlintrc
+
+```json
+{
+  "extends": ["@commitlint/config-conventional"]
+}
+```
+
+To make prompt-cli easy to use, add a npm run-script to your `package.json`
+
+```json
+  "scripts": {
+    "commit": "commit"  // 触发 @commitlint/prompt-cli
+  }
+```
+
+
+
+## bumpp
+
+[https://www.npmjs.com/package/bumpp](https://www.npmjs.com/package/bumpp)
+
+用于自动版本号更新
+
+git commit  和 git tag 和 git push
+
+```tsx
+"release": "bumpp --commit --push --tag && npm publish"
+```
+
+
+
+## gh-pages
+
+[https://www.npmjs.com/package/gh-pages](https://www.npmjs.com/package/gh-pages)
+
+Publish files to a `gh-pages` branch on GitHub (or any other branch anywhere else).
+
+```bash
+"scripts": {
+	 "deploy": "gh-pages -d build -b gh-pages -f",
+}
+```
+
+
+
+
+
+## size-limit
+
+[https://www.npmjs.com/package/size-limit](https://www.npmjs.com/package/size-limit)
+
+Size Limit is a performance budget tool for JavaScript. It checks every commit on CI, calculates the real cost of your JS for end-users and throws an error if the cost exceeds the limit.
+
+Size Limit是一个JavaScript性能预算工具。它检查CI上的每次提交，为最终用户计算JS的实际成本，并在成本超过限制时抛出错误。
+
+```ts
+  "scripts": {
+        "size-limit": "size-limit"
+  },
+ "devDependencies":{
+       "@size-limit/file": "^11.1.2",
+       "size-limit": "^11.1.2",
+ },
+  "size-limit": [
+    {
+      "path": "./dist/antd.min.js",
+      "limit": "335 KiB"
+    },
+    {
+      "path": "./dist/antd-with-locales.min.js",
+      "limit": "382 KiB"
+    }
+  ],
+```
+
+
+
+## only-allow
+
+[https://www.npmjs.com/package/only-allow](https://www.npmjs.com/package/only-allow)
+
+> Force a specific package manager to be used on a project
+
+If you want to force [pnpm](https://pnpm.js.org/), add:
+
+```tsx
+{
+  "scripts": {
+    "preinstall": "npx only-allow pnpm"
+  }
+}
+```
+
+
+
+## np
+
+[https://www.npmjs.com/package/np](https://www.npmjs.com/package/np)
+
+> A better `npm publish`
+
+
+
+
 
 
 
@@ -1443,6 +1436,48 @@ require('./worker');
 ```javascript
 set DEBUG=http
 ```
+
+
+
+
+
+
+
+## es-check
+
+[https://www.npmjs.com/package/es-check](https://www.npmjs.com/package/es-check)
+
+根据指定的ES版本检查JavaScript文件的ES版本
+
+---
+
+使用场景：
+
+[关于低端机型上 H5 页面白屏](https://www.baobangdong.cn/the-troubleshooting-of-h5-blank-screen/)
+
+低端机白屏大多时候由于使用了ES6
+
+
+
+
+
+
+
+## protobufjs
+
+[https://www.npmjs.com/package/protobufjs](https://www.npmjs.com/package/protobufjs)
+
+[http://febeacon.com/protobuf_docs_zh_cn/routes/command_line.html](http://febeacon.com/protobuf_docs_zh_cn/routes/command_line.html)
+
+
+
+
+
+## just-scripts
+
+[https://microsoft.github.io/just/scripts/](https://microsoft.github.io/just/scripts/)
+
+Unlike other build libraries, Just strives to be useful from the beginning. You can choose to write your own tasks that call other Node.js tools like TypeScript, jest, and webpack. However, Just includes some script functions to get you up and running immediately.
 
 
 
