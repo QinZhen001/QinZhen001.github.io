@@ -71,23 +71,6 @@ console.log(promisified === doSomething[util.promisify.custom]);
 
 
 
-### ora 
-[https://www.npmjs.com/package/ora](https://www.npmjs.com/package/ora)
-
-Elegant terminal spinner
-
-
-```javascript
-const ora = require('ora');
- 
-const spinner = ora('Loading unicorns').start();
- 
-setTimeout(() => {
-    spinner.color = 'yellow';
-    spinner.text = 'Loading rainbows';
-}, 1000);
-```
-
 
 
 ### open
@@ -1251,6 +1234,26 @@ The config to share target browsers and Node.js versions between different front
 
 
 # node
+
+
+
+### ora 
+
+[https://www.npmjs.com/package/ora](https://www.npmjs.com/package/ora)
+
+Elegant terminal spinner
+
+
+```javascript
+const ora = require('ora');
+ 
+const spinner = ora('Loading unicorns').start();
+ 
+setTimeout(() => {
+    spinner.color = 'yellow';
+    spinner.text = 'Loading rainbows';
+}, 1000);
+```
 
 
 

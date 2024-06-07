@@ -446,8 +446,6 @@ AudioBuffer 接口表示存在内存里的一段短小的音频资源，利用[`
 
 [https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx](https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx)
 
-[WebRTC 点对点通信原理](http://www.yyyweb.com/5480.html)
-
 [WebRTC 介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Session_lifetime)
 
 [WebRTC 协议介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Protocols)
@@ -730,6 +728,18 @@ a free, open source, and cross-platform media player
 
 
 # ffmpeg
+
+
+
+
+
+## 音频采集
+
+```bash
+ffmpeg -f avfoundation -i :0 out.wav
+```
+
+
 
 
 

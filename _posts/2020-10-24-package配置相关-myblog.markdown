@@ -20,7 +20,7 @@ tags:
 
 [package.json 指南](http://nodejs.cn/learn/the-package-json-guide)
 
-
+[https://docs.npmjs.com/cli/v10/configuring-npm/package-json](https://docs.npmjs.com/cli/v10/configuring-npm/package-json)
 
 
 
@@ -373,7 +373,7 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 
 
-## 版本 version
+## version
 
 以当前版本为1.0.0为例子，遵循以下规范：
 
