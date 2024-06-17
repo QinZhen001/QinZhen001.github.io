@@ -459,6 +459,14 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 
 
+## Hydration
+
+Hydration is the process that bridges the gap between a server-rendered page and its transformation into an interactive client-side application. Think of it as the transition from a static webpage to a dynamic one.
+
+水合作用是弥合服务器渲染页面与其转换为交互式客户端应用程序之间差距的过程。将其视为从静态网页到动态网页的过渡。
+
+
+
 ## SSR
 
 Drawbacks of SSR -  All or Nothing Waterfall  （缺点）
@@ -614,3 +622,28 @@ next/font模块时自动优化应用程序中的字体。在构建时下载字�
 ## Server Actions
 
 [https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
+
+
+
+
+
+## Error
+
+
+
+### **Using localStorage**
+
+[A Simple Solution for Redux State Hydration Issues When Using localStorage with Next.js](https://medium.com/@ionikdev/a-simple-solution-for-redux-state-hydration-issues-when-using-localstorage-with-next-js-890d0e0343df)
+
+
+
+### window is not defined
+
+You can still use:
+
+```ts
+if (typeof window !== "undefined") {
+  // browser code
+}
+```
+

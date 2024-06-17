@@ -282,12 +282,6 @@ Run scripts that set and use environment variables across platforms
 
 
 
-### npkill
-
-[https://www.npmjs.com/package/npkill](https://www.npmjs.com/package/npkill)
-
-Easily find and **remove** old and heavy **node_modules** folders ✨
-
 
 
 
@@ -376,43 +370,6 @@ Run linters against staged git files and don't let 💩 slip into your code base
 
 
 
-### husky
-
-
-Husky can prevent bad git commit, git push and more 🐶 woof!
-
-
-Husky可以防止糟糕的git提交，git推送和更多的woof
-
-
-```
-// package.json
-{
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test",
-      "...": "..."
-    }
-  }
-}
-```
-
-
-
-### supervisor
-
-[https://www.npmjs.com/package/supervisor](https://www.npmjs.com/package/supervisor)
-
-
-
-A little supervisor script for nodejs. It runs your program, and watches for code changes, so you can have hot-code reloading-ish behavior, without worrying about memory leaks and making sure you clean up all the inter-module references, and without a whole new require system.
-
-一个用于nodejs的小管理脚本。它运行您的程序，并监视代码更改，因此您可以有热代码重载行为，而不必担心内存泄漏并确保清除所有模块间的引用，而且不需要全新的require系统。
-
-
-
-
 
 
 
@@ -487,44 +444,6 @@ Example: `~/.config/configstore/some-id.json`
 
 
 
-###   puppeteer 
-
-[ https://www.npmjs.com/package/puppeteer ]( https://www.npmjs.com/package/puppeteer )
-
-[puppeteer vs puppeteer-core](https://zhaoqize.github.io/puppeteer-api-zh_CN/#?product=Puppeteer&version=puppeteer-v20.1.1&show=api-puppeteer-vs-puppeteer-core)
-
-Puppeteer 是一个Node库， 它提供高级API，通过DevTools Protocol 来控制Chrome 或 Chromium。 Puppeteer 默认运行为headless ，但是可以配置为运行为non-headless 。
-
-- 生成页面截图或PDF
-- 抓取SPA 并生成预渲染内容（SSR）
-- 自动化表单提交、UI测试，键盘输入 等
-- 创建最新的自动化测试环境。 使用最新的JavaScript和浏览器功能直接在最新版本的Chrome中运行测试。
-- 捕获站点的时间线跟踪，以帮助诊断性能问题。
-- 测试Chrome扩展程序。
-
-
-
-```js
-const puppeteer = require('puppeteer');
-
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto('https://example.com');
-  await page.screenshot({path: 'example.png'});
-
-  await browser.close();
-})();
-```
-
-
-
-Puppeteer初始化页面大小为 800*600px，这也是截图的大小 页面大小可以通过 [`Page.setViewport()`](https://pptr.dev/#?product=Puppeteer&version=v1.8.0&show=api-pagesetviewportviewport).定制。
-
-
-
-
-
 
 
 ###  json-templater 
@@ -590,27 +509,6 @@ render('{{xfoo}} {{say.what}}', { xfoo: 'yep', say: { what: 'yep' } });
 
 
 
-### execa
-
-[https://www.npmjs.com/package/execa](https://www.npmjs.com/package/execa)
-
-> Process execution for humans
-
-This package improves [`child_process`](https://nodejs.org/api/child_process.html) methods with:
-
-- Promise interface.
-- [Strips the final newline](https://www.npmjs.com/package/execa#stripfinalnewline) from the output so you don't have to do `stdout.trim()`.
-- Supports [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) binaries cross-platform.
-- [Improved Windows support.](https://github.com/IndigoUnited/node-cross-spawn#why)
-- Higher max buffer. 100 MB instead of 200 KB.
-- [Executes locally installed binaries by name.](https://www.npmjs.com/package/execa#preferlocal)
-- [Cleans up spawned processes when the parent process dies.](https://www.npmjs.com/package/execa#cleanup)
-- [Get interleaved output](https://www.npmjs.com/package/execa#all) from `stdout` and `stderr` similar to what is printed on the terminal. [*(Async only)*](https://www.npmjs.com/package/execa#execasyncfile-arguments-options)
-- [Can specify file and arguments as a single string without a shell](https://www.npmjs.com/package/execa#execacommandcommand-options)
-- More descriptive errors.
-
-
-
 
 
 ### npm-run-all
@@ -635,22 +533,6 @@ wait-on is a cross-platform command line utility which will wait for files, port
 
 
 
-### concurrently
-
-[https://www.npmjs.com/package/concurrently](https://www.npmjs.com/package/concurrently)
-
-Run multiple commands concurrently  (同时)
-
----
-
-Remember to surround separate commands with quotes:
-
-```bash
-"start": "concurrently \"command1 arg\" \"command2 arg\""
-```
-
-记住要加引号
-
 
 
 ### rimraf
@@ -664,22 +546,6 @@ The UNIX command rm -rf for node.
 
 
 
-
-### release-it
-
-[https://www.npmjs.com/package/release-it](https://www.npmjs.com/package/release-it)
-
-🚀 Generic CLI tool to automate versioning and package publishing-related tasks:
-
-
-
-
-
-### cp-cli
-
-[https://www.npmjs.com/package/cp-cli](https://www.npmjs.com/package/cp-cli)
-
-The [UNIX command](https://en.wikipedia.org/wiki/Cp_(Unix)) `cp` for Node.js which is useful for cross platform support.
 
 
 
@@ -705,8 +571,6 @@ tip： 一定要 --default
 // 查看当前ruby版本
 rvm current
 ```
-
-
 
 
 
@@ -740,8 +604,6 @@ Outputs the list of exports and locations of import specifiers, including dynami
 
 
 
-
-
 ### connect
 
 [https://www.npmjs.com/package/connect](https://www.npmjs.com/package/connect)
@@ -750,92 +612,11 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org/) us
 
 
 
-
-
-### chokidar
-
-[https://www.npmjs.com/package/chokidar](https://www.npmjs.com/package/chokidar)
-
-Minimal and efficient cross-platform file watching library
-
-
-
-
-
-
-
-
-
-
-
-
-
-### fs-extra
-
-[https://www.npmjs.com/package/fs-extra](https://www.npmjs.com/package/fs-extra)
-
-`fs-extra` adds file system methods that aren't included in the native `fs` module and adds promise support to the `fs` methods. It also uses [`graceful-fs`](https://github.com/isaacs/node-graceful-fs) to prevent `EMFILE` errors. It should be a drop in replacement for `fs`.
-
-
-
-
-
 ### url
 
 [https://www.npmjs.com/package/url](https://www.npmjs.com/package/url)
 
 This module has utilities for URL resolution and parsing meant to have feature parity with node.js core [url](http://nodejs.org/api/url.html) module.
-
-
-
-### ufo
-
-[https://www.npmjs.com/package/ufo](https://www.npmjs.com/package/ufo)
-
-Url utils for umans   (url相关的工具)
-
-
-
-### jiti
-
-[https://github.com/unjs/jiti](https://github.com/unjs/jiti)
-
-> Runtime typescript and ESM support for Node.js (CommonJS)
-
-mjs
-
-```tsx
-// dist/index.mjs
-import jiti from 'jiti'
-export default jiti(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
-```
-
-cjs
-
-```tsx
-// dist/index.cjs
-module.exports = require('jiti')(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
-```
-
-
-
-
-
-### sirv
-
-[https://www.npmjs.com/package/sirv](https://www.npmjs.com/package/sirv)
-
-> The optimized and lightweight middleware for serving requests to static assets
-
-为静态资产提供请求的优化的轻量级中间件
-
-
-
-
-
-
-
-
 
 
 
@@ -925,7 +706,21 @@ esno index.ts
 
 # node
 
-### n
+
+
+## supervisor
+
+[https://www.npmjs.com/package/supervisor](https://www.npmjs.com/package/supervisor)
+
+A little supervisor script for nodejs. It runs your program, and watches for code changes, so you can have hot-code reloading-ish behavior, without worrying about memory leaks and making sure you clean up all the inter-module references, and without a whole new require system.
+
+一个用于nodejs的小管理脚本。它运行您的程序，并监视代码更改，因此您可以有热代码重载行为，而不必担心内存泄漏并确保清除所有模块间的引用，而且不需要全新的require系统。
+
+
+
+
+
+## n
 
 [https://www.npmjs.com/package/n](https://www.npmjs.com/package/n)
 
@@ -933,7 +728,30 @@ Node.js version management: no subshells, no profile setup, no convoluted API, j
 
 node 版本管理工具
 
+Url utils for umans   (url相关的工具)
 
+
+
+## jiti
+
+[https://github.com/unjs/jiti](https://github.com/unjs/jiti)
+
+> Runtime typescript and ESM support for Node.js (CommonJS)
+
+mjs
+
+```tsx
+// dist/index.mjs
+import jiti from 'jiti'
+export default jiti(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
+```
+
+cjs
+
+```tsx
+// dist/index.cjs
+module.exports = require('jiti')(null, { interopDefault: true })('/Users/antfu/unbuild-test/src/index')
+```
 
 
 
@@ -1084,11 +902,11 @@ Send cross platform native notifications using Node.js. Notification Center for 
 
 
 
+## fs-extra
 
+[https://www.npmjs.com/package/fs-extra](https://www.npmjs.com/package/fs-extra)
 
-
-
-
+`fs-extra` adds file system methods that aren't included in the native `fs` module and adds promise support to the `fs` methods. It also uses [`graceful-fs`](https://github.com/isaacs/node-graceful-fs) to prevent `EMFILE` errors. It should be a drop in replacement for `fs`.
 
 
 
@@ -1124,11 +942,25 @@ setTimeout(() => {
 
 
 
+## sirv
+
+[https://www.npmjs.com/package/sirv](https://www.npmjs.com/package/sirv)
+
+> The optimized and lightweight middleware for serving requests to static assets
+
+为静态资产提供请求的优化的轻量级中间件
+
+
+
+
+
+
+
 
 
 ## cac
 
-[]
+[https://www.npmjs.com/package/cac](https://www.npmjs.com/package/cac)
 
 **C**ommand **A**nd **C**onquer is a JavaScript library for building CLI apps.
 
@@ -1136,9 +968,26 @@ setTimeout(() => {
 
 
 
+## execa
 
+[https://www.npmjs.com/package/execa](https://www.npmjs.com/package/execa)
 
-### is-node-process
+> Process execution for humans
+
+This package improves [`child_process`](https://nodejs.org/api/child_process.html) methods with:
+
+- Promise interface.
+- [Strips the final newline](https://www.npmjs.com/package/execa#stripfinalnewline) from the output so you don't have to do `stdout.trim()`.
+- Supports [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) binaries cross-platform.
+- [Improved Windows support.](https://github.com/IndigoUnited/node-cross-spawn#why)
+- Higher max buffer. 100 MB instead of 200 KB.
+- [Executes locally installed binaries by name.](https://www.npmjs.com/package/execa#preferlocal)
+- [Cleans up spawned processes when the parent process dies.](https://www.npmjs.com/package/execa#cleanup)
+- [Get interleaved output](https://www.npmjs.com/package/execa#all) from `stdout` and `stderr` similar to what is printed on the terminal. [*(Async only)*](https://www.npmjs.com/package/execa#execasyncfile-arguments-options)
+- [Can specify file and arguments as a single string without a shell](https://www.npmjs.com/package/execa#execacommandcommand-options)
+- More descriptive errors.
+
+## is-node-process
 
 [https://www.npmjs.com/package/is-node-process](https://www.npmjs.com/package/is-node-process)
 
@@ -1146,7 +995,11 @@ Reliably determines if the code is running in Node.js
 
 
 
-### 
+## chokidar
+
+[https://www.npmjs.com/package/chokidar](https://www.npmjs.com/package/chokidar)
+
+Minimal and efficient cross-platform file watching library
 
 
 
@@ -1331,6 +1184,70 @@ If you want to force [pnpm](https://pnpm.js.org/), add:
 
 
 
+## cp-cli
+
+[https://www.npmjs.com/package/cp-cli](https://www.npmjs.com/package/cp-cli)
+
+The [UNIX command](https://en.wikipedia.org/wiki/Cp_(Unix)) `cp` for Node.js which is useful for cross platform support.
+
+
+
+## husky
+
+
+Husky can prevent bad git commit, git push and more 🐶 woof!
+
+
+Husky可以防止糟糕的git提交，git推送和更多的woof
+
+
+```json
+// package.json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test",
+      "...": "..."
+    }
+  }
+}
+```
+
+
+
+## concurrently
+
+[https://www.npmjs.com/package/concurrently](https://www.npmjs.com/package/concurrently)
+
+Run multiple commands concurrently  (同时)
+
+---
+
+Remember to surround separate commands with quotes:
+
+```bash
+"start": "concurrently \"command1 arg\" \"command2 arg\""
+```
+
+记住要加引号
+
+
+
+## npkill
+
+[https://www.npmjs.com/package/npkill](https://www.npmjs.com/package/npkill)
+
+Easily find and **remove** old and heavy **node_modules** folders ✨
+
+
+
+## release-it
+
+[https://www.npmjs.com/package/release-it](https://www.npmjs.com/package/release-it)
+
+🚀 Generic CLI tool to automate versioning and package publishing-related tasks:
+
 
 
 
@@ -1471,6 +1388,14 @@ set DEBUG=http
 
 
 
+## ufo
+
+[https://www.npmjs.com/package/ufo](https://www.npmjs.com/package/ufo)
+
+URL utils for humans.  
+
+解析url的工具
+
 
 
 ## just-scripts
@@ -1478,6 +1403,44 @@ set DEBUG=http
 [https://microsoft.github.io/just/scripts/](https://microsoft.github.io/just/scripts/)
 
 Unlike other build libraries, Just strives to be useful from the beginning. You can choose to write your own tasks that call other Node.js tools like TypeScript, jest, and webpack. However, Just includes some script functions to get you up and running immediately.
+
+与其他构建库不同，Just 从一开始就力求有用。您可以选择编写自己的任务来调用其他 Node.js 工具，例如 TypeScript、jest 和 webpack。
+
+
+
+## puppeteer 
+
+[ https://www.npmjs.com/package/puppeteer ]( https://www.npmjs.com/package/puppeteer )
+
+[puppeteer vs puppeteer-core](https://zhaoqize.github.io/puppeteer-api-zh_CN/#?product=Puppeteer&version=puppeteer-v20.1.1&show=api-puppeteer-vs-puppeteer-core)
+
+Puppeteer 是一个Node库， 它提供高级API，通过DevTools Protocol 来控制Chrome 或 Chromium。 Puppeteer 默认运行为headless ，但是可以配置为运行为non-headless 。
+
+- 生成页面截图或PDF
+- 抓取SPA 并生成预渲染内容（SSR）
+- 自动化表单提交、UI测试，键盘输入 等
+- 创建最新的自动化测试环境。 使用最新的JavaScript和浏览器功能直接在最新版本的Chrome中运行测试。
+- 捕获站点的时间线跟踪，以帮助诊断性能问题。
+- 测试Chrome扩展程序。
+
+
+
+```js
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('https://example.com');
+  await page.screenshot({path: 'example.png'});
+
+  await browser.close();
+})();
+```
+
+
+
+Puppeteer初始化页面大小为 800*600px，这也是截图的大小 页面大小可以通过 [`Page.setViewport()`](https://pptr.dev/#?product=Puppeteer&version=v1.8.0&show=api-pagesetviewportviewport).定制。
 
 
 
