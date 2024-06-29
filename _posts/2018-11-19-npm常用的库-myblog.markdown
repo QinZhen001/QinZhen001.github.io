@@ -1444,3 +1444,36 @@ Puppeteer初始化页面大小为 800*600px，这也是截图的大小 页面大
 
 
 
+
+
+## pretty-bytes
+
+[https://www.npmjs.com/package/pretty-bytes](https://www.npmjs.com/package/pretty-bytes)
+
+Useful for displaying file sizes for humans.
+
+对于为人类显示文件大小很有用。
+
+举个例子：
+
+```ts
+import prettyBytes from 'pretty-bytes';
+
+prettyBytes(1337);
+//=> '1.34 kB'
+
+prettyBytes(100);
+//=> '100 B'
+```
+
+
+
+
+
+
+
+### consola
+
+[https://www.npmjs.com/package/consola](https://www.npmjs.com/package/consola)
+
+> Elegant Console Wrapper

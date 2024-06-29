@@ -254,7 +254,7 @@ Easy Mock 是一个可视化，并且能快速生成 **模拟数据** 的持久�
 
 [https://asciinema.org/](https://asciinema.org/)
 
-[http://www.network-science.de/ascii/](http://www.network-science.de/ascii/)
+
 
 ### IP地址查找
 

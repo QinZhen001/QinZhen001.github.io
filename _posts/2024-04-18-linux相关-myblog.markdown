@@ -164,8 +164,6 @@ systemd 是一个 Linux 系统初始化和服务管理的软件套件，它被�
 | /tmp  | 这是一般用户或者时正在执行的程序暂时放置文件的地方。这个目录任何人都能访问并且创建数据，但是只用root和数据的使用者才能删除所创建的数据。 |
 | /usr  | （Unix software Resource ） Unix软件资源                     |
 
-
-
 > /usr不是user的缩写，其实usr是Unix Software Resource的缩写， 也就是Unix操作系统软件资源所放置的目录，而不是用户的数据；所有系统默认的软件都会放置到/usr, 系统安装完时，这个目录会占用最多的硬盘容量
 
 
@@ -179,8 +177,6 @@ systemd 是一个 Linux 系统初始化和服务管理的软件套件，它被�
 ###  linux硬链接和软连接
 
 [https://xzchsia.github.io/2020/03/05/linux-hard-soft-link/](https://xzchsia.github.io/2020/03/05/linux-hard-soft-link/)
-
-
 
 原理上，硬链接和源文件的inode节点号相同，两者互为硬链接。软连接和源文件的inode节点号不同，进而指向的block也不同，软连接block中存放了源文件的路径名。 
 
@@ -196,19 +192,11 @@ systemd 是一个 Linux 系统初始化和服务管理的软件套件，它被�
 
 -rw-r--r--.  1  root  root 
 
-
-
 > 第一个root是所有者 第二个root是所属组
 >
 > . 代表ACL权限
 >
 > 1 代表引用计数
-
-
-
-
-
-
 
 * 第一位代表文件类型（-文件    d目录   l软连接文件）
 
@@ -265,11 +253,7 @@ netstat命令用来打印Linux中网络系统的状态信息，可让你得知�
 
 #### ls颜色区分
 
-
-
 ls命令显示的文件可能会出现颜色
-
-
 
 * 白色：表示普通文bai件
 * 蓝色：表示du目录
@@ -300,11 +284,7 @@ ls命令显示的文件可能会出现颜色
 
 **.tar.gz是一个压缩包**，**.tar只是打包而没有压缩**
 
-
-
 #### tar后的zxvf
-
-
 
 * z：通过gzip支持压缩或解压缩。还有其他的压缩或解压缩方式，比如j表示bzip2的方式。
 
@@ -333,8 +313,6 @@ ls命令显示的文件可能会出现颜色
 ### cat 
 
 查看文件内容
-
-
 
 * at     由第一行开始显示内容，并将所有内容输出
 * tac     从最后一行倒序显示内容，并将所有内容输出
@@ -511,23 +489,13 @@ curl(选项)(参数)
 
 [https://www.cnblogs.com/ftl1012/p/9265699.html](https://www.cnblogs.com/ftl1012/p/9265699.html)
 
-
-
 > "wget" 这个名称来源于 “World Wide Web” 与 “get” 的结合。
-
-
 
  wget是一个下载文件的工具，它用在命令行下。对于Linux用户是必不可少的工具，我们经常要下载一些软件或从远程服务器恢复备份到本地服务器。
 
-
-
  wget支持HTTP，HTTPS和FTP协议，可以使用HTTP代理。所谓的**自动下载**是指，wget可以在用户退出系统的之后在后台执行。这意味这你可以登录系统，启动一个wget下载任务，然后退出系统，wget将在后台执行直到任务完成
 
-
-
   wget 可以跟踪HTML页面上的链接依次下载来创建远程服务器的本地版本，完全重建原始站点的目录结构。这又常被称作”递归下载”。
-
-
 
   wget 非常稳定，它在带宽很窄的情况下和不稳定网络中有很强的适应性.如果是由于网络的原因下载失败，wget会不断的尝试，直到整个文件下载完毕。如果是服务器打断下载过程，它会再次联到服务器上从停止的地方继续下载。这对从那些限定了链接时间的服务器上下载大文件非常有用。
 
@@ -537,8 +505,6 @@ curl(选项)(参数)
 
 [https://blog.csdn.net/luhengchang/article/details/81365484](https://blog.csdn.net/luhengchang/article/details/81365484?utm_medium=distribute.pc_relevant_bbs_down.none-task-blog-BlogCommendFromBaidu-4.nonecase&depth_1-utm_source=distribute.pc_relevant_bbs_down.none-task-blog-BlogCommendFromBaidu-4.nonecase)
 
-
-
 使用mwget
 
 
@@ -547,31 +513,15 @@ curl(选项)(参数)
 
 [https://www.runoob.com/linux/linux-comm-grep.html](https://www.runoob.com/linux/linux-comm-grep.html)
 
-
-
 Linux grep 命令用于查找文件里符合条件的字符串。
 
-
-
 grep 指令用于查找内容包含指定的范本样式的文件，如果发现某文件的内容符合所指定的范本样式，预设 grep 指令会把含有范本样式的那一列显示出来。若不指定任何文件名称，或是所给予的文件名为 **-**，则 grep 指令会从标准输入设备读取数据。
-
-
-
----
-
-
 
 在当前目录中，查找后缀有 file 字样的文件中包含 test 字符串的文件，并打印出该字符串的行
 
 ```bash
 grep test *file 
 ```
-
-
-
-
-
-
 
 
 
@@ -681,6 +631,11 @@ mv test.txt wbk.txt
 * /是指根目录：就是所有目录最顶层的目录
 * ~是当前用户的主目录：如果是root用户就是/root/目录， 如果是其他用户就是/home/下用户名命名的用户 
 
+```bash
+# 举个例子
+~ 等价于 /Users/qz
+```
+
 
 
 
@@ -714,18 +669,22 @@ lsof -i:80
 export will make the variable appear in the environment of subsequently executed commands
 
 ```bash
-TEST=foo your-application
+export AZURE_TTS_KEY=123
 ```
 
-The shell syntax describes this as being *functionally* equivalent to:
+获取某一个环境变量
 
-```ts
-export TEST=foo
-your-application
-unset TEST
+```bash
+echo $AZURE_TTS_KEY
 ```
 
 
+
+
+
+### printenv
+
+查看当前环境变量
 
 
 
@@ -797,11 +756,9 @@ unset TEST
 
 码的安装一般由3个步骤组成：配置（configure）、编译（make）、安装（make install）
 
-
+#### Configure
 
 Configure是一个可执行脚本，它有很多选项，使用命令./configure –help输出详细的选项列表，如下
-
-
 
 ```bash
 -bash-3.00# ./configure --help
@@ -822,11 +779,7 @@ Directory and file names:
 ……….(省略若干)
 ```
 
-
-
 注意：
-
-
 
 安装源码库之前需要安装这个
 
@@ -834,11 +787,17 @@ yum groupinstall "Development tools"
 
 
 
+#### make
+
+make命令是一个构建工具，用于自动化构建和编译代码。
+
+它基于Makefile文件来控制和管理源代码的构建过程。
+
+
+
 
 
 ### CentOS 下源码安装 Node.js
-
-
 
 
 
@@ -864,17 +823,11 @@ make
 make install
 ```
 
-
-
-
-
-> ./configure是源代码安装的bai第一步，主要的作用du是对即将安装的软件进行配置，检查zhi当前的环dao境是否满足要安装软件的依赖关系，但并不是所有的tar包都是源代码的包
+> ./configure是源代码安装的第一步，主要的作用是对即将安装的软件进行配置，检查当前的环境是否满足要安装软件的依赖关系，但并不是所有的tar包都是源代码的包
 
 
 
 ### 安装C++ compiler
-
-
 
 出现下面这个WARNING 导致node安装不成功
 
@@ -888,15 +841,9 @@ WARNING: C++ compiler (CXX=g++, 4.8.5) too old, need g++ 6.3.0 or clang++ 8.0.0
 
 ### EPEL
 
-
-
 **EPEL的全称叫 Extra Packages for Enterprise Linux** 。EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目。装上了 EPEL之后，就相当于添加了一个第三方源。
 
-
-
-如果你知道rpmfusion.org的话，拿 rpmfusion 做比较还是很恰当的，rpmfusion 主要为桌面发行版提供大量rpm包，而***EPEL则为服务器版本提供大量的rpm包，而且大多数rpm包在官方 repository 中是找不到的\***。
-
-
+如果你知道rpmfusion.org的话，拿 rpmfusion 做比较还是很恰当的，rpmfusion 主要为桌面发行版提供大量rpm包，而EPEL则为服务器版本提供大量的rpm包，而且大多数rpm包在官方 repository 中是找不到的\**。
 
 另外一个特点是**绝大多数rpm包要比官方repository 的rpm包版本要来得新**，比如我前些日子在CentOS上安装的php，RHEL为了稳定性还在延用5.1.6版，我记得这是去年上半年的版本，而php 的最新版本已经到5.3.2，如果在php5.1.6的基础上安装phpmyadmin，则会提示php版本过低，这时候，EPEL中提供的较新php rpm就能很方便的派上用场了。
 
@@ -938,11 +885,7 @@ yum list installed | grep php
 
 #### 查看库安装位置
 
-
-
 例子：
-
-
 
 ```bash
 rpm -ql nginx
@@ -962,15 +905,9 @@ rpm -ql nginx
 
 [https://www.cnblogs.com/applelife/p/10474704.html](https://www.cnblogs.com/applelife/p/10474704.html)
 
-
-
 wget 类似于迅雷，是一种下载工具，
 
 通过HTTP、HTTPS、FTP三个最常见的TCP/IP协议下载，并可以使用HTTP代理名字是World Wide Web”与“get”的结合。
-
-
-
-
 
 yum: 是redhat, centos 系统下的软件安装方式，基于Linux，
 
@@ -978,23 +915,11 @@ yum: 是redhat, centos 系统下的软件安装方式，基于Linux，
 
 基于RPM包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软件包。
 
-
-
-
-
 rpm: 软件管理;  redhat的软件格式 rpm 
 
 r=redhat  p=package  m=management
 
 用于安装 卸载 .rpm软件
-
-
-
-
-
-----
-
-
 
 串联下：
 
@@ -1023,11 +948,7 @@ r=redhat  p=package  m=management
 
 [堡垒机](https://www.huaweicloud.com/product/cbh.html)，即在一个特定的网络环境下，为了保障网络和数据不受来自外部和内部用户的入侵和破坏，而运用各种技术手段实时收集和监控网络环境中每一个组成部分的系统状态、安全事件、网络活动，以便集中报警、及时处理及审计定责。
 
-
-
 堡垒机能够集中管理资产权限，全程记录操作数据，实时还原运维场景，助力企业用户构建云上统一、安全、高效运维通道；保障云端运维工作权限可管控、操作可审计、合规可遵从。在一个特定的网络环境下，为了保障网络和数据不受来自外部和内部用户的入侵和破坏，而运用各种技术手段实时收集和监控网络环境中每一个组成部分的系统状态、安全事件、网络活动，以便集中报警、及时处理及审计定责。
-
-
 
 从功能上讲，它综合了核心系统运维和安全审计管控两大主干功能，从技术实现上讲，通过切断终端计算机对网络和服务器资源的直接访问，而采用协议代理的方式，接管了终端计算机对网络和服务器的访问。形象地说，终端计算机对目标的访问，均需要经过运维安全审计的翻译。能够拦截非法访问，和恶意攻击，对不合法命令进行命令阻断，过滤掉所有对目标设备的非法访问行为，并对内部人员误操作和非法操作进行审计监控，以便事后责任追踪。
 

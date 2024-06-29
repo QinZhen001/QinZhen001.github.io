@@ -1,0 +1,59 @@
+---
+layout:     post
+title:      "文档相关"
+date:       2023-10-27 18:06:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - Other
+---
+
+> “Yeah It's on. ”
+
+
+
+# typedoc 
+
+[https://typedoc.org/guides/overview/](https://typedoc.org/guides/overview/)
+
+TypeDoc 是 TypeScript 的文档生成器，是一个读取 TypeScript 源文件的工具
+
+
+
+## 使用
+
+```json
+ // pacakage.json
+ 
+ "scripts": {
+    "doc": "typedoc"
+  },
+```
+
+
+
+```json
+// typedoc.json
+
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "out": "docs",
+  "entryPoints": ["src/modules/callApi/index.ts"],
+  "exclude": [],
+  "disableSources": true,  // 重要
+  "includeVersion": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "hideGenerator": true
+}
+```
+
+$schema 键是一个可选属性，TypeDoc 将忽略它，但在 VSCode 和其他支持 JSON 架构的编辑器中编辑文件时将提供自动完成和键验证。
+
+disableSources: true
+
+TypeDoc 的 output 默认带上了每个api的Defined来自的地方，看起来非常的不干净，disableSources可以干掉Defined相关的东西
+
+[Disable "Defined in:"](https://github.com/TypeStrong/typedoc/issues/808)
+

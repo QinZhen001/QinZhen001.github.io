@@ -634,6 +634,17 @@ function toggleClass(obj, cls) {
 
 
 
+### 判断是否滑动到底部
+
+[https://juejin.cn/post/7101271753255485448](https://juejin.cn/post/7101271753255485448)
+
+```tsx
+// element 为可滑动元素
+element.scrollHeight - element.clientHeight - element.scrollTop < 1
+```
+
+
+
 
 
 ### pipeAsyncFunctions

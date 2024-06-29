@@ -314,6 +314,38 @@ bg-image($url)
 
 
 
+
+
+# sass
+
+
+
+## sass-modules
+
+[https://css-tricks.com/introducing-sass-modules/](https://css-tricks.com/introducing-sass-modules/)
+
+
+
+## @use
+
+[https://css-tricks.com/introducing-sass-modules/](https://css-tricks.com/introducing-sass-modules/)
+
+```scss
+@use 'buttons';
+```
+
+The file is only imported once, no matter how many times you @use it in a project.
+
+该文件仅导入一次，无论您在项目中使用它多少次。
+
+
+
+
+
+
+
+
+
 # scss和sass
 
 **区别：除了书写上面的区别，没有其他区别了**
