@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "linux相关"
-date:       2024-04-18 30:30:00
+date:       2024-04-18 10:30:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
