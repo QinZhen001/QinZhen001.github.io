@@ -198,6 +198,33 @@ npm dist-tag rm <pkg> <tag>
 
 
 
+
+
+## npm create
+
+[https://dev.to/mikhaelesa/create-your-own-npm-create-cli-like-create-vite-3ig7](https://dev.to/mikhaelesa/create-your-own-npm-create-cli-like-create-vite-3ig7)
+
+[npm create命令解析](https://juejin.cn/post/7241514309717573692)
+
+**也就是说npm create其实就是npm init的别名**
+
+**`npm` 将在你提供的初始项前拼接 `create-` 然后使用`npx`工具下载并执行该方法**，也就是说
+
+```bash
+npm create vite
+// 等同于
+npm init vite
+// 等同于
+npx create-vite
+// 等同于
+npm install create-vite -g
+create-vite
+```
+
+
+
+
+
 ## workspaces
 
 npm workspaces是npm 7.0.0版本中新引入的功能，它允许您在具有相互依赖关系的多个包之间进行协同工作。

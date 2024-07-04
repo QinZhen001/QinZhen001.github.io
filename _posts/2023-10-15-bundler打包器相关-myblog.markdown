@@ -238,8 +238,6 @@ Use [rollup-plugin-node-resolve](https://github.com/rollup/plugins/tree/master/p
 
 Robust [rollup](https://rollupjs.org/) based bundler that supports typescript and generates commonjs and module formats + type declarations.
 
-
-
 ```tsx
 // build.config.ts
 import { defineBuildConfig } from 'unbuild'
