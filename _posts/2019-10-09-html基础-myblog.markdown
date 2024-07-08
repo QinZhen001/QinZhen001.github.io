@@ -32,29 +32,16 @@ MutationObserver接口提供了监视对DOM树所做更改的能力。它被设�
 
 ## document.currentScript
 
-
-
 >在学习vue-cli3时发现了currentScript这个知识点
 
 
 >在库模式中，项目的 publicPath 是根据主文件的加载路径动态设置的（用以支持动态的资源加载能力）。但是这个功能用到了 document.currentScript，而 IE 浏览器并不支持这一特性。所以如果网站需要支持 IE 的话，建议使用库之前先在页面上引入 current-script-polyfill。
 
-
-
 >https://cli.vuejs.org/zh/guide/build-targets.html#%E5%BA%94%E7%94%A8
-
-
-
-
-
-
 
 ----------------
 
-
 [https://developer.mozilla.org/zh-CN/docs/Web/API/Document/currentScript](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/currentScript)
-
-
 
 返回其所包含的脚本中正在被执行的 `<script>` 元素.
 
@@ -81,35 +68,15 @@ if (document.currentScript.async) {
 
 ##  **Range** 
 
-
-
 [ https://developer.mozilla.org/zh-CN/docs/Web/API/Range ]( https://developer.mozilla.org/zh-CN/docs/Web/API/Range )
 
-
-
- Range对象代表页面上一段连续的区域，通过Range对象可以获取或者修改页面上任何区域的内容。也可以通过Range的方法进行复制和移动页面任何区域的元素。 
-
-
+Range对象代表页面上一段连续的区域，通过Range对象可以获取或者修改页面上任何区域的内容。也可以通过Range的方法进行复制和移动页面任何区域的元素。 
 
 **`Range`** 接口表示一个包含节点与文本节点的一部分的文档片段。
 
-
-
-
-
 可以用 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 对象的 [`Document.createRange`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createRange) 方法创建 Range，也可以用 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象的 [`getRangeAt`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection/getRangeAt) 方法获取 Range。另外，还可以通过 [`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 对象的构造函数 [`Range()`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/Range) 来得到 Range。
 
-
-
-
-
----
-
-
-
 ### 属性
-
-
 
 [`Range.collapsed`](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/collapsed) 只读
 
@@ -142,10 +109,6 @@ if (document.currentScript.async) {
 
 
 ### 例子
-
-
-
-
 
 ```html
 <body>
@@ -183,17 +146,9 @@ if (document.currentScript.async) {
 
 
 
-
-
-
-
 ### 兼容性
 
-
-
  https://www.caniuse.com/#search=createRange 
-
-
 
  createRange 兼容性非常好，可以使用
 
@@ -203,23 +158,13 @@ if (document.currentScript.async) {
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/API/Selection ]( https://developer.mozilla.org/zh-CN/docs/Web/API/Selection )
 
-
-
-
-
  表示用户选择的文本范围或光标的当前位置。 
-
-
 
 ```js
 const selection = window.getSelection() ;
 ```
 
 - `selection` 是一个 [`Selection`](https://developer.mozilla.org/zh-CN/docs/Web/API/Selection) 对象。 如果想要将 `selection` 转换为字符串，可通过连接一个空字符串（""）或使用 [`String.toString()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/toString) 方法。
-
-
-
-
 
  一般来说，插入光标的位置可通过 Selection 获取，这时它被标记为 `Collapsed`，这表示选区被压缩至一点，即光标位置。但要注意它与 `focus` 事件或 [`Document.activeElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/activeElement) 等的值没有必然联系。 
 
@@ -233,15 +178,9 @@ const selection = window.getSelection() ;
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_settings_attributes ]( https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_settings_attributes )
 
-
-
 [ https://www.chrisyue.com/what-the-hell-is-crossorigin-attribute-in-html-script-tag.html ]( https://www.chrisyue.com/what-the-hell-is-crossorigin-attribute-in-html-script-tag.html )
 
-
-
 在HTML5中，一些 HTML 元素提供了对 [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) 的支持， 例如`<audio> <img> <link> <script> <video>`均有一个跨域属性 (`crossOrigin` property)，它允许你配置元素获取数据的 CORS 请求。 
-
-
 
 | 关键字            | 描述                                                         |
 | ----------------- | ------------------------------------------------------------ |
@@ -249,32 +188,16 @@ const selection = window.getSelection() ;
 | `use-credentials` | 对此元素的CORS请求将设置凭证标志；这意味着请求将提供凭据。   |
 | `""`              | 设置一个空的值，如 `crossorigin` 或 `crossorigin=""`，和设置 `anonymous` 的效果一样。 |
 
-
-
-
-
-
-
 从谷歌的结果来看，比较一致的说法是，当引入跨域的脚本（比如用了 apis.google.com 上的库文件）时，如果这个脚本有错误，因为浏览器的限制（根本原因是协议的规定），是拿不到错误信息的。当本地尝试使用 `window.onerror` 去记录脚本的错误时，跨域脚本的错误只会返回 `Script error`。
-
- 
-
-
 
 而 HTML5 新的规定，是可以允许本地获取到跨域脚本的错误信息的，但有两个条件：一是跨域脚本的服务器必须通过 `Access-Control-Allow-Origin` 头信息允许当前域名可以获取错误信息，二是网页里的 `script` 标签也必须指明 `src` 属性指定的地址是支持跨域的地址，也就是 crossorigin 属性。有了这两个条件，就可以获取跨域脚本的错误信息：
 
 
- 但事情还是不够明朗，看起来跨域脚本报个错也没什么啊，为什么浏览器（准确说是 HTTP 协议）这么轴，非要规定默认情况页面是不能获取跨域脚本错误信息的呢？
-
-
+但事情还是不够明朗，看起来跨域脚本报个错也没什么啊，为什么浏览器（准确说是 HTTP 协议）这么轴，非要规定默认情况页面是不能获取跨域脚本错误信息的呢？
 
 这其实跟网络安全有关，不妨举一个例子来说明。
 
-
-
 我们先假设浏览器默认可以将跨域脚本的错误信息返回。
-
-
 
 这个时候我在我的博客里写下如下代码：
 
@@ -388,9 +311,195 @@ if (document.readyState != 'loading') {
 }
 ```
 
+## a标签
+
+### rel属性
+
+[https://www.w3school.com.cn/tags/att_a_rel.asp](https://www.w3school.com.cn/tags/att_a_rel.asp)
+
+浏览器支持: 所有浏览器都支持 rel 属性。
 
 
-## audio标签
+虽然在理论上讲，浏览器可以利用 rel 和 rev 属性改变锚内容的外观、或者自动构建文档浏览菜单，其他工具也可以使用这些属性来构建特殊的链接集合、目录和索引，但是只有极少数浏览器才会利用这些属性来改变链接的外观。
+
+
+>提示：尽管浏览器不会以任何方式使用该属性，不过搜索引擎可以利用该属性获得更多有关链接的信息。
+
+---
+
+定义和用法
+
+`<a>` 标签的 rel 属性用于指定当前文档与被链接文档的关系。
+
+
+用于` <a>` 标签的可选属性 rel 和 rev 分别表示源文档与目标文档之间正式的关系和方向。
+
+rel 属性指定从源文档到目标文档的关系，而 rev 属性则指定从目标文档到源文档的关系。这两种属性可以在`<a>` 标签中同时使用。
+
+```
+<a href="part_12.html" rel="next" rev="prev">
+```
+
+----
+
+**重要rel="noreferrer"**
+
+[http://ju.outofmemory.cn/entry/172298](http://ju.outofmemory.cn/entry/172298)
+
+在一个页面A中，点击一个链接，浏览器会跳转到页面B。那么如何描述A和B的关系呢？我们把A定义为B的refer/referrer/referer
+
+通俗地说，A是B的来源页面/引荐页面。从技术实现上，你从浏览器起发出的任何请求（不准确，先这么理解吧），例如打开新页面、请求静态资源、ajax、请求后端api等等，都会在请求头部添加
+
+----
+
+问题出现
+
+最近在做node爬虫时，发现，有一些页面需要跳转到某网站（新开页面），但这个网站链接链过去会报403错误，如下图。但是，从浏览器输入地址，则没有问题。
+
+**如果链接链过去的时候不带referrer信息，则网页能够正常打开。**
+
+**最简易直观的实现方式，如果一个a标签设置了rel=”noreferrer”，那么点击这个链接时不传递referrer信息。（注意，这个html5标准中和referrer是正确的拼法）**
+
+```
+<a href="http://baidu.com" target="_blank" rel="noreferrer">跳转</a>
+```
+
+
+>如果担心兼容性问题，可以使用 noreferrer.js 
+
+
+
+### href
+
+要实现点击a标签原地不动 不跳转 不刷新效果
+
+href  = ""  是不行的
+
+解决方式：
+
+**href="javascript:void(0);" **
+
+
+
+### target
+
+_blank
+
+浏览器总在一个新打开、未命名的窗口中载入目标文档。
+
+_self
+
+这个目标的值对所有没有指定目标的 `<a>` 标签是默认目标，它使得目标文档载入并显示在相同的框架或者窗口中作为源文档。这个目标是多余且不必要的，除非和文档标题 `<base>` 标签中的 target 属性一起使用。
+
+_parent
+
+这个目标使得文档载入父窗口或者包含来超链接引用的框架的框架集。如果这个引用是在窗口或者在顶级框架中，那么它与目标 _self 等效。
+
+_top
+
+这个目标使得文档载入包含这个超链接的窗口，用 _top 目标将会清除所有被包含的框架并将文档载入整个浏览器窗口。
+
+
+
+**提示：
+这些 target 的所有 4个值都以下划线开始。任何其他用一个下划线作为开头的窗口或者目标都会被浏览器忽略，因此，不要将下划线作为文档中定义的任何框架 name 或 id 的第一个字符。**
+
+
+
+### 补充
+
+#### 在新窗口中打开页面的坑
+
+[网页链接](http://imweb.io/topic/584cd0459be501ba17b10aaa)
+
+用a标签的target="_blank"属性，或者window.open(url)在新窗口中打开页面时，会存在潜在的安全问题。为什么呢？这个锅是一个叫opener的全局对象的锅。
+
+---
+
+性能问题
+
+为什么新窗口中的页面会影响父页面的线程呢？chrome不是每个标签页一个单独的进程？然后进程内包含若干线程吗？
+
+确实，chrome有不同的标签页面使用不同进程和线程，但是有个例外，通过a标签的target="_blank"属性，或者window.open(url)在新窗口中打开页面, 会与父窗口共用进程和线程。为什么呢？
+
+还是因为opener。。。。因为opener里有DOM信息。两个进程中同时hold住了DOM信息，在多进程下很难道控制，所以干脆就放在一个进程里了。这个算是chrome的一个小缺陷（firefox也有，ie没有），不过chrome目前正在跟进和优化这里。
+
+---
+
+解决方案
+
+* 如果是a标签要在新窗口中打开，添加noopener属性
+* 如果是js中打开新窗口，手动将新窗口的opener置为null
+
+```html
+<a target="_blank" href="http://keenwon.com/">点击</a>
+```
+
+在新打开的标签页通过window.oponer ，可以获得当前页面的window 。这样的话，http://keenwon.com（被打开的页面）将获得当前页面的部分控制权，即使新打开的页面是跨域的也照样可以（例如location 就不存在跨域问题）。  
+
+
+
+## input
+
+
+
+### 上传文件
+
+
+
+[https://juejin.im/post/5aacc64e6fb9a028c6757bab](https://juejin.im/post/5aacc64e6fb9a028c6757bab)
+
+
+```html
+<input class="addPicInput" type="file" ref="uploadFile"
+       @change="fileChange" accept="image/*" multiple>
+```
+
+
+>multiple
+
+
+在实际开发过程中，会遇到上传文件的一些需求。但是使用原生的`<input type="file" />`在使用中存在一些问题
+
+* 在未上传文件时，显示"no file choosen"，用户界面不友好，不可配置
+* 上传同一个文件，不会触发change事件，即使该文件做过修改
+* 用户如果在上传过程中点击了“取消”，已经上传的文件会被移除
+
+
+
+### 解决思路
+
+
+在阅读了一些源码之后，总结了如下的解决方案。有点偷梁换柱的意思:
+
+* 将真正的`<input type="file" />`隐藏，使用自定义的button通过$refs去触发文件上传，实现自定义显示
+* 文件上传之后，处理完文件，将`<input type="file" />`的value设置为null，这样下次即使上传的是同一个文件，仍然会触发change事件
+* 使用上述方法，点击取消文件被移除，但是不影响页面展示
+
+
+
+### 监听中文输入
+
+[https://juejin.cn/post/6844903950634713096](https://juejin.cn/post/6844903950634713096)
+
+compositionstart和compositionend
+
+> The compositionstart event is fired when a text composition system such as an `input method editor starts a new composition session`.For example, this event could be fired after a user starts entering a Chinese character using a Pinyin IME.
+
+> The compositionend event is fired when a text composition system such as an `input method editor completes or cancels the current composition session`.For example, this event could be fired after a user finishes entering a Chinese character using a Pinyin IME.
+
+- `positionstart` 事件,当用户使用拼音输入法开始输入汉字时，这个事件就会被触发。
+- `compositionend` 事件, 当文中文输入完成时, compositionend 事件将被触发。
+
+
+
+
+
+
+
+
+
+## audio
 
 
 

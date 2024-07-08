@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "理解ES7的async和await "
+title:      "async和await相关 "
 date:       2018-04-18 15:46:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -18,15 +18,12 @@ tags:
 
 [http://es6.ruanyifeng.com/#docs/async](http://es6.ruanyifeng.com/#docs/async)
 
-
-ES2017 标准引入了 async 函数，使得异步操作变得更加方便。
+ES2017 标准 (ES8) 引入了 async 函数，使得异步操作变得更加方便。
 async 函数是什么？
 
 **一句话，它就是 Generator 函数的语法糖。**
 
 **把异步写成同步的形式**
-
-
 
 ```javascript
 const fs = require('fs');
@@ -48,8 +45,6 @@ const gen = function* () {
 };
 ```
 
-
-
 写成async函数，就是下面这样。
 
 ```javascript
@@ -60,8 +55,6 @@ const asyncReadFile = async function () {
   console.log(f2.toString());
 };
 ```
-
-
 
 一比较就会发现，async函数就是将 Generator 函数的星号（*）替换成async，将yield替换成await，仅此而已。
 
@@ -129,8 +122,6 @@ async function f() {
 f().then(v => console.log(v))
 // "hello world"
 ```
-
-
 
 上面代码中，函数f内部return命令返回的值，会被then方法回调函数接收到。
 
@@ -735,107 +726,5 @@ const asynchronous = async () => {
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 
-
-### 精读
-```javascript
-a(() => {
-  b(() => {
-    c();
-  });
-});
-```
-为了减少嵌套结构太多对大脑造成的冲击，async/await 决定这么写：
-```
-await a();
-await b();
-await c();
-```
-虽然层级上一致了，但逻辑上还是嵌套关系，这不是另一个程度上增加了大脑负担吗？而且这个转换还是隐形的，所以许多时候，我们倾向于忽略它，所以造成了语法糖的滥用。
-
-
-
-#### 理解语法糖
-
-首先 async/await 只能实现一部分回调支持的功能，也就是仅能方便应对层层嵌套的场景。其他场景，就要动一些脑子了。
-比如两对回调：
-```
-a(() => {
-  b();
-});
-
-c(() => {
-  d();
-});
-```
-如果写成下面的方式，虽然一定能保证功能一致，但变成了最低效的执行方式：
-```
-await a();
-await b();
-await c();
-await d();
-```
-因为翻译成回调，就变成了：
-```
-a(() => {
-  b(() => {
-    c(() => {
-      d();
-    });
-  });
-});
-```
-然而我们发现，原始代码中，函数 c 可以与 a 同时执行，但 async/await 语法会让我们倾向于在 b 执行完后，再执行 c。
-所以当我们意识到这一点，可以优化一下性能：
-```
-const resA = a();
-const resC = c();
-
-await resA;
-b();
-await resC;
-d();
-```
-
-
-但其实这个逻辑也无法达到回调的效果，虽然 a 与 c 同时执行了，但 d 原本只要等待 c 执行完，现在如果 a 执行时间比 c 长，就变成了:
-
-```
-a(() => {
-  d();
-});
-```
-看来只有完全隔离成两个函数：
-```
-(async () => {
-  await a();
-  b();
-})();
-
-(async () => {
-  await c();
-  d();
-})();
-```
-
-
-或者利用 Promise.all:
-```
-async function ab() {
-  await a();
-  b();
-}
-
-async function cd() {
-  await c();
-  d();
-}
-
-Promise.all([ab(), cd()]);
-```
-
-作者：黄子毅
-链接：https://juejin.im/post/5aefbb046fb9a07ab508cf25
-来源：掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
 

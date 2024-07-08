@@ -20,15 +20,21 @@ tags:
 
 [package.json 指南](http://nodejs.cn/learn/the-package-json-guide)
 
+[https://docs.npmjs.com/cli/v10/configuring-npm/package-json](https://docs.npmjs.com/cli/v10/configuring-npm/package-json)
 
 
-## browser，module，main
 
-[https://github.com/SunshowerC/blog/issues/8](https://github.com/SunshowerC/blog/issues/8)
+## module
 
-- `main` : 定义了 `npm` 包的入口文件，browser 环境和 node 环境均可使用
-- `module` : 定义 `npm` 包的 ESM 规范的入口文件，browser 环境和 node 环境均可使用
-- `browser` : 定义 `npm` 包在 browser 环境下的入口文件
+定义 `npm` 包的 ESM 规范的入口文件，browser 环境和 node 环境均可使用
+
+
+
+
+
+## browser
+
+定义 `npm` 包在 browser 浏览器环境下的入口文件
 
 
 
@@ -65,6 +71,8 @@ It is executed automatically after the package is installed or updated
 
 
 ## [main](https://docs.npmjs.com/files/package.json#main)
+
+定义了 `npm` 包的入口文件，browser 环境和 node 环境均可使用
 
 The main field is a module ID that is the primary entry point to your program. That is, if your package is named `foo`, and a user installs it, and then does `require("foo")`, then your main module’s exports object will be returned.
 
@@ -230,6 +238,10 @@ Conversely, some files are always ignored:
 }
 ```
 
+
+
+
+
 ## engines
 
 设置此软件包/应用程序要运行的 Node.js 或其他命令的版本。
@@ -324,6 +336,16 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 
 
+## workspaces
+
+[https://docs.npmjs.com/cli/v10/using-npm/workspaces](https://docs.npmjs.com/cli/v10/using-npm/workspaces)
+
+**Workspaces** is a generic term that refers to the set of features in the npm cli that provides support for managing multiple packages from your local file system from within a singular top-level, root package.
+
+工作区是一个通用术语，指的是npm cli中的一组特性，这些特性支持从一个顶级根包中管理本地文件系统中的多个包。
+
+
+
 ## exports
 
 [https://www.cnblogs.com/taohuaya/p/15573719.html](https://www.cnblogs.com/taohuaya/p/15573719.html)
@@ -350,4 +372,42 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 
 
+
+## version
+
+以当前版本为1.0.0为例子，遵循以下规范：
+
+| 更新情况                         | 位置   | version |
+| -------------------------------- | ------ | ------- |
+| 修复当前版本的一些bug            | 第三位 | 1.0.1   |
+| 新增向后兼容的新特性             | 第二位 | 1.1.0   |
+| 进行了破坏性地无法向后兼容的更改 | 第一位 | 2.0.0   |
+
+包的版本信息里会出现`^~`符号
+
+例如
+
+```
+"eslint": "^3.19.0",
+"css-loader": "~3.19.0",
+```
+
+代表安装这个包的版本信息是浮动的，而不是指定死版本。
+
+- ^代表固定主版本号的，其余号浮动，如`^1.3.0`，高于等于1.3.0，1.x.x都符合，但是要低于2.0.0
+- ~代表固定次版本号的，修订号浮动，如`~1.3.0`，高于等于1.3.0，1.3.x都符合，但是要低于1.4.0
+
+
+
+不同版本的npm 
+
+* npm 2 在安装依赖包时，采用简单的递归安装方法。
+* npm 3  扁平结构
+* npm 5 package-lock 文件
+
+
+
+这只是最简单的例子，实际的工程项目中，依赖树不可避免地会有很多层级，很多依赖包，其中会有很多同名但版本不同的包存在于不同的依赖层级，对这些复杂的情况, npm 3 都会在安装时遍历整个依赖树，计算出最合理的文件夹安装方式，使得所有被重复依赖的包都可以去重安装。
+
+package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 json 的结构，会发现与 node_modules 目录的文件层级结构是一一对应的。
 

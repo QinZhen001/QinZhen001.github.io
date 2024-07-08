@@ -328,35 +328,33 @@ function App(data) {
 
 
 
-## 补充
-
 
 
 ### 事件机制原理
 
 [https://toutiao.io/posts/28of14w/preview](https://toutiao.io/posts/28of14w/preview)
 
-
-
 react自身实现了一套自己的事件机制，包括事件注册、事件的合成、事件冒泡、事件派发等，虽然和原生的是两码事，但也是基于浏览器的事件机制下完成的。
 
-
-
-我们都知道react 的所有事件并没有绑定到具体的dom节点上而是绑定在了document 上，然后由统一的事件处理程序来处理，同时也是基于浏览器的事件机制（冒泡），所有节点的事件都会在 document 上触发。
+**我们都知道react 的所有事件并没有绑定到具体的dom节点上而是绑定在了document 上，然后由统一的事件处理程序来处理，同时也是基于浏览器的事件机制（冒泡），所有节点的事件都会在 document 上触发。**
 
 
 
-----
+#### 优点
+
+1. 性能优化：DOM 事件处理函数会在每次事件触发时创建一个新的函数实例，如果有大量的 DOM 事件处理函数，会造成大量的函数对象的创建和销毁，导致内存消耗和性能下降。而 React 的合成事件系统会通过事件委托的方式，将事件绑定到顶层的 document 或者最近的 DOM 节点上，所有的事件都会通过一个统一的事件处理函数进行处理，减少了内存消耗和事件绑定的数量，提升了性能。
+2. 跨浏览器兼容性：React 的合成事件系统提供了对浏览器差异性的统一处理，使开发者不需要关心不同浏览器的兼容性问题。React 会根据浏览器的类型和版本，自动选择最佳的方式来创建事件对象，并提供一致的接口给开发者使用。
+3. 事件池管理：React 的合成事件系统利用了事件池管理的概念，将事件对象用过后会进行重置和复用，减少了垃圾回收的压力，提升了性能。在事件处理函数中，获取到的事件对象是一个合成事件对象，而非原生的事件对象。
 
 
+
+
+
+#### 合成和原生事件
 
 如果一个节点上同时绑定了合成和原生事件，那么禁止冒泡后执行关系是怎样的呢？
 
-
-
 因为合成事件的触发是基于浏览器的事件机制来实现的，通过冒泡机制冒泡到最顶层元素，然后再由 dispatchEvent统一去处理。
-
-
 
 得出的结论：
 
@@ -366,8 +364,6 @@ react自身实现了一套自己的事件机制，包括事件注册、事件的
 
 
 解释：
-
-
 
 浏览器事件的执行需要经过三个阶段，捕获阶段-目标元素阶段-冒泡阶段。
 
@@ -379,26 +375,10 @@ react自身实现了一套自己的事件机制，包括事件注册、事件的
 
 因为原生的事件先于合成的执行，所以合成事件内阻止的只是合成的事件冒泡。
 
-
-
 * 原生事件（阻止冒泡）会阻止合成事件的执行
 * 合成事件（阻止冒泡）不会阻止原生事件的执行
 
 两者最好不要混合使用，避免出现一些奇怪的问题
-
-
-
----
-
-
-
-#### 意义
-
-react 自己做这么多的意义是什么？
-
-1. 减少内存消耗，提升性能，不需要注册那么多的事件了，一种事件类型只在 document 上注册一次
-2. 统一规范，解决 ie 事件兼容问题，简化事件逻辑
-3. 对开发者友好
 
 
 
@@ -417,8 +397,6 @@ handleClick = (e) => {
 #### 事件注册机制
 
 react 事件注册过程其实主要做了2件事：事件注册、事件存储。
-
-
 
 * 事件注册 - 组件挂载阶段，根据组件内的声明的事件类型-onclick，onchange 等，给 document 上添加事件 -addEventListener，并指定统一的事件处理程序 dispatchEvent。
 * 事件存储 - 就是把 react 组件内的所有事件统一的存放到一个对象里，缓存起来，为了在触发事件的时候可以查找到对应的方法去执行。
@@ -625,6 +603,22 @@ render () {
 
 
 
+### 时间切片原理
+
+[时间切片原理](https://react.iamkasong.com/concurrent/scheduler.html#%E6%97%B6%E9%97%B4%E5%88%87%E7%89%87%E5%8E%9F%E7%90%86)
+
+`Scheduler`的`时间切片`功能是通过`task`（宏任务）实现的。
+
+最常见的`task`当属`setTimeout`了。但是有个`task`比`setTimeout`执行时机更靠前，那就是[MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/MessageChannel)。
+
+所以`Scheduler`将需要被执行的回调函数作为`MessageChannel`的回调执行。如果当前宿主环境不支持`MessageChannel`，则使用`setTimeout`。
+
+
+
+
+
+
+
 ### 父子组件更新
 
 [https://www.jianshu.com/p/ee122bb5b14b](https://www.jianshu.com/p/ee122bb5b14b)
@@ -673,3 +667,12 @@ componentDidMount呢？
 * `useCallback` 和 `useMemo` 作用于 `props` 并不能避免组件重渲染。只有当每一个 `prop` 都被缓存，且组件本身也被缓存的情况下，重渲染才能被避免。只要有一丁点疏忽，那么你做的一切努力就打水漂了。所以说，简单点，把它们都删了吧。
 
 - 把包裹了“纯 js 操作“的 `useMemo` 也都删了吧。与组件本身的渲染相比，它缓存数据带来的耗时减少是微不足道的，并且会在初始渲染时消耗额外的内存，造成可以被观察到的延迟。
+
+
+
+### JSX
+
+[https://www.typescriptlang.org/docs/handbook/jsx.html](https://www.typescriptlang.org/docs/handbook/jsx.html)
+
+[JSX](https://facebook.github.io/jsx/) is an embeddable XML-like syntax. It is meant to be transformed into valid JavaScript, though the semantics of that transformation are implementation-specific. JSX rose to popularity with the [React](https://reactjs.org/) framework, but has since seen other implementations as well. TypeScript supports embedding, type checking, and compiling JSX directly to JavaScript.
+

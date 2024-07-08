@@ -194,6 +194,45 @@ export const invert: InvertColor;
 
 
 
+### 获取interface所有值的类型
+
+使用
+
+```ts
+type ValueOf<T> = T[keyof T]
+```
+
+举个例子：
+
+```tsx
+enum RtmMessageType {
+  UserInfo = "UserInfo",
+  BeHost = "BeHost",
+}
+
+interface RtmMessageData {
+  [RtmMessageType.UserInfo]?: {
+    userName: string
+    userId: string
+    type: RtmMessageType.UserInfo
+  }
+  [RtmMessageType.BeHost]?: {
+    userId: string
+    type: RtmMessageType.BeHost
+  }
+}
+```
+
+用法：
+
+```tsx
+type Test = ValueOf<RtmMessageData>
+```
+
+
+
+
+
 
 ## type
 
@@ -203,7 +242,9 @@ export const invert: InvertColor;
 
 [导入/导出](https://jkchao.github.io/typescript-book-chinese/new/typescript-3.8.html#%E4%BB%85%E4%BB%85%E5%AF%BC%E5%85%A5-%E5%AF%BC%E5%87%BA%E5%A3%B0%E6%98%8E)
 
-`import type` 仅仅导入被用于类型注解或声明的声明语句，**它总是会被完全删除，因此在运行时将不会留下任何代码**。与此相似，`export type` 仅仅提供一个用于类型的导出，在 TypeScript 输出文件中，它也将会被删除。
+import type 是TypeScript 和Flow 中特有的语法，它**允许你导入类型而不导入运行时的值**。 这通常用于导入类型定义，例如接口、类型别名或类类型。 这种导入方式不会影响生成的JavaScript 代码，因为类型信息在编译时会被移除。与此相似，`export type` 仅仅提供一个用于类型的导出，在 JavaScript 输出文件中，它也将会被删除。
+
+
 
 
 
@@ -341,6 +382,55 @@ let b = a !== null && a !== void 0 ? a : 10;
 
 ## 操作符
 
+
+
+### asserts
+
+[https://blog.logrocket.com/assertion-functions-typescript/](https://blog.logrocket.com/assertion-functions-typescript/)
+
+asserts 关键字用于定义自定义的类型断言函数，用于告诉编译器某个表达式的类型，并在编译时进行类型检查。
+
+在使用 asserts 关键字进行类型断言时，编译器会进行类型检查，如果类型不匹配，将会抛出一个编译时错误。
+
+```typescript
+function isString(value: unknown): asserts value is string {
+  if (typeof value !== "string") throw new Error("Not a string")
+}
+```
+
+If we invoke the function above with a given parameter, and it returns correctly, TypeScript knows that value has type `string`. Hence, it will narrow down its type to `string`:
+
+```typescript
+const aValue: string|number = "Hello"
+isString(aValue)
+// The type of aValue is narrowed to string here
+```
+
+
+
+举个例子：
+
+```ts
+export function assertError(value: unknown): asserts value is Error {
+	if (value instanceof Error) return
+	throw value
+}
+```
+
+```ts
+export function assertNonNullable<T>(
+	value: T
+): asserts value is NonNullable<T> {
+	if (value === null) throw new Error(`Value was null`)
+	if (value === undefined) throw new Error(`Value was undefined`)
+}
+
+```
+
+
+
+
+
 ### keyof
 
 键值获取 keyof
@@ -424,11 +514,13 @@ function toArray(x: number): Array<number> {
 type Func = typeof toArray; // -> (x: number) => number[]
 ```
 
+
+
 #### keyof 结合 typeof 一起使用
 
 https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
 
-```
+```tsx
 const cats = {
   "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
   "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
@@ -441,6 +533,16 @@ function f(a: keyof typeof cats) {
 
 // f("x"); // error
 f("Coding Cat"); // ok
+```
+
+在遍历中尤其有用
+
+```tsx
+const state: Record<string, string> = {}
+for (const key in attr) {
+   const value = attr[key as keyof typeof attr]
+   state[key] = isString(value) ? value : JSON.stringify(value)
+}
 ```
 
 
@@ -806,11 +908,15 @@ console.log(Test.bbb) // ok
 
 ## reference 
 
+在`.d.ts`文件中，`<reference>`指令用于指定对其他类型声明文件的依赖关系。它告诉编译器在构建过程中需要引入其他的类型声明文件。
+
 [https://www.tslang.cn/docs/handbook/triple-slash-directives.html](https://www.tslang.cn/docs/handbook/triple-slash-directives.html)
 
-
+使用`<reference>`指令可以确保在编译时，相关的类型声明文件能够正确地被引入。这对于使用外部库或框架的项目特别有用，因为类型声明文件能够提供有关这些库或框架的类型信息。
 
 ### types 和 path 的区别
+
+`<reference>`指令通常出现在`.d.ts`文件的顶部，其语法如下：
 
 ```
 /// <reference path="..." />  对指定路径的文件引入
@@ -821,17 +927,9 @@ console.log(Test.bbb) // ok
 
 对这些包的名字的解析与在 `import`语句里对模块名的解析类似。 可以简单地把三斜线类型引用指令当做 `import`声明的包。
 
-
-
 例如，把 `/// <reference types="node" />`引入到声明文件，表明这个文件使用了 `@types/node/index.d.ts`里面声明的名字； 并且，这个包需要在编译阶段与声明文件一起被包含进来。
 
-
-
 **仅当在你需要写一个`d.ts`文件时才使用这个指令。**
-
-
-
-
 
 
 
@@ -1614,6 +1712,16 @@ type noNulls = NonNullable<myType>   // string | number
 
 
 
+### Function
+
+
+
+#### CallableFunction
+
+它表示一个具有函数签名的类型，该函数可以被调用。
+
+在 CallableFunction 类型中，函数签名包含了函数的参数类型和返回类型。
+
 
 
 ## 泛型 
@@ -2102,6 +2210,31 @@ Point.prototype.toString = function (): string {
 
 
 
+### 构造函数
+
+
+
+#### 私有构造函数
+
+在类的构造函数中设置为私有访问修饰符（private）的作用是禁止在外部直接实例化类的对象。这样做的目的通常是为了实现类的单例模式或者实现类的对象唯一性。
+
+举个例子：
+
+```ts
+export abstract class AgoraWidgetBase {
+  private _instanceId = ""
+
+  constructor(
+    private _widgetController: AgoraWidgetController,
+    private _classroomStore: EduClassroomStore,
+  ) {}
+}
+```
+
+
+
+
+
 ### public private 和 protected
 
 - `public` 修饰的属性或方法是公有的，可以在任何地方被访问到，默认所有的属性和方法都是 `public` 的
@@ -2152,13 +2285,18 @@ class Cat extends Animal {
 
 
 
-### 抽象类
+### abstract 抽象类
 
 [https://ts.xcatliu.com/advanced/class.html](https://ts.xcatliu.com/advanced/class.html)
 
 `abstract` 用于定义抽象类和其中的抽象方法。
 
+1. 定义其他类的基类（父类）。
+2. 提供一些共同的实现细节。
+3. 强制子类实现指定的抽象方法或遵循某些约定。
+4. 提高代码的重用性和可维护性。
 
+----
 
 首先，抽象类是不允许被实例化的：
 
@@ -2471,6 +2609,134 @@ type ExtractActionCreaotrKey<T> = {
 }[keyof T]
 
 ```
+
+
+
+## tsc
+
+TypeScript编译器（The TypeScript Compiler）
+
+TSC是TypeScript编译器的缩写。它是一个TypeScript语言的官方编译器，用于将TypeScript代码转换为可在浏览器或现代JavaScript环境中执行的JavaScript代码。
+
+
+
+[TSC编译时指定生成d.ts的目录 并解决无法导入package.json和alias别名的问题](https://chengpeiquan.com/article/tsc-compiles-dts.html)
+
+```tsx
+// ts config 
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "./dist/types"
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules"]
+}
+```
+
+
+
+### 无法导入package.json
+
+[https://chengpeiquan.com/article/tsc-compiles-dts.html](https://chengpeiquan.com/article/tsc-compiles-dts.html)
+
+尝试关闭 `tsconfig` 里的 `resolveJsonModule` 选项
+
+
+
+### 合并文件
+
+[https://github.com/SitePen/dts-generator](https://github.com/SitePen/dts-generator)
+
+这样构建出来的 DTS 文件只有一个，比如 `dist/types/index.d.ts` 。
+
+
+
+### 处理别名
+
+如果用了 `alias` 别名，会发现生成的 DTS 文件并不支持 `alias` （比如源码里通过 `@foo/bar` 来代替 `src/foo/bar` 或者 `../../foo/bar` ）。
+
+这个也是要借助外部插件来实现转换，这里测试了几款外部工具，最有效的是 [tscpaths](https://github.com/joonhocho/tscpaths) 。
+
+需要明确的是，它本身不支持编译生成 DTS 文件，而是在 TSC 编译时，根据 `tsconfig.json` 的 `paths` 配置，将 TypeScript 编译出来的 DTS 文件里的绝对路径替换为相对路径。
+
+```tsx
+tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/types
+```
+
+
+
+
+
+### 编译单文件
+
+```
+tsc --out final.js class.ts
+```
+
+* final.js 最终生成文件
+* class.ts 要转化的ts文件
+
+
+
+
+
+### --project，-p
+
+* 此命令接受一个string	
+
+Compile a project given a valid configuration file. The argument can be a file path to a valid JSON configuration file, or a directory path to a directory containing a `tsconfig.json` file. See [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) documentation for more details.
+
+
+
+```js
+script:{
+   "test:types": "tsc -p types/test",
+}
+```
+
+
+
+
+
+### 处理没有默认导出
+
+错误：
+
+```ts
+import inquirer from "inquirer"
+inquirer.prompt()
+// tsc 转换后
+const inquirer = require("inquirer");
+inquirer.default.prompt()
+```
+
+正确：
+
+```ts
+import * as inquirer from "inquirer"
+inquirer.prompt()
+// tsc 转换后
+const inquirer = require("inquirer");
+inquirer.prompt()
+```
+
+使用swc将模块转换时，如果模块中没有默认导出（default export），则需要使用以下语法来导入该模块：
+
+```ts
+import * as name from 'module';
+```
+
+
+
+
+
+
 
 
 
@@ -3086,6 +3352,22 @@ const data:Dictionary<number> = {
 
 
 
+
+
+## implements与extends
+
+**implements**
+实现，一个新的类，从父类或者接口实现所有的属性和方法，同时可以重写属性和方法，包含一些新的功能。
+
+可以实现多个
+
+**extends**
+继承，一个新的接口或者类，从父类或者接口继承所有的属性和方法，不可以重写属性，但可以重写方法。
+
+只能继承一个
+
+
+
 ## 数组类型遍历
 
 ```tsx
@@ -3298,6 +3580,54 @@ let iMArray: Tuple50<number> = [0,...,50];
 
 
 
+## 注解
+
+[https://github.com/QinZhen001/injector-demo](https://github.com/QinZhen001/injector-demo)
+
+[TS从装饰器到注解到元编程](https://www.jianshu.com/p/e280d916495b)
+
+[https://github.com/rbuckton/reflect-metadata](https://github.com/rbuckton/reflect-metadata)
+
+[https://www.typescriptlang.org/docs/handbook/decorators.html#metadata](https://www.typescriptlang.org/docs/handbook/decorators.html#metadata)
+
+
+
+- **装饰器（Decorator）** 仅提供定义劫持，能够对类及其方法、方法入参、属性的定义并没有提供任何附加元数据的功能。
+- **注解（Annotation）** 仅提供附加元数据支持，并不能实现任何操作。需要另外的 Scanner 根据元数据执行相应操作。
+
+
+
+之所以要给注解添加引号，是因为注解的概念是要进行元数据的修改，而这里仅仅是动态改变原型上的属性。要进行元数据的修改，我们需要利用反射**Reflect**。 ES6提供的Refelct并不满足修改元数据，我们要额外引入一个库**reflect-metadata**
+
+```ts
+import 'reflect-metadata'
+
+@modifyClass('param')
+class A {
+
+}
+
+function modifyClass(param) {
+  return target => {
+      Reflect.defineMetadata(Symbol.for('META_PARAM'), param, target.prototype)
+  }
+}
+
+```
+
+这个时候就是真正的注解了，我们通过装饰器和Reflect对要修饰的类注入了元数据，注意我们这里是注入到`target.prototype`，类的实例上。因为不同的实例是获得的不同的数据，因此不能注入到target上。
+
+```
+Reflect.defineMetadata`方法第一个入参可以是string 类型或者 symbol 类型。建议使用symbol类型,这样避免被覆盖掉。而这里的param可以是任意类型。我们不仅能在类上定义元数据，也可以在类的属性上定义
+ `Relect.defineMetadata(metadataKey: any, metadataValue: any, target: any, propertyKey)
+```
+
+接下来我们就可以在任意的地方通过`Reflect.getMetadata(metadataKey, target)`获取元数据了。
+
+**反射给了我们在类及其属性、方法、入参上存储读取数据的能力**
+
+
+
 ## 额外的属性检查
 
 ```js
@@ -3463,112 +3793,6 @@ const foo: Foo = ['1', '2', '3']; // OK
 2. **而 类型检查 呢？** 那只在当你准备好的时候进行。
 
 **如果项目中有 `Babel`，安装 `@babel/preset-typescript`，配合 `tsc` 做类型检查。（这个是我们首选的）**
-
-
-
-
-
-## tsc命令
-
-[TSC编译时指定生成d.ts的目录 并解决无法导入package.json和alias别名的问题](https://chengpeiquan.com/article/tsc-compiles-dts.html)
-
-```tsx
-// ts config 
-{
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "noEmit": false,
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationDir": "./dist/types"
-  },
-  "include": ["./src"],
-  "exclude": ["node_modules"]
-}
-```
-
-
-
-### 无法导入package.json
-
-[https://chengpeiquan.com/article/tsc-compiles-dts.html](https://chengpeiquan.com/article/tsc-compiles-dts.html)
-
-尝试关闭 `tsconfig` 里的 `resolveJsonModule` 选项
-
-
-
-### 合并文件
-
-[https://github.com/SitePen/dts-generator](https://github.com/SitePen/dts-generator)
-
-这样构建出来的 DTS 文件只有一个，比如 `dist/types/index.d.ts` 。
-
-
-
-
-
-#### 处理别名
-
-如果用了 `alias` 别名，会发现生成的 DTS 文件并不支持 `alias` （比如源码里通过 `@foo/bar` 来代替 `src/foo/bar` 或者 `../../foo/bar` ）。
-
-这个也是要借助外部插件来实现转换，这里测试了几款外部工具，最有效的是 [tscpaths](https://github.com/joonhocho/tscpaths) 。
-
-需要明确的是，它本身不支持编译生成 DTS 文件，而是在 TSC 编译时，根据 `tsconfig.json` 的 `paths` 配置，将 TypeScript 编译出来的 DTS 文件里的绝对路径替换为相对路径。
-
-```tsx
-tsc && tscpaths -p tsconfig.json -s ./src -o ./dist/types
-```
-
-
-
-
-
-### 编译单文件
-
-```
-tsc --out final.js class.ts
-```
-
-* final.js 最终生成文件
-* class.ts 要转化的ts文件
-
-
-
-
-
-### --project，-p
-
-* 此命令接受一个string	
-
-Compile a project given a valid configuration file. The argument can be a file path to a valid JSON configuration file, or a directory path to a directory containing a `tsconfig.json` file. See [tsconfig.json](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) documentation for more details.
-
-
-
-```js
-script:{
-   "test:types": "tsc -p types/test",
-}
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-### ts对应的错误码
-
-[https://www.tslang.cn/docs/handbook/error.html](https://www.tslang.cn/docs/handbook/error.html)
-
-
 
 
 
@@ -3783,6 +4007,16 @@ MAP_BY_VALUE; // { 1: { key: 'POP', value: 1, name: '流行音乐' }, 2: { key: 
 一是在定义字典时需要对工具函数的使用和实现有一定了解，这样才能正确传入参数和解构返回值。
 
 二是在使用字典时无法获得类型提示，使用字典的开发者需要回来查看定义了哪些字段和值，同时还需要了解工具函数的使用方式。
+
+
+
+## ts对应的错误码
+
+[https://www.tslang.cn/docs/handbook/error.html](https://www.tslang.cn/docs/handbook/error.html)
+
+
+
+
 
 
 

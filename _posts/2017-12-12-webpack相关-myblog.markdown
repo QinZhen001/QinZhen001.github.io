@@ -1244,7 +1244,11 @@ optimization.minimize:true
 
 [https://segmentfault.com/a/1190000015689240](https://segmentfault.com/a/1190000015689240)
 
-webpack v4 开始新增了一个 sideEffects 特性，通过给 package.json 加入 sideEffects: false 声明该包模块是否包含 sideEffects(副作用)，从而可以为 tree-shaking 提供更大的优化空间。
+> sideEffects这个设置项介绍，因为这并不是官方标准字段。而是webpack为了更好实现tree shaking所提出的配置项
+
+sideEffects 属性不仅适用于 webpack，它是一个在 JavaScript 生态系统中通用的属性，可以在各种打包工具和环境中使用。
+
+webpack v4 开始新增了一个 sideEffects 特性，通过给 **package.json 加入 sideEffects: false** 声明该包模块是否包含 sideEffects(副作用)，从而可以为 tree-shaking 提供更大的优化空间。
 
 
 什么是sideEffects？

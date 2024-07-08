@@ -317,6 +317,8 @@ regenerator-runtime是generator以及async/await的运行时依赖
 
 ### **@babel/runtime**
 
+[https://www.babeljs.cn/docs/babel-runtime](https://www.babeljs.cn/docs/babel-runtime)
+
 **需要放到dependencies**
 
 `@babel/runtime`包含了`Babel`所有**「辅助方法」**以及`regenerator-runtime`。
@@ -384,16 +386,13 @@ babel-node is a CLI that works exactly the same as the Node.js CLI, with the add
 
 我们编译之后的index.js代码里面有不少新增加的函数，如_classCallCheck，_defineProperties，_createClass，这种函数就是helper。
 
-那这种helper跟我们的@babel/runtime有什么关系了，我们接着看，比如像这个_createClass就是我们将es6的class关键字转化成传统js时生成的一个函数，那么如果我有很多个js文件中都定义了class类，那么在编译转化时就会产生大量相同的_createClass方法，那这些_createClass这样的helper方法是不是冗余太多，因为它们基本都是一样的，所以我们能不能采用一个统一的方式提供这种helper，也就是利用es或者node的模块化的方式提供helper，将这些helper做成一个模块来引入到代码中，岂不是可以减少这些helper函数的重复书写。
+那这种helper跟我们的@babel/runtime有什么关系了，我们接着看，比如像这个`_createClass`就是我们将es6的class关键字转化成传统js时生成的一个函数，那么如果我有很多个js文件中都定义了class类，那么在编译转化时就会产生大量相同的`_createClass`方法，那这些`_createClass`这样的helper方法是不是冗余太多，因为它们基本都是一样的，所以我们能不能采用一个统一的方式提供这种helper，也就是利用es或者node的模块化的方式提供helper，将这些helper做成一个模块来引入到代码中，岂不是可以减少这些helper函数的重复书写。
 
+**@babel/runtime 要装在 dependencies  **
 
-那我们现在就
-```
-npm install --save @babel/runtime @babel/plugin-transform-runtime
-```
-**执行完👆🏻上面命令后 @babel/runtime 会装在 dependencies   而 @babel/plugin-transform-runtime 会装在 devDependencies 中**
+**而 @babel/plugin-transform-runtime 要装在 devDependencies 中**
 
-
+---
 
 然后就只需要在.babelrc中写上：
 
@@ -422,9 +421,7 @@ npm install --save @babel/runtime @babel/plugin-transform-runtime
 
 ```javascript
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 ```
 
@@ -460,18 +457,12 @@ new Promise(function (resolve, reject) {  
 Array.prototype 上新增了 includes 方法，并且新增了全局的 Promise 方法，污染了全局环境，这跟不使用 @babel/plugin-transform-runtime 没有区别嘛。
 
 
-
-
 如果我们希望 @babel/plugin-transform-runtime 不仅仅处理帮助函数，同时也能加载 polyfill 的话，我们需要给 @babel/plugin-transform-runtime 增加配置信息。
-
-
 
 首先新增依赖 @babel/runtime-corejs3:
 
 
 修改配置文件如下(移除了 @babel/preset-env 的 useBuiltIns 的配置，不然不就重复了
-
-
 
 ```javascript
 {    
@@ -481,7 +472,7 @@ Array.prototype 上新增了 includes 方法，并且新增了全局的 Promise 
 "plugins": [   
 [        
     "@babel/plugin-transform-runtime",{     
-    "corejs": 3       
+   			 "corejs": 3       
         }     
     ]   
 ]}
@@ -784,6 +775,8 @@ module.exports = {
     [
       '@babel/env',
       {
+        // Setting this to false will preserve ES modules
+        // https://babeljs.io/docs/babel-preset-env#modules
         modules: false, // 关闭模块转换
       },
     ],

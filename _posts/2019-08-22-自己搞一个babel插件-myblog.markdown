@@ -38,7 +38,7 @@ tags:
 ```javascript
 // 将代码生成对应的抽象语法树
 
-// 代码
+// 代码
 const result = 1 + 1
 
 // 代码生成的AST
@@ -113,11 +113,7 @@ https://astexplorer.net/#/gist/c103ecf502c10b6d9e5ab69df5580a55/fc6e168a7f32738f
 
 ####  @babel/core 
 
-
-
  ‘微内核’架构中的‘内核’。对于Babel来说，这个内核主要干这些事情： 
-
-
 
 - 加载和处理配置(config)
 - 加载插件
@@ -152,6 +148,7 @@ https://astexplorer.net/#/gist/c103ecf502c10b6d9e5ab69df5580a55/fc6e168a7f32738f
 AST是树形的结构, AST的转换的步骤就是通过访问者对AST的遍历实现的。访问者会定义处理不同的节点类型的方法。遍历树形结构的同时,, 遇到对应的节点类型会执行相对应的方法。
 
 
+
 #### **访问者**
 
 
@@ -177,9 +174,8 @@ const visitors = {
 
 每一个节点都拥有自身的路径对象(访问者的参数, 就是该节点的路径对象), 路径对象上定义了不同的属性和方法。例如: path.node代表了该节点的子节点, path.parent则代表了该节点的父节点。path.replaceWithMultiple方法则定义的是替换该节点的方法。
 
-
-
 **节点的路径信息, 存在于访问者的参数中, 访问者的默认的参数就是节点的路径对象**
+
 
 
 #### 替换节点
@@ -195,12 +191,7 @@ BinaryExpression(path) {
 }
 ```
 
-
-
-
 **用多节点替换单节点**
-
-
 
 
 ```javascript
@@ -216,8 +207,6 @@ ReturnStatement(path) {
 
 
 #### 停止遍历
-
-
 
 如果你的插件需要在某种情况下不运行，最简单的做法是尽早写回,但是这里还是会进行下一个的BinaryExpression的遍历。
 
@@ -367,11 +356,11 @@ export default function({ types: t }) {
 
 ## 遇到的问题
 
+
+
 ### 获取当前文件的文件名
 
 [http://cn.voidcc.com/question/p-aqzjwhiv-gx.html](http://cn.voidcc.com/question/p-aqzjwhiv-gx.html)
-
-
 
 我正在尝试为babel编写一个插件，如何可以拿到当前文件的文件名？
 
@@ -405,20 +394,16 @@ Identifier(path, state) {
 
 
 
-### Maximum call stack size exceeded while using path.replaceWith
+### Maximum call stack size exceeded
+
+Maximum call stack size exceeded while using path.replaceWith
 
 
 [https://stackoverflow.com/questions/37539432/babel-maximum-call-stack-size-exceeded-while-using-path-replacewith](https://stackoverflow.com/questions/37539432/babel-maximum-call-stack-size-exceeded-while-using-path-replacewith)
 
 当使用path.replaceWith的时候一定要注意，是否用了相同节点替换了节点
 
-
-
 例子：
-
-
-
-
 
 ```javascript
   FunctionDeclaration(path, state) {

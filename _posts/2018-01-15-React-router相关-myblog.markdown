@@ -213,49 +213,36 @@ children），但这样配置路由有一个问题，就是我们访问 http://l
 
 ## 嵌套路由
 
-[http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu](http://www.ruanyifeng.com/blog/2016/05/react_router.html?utm_source=tool.lu)
-Route组件还可以嵌套。
-
 ```tsx
-    <Router history={hashHistory}>
-      <Route path="/" component={App}>
-        <Route path="/repos" component={Repos}/>
-        <Route path="/about" component={About}/>
-      </Route>
-    </Router>
+
+const routerItems = [
+  <Route path="/" element={<RootPage />}>
+    <Route path="/main" element={<MainPage />}>
+      // 默认路由
+      <Route path="" element={<div>1111</div>} />,   
+      <Route path="home" element={<HomePage />} />,
+      <Route path="1v1" element={<One2onePage />} />,
+    </Route>
+    ,
+    <Route path="/login" element={<LoginPage />} />,
+    <Route path="/verify" element={<VerifyPage />} />,
+    <Route path="*" element={<NotFoundPage />} />
+  </Route>,
+]
+
+const router = createHashRouter(createRoutesFromElements(routerItems))
+
+export const RouteContainer = () => {
+  return (
+    <RouterProvider
+      router={router}
+      future={{ v7_startTransition: true }}
+      fallbackElement={<div>loading...</div>}
+    ></RouterProvider>
+  )
+}
+
 ```
-上面代码中，用户访问/repos时，会先加载App组件，然后在它的内部再加载Repos组件。
-```tsx
-<App>
-  <Repos/>
-</App>
-```
-App组件要写成下面的样子。
-
-```tsx
-    export default React.createClass({
-      render() {
-        return <div>
-          {this.props.children}
-        </div>
-      }
-    })
-```
-上面代码中，App组件的this.props.children属性就是子组件。
-
-
-子路由也可以不写在Router组件里面，单独传入Router组件的routes属性。
-
-```tsx
- let routes = <Route path="/" component={App}>
-      <Route path="/repos" component={Repos}/>
-      <Route path="/about" component={About}/>
-    </Route>;
-
-  <Router routes={routes} history={browserHistory}/>
-```
-
-
 
 
 
@@ -341,7 +328,13 @@ function Profile() {
 
 
 
+### 监听路由变化
 
+[监听路由变化](https://segmentfault.com/q/1010000043073192)
+
+useHistory 变为使用 useLocation 代替 
+
+https://reactrouter.com/en/main/hooks/use-location
 
 
 
@@ -358,8 +351,6 @@ function Profile() {
 在 React 的使用中，我们一般要引入两个包，react 和 react-dom，那么 react-router 和 react-router-dom 是不是两个都要引用呢？
 非也，坑就在这里。他们两个只要引用一个就行了，不同之处就是后者比前者多出了 `<Link>` `<BrowserRouter>` 这样的 DOM 类组件。
 因此我们**只需引用 react-router-dom 这个包**就行了。当然，如果搭配 redux ，你还需要使用 react-router-redux。
-
-
 
 如果你只开发一个web应用，使用react-router-dom就足够了。
 
@@ -422,6 +413,71 @@ Routes组件则用于定义路由规则，它包含了多个Route组件，并根
 In *react-router-dom* v6, "Switch" is replaced by routes "Routes"
 
 [https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom](https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom)
+
+
+
+# 最佳实践
+
+```ts
+
+const routerItems = [
+  <Route path="/" element={<RootPage />}>
+    <Route path="/welcome" element={<WelcomePage />}></Route>,
+    <Route path="/main" element={<MainPage />} >
+        <Route path="" element={
+        // 默认路由
+      } />
+      <Route path="home" element={
+        <Homepage />
+      } />
+      <Route path="discovery" element={
+        <DiscoveryPage />
+      } />
+      <Route path="mine" element={
+        <MinePage />
+      } />
+    </Route>,
+    <Route path="/login" element={<LoginPage />} />,
+    <Route path="/verify" element={<VerifyPage />} />,
+    <Route path="*" element={<NotFoundPage />} />,
+  </Route>,
+]
+
+
+const router = createHashRouter(createRoutesFromElements(routerItems))
+
+export const RouteContainer = () => {
+  return <RouterProvider router={router} future={{ v7_startTransition: true }}></RouterProvider>
+}
+```
+
+----
+
+```tsx
+// RootPage.tsx
+
+const RootPage = () => {
+  useAuth() // 鉴权
+  const nav = useNavigate() // tip:这里
+
+  useEffect(() => {
+    nav("welcome")
+  }, [])
+
+
+  return <div className={styles.rootPage}>
+    <Outlet></Outlet>
+  </div>
+}
+```
+
+为什么 需要   `<Route path="/" element={<RootPage />}>`  这一层包裹，其他都作为children呢？
+
+因为 useNavigate() may be used only in the context of a router component
+
+[https://stackoverflow.com/questions/70491774/usenavigate-may-be-used-only-in-the-context-of-a-router-component](https://stackoverflow.com/questions/70491774/usenavigate-may-be-used-only-in-the-context-of-a-router-component)
+
+useNavigate 只能在router 包裹里面使用， 所有当我们有 全局鉴权 全局路由钩子时，一定要使用RootPage 在 `path="/" ` 包裹一层
 
 
 

@@ -29,7 +29,7 @@ tags:
 
 ### 例子
 假设我们有一张800*450px的图片，我们需要创建一个元素在其宽度变化时，它的宽高比仍保持16:9。代码如下：
-```
+```html
 <div class="column">
   <div class="figure"></div>
 </div>
@@ -38,17 +38,16 @@ tags:
   max-width: 800px;
 }
 .figure{
-  padding-top: 56.25%; 
+  padding-top: 56.25%;   // 9/16 = 0.5652
 }
 ```
 
-**450px/800px = 0.5625 
- 9/16 = 0.5652**
- 
+
+
 ### 添加背景图片 
 上面我们实现了元素缩放并保持宽高比。但是此时如果我们添加了背景图片，它并不能跟随元素一起自动缩放。还需要添加**background-size:cover**。
 
-```
+```css
 div.column {
   /* The background image must be 800px wide */
   max-width: 800px;
@@ -60,7 +59,7 @@ figure.fixedratio {
 }
 ```
 
-[ground-size](http://www.topcss.org/demo/background-size-cover-contain.html)
+[background-size](http://www.topcss.org/demo/background-size-cover-contain.html)
 
 ### 流动宽高比
 我们可以更深入一步。假设我们有一张在桌面浏览器下显式很好的宽屏图片，在移动设备上我们不想使用相同的宽高比，要不然图片会很小。又或者是我们不想使用相同的高度，因为图片可能会过高。
@@ -88,5 +87,5 @@ figure.fluidratio {
 ```
 
 
-  [1]: http://www.topcss.org/wp-content/uploads/2012/11/fluid-ratio.png
-  [2]: http://www.topcss.org/wp-content/uploads/2012/11/ratio-calculation.png
+[1]: http://www.topcss.org/wp-content/uploads/2012/11/fluid-ratio.png
+[2]: http://www.topcss.org/wp-content/uploads/2012/11/ratio-calculation.png

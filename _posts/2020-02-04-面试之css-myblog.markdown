@@ -604,7 +604,6 @@ will-change: transform, opacity;
 
 声明了元素即将进行的变化会让浏览器在渲染页面时做更好的决定，这明显比之前说的3D hacks要好。
 
-
 **了解了will-change的行为，为浏览器上一切元素设置will-change是不是效率会变高？答案是否定的，will-change如果被滥用会使页面崩溃。**
 
 will-change也有副作用，虽然并不直接可见，毕竟它只是在背后和浏览器说悄悄话，为了合理使用will-change，给一些小建议

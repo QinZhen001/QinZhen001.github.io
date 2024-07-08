@@ -901,6 +901,33 @@ const res = chunk(["a", "b", "c", "d", "e", "f", "g"], 3);
 
 
 
+### 元素的尺寸
+
+[Determining the dimensions of elements](https://developer.mozilla.org/zh-CN/docs/Web/API/CSS_Object_Model/Determining_the_dimensions_of_elements)
+
+clientWidth 和 getBoundingClientRect().width
+
+getBoundingClientRect().width获取到的其实是父级的右边距离浏览器原点(0,0)减去左边距离浏览器原点(0,0)的距离,
+**即宽度+2padding+2border**
+
+**clientWidth等于宽度+2padding,不包括边框的宽度**
+
+---
+
+#### offsetWidth和offsetHeight
+
+**If you need to know the total amount of space an element occupies, including the width of the visible content, scrollbars (if any), padding, and border**
+
+一般情况 getBoundingClientRect等于对应offset属性
+
+例如：
+**getBoundingClientRect().width === offsetWidth**
+
+但是
+In case of transforms, the `offsetWidth` and `offsetHeight` returns the element's **layout width and height**, while `getBoundingClientRect()` returns the **rendering width and height**.
+
+
+
 
 
 ### 屏蔽属性
@@ -3473,27 +3500,20 @@ console.log(map.keys().next().value)
 
 [ https://blog.csdn.net/hnnd123/article/details/94555496 ]( https://blog.csdn.net/hnnd123/article/details/94555496 )
 
-
-
 > 由于诸如ele.style.display这样的操作只能获取DOM元素的行内样式，所以获取结果可能与实际显示效果不符
 
-
-
  **通过getComputedStyle方法可以用来获取DOM元素实际显示时的样式** 
-
-
 
 * 第一个参数指定一个用来获取计算样式的DOM元素，
 
 * 第二个参数（可选）指定一个要匹配的伪元素的字符串，普通元素可省略或传null。
 
-
-
 ```js
-let element = document.getElementById('ele');
-let style = window.getComputedStyle(element);//元素样式改变时会自动更新
-let display = style.display;//元素指定样式属性的值
-style.width; //元素的width值
+// 获取 grid 布局下所有元素  (grid 布局下元素宽高都是不确定的)
+const gridItems = document.querySelectorAll('.grid-view .item');
+// 获取具体元素高度
+const itemHeight = parseFloat(getComputedStyle(gridItems[0]).getPropertyValue('height'))
+// parseFloat 的作用  25.25px =>  25.25  字符串变成数字
 ```
 
 
@@ -4022,34 +4042,6 @@ ready = ()=>{
         return `${this.element} is ready for attaching `
  }
 ```
-
-
-
-
-
-
-
-### window.innerWidth
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/Window/innerWidth](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/innerWidth)
-
-
-
-只读的 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window) 属性 `**innerWidth**` 返回以像素为单位的窗口的内部宽度。**如果垂直滚动条存在，则这个属性将包括它的宽度。**
-
-
-
-如果你需要获取除去滚动条和边框的窗口宽度，请使用根元素`<html>`的[`clientWidth`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/clientWidth) 属性。
-
-```js
-document.documentElement.clientWidth
-```
-
-
-
-同理，window.innerHeight也是一样的道理
-
-
 
 
 
@@ -5034,6 +5026,16 @@ const encodeData = LrcTime.encode(msg).finish()
 
 
 
+
+### 反射 Reflect
+
+> 在ts 中通过装饰器和注解实现反射机制
+
+反射（reflect）是指在程序运行期间对程序本身进行检查和操作的能力。在编程中，反射可以让程序在运行期间动态地获取和使用类型信息，包括类的成员变量、方法、构造函数等，并对它们进行操作。通过反射，可以在运行时动态创建对象、调用方法、获取和修改字段的值等。
+
+反射机制可以让程序在编译时并不需要知道或依赖具体的类型，而是通过获取对象的类型信息来进行操作，从而增强了程序的灵活性和可扩展性。反射被广泛应用于很多领域，例如框架开发、ORM（对象关系映射）、序列化和反序列化、动态代理等。
+
+**需要注意的是，由于反射是在运行期间进行类型检查和操作的，所以使用反射机制会带来一定的性能开销，尤其是在频繁调用的场景中。因此，在性能要求较高的场景中，应尽量避免滥用反射，在合适的地方使用反射来提升程序的灵活性和可扩展性。**
 
 
 

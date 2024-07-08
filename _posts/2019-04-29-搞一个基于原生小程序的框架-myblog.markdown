@@ -22,41 +22,117 @@ tags:
 * npm run watch (监听文件)
 * npm run build (生产环境打包)
 
-
 在development环境中js会加上sourcemaps
 在production环境中会压缩wxss，压缩js，压缩图片，去除js的sourcemaps
 
 
 
+## diff
+
+[https://github.com/mattphillips/deep-object-diff/blob/master/src/diff/index.js](https://github.com/mattphillips/deep-object-diff/blob/master/src/diff/index.js)
+
+小程序框架中由于小程序原生setData所做的diff并不够高效，所以打算自己来搞diff
 
 
-## 相关知识
+### deep-object-diff
 
 
-### gulp全家桶
+找到了一个diff库
 
-由于微信小程序并无入口文件，无法使用webpack进行编译打包，所以这里采用gulp4进行编译打包。
-
-* gulp-autoprefixer (css自动补全前缀)
-* gulp-babel (babel编译器)
-* gulp-changed  (Only pass through changed files，减少监听的文件数量，节约资源)
-* gulp-clean (删除文件)
-* gulp-clean-css (css压缩)
-* gulp-eslint (eslint检查)
-* gulp-eslint-auto-fix (fix文件，使之满足eslint规范)
-* gulp-if (判断，通常用于区分开发环境和生产环境)
-* gulp-imagemin (图片压缩)
-* gulp-install (安装依赖)
-* gulp-less (编译less文件)
-* gulp-rename (重命名文件)
-* gulp-sourcemaps (生成sourcemaps)
-* gulp-uglify (压缩js)
+```javascript
+export const properObject = o => isObject(o) && !o.hasOwnProperty ? { ...o } : o;
+```
 
 
-----------
 
 
->gulp-changed [https://www.jianshu.com/p/f097c95bb91c](https://www.jianshu.com/p/f097c95bb91c)
+
+
+```javascript
+import { isDate, isEmpty, isObject, properObject } from '../utils';
+
+
+  const diff = (lhs, rhs) => {
+    if (lhs === rhs) return {}; // equal return no diff
+
+    if (!isObject(lhs) || !isObject(rhs)) return rhs; // return updated rhs
+
+    const l = properObject(lhs);
+    const r = properObject(rhs);
+
+    // 找到删除了的属性  (循环l)
+    const deletedValues = Object.keys(l).reduce((acc, key) => {
+      // 找到l有r没有的属性
+      return r.hasOwnProperty(key) ? acc : {...acc, [key]: undefined};
+    }, {});
+
+    // 存在日期
+    if (isDate(l) || isDate(r)) {
+      if (l.valueOf() == r.valueOf()) return {};
+      return r;
+    }
+
+    // (循环r)
+    return Object.keys(r).reduce((acc, key) => {
+      // return added r key (找到r有l没有的属性)
+      if (!l.hasOwnProperty(key)) return {...acc, [key]: r[key]};
+      // l有r也有的属性 递归diff
+      const difference = diff(l[key], r[key]);
+      // return no diff
+      if (isObject(difference) && isEmpty(difference) && !isDate(difference)) return acc;
+
+      return {...acc, [key]: difference}; // return updated key
+    }, deletedValues);
+  };
+
+```
+
+
+wxa框架中的diff就是采用这个diff
+
+
+[https://github.com/wxajs/wxa/blob/dev/packages/wxa-core/src/diff/diff.js](https://github.com/wxajs/wxa/blob/dev/packages/wxa-core/src/diff/diff.js)
+
+
+
+
+### flat
+
+[https://github.com/hughsk/flat](https://github.com/hughsk/flat)
+
+
+
+Take a nested Javascript object and flatten it, or unflatten an object with delimited keys.
+
+
+
+
+取一个嵌套的Javascript对象并将其展平，或使用分隔键取消展平一个对象。
+
+
+
+
+### is-buffer
+
+[https://www.npmjs.com/package/is-buffer](https://www.npmjs.com/package/is-buffer)
+
+
+Determine if an object is a Buffer (including the browserify Buffer)
+
+
+-----
+
+Why not use Buffer.isBuffer?
+
+
+This module lets you check if an object is a Buffer without using Buffer.isBuffer (which includes the whole buffer module in browserify). It's future-proof and works in node too
+
+
+
+
+
+
+
 
 
 ## 爬坑
@@ -74,8 +150,9 @@ tags:
 
 
 
-
 ### async/await
+
+> 新版本官方已支持
 
 
 [参考项目](https://github.com/zarknight/owx)
@@ -84,9 +161,7 @@ tags:
 
 如何实现？两种方式
 
-
 **第一直接写   不勾选微信开发者工具中的ES6转ES5 和 不用babel编译js**
-
 
 **总之不对js做处理**
 
@@ -119,8 +194,6 @@ tags:
 // 在app.js头部增加
 global.regeneratorRuntime = require('./lib/regenerator/runtime-module')
 ```
-
-
 
 使用async/await的js文件头部增加
 ```javascript
@@ -391,63 +464,6 @@ over
 进一步减少包体积
 
 
-### babel相关
-
-### babel7的坑
-**babel7之后babel相关的npm包都是以@babel开头的**
-
-当你安装了@babel/preset-env 使用时 **presets: ['@babel/env']**
-
-重点注意是这个
-**@babel/env**
-
-
-
-但是,其实不用@babel/env这个名字也行
-
-
-------
-
-@babel/preset-es2015
-[https://www.npmjs.com/package/@babel/preset-es2015](https://www.npmjs.com/package/@babel/preset-es2015)
-
-这个东西在babel7中被干掉了，真的坑 
-
-This package has been deprecated
-
-
-> We've deprecated any official yearly presets in 6.x in favor or babel-preset-env. For 7.x it would be @babel/preset-env.
-
-
-
-------
-
-
-经过测试gulp-babel和babel7配合使用并不好，一些plugins无法使用
-
-```javascript
-const gulp = require('gulp');
-const babel = require('gulp-babel');
- 
-gulp.task('default', () =>
-    gulp.src('src/app.js')
-        .pipe(babel({
-            presets: ['@babel/env']
-        }))
-        .pipe(gulp.dest('dist'))
-);
-```
-
-**这里不能使用plugins 很无语**
-
-**所以最终决定切回babel6使用，babel相关的第三方库也使用无@babel开头的版本**
-
-
-gulp-babel don't produce any output file or doesn't work properly
-
-[https://stackoverflow.com/questions/52599370/gulp-babel-dont-produce-any-output-file-or-doesnt-work-properly](https://stackoverflow.com/questions/52599370/gulp-babel-dont-produce-any-output-file-or-doesnt-work-properly)
-
-
 
 
 ### 去掉 use strict
@@ -498,245 +514,8 @@ Default: "module"
 
 ### gulp相关
 
-#### task return 的作用
-[https://segmentfault.com/a/1190000016971285?utm_source=tag-newest](https://segmentfault.com/a/1190000016971285?utm_source=tag-newest)
 
-Without return the task system wouldn't know when it finished
 
-**task和里面的gulp流是异步执行的**
-
-
-结论： gulp的task都要保证有return或者callback，去通知系统任务结束。（make sure they either return a stream or promise, or handle the callback
-
-```javascript
-gulp.task('build-clean', function() {
-    // Return the Promise from del()
-    return del([BUILD_DIRECTORY]);
-//  ^^^^^^
-//   This is the key here, to make sure asynchronous tasks are done!
-});
-gulp.task('build-scripts', function() {
-    // Return the stream from gulp
-    return gulp.src(SCRIPTS_SRC).pipe(...)...
-//  ^^^^^^
-//   This is the key here, to make sure tasks run to completion!
-});
-
-gulp.task('callback-example', function(callback) {
-    // Use the callback in the async function
-    fs.readFile('...', function(err, file) {
-        console.log(file);
-        callback();
-//      ^^^^^^^^^^
-//       This is what lets gulp know this task is complete!
-    });
-});
-```
-
-
-
-
-#### gulp task结束时机
-
-
-上面说到
-
-
-**gulp的task都要保证有return或者callback，去通知系统任务结束。（make sure they either return a stream or promise, or handle the callback**
-
-
-
-如果通知系统任务结束的时机控制不当，会导致一些流程无法触发。
-
-
-例如：
-
-
-```javascript
-    /**
-     *  错误情况
-     *  eslint检查
-     */
-gulp.task('lint', (done) => {
-    gulp.src(config.jsFiles, {base: srcPath})
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-    done()
-})
-```
-
-
-上例先执行同步代码，导致很快就触发了done，任务结束，此时eslint检查流程还未结束。
-
-
-
-
-```javascript
-    /**.
-     *  正确情况
-     *  eslint检查
-     */
-gulp.task('lint', () => {
-    return gulp.src(config.jsFiles, {base: srcPath})
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-})
-```
-
-
-
-
-
-
-
-
-#### gulp4 和 gulp3 之间的区别
-[https://www.jianshu.com/p/40b99bed3127](https://www.jianshu.com/p/40b99bed3127)
-
-
-```
-AssertionError [ERR_ASSERTION]: Task function must be specified
-    at Gulp.set [as _setTask] (F:\前端项目\xhw-native\node_modules\undertaker\lib\set-task.js:10:3)
-    at Gulp.task (F:\前端项目\xhw-native\node_modules\undertaker\lib\task.js:13:8)
-    at BuildTask.init (F:\前端项目\xhw-native\build\build.js:59:10)
-    at new BuildTask (F:\前端项目\xhw-native\build\build.js:45:10)
-    at Object.<anonymous> (F:\前端项目\xhw-native\gulpfile.js:10:1)
-    at Module._compile (internal/modules/cjs/loader.js:701:30)
-    at Object.Module._extensions..js (internal/modules/cjs/loader.js:712:10)
-    at Module.load (internal/modules/cjs/loader.js:600:32)
-    at tryModuleLoad (internal/modules/cjs/loader.js:539:12)
-    at Function.Module._load (internal/modules/cjs/loader.js:531:3)
-```
-
-
-
-4.0错误的写法：
-
-```javascript
-gulp.task('default', ['del'], function() {
-    // default task code here
-});
-```
-
-修改为最新的正确写法：
-
-
-```javascript
-gulp.task('default', gulp.series('del', function() { 
-    // default task code here
-}));
-
-```
-
-
->Gulp 4最大的变化就是你不能像以前那样传递一个依赖任务列表。
-
-
-
-
-
-#### 报错did you forget to signal async completion 
-
-[https://blog.csdn.net/weixin_40817115/article/details/81079507](https://blog.csdn.net/weixin_40817115/article/details/81079507)
-
-
-解决方法，使用 async 和 await。
-
-```javascript
-const gulp = require('gulp');
-gulp.task('testGulp', async() => {
-   await console.log('Hello World!');
-});
-```
-
-在不使用文件流的情况下，向task的函数里传入一个名叫done的回调函数，以结束task，如下代码所示：
-
-```javascript
-gulp.task('testGulp', done => {
-  console.log('Hello World!');
-  done();
-});
-```
-
-done回调函数的作用是在task完成时通知Gulp（而不是返回一个流），而task里的所有其他功能都纯粹依赖Node来实现。
-
-#### 报错 GulpUglifyError: unable to minify JavaScript
-
-
-gulp-uglify无法压缩带有es6语法的js，必须先要用babel把es6转为es5。
-
-
-
-
-
-#### gulp-clean效率太慢
-
-[https://www.npmjs.com/package/gulp-clean](https://www.npmjs.com/package/gulp-clean)
-
-
-Option read:false prevents gulp from reading the contents of the file and makes this task a lot faster. If you need the file and its contents after cleaning in the same stream, do not set the read option to false.
-
-选项read:false阻止gulp读取文件的内容，**并使这个任务快得多**。如果在同一流中清理后需要文件及其内容，请不要将read选项设置为false。
-
-
------
-
-
-For safety files and folders outside the current working directory can be removed only with option force set to true.
-
-
-
-对于当前工作目录之外的安全文件和文件夹，只能在将选项force设置为true时删除。
-
-
-
-
-
-------
-
-
-
-```javascript
-    /**
-     * 清空目标目录
-     */
-    gulp.task('clean', () => {
-      return gulp.src(distPath, {read: false, allowEmpty: true})
-        .pipe(clean({force: true}))
-    })
-```
-
-
-----------
-
-
-```
- Error: File not found with singular glob: F:\前端项目\xhw-native\dist (if this was p
-urposeful, use `allowEmpty` option)
-```
-
->allowEmpty为true，允许distPath不存在，不加这个的话，如果distPath不存在会报错
-
-
-
-
-
-
-#### gulp-imagemin无法处理小图片
-
-[https://github.com/sindresorhus/gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin)
-
-
-原本想build的时候，对图片进行压缩处理，但是如果gulp-imagemin处理的是几kb的图片(例如：小图标)，这种图片就会消失不见。
-
-
-**经过各种尝试，和查看issue，最终还是没有倒找到解决办法，最终放弃压缩图片**
- 
-
-
->基本上大图片都放在腾讯云桶或者cdn上，所以这里不优化也没有太大问题
 
 
 #### gulp-clean-css报错
@@ -846,15 +625,9 @@ nodejs plugin to pretty-print or minify text in XML, JSON, CSS and SQL formats.
 nodejs插件，美化打印或缩小文本在XML, JSON, CSS和SQL格式。
 
 
-
-
-
-
 所以，我找到了它的对应gulp包gulp-pretty-data
 
 [https://www.npmjs.com/package/gulp-pretty-data](https://www.npmjs.com/package/gulp-pretty-data)
-
-
 
 
 ```javascript
@@ -935,7 +708,7 @@ nodejs插件，美化打印或缩小文本在XML, JSON, CSS和SQL格式。
 
 下面进行优化
 
-```
+```ts
 const STORE = 'store';
 
 
@@ -1020,8 +793,6 @@ function _afterGet({name, result}) {
   }
 ```
 
-
-
 通过beforeGet和afterGet控制流程实现
 
 
@@ -1064,10 +835,7 @@ Page(p)
 
 当我们使用Page(p) 和 App(p) 时我们可以访问到 this.aaa 和 this.ccc
 
-
 **但是但我们使用Component(p)时  this.aaa 和 this.ccc 都是 undefined**
-
-
 
 这是一个非常严重的问题，意味着框架无法统一处理Component，Page和App
 
@@ -1085,17 +853,24 @@ Page(p)
 
 gulpfile.js必须存在在项目的根目录，不能放到cli脚手架中，这就意味着build过程要放在小程序项目中无法抽取出来，若要抽取出来就不能使用gulp，只能二选一。
 
-
-
 从这个issue中可以看出
-
 
 [https://github.com/gulpjs/gulp/issues/2126](https://github.com/gulpjs/gulp/issues/2126)
 
 
-  [1]: https://s2.ax1x.com/2019/05/07/EsnB5j.png
-  [2]: https://s2.ax1x.com/2019/12/25/liXiE6.png
-  [3]: https://s2.ax1x.com/2019/12/25/liXFUK.png
-  [4]: https://s2.ax1x.com/2019/12/25/liXCHx.png
-  [5]: https://s2.ax1x.com/2019/12/25/liXk4O.png
-  [6]: https://s2.ax1x.com/2019/06/10/V6rXin.png
+
+
+
+
+
+
+
+
+
+
+[1]: https://s2.ax1x.com/2019/05/07/EsnB5j.png
+[2]: https://s2.ax1x.com/2019/12/25/liXiE6.png
+[3]: https://s2.ax1x.com/2019/12/25/liXFUK.png
+[4]: https://s2.ax1x.com/2019/12/25/liXCHx.png
+[5]: https://s2.ax1x.com/2019/12/25/liXk4O.png
+[6]: https://s2.ax1x.com/2019/06/10/V6rXin.png

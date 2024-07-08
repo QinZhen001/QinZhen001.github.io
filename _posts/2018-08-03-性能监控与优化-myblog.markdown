@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "性能优化相关"
+title:      "性能监控与优化"
 date:       2018-08-03 14:14:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -12,23 +12,234 @@ tags:
 > “Yeah It's on. ”
 
 
-## 正文
-[网页链接](https://mp.weixin.qq.com/s/C2Zx3KPNPkgj-aHnOY43Iw)
-
-[Web性能领域常见的专业术语](https://github.com/berwin/Blog/issues/46)
 
 
-事实上关于Web性能有很多可以优化的点，其中涉及到的知识大致可以划分为几类：**度量标准、编码优化、静态资源优化、交付优化、构建优化、性能监控**。
 
 
-### 度量标准与设定目标
+
+# 监控
+
+[前端监控SDK开发分享](https://mp.weixin.qq.com/s/1RNw1W2AgAylcd7Gindm4w)
+
+前端监控系统最核心的首要是收集客户端的相关数据：
+
+性能相关：首屏性能
+
+错误相关：接口错误，js执行错误，资源加载错误（css，js，静态资源）
+
+## 首屏性能
+
+
+先明确概念：
+
+* 白屏时间（first Paint Time）——用户从打开页面开始到页面开始有东西呈现为止
+* 首屏时间——用户浏览器首屏内所有内容都呈现出来所花费的时间
+
+>先触发first paint，后触发dom ready
+
+>用户可操作时间(dom Interactive)——用户可以进行正常的点击、输入等操作，默认可以统计domready时间，因为通常会在这时候绑定事件操作
+
+First paint time 的概念W3C并没有定义，因为是存在争议的。
+
+[https://github.com/w3c/navigation-timing/issues/21](https://github.com/w3c/navigation-timing/issues/21)
+
+
+---------------------
+
+建立指标
+
+* DNS查询时间  (domainLookupEnd - domainLookupStart)
+* tcp连接时间 (connectEnd - connectStart)
+* 首次request请求文档时间 (responseStart - requestStart)
+* 首次response时间  (responseEnd - responseStart)
+* 白屏时间 = (domLoading - navigationStart)
+* DOM树解析时间  = (domComplete - domLoading)
+
+[https://github.com/Tencent/vConsole](https://github.com/Tencent/vConsole)
+
+
+>参考vconsole
+
+
+```javascript
+    // performance related
+    // use `setTimeout` to make sure all timing points are available
+    setTimeout(function() {
+      let performance = window.performance || window.msPerformance || window.webkitPerformance;
+
+      // timing
+      if (performance && performance.timing) {
+        let t = performance.timing;
+        if (t.navigationStart) {
+          console.info('[system]', 'navigationStart:', t.navigationStart);
+        }
+        if (t.navigationStart && t.domainLookupStart) {
+          console.info('[system]', 'navigation:', (t.domainLookupStart - t.navigationStart)+'ms');
+        }
+        if (t.domainLookupEnd && t.domainLookupStart) {
+          console.info('[system]', 'dns:', (t.domainLookupEnd - t.domainLookupStart)+'ms');
+        }
+        if (t.connectEnd && t.connectStart) {
+          if (t.connectEnd && t.secureConnectionStart) {
+            console.info('[system]', 'tcp (ssl):', (t.connectEnd - t.connectStart)+'ms ('+(t.connectEnd - t.secureConnectionStart)+'ms)');
+          } else {
+            console.info('[system]', 'tcp:', (t.connectEnd - t.connectStart)+'ms');
+          }
+        }
+        if (t.responseStart && t.requestStart) {
+          console.info('[system]', 'request:', (t.responseStart - t.requestStart)+'ms');
+        }
+        if (t.responseEnd && t.responseStart) {
+          console.info('[system]', 'response:', (t.responseEnd - t.responseStart)+'ms');
+        }
+        if (t.domComplete && t.domLoading) {
+          if (t.domContentLoadedEventStart && t.domLoading) {
+            console.info('[system]', 'domComplete (domLoaded):', (t.domComplete - t.domLoading)+'ms ('+(t.domContentLoadedEventStart - t.domLoading)+'ms)');
+          } else {
+            console.info('[system]', 'domComplete:', (t.domComplete - t.domLoading)+'ms');
+          }
+        }
+        if (t.loadEventEnd && t.loadEventStart) {
+          console.info('[system]', 'loadEvent:', (t.loadEventEnd - t.loadEventStart)+'ms');
+        }
+        if (t.navigationStart && t.loadEventEnd) {
+          console.info('[system]', 'total (DOM):', (t.loadEventEnd - t.navigationStart)+'ms ('+(t.domComplete - t.navigationStart)+'ms)');
+        }
+      }
+    }, 0);
+```
+
+或者 使用 web-vitals 库
+
+https://github.com/QinZhen001/report-sdk/blob/main/src/index.ts
+
+```ts
+import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals';
+```
+
+
+
+## 接口错误
+
+[https://juejin.cn/post/6862559324632252430#heading-0](https://juejin.cn/post/6862559324632252430#heading-0)
+
+
+
+## js运行时错误
+
+window.onerror | unhandledrejection | console.error | 以及框架自带的监听函数
+
+```js
+  window.addEventListener('error', function(e) {
+    const { message, filename, lineno, colno, error } = e
+  }，true)
+```
+
+当资源加载失败或无法使用时，事件是不支持冒泡的
+
+所以：
+
+true => useCapture (是否捕获阶段触发) (默认值：false)
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Window/error_event](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/error_event)
+
+
+
+注意：
+
+* 一是`onerror`会获取不到跨域的`script`错误，解决方案也很简单：为跨域的`script`标签设置`crossorigin`属性，并且需要静态服务器为当前资源设置`CORS`响应头。
+* 二是代码压缩后的报错信息需要通过`sourceMap`文件解析出源代码对应的行列和错误信息，`sourceMap`本身是一种数据结构，存储了源代码和压缩代码的关系数据，通过解析库能够很轻松转换它们。但如何自动化管理和操作`sourceMap`文件才是前端监控系统核心需要解决的问题。这里就需要结合企业内部的静态资源发布系统和前端监控系统，来解决低效率的手动打包上传问题。
+* **window**.**onerror** 只能处理发生在脚本文件中的错误，而 **window**.**addEventListener**('**error**') 可以处理在脚本文件中和加载脚本文件时发生的错误。 **window**.**onerror** 提供的错误信息不太详细，只包括错误消息、错误所在的文件名和行号。
+
+---
+
+监听unhandledrejection
+
+当[`Promise`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise) 被 `reject` 且没有 `reject` 处理器的时候，会触发 `unhandledrejection` 事件
+
+```js
+window.addEventListener('unhandledrejection', (e) => {
+  console.log(e)
+})
+```
+
+
+
+## 微信小程序
+
+通过重写它的部分全局函数和相关`API`我们能获取到：网络请求、错误信息、设备和版本信息等。由于微信小程序的加载流程是由微信`APP`控制的，`js`等资源也被微信内部托管，因此和`web`不同，我们没有办法获取到`web`中`performance`能获取到的页面和资源加载信息。
+
+
+
+
+
+
+
+### App和Component
+
+通过重写全局的`App`函数，绑定`onError`方法监听错误，重写它的`onShow`方法执行小程序启动时`SDK`需要的逻辑。通过重写`Component`的`onShow`方法，可以在页面组件切换时执行我们的路径收集和执行上报等逻辑。
+
+```tsx
+// SDK初始化函数
+init(){
+    this.appMethod = App;
+    this.componentMethod = Component;
+    const ctx = this;
+    //重写微信小程序Component
+    Component = (opts) => {
+      overrideComponent(opts, ctx);
+      ctx.componentMethod(opts);
+    };
+    //重写微信小程序App
+    App = (app) => {
+      overrideApp(app, ctx);
+      ctx.appMethod(app);
+    };
+}  
+
+//注意ctx是sdk的this
+overrideComponent(opts, ctx) => {
+  const compOnShow = opts.methods.onShow;
+  opts.methods.onShow = function(){
+    // do something
+    //注意这里的this是实际调用方
+    compOnShow.apply(this, arguments)
+  }
+})
+
+overrideApp(app, ctx) => {
+  const _onError = app.onError || function () {};
+  const _onShow = app.onShow || function () {};
+  app.onError = function (err) {
+    reportError(err, ctx);
+    return _onError.apply(this, arguments);
+  };
+  app.onShow = function () {
+    //do something
+    return _onShow.apply(this, arguments);
+  };
+})
+
+```
+
+
+
+
+
+
+
+
+
+## 度量标准与设定目标
+
 在进行性能优化之前，我们需要为应用选择一个正确的度量标准（性能指标）以及设定一个合理的优化目标。
 
 
 >并不是所有指标都同样重要，这取决于你的应用。最后根据度量标准设定一个现实的目标。
 
 
-#### 度量标准
+
+### 度量标准
 
 下面是一些值得考虑的指标：
 
@@ -48,9 +259,7 @@ FMP与英雄渲染时间非常相似，但它们不一样的地方在于FMP不�
 
 **TTI（全称“Time to Interactive”，翻译为“可交互时间”）** 表示网页第一次 完全达到可交互状态 的时间点。可交互状态指的是页面上的UI组件是可以交互的（可以响应按钮的点击或在文本框输入文字等），不仅如此，此时主线程已经达到“流畅”的程度，主线程的任务均不超过50毫秒。TTI很重要，因为TTI可以让我们了解我们的产品需要多久可以真正达到“可用”的状态。
 
-
-
-#### 设定目标
+### 设定目标
 
 * 100毫秒的界面响应时间与60FPS
 * 速度指标（Speed Index）小于1250ms
@@ -71,12 +280,22 @@ RAIL 代表 Web 应用生命周期的四个不同方面：响应、动画、空�
 
 
 
-### 编码优化
+# 优化
+
+[网页链接](https://mp.weixin.qq.com/s/C2Zx3KPNPkgj-aHnOY43Iw)
+
+[Web性能领域常见的专业术语](https://github.com/berwin/Blog/issues/46)
+
+事实上关于Web性能有很多可以优化的点，其中涉及到的知识大致可以划分为几类：**度量标准、编码优化、静态资源优化、交付优化、构建优化、性能监控**。
+
+
+
+## 编码优化
 
 编码优化涉及到应用的运行时性能，本小节介绍几个可以提升程序运行时性能的建议。
 
+### 数据读取速度
 
-#### 数据读取速度
 事实上数据访问速度有快慢之分，下面列出几个影响数据访问速度的因素：
 
 
@@ -87,7 +306,8 @@ RAIL 代表 Web 应用生命周期的四个不同方面：响应、动画、空�
 
 **推荐的做法是缓存对象成员值。将对象成员值缓存到局部变量中会加快访问速度**
 
-#### DOM
+### DOM
+
 应用在运行时，性能的瓶颈主要在于DOM操作的代价非常昂贵，下面列出一些关于DOM操作相关提升性能的建议：
 
 
@@ -95,9 +315,7 @@ RAIL 代表 Web 应用生命周期的四个不同方面：响应、动画、空�
 * 重排与重绘的代价非常昂贵。如果操作需要进行多次重排与重绘，建议先让元素脱离文档流，处理完毕后再让元素回归文档流，这样浏览器只会进行两次重排与重绘（脱离时和回归时）。
 * 善于使用事件委托
 
-
-
-#### 减少重排
+### 减少重排
 
 重排会导致浏览器重新计算整个文档，重新构建渲染树，这一过程会降低浏览器的渲染速度。如下所示，有很多操作会触发重排，我们应该避免频繁触发这些操作。
 
@@ -132,27 +350,14 @@ RAIL 代表 Web 应用生命周期的四个不同方面：响应、动画、空�
 5. 不要使用table布局，因为table中某个元素旦触发了reflow，那么整个table的元素都会触发reflow。那么在不得已使用table的场合，可以设置table-layout:auto;或者是table-layout:fixed这样可以让table一行一行的渲染，这种做法也是为了限制reflow的影响范围
 6. 如果CSS里面有计算表达式，每次都会重新计算一遍，出发一次reflow
 
-
-
-
-
-
-
-
-
-#### 减少重绘
+### 减少重绘
 
 
 当元素的外观（如color，background，visibility等属性）发生改变时，会触发重绘。在网站的使用过程中，重绘是无法避免的。不过，浏览器对此做了优化，它会将多次的重排、重绘操作合并为一次执行。不过我们仍需要避免不必要的重绘，如页面滚动时触发的hover事件，可以在滚动的时候禁用hover事件，这样页面在滚动时会更加流畅。
 
 此外，我们编写的CSS中动画相关的代码越来越多，我们已经习惯于使用动画来提升用户体验。我们在编写动画时，也应当参考上述内容，减少重绘重排的触发。除此之外我们还可以通过硬件加速和will-change来提升动画性能
 
-
-
-
-
-
-#### 流程控制
+### 流程控制
 
 下面列出一些流程控制相关的一些可以略微提升性能的细节，这些细节在大型开源项目中大量运用（例如Vue）：
 
@@ -162,50 +367,39 @@ RAIL 代表 Web 应用生命周期的四个不同方面：响应、动画、空�
 * 基于循环的迭代比基于函数的迭代快8倍
 * 用Map表代替大量的if-else和switch会提升性能
 
+## 静态资源优化
 
-
-### 静态资源优化
 Web应用的运行离不开静态资源，所以对静态资源的优化至关重要。
 
+### 纯文本压缩
 
-#### 使用Brotli或Zopfli进行纯文本压缩
 在最高级别的压缩下Brotli会非常慢（但较慢的压缩最终会得到更高的压缩率）以至于服务器在等待动态资源压缩的时间会抵消掉高压缩率带来的好处，但它非常适合静态文件压缩，因为它的解压速度很快。
 
 使用Zopfli压缩可以比Zlib的最大压缩提升3％至8％。
 
+### 图片优化
 
-
-#### 图片优化
-尽可能通过srcset，sizes和<picture>元素使用响应式图片。还可以通过<picture>元素使用WebP格式的图像。
+尽可能通过srcset，sizes和`<picture>`元素使用响应式图片。还可以通过`<picture>`元素使用WebP格式的图像。
 
 响应式图片可能大家未必听说过，但响应式布局大家肯定都听说过。响应式图片与响应式布局类似，它可以在不同屏幕尺寸与分辨率的设备上都能良好工作（比如自动切换图片大小、自动裁切图片等）。
 
 当然，如果您不满足这种尺度的优化，还可以对图片进行更深层次的优化。例如：模糊图片中不重要的部分以减小文件大小、使用自动播放与循环的HTML5视频替换GIF图，因为视频比GIF文件还小（好消息是未来可以通过img标签加载视频）。
 
-
-
 #### next/img
 
 [Next.js 对图片的优化](https://github.com/findxc/blog/issues/68)
 
-
-
-
-
-
-
-### 交付优化
+## 交付优化
 
 交付优化指的是对页面加载资源以及用户与网页之间的交付过程进行优化。
 
-#### 异步无阻塞加载JS
+### 异步无阻塞加载JS
 
 JS的加载与执行会阻塞页面渲染，可以将Script标签放到页面的最底部。但是更好的做法是异步无阻塞加载JS。有多种无阻塞加载JS的方法：defer、async、动态创建script标签、使用XHR异步请求JS代码并注入到页面。
 
-
 **但更推荐的做法是使用defer或async。如果使用defer或async请将Script标签放到head标签中，以便让浏览器更早地发现资源并在后台线程中解析并开始加载JS。**
 
-#### 使用Intersection Observer实现懒加载
+### 使用Intersection Observer实现懒加载
 
 懒加载是一个比较常用的性能优化手段，下面列出了一些常用的做法：
 
@@ -216,35 +410,40 @@ JS的加载与执行会阻塞页面渲染，可以将Script标签放到页面的
 
 延迟加载所有体积较大的组件、字体、JS、视频或Iframe是一个好主意
 
-
-#### 优先加载关键的CSS
-
-
+### 优先加载关键的CSS
 
 CSS资源的加载对浏览器渲染的影响很大，默认情况下浏览器只有在完成<head>标签中CSS的加载与解析之后才会渲染页面。如果CSS文件过大，用户就需要等待很长的时间才能看到渲染结果。针对这种情况可以将首屏渲染必须用到的CSS提取出来内嵌到`<head>`中，然后再将剩余部分的CSS用异步的方式加载。可以通过Critical做到这一点。
 
-#### 资源提示（Resource Hints）
+### 资源提示（Resource Hints）
+
 Resource Hints（资源提示）定义了HTML中的Link元素与dns-prefetch、preconnect、prefetch与prerender之间的关系。它可以帮助浏览器决定应该连接到哪些源，以及应该获取与预处理哪些资源来提升页面性能。
 
-#### dns-prefetch
+### dns-prefetch
+
 dns-prefetch可以指定一个用于获取资源所需的源（origin），并提示浏览器应该尽可能早的解析。
 ```
 <link rel="dns-prefetch" href="//example.com">
 ```
 
-####  preconnect
+### preconnect
+
 preconnect用于启动预链接，其中包含DNS查找，TCP握手，以及可选的TLS协议，允许浏览器减少潜在的建立连接的开销。
 ```
 <link rel="preconnect" href="//example.com">
-
 <link rel="preconnect" href="//cdn.example.com" crossorigin>
 ```
 
+### prefetch 和 preload
 
+[https://blog.fundebug.com/2019/04/11/understand-preload-and-prefetch/](https://blog.fundebug.com/2019/04/11/understand-preload-and-prefetch/)
 
-#### prefetch
+[preload](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Attributes/rel/preload)
 
-Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该资源，一旦将来请求该资源，浏览器可以提供更快的响应。
+> **preload 是告诉浏览器页面必定需要的资源，浏览器一定会加载这些资源。** **prefetch 是告诉浏览器页面可能需要的资源，浏览器不一定会加载这些资源**。 在 VUE SSR 生成的页面中，首页的资源均使用 preload ，而路由对应的资源，则使用 prefetch 。
+
+* [preload](https://www.smashingmagazine.com/2016/02/preload-what-is-it-good-for/) 是一个声明式 `fetch`，可以强制浏览器在不阻塞 `document` 的 [onload](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onload) 事件的情况下请求资源。
+* `Prefetch` 告诉浏览器这个资源将来可能需要，但是什么时间加载这个资源是由浏览器来决定的。
+
 ```ts
 <link rel="prefetch" href="//example.com/next-page.html" as="html" crossorigin="use-credentials">
 <link rel="prefetch" href="/library.js" as="script">
@@ -253,30 +452,22 @@ Prefetch用于标识下一个导航可能需要的资源。浏览器会获取该
 
 as与crossorigin选项都是可选的。
 
+---
 
+preload
 
-##### Next.js next/link
-
-[https://nextjs.org/docs/app/api-reference/components/link#prefetch](https://nextjs.org/docs/app/api-reference/components/link#prefetch)
-
-[next/link prefetch 实现原理](https://blog.csdn.net/VoisSurTonChemin/article/details/121587068)
-
-
-
-
-
-#### Preload
 通过一个现有元素（例如：img，script，link）声明资源会将获取与执行耦合在一起。然而应用可能只是想要先获取资源，当满足某些条件时再执行资源。
 
 Preload提供了预获取资源的能力，可以将获取资源的行为从资源执行中分离出来。因此，Preload可以构建自定义的资源加载与执行。
 
 例如，应用可以使用Preload进行CSS资源的预加载、并且同时具备：高优先级、不阻塞渲染等特性。然后应用程序在合适的时间使用CSS资源：
-```
+
+```html
 <!-- 通过声明性标记预加载 CSS 资源 -->
 <link rel="preload" href="/styles/other.css" as="style">
 ```
 
-```
+```html
 <!-- 或，通过JavaScript预加载 CSS 资源 -->
 <script>
 var res = document.createElement("link");
@@ -287,14 +478,24 @@ document.head.appendChild(res);
 </script>
 ```
 
-```
+```html
 <!-- 使用HTTP头预加载 -->
 Link: <https://example.com/other/styles.css>; rel=preload; as=style
 ```
 
 
 
-##### Prefetch 和 Preload 区别
+
+
+### Next.js next/link
+
+[https://nextjs.org/docs/app/api-reference/components/link#prefetch](https://nextjs.org/docs/app/api-reference/components/link#prefetch)
+
+[next/link prefetch 实现原理](https://blog.csdn.net/VoisSurTonChemin/article/details/121587068)
+
+
+
+#### Prefetch 和 Preload 区别
 
 1. 目的：Prefetch 的主要目的是在浏览器空闲时提前加载将来可能需要的资源，以加快用户访问页面时的加载速度。Preload 的主要目的则是指定某个资源在当前页面加载完成后立即加载，以提高该资源的优先级。
 2. 触发时机：Prefetch 通常在页面 `<link>` 标签中使用，并且可以在任何时间点触发，而 Preload 必须在当前页面加载完成后才会触发。
@@ -303,9 +504,7 @@ Link: <https://example.com/other/styles.css>; rel=preload; as=style
 
 **Prefetch 是一种在浏览器空闲时预加载可能需要的资源的技术，而 Preload 则是一种在当前页面加载完成后立即加载特定资源的技术**
 
-
-
-#### prerender
+### prerender
 
 prerender用于标识下一个导航可能需要的资源。浏览器会获取并执行，一旦将来请求该资源，浏览器可以提供更快的响应。
 
@@ -315,11 +514,7 @@ prerender用于标识下一个导航可能需要的资源。浏览器会获取�
 
 浏览器将预加载目标页面相关的资源并执行来预处理HTML响应。
 
-
-
-
-
-#### 快速响应的用户界面
+### 快速响应的用户界面
 
 PSI（Perceptual Speed Index，感知速度指数）是提升用户体验的重要指标，让用户感觉到页面的反馈比没有反馈体验要好很多。
 
@@ -333,56 +528,32 @@ PSI（Perceptual Speed Index，感知速度指数）是提升用户体验的重�
 
 应用越复杂，主动管理UI线程就越重要
 
-
-
-
-
-
-
-
-
-### 动画优化
+## 动画优化
 
 css3 动画是优化的重中之重
 
-
-
-#### transition优化
+### transition优化
 
 [https://juejin.im/post/6844904077394984968](https://juejin.im/post/6844904077394984968)
 
 在使用height，width，margin，padding作为transition的值时，会造成浏览器主线程的工作量较重，例如从margin-left：-20px渲染到margin-left:0，主线程需要计算样式margin-left:-19px,margin-left:-18px，一直到margin-left:0，而且每一次主线程计算样式后，合成进程都需要绘制到GPU然后再渲染到屏幕上，前后总共进行20次主线程渲染，20次合成线程渲染，20+20次，总计40次计算。
 
-
-
 而如果使用transform的话，例如tranform:translate(-20px,0)到transform:translate(0,0)，主线程只需要进行一次tranform:translate(-20px,0)到transform:translate(0,0)，然后合成线程去一次将-20px转换到0px，这样的话，总计1+20计算。
-
-
 
 **结论：在使用css3 transtion做动画效果时，优先选择transform，尽量不要使用height，width，margin和padding。**
 
-
-
 如今，`transform` 是用来制作动画的最佳属性，因为 GPU 可以辅助这项繁重的工作。因此，可以将动画的限制在以下几种类型。
-
- 
 
 - `opacity`
 - `translate`
 - `rotate`
 - `scale`
 
-
-
-
-
-#### 启用 GPU 硬件加速
+### 启用 GPU 硬件加速
 
 GPU（Graphics Processing Unit） 是图像处理器。GPU 硬件加速是指应用 GPU 的图形性能对浏览器中的一些图形操作交给 GPU 来完成，因为 GPU 是专门为处理图形而设计，所以它在速度和能耗上更有效率。
 
 GPU 加速可以不仅应用于3D，而且也可以应用于2D。这里， GPU 加速通常包括以下几个部分：Canvas2D，布局合成（Layout Compositing）, CSS3转换（transitions），CSS3 3D变换（transforms），WebGL和视频(video)。
-
-
 
 ```css
 /*
@@ -401,35 +572,21 @@ div {
 
 需要注意的是，开启硬件加速相应的也会有额外的开销
 
-
-
 在 Blink 和 WebKit 浏览器中，会为具有 CSS 过渡或不透明度动画的元素创建新的图层，但是许多开发人员使用`translateZ(0)` 或 `translate3d(0, 0, 0)` 手动强制创建图层。
-
-
 
 强制创建图层可确保在动画开始时立即绘制图层并准备就绪（创建和绘制图层是一项非常重要的操作，可能会延迟动画的开始），并且没有由于抗锯齿的变化导致外观上的突然变化。不过，应该谨慎地进行使用它，[过多的图层可能会导致出现 jank](http://wesleyhales.com/blog/2013/10/26/Jank-Busting-Apples-Home-Page/)。
 
+## CSS优化
 
-
-### CSS优化
-
-
-
-#### 内联首屏关键CSS（Critical CSS）
+### 内联首屏关键CSS（Critical CSS）
 
 [https://web.dev/extract-critical-css/](https://web.dev/extract-critical-css/)
 
 [https://www.w3cplus.com/css/understanding-critical-css.html](https://www.w3cplus.com/css/understanding-critical-css.html)
 
-
-
 性能优化中有一个重要的指标——首次有效绘制（First Meaningful Paint，简称FMP）即指页面的首要内容（primary content）出现在屏幕上的时间。这一指标影响用户看到页面前所需等待的时间，而**内联首屏关键CSS,即Critical CSS，可以称之为首屏关键CSS**能减少这一时间。
 
-
-
-
-
-#### 异步加载CSS
+### 异步加载CSS
 
 CSS会阻塞渲染，在CSS文件请求、下载、解析完成之前，浏览器将不会渲染任何已处理的内容。有时，这种阻塞是必须的，因为我们并不希望在所需的CSS加载之前，浏览器就开始渲染页面。那么将首屏关键CSS内联后，剩余的CSS内容的阻塞渲染就不是必需的了，可以使用外部CSS，并且异步加载。
 
@@ -489,11 +646,7 @@ document.head.insertBefore( myCSS, document.head.childNodes[ document.head.child
 
 但是它们之间其实有一个很重要的不同点，**那就是使用preload，比使用不匹配的media方法能够更早地开始加载CSS**。所以尽管这一标准的支持度还不完善，仍建议优先使用该方法。
 
-
-
-
-
-#### 有选择地使用选择器
+### 有选择地使用选择器
 
 大多数朋友应该都知道CSS选择器的匹配是从右向左进行的，这一策略导致了不同种类的选择器之间的性能也存在差异。相比于#markdown-content-h3，显然使用#markdown .content h3时，浏览器生成渲染树（render-tree）所要花费的时间更多。因为后者需要先找到DOM中的所有h3元素，再过滤掉祖先元素不是.content的，最后过滤掉.content的祖先不是#markdown的。试想，如果嵌套的层级更多，页面中的元素更多，那么匹配所要花费的时间代价自然更高。
 
@@ -511,11 +664,7 @@ document.head.insertBefore( myCSS, document.head.childNodes[ document.head.child
 >
 >**当dom树比较复杂的时候，可以发现从右到左解析能够有效减少回溯次数提升性能。**
 
-
-
-
-
-#### 不要使用@import
+### 不要使用@import
 
 最后提一下，不要使用@import引入CSS，相信大家也很少使用。
 不建议使用@import主要有以下两点原因。
@@ -533,11 +682,7 @@ document.head.insertBefore( myCSS, document.head.childNodes[ document.head.child
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-
-
-
-
-#### 减少高消耗的样式
+### 减少高消耗的样式
 
 什么 CSS 属性是高消耗的？就是那些绘制前需要浏览器进行大量计算的属性。
 
@@ -547,22 +692,15 @@ document.head.insertBefore( myCSS, document.head.childNodes[ document.head.child
 * transforms
 * CSS filters（性能杀手）
 
-
-
-
-
-
-
-
-
-### 构建优化
+## 构建优化
 
 现代前端应用都需要有构建的过程，项目在构建过程中是否进行了合理的优化，会对Web应用的性能有着巨大的影响。例如：影响构建后文件的体积、代码执行效率、文件加载时间、首次有效绘制指标等。
 
-#### 使用预编译
+### 使用预编译
+
 拿Vue举例，如果您使用单文件组件开发项目，组件会在编译阶段将模板编译为渲染函数。最终代码被执行时可以直接执行渲染函数进行渲染。而如果您没有使用单文件组件预编译代码，而是在网页中引入vue.min.js，那么应用在运行时需要先将模板编译成渲染函数，然后再执行渲染函数进行渲染。相比预编译，多了模板编译的步骤，所以会浪费很多性能。
 
-#### 使用 Tree-shaking、Scope hoisting、Code-splitting
+### 使用 Tree-shaking、Scope hoisting、Code-splitting
 
 Tree-shaking是一种在构建过程中清除无用代码的技术。使用Tree-shaking可以减少构建后文件的体积。
 
@@ -570,18 +708,15 @@ Tree-shaking是一种在构建过程中清除无用代码的技术。使用Tree-
 
 code-splitting是Webpack中最引人注目的特性之一。此特性能够把代码分离到不同的bundle中，然后可以按需加载或并行加载这些文件。code-splitting可以用于获取更小的bundle，以及控制资源加载优先级，如果使用合理，会极大影响加载时间。
 
-#### 服务端渲染（SSR）
+### 服务端渲染（SSR）
+
 单页应用需要等JS加载完毕后在前端渲染页面，也就是说在JS加载完毕并开始执行渲染操作前的这段时间里浏览器会产生白屏。
 
 服务端渲染（Server Side Render，简称SSR）的意义在于弥补主要内容在前端渲染的成本，减少白屏时间，提升首次有效绘制的速度。可以使用服务端渲染来获得更快的首次有效绘制。
 
 比较推荐的做法是：使用服务端渲染静态HTML来获得更快的首次有效绘制，一旦JavaScript加载完毕再将页面接管下来。
 
-
-
-
-
-#### 使用import函数动态导入模块
+### 使用import函数动态导入模块
 
 使用import函数可以在运行时动态地加载ES2015模块，从而实现按需加载的需求。
 
@@ -589,7 +724,8 @@ code-splitting是Webpack中最引人注目的特性之一。此特性能够把�
 
 使用静态import导入初始依赖模块。其他情况下使用动态import按需加载依赖
 
-#### 使用HTTP缓存头
+### 使用HTTP缓存头
+
 正确设置expires，cache-control和其他HTTP缓存头。
 
 推荐使用Cache-control: immutable避免重新验证。
@@ -601,8 +737,6 @@ code-splitting是Webpack中最引人注目的特性之一。此特性能够把�
 [Service Worker API](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API#service_worker_%E7%9A%84%E6%A6%82%E5%BF%B5%E5%92%8C%E7%94%A8%E6%B3%95)
 
 Service workers 本质上充当 Web 应用程序、浏览器与网络（可用时）之间的代理服务器。这个 API 旨在创建有效的离线体验，它会拦截网络请求并根据网络是否可用采取来适当的动作、更新来自服务器的的资源。它还提供入口以推送通知和访问后台同步 API。
-
-
 
 **Service worker运行在worker上下文，因此它不能访问DOM。**
 
@@ -653,15 +787,9 @@ Workbox is a set of libraries that can power a production-ready [service worker]
 - Background sync
 - Helpful debugging
 
+## 框架使用优化
 
-
-
-
-
-
-### 框架使用优化
-
-#### vue中长列表性能优化
+### vue中长列表性能
 
 我们应该都知道vue会通过object.defineProperty对数据进行劫持，来实现视图响应数据的变化，然而有些时候我们的组件就是纯粹的数据展示，不会有任何改变，我们就不需要vue来劫持我们的数据，在大量数据展示的情况下，这能够很明显的减少组件初始化的时间，那如何禁止vue劫持我们的数据呢？可以通过object.freeze方法来冻结一个对象，一旦被冻结的对象就再也不能被修改了。
 
@@ -703,7 +831,7 @@ export default {
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-#### vue中keep-alive优化
+### vue中keep-alive
 
 一个常见的的场景，
 主页 -->前进 列表页-->前进 详情页，详情页 -->返回 主页 -->返回 列表页
@@ -832,7 +960,33 @@ keep-alive需要其包裹的组件有name属性，
 
 
 
-## 其他
+
+
+# Error
+
+
+
+
+
+## extend error
+
+[https://stackoverflow.com/questions/1382107/whats-a-good-way-to-extend-error-in-javascript](https://stackoverflow.com/questions/1382107/whats-a-good-way-to-extend-error-in-javascript)
+
+```ts
+class MyError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'MyError';
+  }
+}
+```
+
+
+
+
+
+# 其他
+
 其他一些值得考虑的优化点：
 
 * HTTP2
@@ -842,7 +996,36 @@ keep-alive需要其包裹的组件有name属性，
 
 
 
-### 时间切(Time Slicing)
+## sendBeacon
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/sendBeacon
+
+使用 **`sendBeacon()`** 方法会使用户代理在有机会时异步地向服务器发送数据，同时不会延迟页面的卸载或影响下一导航的载入性能，这意味着：
+
+- 数据发送是可靠的。
+- 数据异步传输。
+- 不影响下一导航的载入。
+
+```tsx
+const blob = new Blob([JSON.stringify(formData)], { type: 'text/plain; charset=UTF-8' });
+navigator.sendBeacon(`${this.baseUrl}${config.url || ''}`, blob);
+```
+
+[https://stackoverflow.com/questions/45274021/sendbeacon-api-not-working-temporarily-due-to-security-issue-any-workaround](https://stackoverflow.com/questions/45274021/sendbeacon-api-not-working-temporarily-due-to-security-issue-any-workaround)
+
+The only allowed values for the Content-Type header in sendBeacon now are:
+
+- application/x-www-form-urlencoded
+- multipart/form-data
+- text/plain
+
+**sendBeacon 不支持application/json**  应该是浏览器的BUG  新一点chorme应该🆗  （没试验过）
+
+
+
+
+
+## 时间切(Time Slicing)
 
 [https://github.com/berwin/Blog/issues/38](https://github.com/berwin/Blog/issues/38)
 
@@ -856,14 +1039,11 @@ keep-alive需要其包裹的组件有name属性，
 
 但是为了避免卡死浏览器，这种取舍是很有必要的。
 
-
-#### 如何使用时间切片
+## 如何使用时间切片
 
 时间切片是一种概念，也可以理解为一种技术方案，它不是某个API的名字，也不是某个工具的名字。
 
 事实上，时间切片充分利用了“异步”，在早期，可以使用定时器来实现，例如：
-
-
 
 ```javascript
 btn.onclick = function () {
@@ -892,18 +1072,12 @@ btn.onclick = ts([someThing, otherThing], function () {
 
 当然，关于ts这个函数的API的设计并不是本文的重点，这里想说明的是，在早期可以利用定时器来实现“时间切片”。
 
-
-
 ES6带来了迭代器的概念，并提供了生成器Generator函数用来生成迭代器对象，虽然Generator函数最正统的用法是生成迭代器对象，但这不妨我们利用它的特性做一些其他的事情。
-
-
 
 Generator函数提供了yield关键字，这个关键字可以让函数暂停执行。然后通过迭代器对象的next方法让函数继续执行。
 
 
 利用这个特性，我们可以设计出更方便使用的时间切片，例如：
-
-
 
 ```javascript
 btn.onclick = ts(function* () {
@@ -933,11 +1107,7 @@ btn.onclick = ts(function* () {
 
 上面代码我们写了一个死循环，但依然不会阻塞主线程，浏览器也不会卡死。
 
-
-
-
-
-#### 基于生成器的ts实现原理
+## 基于生成器的ts实现原理
 
 
 
@@ -961,21 +1131,11 @@ function ts (gen) {
 
 上面代码核心思想是：通过yield关键字可以将任务暂停执行，从而让出主线程的控制权；通过定时器可以将“未完成的任务”重新放在任务队列中继续执行。
 
-
-
-
-
-### Cumulative Layout Shift 累积布局偏移
+## Cumulative Layout Shift 累积布局偏移
 
 [https://web.dev/optimize-cls/#images-without-dimensions](https://web.dev/optimize-cls/#images-without-dimensions)
 
-
-
-
-
-
-
-### Timeline 面板概览
+## Timeline 面板概览
 
 [ https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool ]( https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool )
 
@@ -995,9 +1155,7 @@ function ts (gen) {
 >
 > 等待html的所有资源都加载完成才会触发，这些资源包括css、js、图片视频等，触发 load 
 
-
-
-### **DOMContentLoaded**
+## **DOMContentLoaded**
 
 [ https://zhuanlan.zhihu.com/p/43282197 ]( https://zhuanlan.zhihu.com/p/43282197 )
 
@@ -1056,9 +1214,7 @@ function ts (gen) {
 1. 如果页面中同时存在css和js，并且存在js在css后面，则DOMContentLoaded事件会在css加载完后才执行。
 2. 其他情况下，DOMContentLoaded都不会等待css加载，并且DOMContentLoaded事件也不会等待图片、视频等其他资源加载。
 
-
-
-### 虚拟列表
+## 虚拟列表
 
 随着 `dom`元素越来越多，页面会越来越卡顿,这种情况在小程序更加明显 
 
@@ -1070,11 +1226,7 @@ function ts (gen) {
 
 为了防止大量`dom`存在影响性能，我们只对，渲染区和缓冲区的数据做渲染，，虚拟列表区 没有真实的dom存在。 缓冲区的作用就是防止快速下滑或者上滑过程中，会有空白的现象。
 
-
-
-
-
-### 骨架屏
+## 骨架屏
 
 [网页链接](https://juejin.im/post/5b79a2786fb9a01a18267362?utm_source=gold_browser_extension)
 
@@ -1092,11 +1244,7 @@ function ts (gen) {
 
 vue-skeleton-webpack-plugin，它将插入骨架屏的方式由手动改为自动，原理在构建时使用 Vue 预渲染功能，将骨架屏组件的渲染结果 HTML 片段插入 HTML 页面模版的挂载点中，将样式内联到 head 标签中。这个插件可以给单页面的不同路由设置不同的骨架屏，也可以给多页面设置，同时为了开发时调试方便，会将骨架屏作为路由写入router中，可谓是相当体贴了。
 
-
-
-
-
-### 光栅化
+## 光栅化
 
 Rasterization
 

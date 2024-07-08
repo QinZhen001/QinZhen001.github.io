@@ -14,13 +14,437 @@ tags:
 
 
 
-# web rtc
+
+
+# 基础
+
+
+
+
+
+## MediaStream
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream)
+
+**`MediaStream`** 接口是一个媒体内容的流.。一个流包含几个*轨道*，比如视频和音频轨道。
+
+```ts
+new MediaStream()
+new MediaStream(stream)
+new MediaStream(tracks)
+```
+
+举个例子：
+
+```tsx
+// audioMediaStreamTrack 为 MediaStreamTrack 类型
+new MediaStream([audioMediaStreamTrack]
+```
+
+
+
+
+
+### addTrack
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream/addTrac](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream/addTrac)
+
+
+
+
+
+## MediaSource
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaSource](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaSource)
+
+**`MediaSource`** 是 [Media Source Extensions API](https://developer.mozilla.org/zh-CN/docs/Web/API/Media_Source_Extensions_API) 表示媒体资源 [`HTMLMediaElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement) 对象的接口。`MediaSource` 对象可以附着在 [`HTMLMediaElement`](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement) 在客户端进行播放。
+
+
+
+
+
+
+
+## MediaRecorder
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder)
+
+
+
+### start 
+
+开始将媒体记录到一个或多个 Blob 对象中。
+
+```ts
+start(timeslice) // 记录到每个 Blob 中的毫秒数。
+```
+
+
+
+
+
+### stop 
+
+  用于停止媒体捕获。
+
+
+
+### state
+
+返回当前 MediaRecorder 对象的当前状态。
+
+inactive/recording/paused
+
+
+
+### ondataavailable
+
+
+
+
+
+
+
+## MediaStreamTrack
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamTrack](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamTrack)
+
+**`MediaStreamTrack`** 接口在 User Agent 中表示一段媒体源，比如音轨或视频轨。
+
+```tsx
+navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+  .then(function(stream) {
+    const audioTrack = stream.getAudioTracks()[0];
+    const videoTrack = stream.getVideoTracks()[0];
+    
+    console.log('音频轨道:', audioTrack);
+    console.log('视频轨道:', videoTrack);
+  })
+  .catch(function(error) {
+    console.error('获取媒体流失败:', error);
+  });
+```
+
+
+
+## AudioData
+
+> 兼容性差（Firefox 和 Safari 不支持）
+
+[AudioData](https://developer.mozilla.org/en-US/docs/Web/API/AudioData)
+
+表示未编码的音频数据。
+
+The **`AudioData`** interface of the [WebCodecs API](https://developer.mozilla.org/en-US/docs/Web/API/WebCodecs_API) represents an audio sample.
+
+
+
+
+
+## AudioNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)
+
+**`AudioNode`** 接口是一个处理音频的通用模块，比如：
+
+- 音频源（如，HTML audio/video 元素，[`OscillatorNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/OscillatorNode)，等等）
+- 音频地址
+- 中间处理模块（如，类似 [`BiquadFilterNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/BiquadFilterNode) 或 [`ConvolverNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/ConvolverNode) 这样的滤波器）
+- 音量控制器（如 [`GainNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode))。
+
+每个 `AudioNode` 都有输入和输出，多个音频节点连接在一起构成一个*处理图*。这个图包含在一个 [`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext) 中，每个音频节点只能属于一个音频上下文。
+
+
+
+
+
+### MediaStreamAudioSourceNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamAudioSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamAudioSourceNode)
+
+`MediaStreamAudioSourceNode` 接口代表一个音频接口，是[WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API) [`MediaStream`](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream) (比如一个摄像头或者麦克风) 的一部分。是个表现为音频源的[`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)。
+
+```tsx
+// 获取音频输入设备的媒体流
+navigator.mediaDevices.getUserMedia({ audio: true })
+  .then(function(stream) {
+    // 创建音频上下文
+    const audioContext = new AudioContext();
+    
+    // 创建MediaStreamAudioSourceNode
+    const sourceNode = audioContext.createMediaStreamSource(stream);
+
+    // 创建其他节点进行处理或播放
+    const gainNode = audioContext.createGain();
+    const destinationNode = audioContext.destination;
+    
+    // 连接节点
+    sourceNode.connect(gainNode);
+    gainNode.connect(destinationNode);
+    
+    // 控制音量
+    gainNode.gain.value = 0.5;
+  })
+  .catch(function(error) {
+    console.error('获取媒体流失败: ', error);
+  });
+```
+
+
+
+
+
+### MediaElementAudioSourceNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode)
+
+
+
+### GainNode
+
+> 音量🔊控制节点，一般放到最后
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode](https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode)
+
+**`GainNode`** 接口表示音量的变化。它是一个 [`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode) 音频处理模块，在输出前使用给定*增益*应用到输入。一个 `GainNode` 始终只有一个输入和一个输出，两者拥有同样数量的声道。
+
+
+
+#### gain
+
+[`GainNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/GainNode) 接口的 `gain` 属性是一个 [a-rate](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioParam#a-rate) [`AudioParam`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioParam)，表示要应用的增益量。
+
+
+
+### AnalyserNode
+
+**`AnalyserNode`** 接口表示了一个可以提供实时频域和时域分析信息的节点。它是一个不对音频流作任何改动的 [`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)，同时允许你获取和处理它生成的数据，从而创建音频可视化。
+
+`AnalyzerNode` 只有一个输入和输出，即使未连接到输出它也能正常工作。
+
+
+
+#### fftSize
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode/fftSize](https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode/fftSize)
+
+fftSize 是 Fast Fourier Transform（FFT，快速傅里叶变换）的大小。FFT 是一种用于将时域信号（例如音频）转换为频域信号的算法。fftSize 决定了频域分析的精度和频谱的分辨率。
+
+fftSize 的值必须是 2 的幂，并且在范围为 32 至 32768 之间。较大的 fftSize 值会提供更高的频谱分辨率，但也会增加计算量和内存消耗。较小的 fftSize 值会提供更快的分析速度，但可能会导致频谱分辨率较低。
+
+对于 AnalyserNode，默认的 fftSize 值是 2048。可以使用 AnalyserNode.fftSize 属性来获取或设置 fftSize 的值。
+
+需要注意的是，fftSize 的值会影响 AnalyserNode.getFloatFrequencyData() 和 AnalyserNode.getByteFrequencyData() 这两个方法返回的频谱数据的长度。频谱数据的长度等于 fftSize 的一半，也就是说 fftSize 为 2048 时，这两个方法返回的频谱数据长度为 1024。
+
+
+
+## AudioContext
+
+> extend BaseAudioContext
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext)
+
+`AudioContext`接口表示由链接在一起的音频模块构建的音频处理图，每个模块由一个[`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)表示。
+
+音频上下文控制它包含的节点的创建和音频处理或解码的执行。
+
+**在做任何其他操作之前，你需要创建一个`AudioContext`对象，因为所有事情都是在上下文中发生的。**
+
+建议创建一个`AudioContext`对象并复用它，而不是每次初始化一个新的`AudioContext`对象，并且可以对多个不同的音频源和管道同时使用一个`AudioContext`对象。
+
+
+
+
+
+### decodeAudioData
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData)
+
+[`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext)接口的 `decodeAudioData()` 方法可用于异步解码音频文件中的 [`ArrayBuffer`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)。`ArrayBuffer` 数据可以通过 [`XMLHttpRequest`](https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest) 和 [`FileReader`](https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader) 来获取。AudioBuffer 是通过 AudioContext 采样率进行解码的，然后通过回调返回结果。
+
+这是从音频轨道创建用于 web audio API 音频源的首选方法
+
+```tsx
+decodeAudioData(audioData: ArrayBuffer)  =>  return AudioBuffer
+```
+
+
+
+
+
+### createBuffer
+
+>  在 BaseAudioContext 上 
+
+音频环境[`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext) 接口的 `createBuffer() 方法用于新建一个空`白的 [`AudioBuffer`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer) 对象，以便用于填充数据，通过 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode) 播放。
+
+例子
+
+```ts
+var audioCtx = new AudioContext();
+var buffer = audioCtx.createBuffer(2, 22050, 44100);
+
+// 2 numOfChannels 一个定义了 buffer 中包含的声频通道数量的整数。
+// 22050 length 一个代表 buffer 中的样本帧数的整数。
+// 44100 sampleRate 线性音频样本的采样率
+```
+
+采样率是指每一秒包含的关键帧的个数吗？
+
+不完全正确。采样率是指每秒采样的次数，而关键帧是视频编码中的概念，表示一个完整的帧信息，与采样率不直接相关。关键帧在视频编码中起到重要的作用，可以作为随机访问点以及帧内预测的基准。在视频中，一般会有一些关键帧和其他非关键帧（例如预测帧或者参考帧）交替出现。
+
+
+
+### destination
+
+[`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext)的 `destination` 属性返回一个 [`AudioDestinationNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioDestinationNode)，表示 context 中所有音频的最终目标节点，一般是音频渲染设备，比如扬声器。
+
+
+
+
+
+### currentTime
+
+> 以秒为单位
+
+[https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/currentTime)
+
+BaseAudioContext 接口的 currentTime 只读属性返回一个双精度值，表示不断增加的硬件时间戳
+
+可用于安排音频播放、可视化时间线等。它从 0 开始。
+
+
+
+### createAnalyser
+
+创建一个[`AnalyserNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode)，它可以用来暴露音频时间和频率数据，以及创建数据可视化。
+
+
+
+
+
+### createMediaStreamSource
+
+[https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource)
+
+AudioContext 接口的 createMediaStreamSource() 方法用于创建一个新的 MediaStreamAudioSourceNode 对象，给定一个媒体流（例如，来自 MediaDevices.getUserMedia 实例），然后可以播放和操作其中的音频。
+
+```tsx
+createMediaStreamSource(stream)
+```
+
+
+
+### createMediaElementSource
+
+> 返回 MediaElementAudioSourceNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/createMediaElementSource](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext/createMediaElementSource)
+
+[`AudioContext`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioContext) 接口的 `createMediaElementSource()` 方法用于创建一个新的 [`MediaElementAudioSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode) 对象，输入某个存在的 HTML audio or video  元素，对应的音频即可被播放或者修改。
+
+```ts
+var audioCtx = new AudioContext();
+var source = audioCtx.createMediaElementSource(myMediaElement);
+// myMediaElement => 某个被期待被录入音频处理图修改的 HTMLMediaElement 对象。
+```
+
+
+
+
+
+
+
+### createBufferSource
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBufferSource](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBufferSource)
+
+`createBufferSource()` 方法用于创建一个新的[`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)接口，该接口可以通过[`AudioBuffer`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer) 对象来播放音频数据。
+
+
+
+### createGain
+
+[https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createGain)
+
+The `createGain()` method of the [`BaseAudioContext`](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext) interface creates a [`GainNode`](https://developer.mozilla.org/en-US/docs/Web/API/GainNode), which can be used to control the overall gain (or volume) of the audio graph.
+
+
+
+
+
+## AudioWorkletNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioWorkletNode](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioWorkletNode)
+
+[一文拿下Web端基于AudioWorkletNode录制音频](https://juejin.cn/post/7310787455112413219)
+
+
+
+**`AudioWorkletNode`** 接口代表了用户定义的[`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)的基类，该基类可以与其他节点一起连接到音频路由图。其
+
+```tsx
+    const audioContext = new AudioContext()
+    await audioContext.audioWorklet.addModule("pcm-processor.js")   
+		const audioWorkletNode = new AudioWorkletNode(audioContext, "pcm-processor")
+    const audioMediaStreamTrack = this.audioTrack.getMediaStreamTrack()
+    this.mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(new MediaStream([audioMediaStreamTrack]))
+    this.mediaStreamAudioSourceNode.connect(audioWorkletNode)
+    
+    audioWorkletNode.port.onmessage = (event) => {
+    	// ...
+    }
+```
+
+
+
+
+
+## AudioBufferSourceNode
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)
+
+**`AudioBufferSourceNode`** 接口继承自 [`AudioScheduledSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioScheduledSourceNode)，表现为一个音频源，它包含了一些写在内存中的音频数据，通常储存在一个 ArrayBuffer 对象中。
+
+一个 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode) 只能被播放一次，也就是说，每次调用 [`start()`](https://developer.mozilla.org/en-US/docs/Web/API/AudioScheduledSourceNode/start) 之后，如果还想再播放一遍同样的声音，那么就需要再创建一个 `AudioBufferSourceNode`
+
+庆幸的是，创建该节点的代价并不大，并且想要多次播放声音的话，实际上 `AudioBuffer` 也可以被重用。
+
+
+
+
+
+## AudioBuffer
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer)
+
+[https://github.com/mdn/webaudio-examples/blob/main/audio-buffer/index.html](https://github.com/mdn/webaudio-examples/blob/main/audio-buffer/index.html)
+
+AudioBuffer 接口表示存在内存里的一段短小的音频资源，利用[`AudioContext.decodeAudioData()`](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData)方法从一个音频文件构建，或者利用 [`AudioContext.createBuffer()`](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBuffer)从原始数据构建。
+
+把音频放入 AudioBuffer 后，可以传入到一个 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)进行播放。
+
+
+
+
+
+
+
+## WebCodecs API
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/WebCodecs_API](https://developer.mozilla.org/zh-CN/docs/Web/API/WebCodecs_API)
+
+**WebCodecs API** 为 web 开发者提供了对视频流的单个帧和音频数据块的底层访问能力。这对于那些需要完全控制媒体处理方式的 web 应用程序非常有用。例如，视频或音频编辑器，以及视频会议。
+
+
+
+
+
+# Web RTC
 
 [https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
 
 [https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx](https://github.com/QinZhen001/front-end-demo/blob/master/src/pages/other/web-rtc/index.tsx)
-
-[WebRTC 点对点通信原理](http://www.yyyweb.com/5480.html)
 
 [WebRTC 介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Session_lifetime)
 
@@ -29,6 +453,8 @@ tags:
 [信令与视频通话](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling)
 
 [音视频流媒体原理以及基础入门知识](https://zhuanlan.zhihu.com/p/538790451)
+
+[快速入门 WebRTC：屏幕和摄像头的录制、回放、下载](https://mp.weixin.qq.com/s/u6MkezGj1o9h5-ACEkFcRQ)
 
 
 
@@ -112,44 +538,6 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 
 
-## AudioBuffer
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBuffer)
-
-[https://github.com/mdn/webaudio-examples/blob/main/audio-buffer/index.html](https://github.com/mdn/webaudio-examples/blob/main/audio-buffer/index.html)
-
-AudioBuffer 接口表示存在内存里的一段短小的音频资源，利用[`AudioContext.decodeAudioData()`](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/decodeAudioData)方法从一个音频文件构建，或者利用 [`AudioContext.createBuffer()`](https://developer.mozilla.org/zh-CN/docs/Web/API/BaseAudioContext/createBuffer)从原始数据构建。把音频放入 AudioBuffer 后，可以传入到一个 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)进行播放。
-
-
-
-
-
-## MediaStream
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream)
-
-**`MediaStream`** 接口是一个媒体内容的流.。一个流包含几个*轨道*，比如视频和音频轨道。
-
-
-
-## MediaStreamTrack
-
-[https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamTrack](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStreamTrack)
-
-**`MediaStreamTrack`** 接口在 User Agent 中表示一段媒体源，比如音轨或视频。
-
-Each `MediaStreamTrack` may have one or more channels. The channel represents the smallest unit of a media stream, such as an audio signal associated with a given speaker, like left or right in a stereo audio track.
-
-
-
-
-
-## AudioBufferSourceNode
-
-**`AudioBufferSourceNode`** 接口继承自 [`AudioScheduledSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioScheduledSourceNode)，表现为一个音频源，它包含了一些写在内存中的音频数据，通常储存在一个 ArrayBuffer 对象中。
-
-
-
 ## RTCPeerConnection
 
 **`RTCPeerConnection`** 接口代表一个由本地计算机到远端的 WebRTC 连接。该接口提供了创建，保持，监控，关闭连接的方法的实现。
@@ -196,6 +584,8 @@ General purpose WebRTC server
 Tech 是 videojs 中处理视频播放的技术
 
 videojs 核心源码中提供了 Html5 作为默认 Tech，用于播放浏览器默认支持的视频类型。同时支持扩展 Tech，用于支持浏览器无法直接播放的视频类型，例如 flv、hls、dash 等。
+
+
 
 ## middleware
 
@@ -339,11 +729,31 @@ a free, open source, and cross-platform media player
 
 # ffmpeg
 
+
+
+
+
+## 音频采集
+
+```bash
+ffmpeg -f avfoundation -i :0 out.wav
+```
+
+
+
+
+
+## copy 模式
+
+在FFmpeg中，复制（copy）模式是指直接复制输入文件的音频或视频流，不进行任何编码或解码操作。这种模式可以快速地将输入文件复制到输出文件中，而不会改变编码格式或压缩质量。使用复制模式可以节省时间和系统资源，并且可以保留原始的音视频质量。
+
+
+
+
+
 浏览器环境需要 [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm)
 
 [https://ffmpegwasm.netlify.app/#demo](https://ffmpegwasm.netlify.app/#demo)
-
-
 
 ```tsx
 export interface FFmpeg {
@@ -454,6 +864,10 @@ const file = await fetchFile(mp4Src)
 
 
 
+
+# ffplay
+
+ffplay是FFmpeg项目中的一个简单的媒体播放器，可以用于播放各种音视频文件。它可以在命令行中使用，并提供一些基本的播放控制选项和特效设置。ffplay基于FFmpeg的多媒体框架构建，支持多种音视频格式，并可以通过命令行选项进行自定义设置。
 
 
 
@@ -571,6 +985,10 @@ CDN主要包含：源站、缓存服务器、智能DNS、客户端等几个主�
 
 
 
+
+
+
+
 ## 音频
 
 [https://zhuanlan.zhihu.com/p/34295106](https://zhuanlan.zhihu.com/p/34295106)
@@ -579,11 +997,20 @@ CDN主要包含：源站、缓存服务器、智能DNS、客户端等几个主�
 
 
 
+### 音频处理(AudioGraph)
+
+浏览器中的音频处理的术语称为AudioGraph，其实就是一个【中间件模式】，你需要创建一个source节点和一个destination节点，然后在它们之间可以连接许许多多不同类型的节点，source节点既可以来自流媒体对象，也可以自己填充生成，destination可以连接默认的扬声器端点，也可以连接到媒体录制APIMediaRecorder来直接将pcm数据转换为指定媒体编码格式的数据。
+中间节点的类型有很多种，可实现的功能也非常丰富，包括增益、滤波、混响、声道的合并分离以及音频可视化分析等等非常多功能
+
+
+
+
+
 ### **采样频率(Sample Rate)**
 
 每秒采集声音的数量，它用赫兹(Hz)来表示。
 
-定义了每秒从连续信号中提取并组成离散信号的采样个数，它用赫兹（Hz）来表示。采样率是指将模拟信号转换成数字信号时的采样频率，也就是单位时间内采样多少点。一个采样点数据有多少个比特。比特率是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，传送的数据越大，音质越好.
+**定义了每秒从连续信号中提取并组成离散信号的采样个数，它用赫兹（Hz）来表示。**采样率是指将模拟信号转换成数字信号时的采样频率，也就是单位时间内采样多少点。一个采样点数据有多少个比特。比特率是指每秒传送的比特(bit)数。单位为 bps(Bit Per Second)，比特率越高，传送的数据越大，音质越好.
 
 
 
@@ -697,6 +1124,18 @@ WAV文件和MP3是两种常见的音频文件格式。
 [https://github.com/mdn/webaudio-examples](https://github.com/mdn/webaudio-examples)
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Audio_API)
+
+
+
+
+
+### webrtc-adapter
+
+[https://www.npmjs.com/package/webrtc-adapter](https://www.npmjs.com/package/webrtc-adapter)
+
+adapter.js is a shim to insulate apps from spec changes and prefix differences in WebRTC. The prefix differences are mostly gone these days but differences in behaviour between browsers remain.
+
+js是一种将应用程序与WebRTC中的规范变化和前缀差异隔离开来的机制。这些天，前缀的差异已经消失了，但浏览器之间的行为差异仍然存在。
 
 
 

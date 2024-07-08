@@ -46,13 +46,84 @@ body {
 
 antialiased - 平滑像素级别上的字体，而不是子像素。在深色背景上从子像素渲染切换到抗锯齿，使其看起来更轻。
 
-
-
 grayscale - 使用灰度抗锯齿渲染文本，而不是子像素。在深色背景上从子像素渲染切换到抗锯齿，使其看起来更轻。
 
-
-
 **说人话，也就是在深色背景中浅色字体会更加纤细**
+
+
+
+### 文字溢出显示省略号
+
+[https://www.daqianduan.com/6179.html](https://www.daqianduan.com/6179.html)
+
+#### 单行文字
+
+如果实现单行文本的溢出显示省略号同学们应该都知道用text-overflow:ellipsis属性来，当然还需要加宽度width属来兼容部分浏览。
+
+```css
+overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
+```
+
+#### 多行文字
+
+[https://developer.mozilla.org/zh-CN/docs/Web/CSS/-webkit-line-clamp](https://developer.mozilla.org/zh-CN/docs/Web/CSS/-webkit-line-clamp)
+
+[https://ant-design.antgroup.com/docs/blog/line-ellipsis-cn](https://ant-design.antgroup.com/docs/blog/line-ellipsis-cn)
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+```
+
+因使用了WebKit的CSS扩展属性，该方法适用于WebKit浏览器及移动端；
+
+* -webkit-line-clamp用来限制在一个块元素显示的文本的行数。 为了实现该效果，它需要组合其他的WebKit属性。常见结合属性：
+* display: -webkit-box; 必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+* -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。
+
+
+
+---
+
+
+
+after伪类元素实现
+
+```html
+  <div class="wrapper">
+    <div class="overflow">行溢出多行溢行溢出多行溢多行溢出多行溢出多行溢出多行溢出多行多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出多行溢出</div>
+  </div>
+```
+
+```css
+    /* 最多两行 */
+    .overflow{
+      position: relative;
+      line-height: 20px;
+      max-height: 40px;
+      overflow: hidden;
+    }
+    .overflow::after{
+      content:'...';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      /* 下面这两行可加可不加 */
+      /* padding-left: 10px;
+      background: linear-gradient(to right, transparent, red 55%); */
+    }
+```
+
+* 将height设置为line-height的整数倍，防止超出的文字露出。
+* 给p::after添加渐变背景可避免文字只显示一半。
+
+
+
+
 
 
 ### 优化渲染文本
@@ -604,7 +675,175 @@ const AspectRatio: FC<{
 
 
 
+### 宽高1:1切割图片
+
+我们有一张长方形的图片，希望切出长宽相等的正方形出来，同时这个的边长为长方形的宽。
+
+我们可以使用css中background属性实现
+
+```css
+ .test{
+      width: 160px;
+      height: 160px;
+      background-image: url("./touxiang.png");
+      background-position: 0 0;
+      // 宽度100% 高度自适应
+      background-size: 100% auto;  
+      background-repeat: no-repeat;
+    }
+```
 
 
 
+
+
+
+
+
+
+
+
+### 高度自适应
+
+[网页链接](https://segmentfault.com/a/1190000004231995)
+
+**当margin/padding取形式为百分比的值时，无论是left/right，还是top/bottom，都是以父元素的width为参照物的！**
+
+> margin/padding-top/bottom 的百分比之所以按照 width 计算，其实理由很简单，就是要匹配主要的 use cases。那就是——要构建在纵横两个方向上相同的 margin/padding。如果两个百分比的相对方式不同，那用百分比就无法得到垂直和水平一致的留白。
+
+
+
+有人也许会问，为什么不是垂直方向上的 height 而是水平方向的 width？
+
+这其实容易理解。因为 CSS 的基本模型是着重于“排版”的需求，因此水平和垂直方向其实并不是同等权重的，更精确的说，是文字书写方向决定的。常见的横排文字时，我们排版的出发点是水平宽度一定，而垂直方向上是可以无限延展的。竖排文字则相反。所以在竖排文字时，margin/padding-* 其实就都按照 height 而不是 width 计算了。类似的且大家更熟悉的是 margin-top/bottom 在垂直方向上的 collapse（或者当竖排文字时是 margin-left/right 水平方向上的 collapse）。
+
+---
+
+为什么只有垂直方向 collapse 而水平就不呢？
+
+因为在典型的排版中，段落间的空白进行 collapse 是常见和方便的。而反过来水平方向上就几乎没有那样的需求（只有表格在两个方向上有对称的 border collapse 的需求）。**同样的，在排版中，横向百分比控制是常见的需求，但是纵向其实很少这样的需求**,有这样需求的其实是GUI界面布局
+
+作者：贺师俊 
+
+链接：https://www.zhihu.com/question/20983035/answer/16801491 
+
+来源：知乎 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+---
+
+宽高不一致的自适应怎么做？
+
+其实自适应的重点在于，元素的宽高必须维持一个固定的比例，比如说宽高一致比例就是1:1，宽是高的两倍那就是2:1，只要这个比例是明确而且固定的，那么只需要相应地修改margin/padding的百分比值即可适应不同的宽高比例。
+
+
+
+### 去除type:number时input的箭头
+
+```css
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="number"]{
+    -moz-appearance: textfield;
+}
+
+```
+
+另外补充一点  即使在 `type="number"` 时，HTML 输入元素的值也总会返回字符串。如果这个值无法被 `parseFloat()` 解析，则会返回原始的值。 
+
+如果想自动将用户的输入值转为数值类型，可以给 `v-model` 添加 `number` 修饰符：
+
+```html
+<input v-model.number="age" type="number">
+```
+
+
+
+### 列表超出滚动
+
+结构： content  =>  list =>  litem 
+
+```html
+  <div class="content">
+    <div class="list">
+      <div class="item">1</div>
+      <div class="item">2</div>
+      <div class="item">3</div>
+      <div class="item">4</div>
+      <div class="item">4</div>
+    </div>
+  </div>
+```
+
+```css
+    .content {
+      position: relative;
+      height: calc(100vh - 500px);
+      overflow: hidden;
+    }
+
+    .list{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+    }
+
+    .item{
+      height: 100px;
+      width: 100%;
+    }
+```
+
+
+
+
+
+### title 属性
+
+[HTML title 属性](https://www.w3school.com.cn/tags/att_standard_title.asp)
+
+`title` 属性规定关于元素的额外信息。
+
+这些信息通常会在鼠标移到元素上时显示一段工具提示文本（tooltip text）
+
+select中的option加入title属性后，鼠标悬浮会有文字提示效果：
+
+```html
+  <select id="mySelect">
+    <option value="option1">选项1</option>
+    <option value="option2">选项2</option>
+    <option value="option3" title="请输入您的姓名">选项3</option>
+  </select>
+```
+
+---
+
+title属性对应的ui效果是无法修改的
+
+如果要修改，只能使用自定义title
+
+```html
+  <style>
+    .tip {
+      position: relative;
+    }
+
+    .tip:hover:after {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      content: attr(data-title);
+      color: #000000;
+      border: 1px solid #242424;
+      border-radius: 5px;
+      background-color: #E5E5E5;
+    }
+  </style>  
+
+<div data-title="标题" class="tip">我是一个测试</div>
+```
 

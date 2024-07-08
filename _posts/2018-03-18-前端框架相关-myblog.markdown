@@ -19,6 +19,14 @@ Vue2.1.7源码学习
 
 
 
+### 需要框架的根本原因
+
+[现代 js 框架存在的根本原因](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/57.%E7%B2%BE%E8%AF%BB%E3%80%8A%E7%8E%B0%E4%BB%A3%20js%20%E6%A1%86%E6%9E%B6%E5%AD%98%E5%9C%A8%E7%9A%84%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0%E3%80%8B.md)
+
+最根本原因是：
+
+**解决 UI 与状态同步的难题。**
+
 
 
 ### 框架挑选
@@ -421,11 +429,7 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 
 
 
-
-
-
-
-## svelte
+# svelte
 
 [https://juejin.cn/post/7185433911437033531](https://juejin.cn/post/7185433911437033531)
 
@@ -440,4 +444,246 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 
 
+
+# next.js
+
+
+
+## Pages Router 和 App Router
+
+[https://www.cnblogs.com/silva/p/17948723](https://www.cnblogs.com/silva/p/17948723)
+
+> Next.js 从 v13 起就使用了新的路由模式 —— App Router。之前的路由模式我们称之为“Pages Router”
+
+
+
+
+
+## Hydration
+
+Hydration is the process that bridges the gap between a server-rendered page and its transformation into an interactive client-side application. Think of it as the transition from a static webpage to a dynamic one.
+
+水合作用是弥合服务器渲染页面与其转换为交互式客户端应用程序之间差距的过程。将其视为从静态网页到动态网页的过渡。
+
+
+
+## SSR
+
+Drawbacks of SSR -  All or Nothing Waterfall  （缺点）
+
+1. Data fetching must be completed before the server can begin rendering HTML
+2. The JavaScript required for the components needs to be fully loaded on the client side before the hydration process can start
+3. All components have to be hydrated before they become interactive. (所有组件在变得具有交互性之前都必须先水合)
+
+create an "all or nothing" waterfall problem that spans from the server to the client where each issue must be resolved before moving to the next one This is inefficient if some parts of your app are slower than others, as is often the case in real-world apps
+
+
+
+## Static Rendering
+
+[https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering)
+
+静态渲染
+
+With static rendering, data fetching and rendering happens on the server at build time (when you deploy) or during [revalidation](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#revalidating-data). The result can then be distributed and cached in a [Content Delivery Network (CDN)](https://nextjs.org/docs/app/building-your-application/rendering/server-components#static-rendering-default).
+
+好处：
+
+- **Faster Websites** -
+- **Reduced Server Load** 
+- **SEO** 
+
+Static rendering is useful for UI with **no data** or **data that is shared across users**, such as a static blog post or a product page. It might not be a good fit for a dashboard that has personalized data that is regularly updated.
+
+静态渲染对于没有数据或数据在用户之间共享的 UI 非常有用，比如静态博客文章或产品页面。但对于包含个性化数据且经常更新的仪表盘可能不太合适。
+
+
+
+## Dynamic Rendering
+
+[https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-dynamic-rendering](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-dynamic-rendering)
+
+动态渲染
+
+With dynamic rendering, content is rendered on the server for each user at request time (when the user visits the page)
+
+使用动态呈现，内容在请求时(当用户访问页面时)在服务器上为每个用户呈现。
+
+好处：
+
+- **Real-Time Data** 
+- **User-Specific Content** 
+- **Request Time Information** 
+
+With dynamic rendering, **your application is only as fast as your slowest data fetch.**
+
+使用动态呈现，应用程序的速度取决于最慢的数据获取速度。
+
+
+
+## component-hierarchy
+
+组件等级结构
+
+[https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy](https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy)
+
+
+
+## Server Rendering Strategies
+
+> As a developer, you do not need to choose between static and dynamic rendering Next,js will automatically choose the best rendering strategy for each route basedon the features and APls used
+
+渲染策略
+
+* Static rendering 静态渲染  (default)  (HTML is generated at build time) 
+* Dynamic rendering 动态渲染  (HTML is generated at request time 每次请求)
+* Streaming 流式传输  (allows for progressive Ul rendering from the server 允许从服务器进行渐进U渲染)
+
+---
+
+Static rendering:
+
+Along with the HTML, the RSC payload is created for each component, and JavaScript chunks are produced for client-side component hydration in the browser
+
+如果您直接导航到页面路由，则会提供相应的HTML文件如果您从另一个路由导航到该路由，则会在客户端使用RSC有效负载和JavaScript块创建该路由，而不会向服务器发出任何额外的请求
+
+---
+
+Dynamic rendering:
+
+if a dynamic function is discovered, Next.js will switch todynamically rendering the whole route
+In Next.js, these dynamic functions are: cookies(), headers(), and searchParams
+
+---
+
+
+
+## Streaming
+
+Streaming is a data transfer technique that allows you to break down a route into smaller "chunks" and progressively stream them from the server to the client as they become ready.
+
+流是一种数据传输技术，它允许您将路由分解为更小的“块”，并在它们准备好时逐步将它们从服务器流式传输到客户端。
+
+Streaming works well with React's component model, as each component can be considered a *chunk*.
+
+流与React的组件模型配合得很好，因为每个组件都可以被视为一个块。
+
+There are two ways you implement streaming in Next.js:
+
+1. At the page level, with the `loading.tsx` file.
+2. For specific components, with `<Suspense>`.
+
+
+
+
+
+## Suspense
+
+[https://nextjs.org/learn/dashboard-app/streaming#practice-streaming-latestinvoices](https://nextjs.org/learn/dashboard-app/streaming#practice-streaming-latestinvoices)
+
+Where you place your Suspense boundaries will depend on a few things:
+
+Suspense设置取决于以下几点
+
+1. How you want the user to experience the page as it streams. (您希望用户如何体验流媒体页面。)
+2. What content you want to prioritize. (你想优先考虑哪些内容。)
+3. If the components rely on data fetching.  (如果组件依赖于数据获取。)
+
+---
+
+You could stream the **whole page** like we did with `loading.tsx`... but that may lead to a longer loading time if one of the components has a slow data fetch.
+
+你可以流式传输整个页面，就像我们在loading.tsx中做的那样……但是，如果其中一个组件的数据获取速度较慢，那么这可能会导致较长的加载时间。
+
+You could stream **every component** individually... but that may lead to UI *popping* into the screen as it becomes ready.
+
+你可以单独流式传输每个组件……但这可能会导致UI在准备就绪时弹出屏幕。
+
+**it's good practice to move your data fetches down to the components that need it, and then wrap those components in Suspense**
+
+最好的做法是将数据获取移到需要它的组件中，然后将这些组件封装在悬念中
+
+
+
+
+
+## font
+
+[Why optimize fonts?](https://nextjs.org/learn/dashboard-app/optimizing-fonts-images#why-optimize-fonts)
+
+Next.js automatically optimizes fonts in the application when you use the `next/font` module. It downloads font files at build time and hosts them with your other static assets. This means when a user visits your application, there are no additional network requests for fonts which would impact performance.
+
+next/font模块时自动优化应用程序中的字体。在构建时下载字体文件，并将它们与其他静态资产一起托管。这意味着当用户访问您的应用程序时，不存在会影响性能的字体的额外网络请求。
+
+
+
+
+
+## Server Actions
+
+[https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
+
+
+
+
+
+## next-redux-wrapper
+
+[https://github.com/kirill-konshin/next-redux-wrapper](https://github.com/kirill-konshin/next-redux-wrapper)
+
+
+
+
+
+
+
+## Error
+
+
+
+### **Using localStorage**
+
+[A Simple Solution for Redux State Hydration Issues When Using localStorage with Next.js](https://medium.com/@ionikdev/a-simple-solution-for-redux-state-hydration-issues-when-using-localstorage-with-next-js-890d0e0343df)
+
+
+
+### window is not defined
+
+You can still use:
+
+```ts
+if (typeof window !== "undefined") {
+  // browser code
+}
+```
+
+
+
+### viewport
+
+> 已经不在 metadata 中了 （踩了个坑 1个小时）
+
+```tsx
+// layout.tsx
+
+import type { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+  title: "Ai Agent",
+  description: "Generated by create next app",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+}
+```
 

@@ -83,18 +83,44 @@ module.exports = {
 
 
 
+## 配置
+
+
+
+### extract
+
+[https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#extract-css](https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#extract-css)
+
+
+
+### inject
+
+[https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#inject](https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#inject)
+
+Inject CSS into `<head>`, it's always `false` when `extract: true`.
+
+
+
 ## 插件
 
 
 
+### postcss-preset-env
 
+[https://www.npmjs.com/package/postcss-preset-env](https://www.npmjs.com/package/postcss-preset-env)
+
+[postcss-preset-env vs autoprefixer](https://juejin.cn/s/postcss-preset-env%20vs%20autoprefixer)
+
+PostCSS Preset Env 可以将现代 CSS 转换为大多数浏览器可以理解的内容，并根据目标浏览器或运行时环境确定所需的 polyfill
+
+The `browsers` option determines which polyfills are required based upon the browsers you are supporting.
+
+[PostCSS Preset Env](https://github.com/csstools/postcss-preset-env) supports any standard [browserslist](https://github.com/browserslist/browserslist#readme) configuration, which can be a `.browserslistrc` file, a `browserslist` key in `package.json`, or `browserslist` environment variables.
 
 
 
 ### postcss-import
 [https://www.npmjs.com/package/postcss-import](https://www.npmjs.com/package/postcss-import)
-
-
 
 PostCSS plugin to transform @import rules by inlining content.
 
@@ -112,17 +138,28 @@ Notes:
 
 
 
-
 ### autoprefixer
+
+> 现在被 postcss-preset-env 代替了
+
+[Autoprefixer CSS online](https://autoprefixer.github.io/)
+
+[autoprefixer](https://github.com/postcss/autoprefixer) has [complex logic to fix CSS Grid in IE and older Edge](https://github.com/postcss/autoprefixer#grid-autoplacement-support-in-ie).
+
+autoprefixer在IE和旧版Edge中有复杂的逻辑来修复CSS Grid。
+
+----
+
 **PostCSS plugin** to parse CSS and add vendor prefixes to CSS rules using values from Can I Use. It is recommended by Google and used in Twitter and Taobao.
 
-
 Because Autoprefixer is a postprocessor for CSS(后处理器), you can also use it with preprocessors such as Sass, Stylus or LESS.
+
+
 
 #### Browsers
 Autoprefixer uses Browserslist, so you can specify the browsers you want to target in your project by queries like last 2 versions or > 5%.
 
-The best way to provide browsers is .browserslistrc config or package.json with browserslist key. Put it in your project root.
+**The best way to provide browsers is .browserslistrc config or package.json with browserslist key. Put it in your project root.**
 
 We recommend to avoid Autoprefixer option and use .browserslistrc config or package.json. In this case browsers will be shared with other tools like babel-preset-env or Stylelint.
 

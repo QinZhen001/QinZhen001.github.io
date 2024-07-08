@@ -116,8 +116,6 @@ $textarea.addEventListener('input', function(e) {
 });
 ```
 
-
-
 实现后发现，textarea的换行符是「\n」，与HTML的（`<br />`）不一致，导致内容同步到容器中后丢失了换行。
 
 
@@ -129,8 +127,6 @@ $textarea.addEventListener('input', function(e) {
 	white-space: pre-wrap; 
 }
 ```
-
-
 
 此外，如果换行符刚好在内容的末尾，那么在容器中的换行并不会生效，这时候需要在换行符后面补上一个空格（或者其他非空白字符）。
 
@@ -183,7 +179,6 @@ $textarea.addEventListener('input', function(e) {
 
 
 查阅文档后发现有这样一个节点属性「scrollHeight」，对于一个内部可滚动的元素来说，它表示元素中完整内容的高度（注意：「scrollHeight」包括元素的padding，但不包括元素的border和margin。）。
-
 
 那么，只需要在textarea的内容变化后，把它的高度设为它的「scrollHeight」，就可以完成自适应高度。
 初步实现代码如下：
@@ -295,7 +290,6 @@ $textarea.addEventListener('input', function() {
 链接：https://juejin.im/post/5b7653bde51d454dba70c0b1
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
 
 
 

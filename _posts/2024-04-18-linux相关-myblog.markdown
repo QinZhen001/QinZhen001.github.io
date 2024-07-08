@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Linux基础学习"
-date:       2018-09-25 17:06:00
+title:      "linux相关"
+date:       2024-04-18 10:30:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
@@ -10,6 +10,8 @@ tags:
 ---
 
 > “Yeah It's on. ”
+
+
 
 
 
@@ -24,10 +26,6 @@ tags:
 [Linux 命令搜索](https://wangchujiang.com/linux-command/list.html)
 
 
-
-# 正文
-
-
 * Linux 严格 区分大小写
 
 * **Linux 中所有内容以文件形式保存，包括硬件**
@@ -38,11 +36,108 @@ tags:
 
 
 
+## Union FS
+
+Union FS（Unified File System）是一种文件系统层叠技术，可以将不同文件系统挂载到同一个目录下，形成一个统一的虚拟文件系统。它通过将多个目录合并成一个逻辑上的目录，实现对这些目录进行统一管理和访问。
+
+在Linux中，Union FS可以通过在mount命令中使用unionfs参数来挂载多个文件系统。挂载多个文件系统的过程中，Union FS会将这些文件系统的文件和目录按照指定的优先级进行合并，用户可以像访问一个普通文件系统一样访问这些合并后的文件和目录。
+
+Union FS提供了以下几种层叠策略：
+
+1. Union：将多个文件系统的文件和目录合并，如果有冲突则使用最近挂载的文件系统中的文件。
+2. **Overlay：将一个文件系统作为上层文件系统，其他文件系统作为下层文件系统，上层文件系统的文件会覆盖下层文件系统中相同路径的文件。(docker 中使用)**
+3. Aufs：类似于Overlay，但可以将文件系统以只读或读写的方式挂载。
+
+Union FS在Linux系统中被广泛应用于容器技术中，可以实现将多个文件系统合并到一个容器镜像中，为容器提供独立的文件系统环境。它还可以用于管理系统中的分层文件系统，提供更灵活的文件管理和访问方式。
 
 
-许多程序需要开机启动。它们在Windows叫做"服务"（service），在Linux就叫做"守护进程"（daemon）
 
 
+
+## namespace
+
+在Linux中，namespace是一种将系统资源隔离开的机制。它可以将一组系统资源（例如进程、网络、文件系统、IPC等）视为独立的单元，在不同的namespace中运行，互相之间不会产生干扰。
+
+在Linux中，有以下几种类型的namespace：
+
+1. PID Namespace：用于隔离进程ID，每个进程在不同的PID namespace中都有唯一的ID，使得进程无法感知到其他namespace中的进程存在。
+2. Network Namespace：用于隔离网络资源，每个network namespace都有自己的网络设备、IP地址、路由表等，使得不同的network namespace之间拥有独立的网络栈。（Docker 默认采用 veth 的方式将 container 中的虚拟网卡同 host 上的一个 docker bridge: docker0 连接在一起。）
+3. Mount Namespace：用于隔离文件系统资源，每个mount namespace可以有不同的文件系统挂载点和文件系统层次结构。
+4. UTS Namespace：用于隔离主机名和域名，每个UTS namespace可以拥有不同的主机名和域名。
+5. IPC Namespace：用于隔离进程间通信资源，每个IPC namespace都有独立的共享内存、信号量和消息队列。
+6. User Namespace：用于隔离用户和用户组，每个user namespace都有自己独立的用户和用户组ID，使得不同的user namespace中的用户和用户组互相不可见。
+
+通过使用这些namespace，可以将不同的进程隔离开，使得它们在不同的环境中运行，提高系统的安全性和稳定性。
+
+---
+
+Linux 内核代码中 Namespace 的实现
+
+```c
+// 进程数据结构
+truct task_struct {
+...
+/* namespaces */
+struct nsproxy *nsproxy;
+...
+}
+
+
+
+struct nsproxy {
+  atomic_t count;
+  struct uts_namespace *uts_ns;
+  struct ipc_namespace *ipc_ns;
+  struct mnt_namespace *mnt_ns;
+  struct pid_namespace
+  *pid_ns_for_children;
+  struct net *net_ns;
+}
+```
+
+
+
+
+
+## cgroup
+
+cgroup（Control Group）是一个Linux内核特性，用于限制、控制和隔离进程组的资源使用。它可以对进程组分配和管理资源，如CPU、内存、磁盘I/O等，以实现资源的可控制、可监视、可限制和可隔离。
+
+通过使用cgroup，可以将一组相关的进程组织在同一个cgroup中，并为其分配一定的资源。这样可以实现资源的分配和管理，确保不同进程组不会互相影响，提高系统的稳定性和性能。
+
+cgroup提供了一套API和命令行工具，使用户可以创建、管理和监视cgroup。用户可以通过设置cgroup参数，限制进程组的资源使用，例如设置CPU使用率、内存限制和IO带宽限制等。
+
+cgroup的应用场景非常广泛，特别适用于容器技术（如Docker）中的资源隔离和管理。它可以帮助在容器环境中实现对各个容器的资源控制，保证各个容器之间的运行不会相互干扰。同时，也可以用于虚拟化环境中，以实现对虚拟机的资源管理和隔离。
+
+总之，cgroup是Linux内核提供的一个强大的资源控制和分配机制，可以实现进程组的资源管理、限制和隔离，为系统的稳定性和性能提供支持。
+
+
+
+## Iptables
+
+Iptables是一个用于Linux系统的防火墙工具，用于配置网络过滤规则和NAT（网络地址转换）功能。它允许管理员根据IP地址、端口和协议设置规则，以控制进出网络的数据流。Iptables可以提供网络安全和访问控制，用于防止未经授权的访问、拦截恶意流量等。
+
+
+
+## nstenter 命令
+
+"nstenter"命令用于在指定的命名空间中执行命令。它允许用户在不切换命名空间的情况下执行命令，以便可以在特定的命名空间中查看和操作对应的资源。命名空间是Linux内核中一种用于将系统资源分组和隔离的机制。使用"nstenter"命令，可以进入指定的命名空间并执行命令，以便在不改变自己所处的命名空间的情况下检查和管理其他命名空间中的资源。
+
+## systemd
+
+systemd 是一个 Linux 系统初始化和服务管理的软件套件，它被广泛应用于诸多现代 Linux 发行版中，如 Red Hat、Fedora、Debian 等。systemd 可以有效地改善系统启动速度，提供了简洁易用的服务管理功能，同时具备强大的日志记录与分析能力。systemd 的设计目标是替代传统的 System V 初始化系统（SysVinit），并提供更高效、更可靠、更可扩展的系统初始化和管理方案。
+
+
+
+## 网桥设备
+
+网桥设备是用于连接多个局域网（LAN）的设备。它的主要功能是传输和转发数据包，从而使不同的局域网之间能够相互通信和交换数据。
+
+具体来说，网桥设备工作在OSI（开放式系统互联）模型的第二层，即数据链路层。它通过读取数据包的目标MAC地址，决定将数据包转发到目标局域网上的特定端口。当一个数据包从一个局域网传输到另一个局域网时，网桥设备会自动学习并记录已连接设备的MAC地址，并在未来的数据传输中使用这些信息进行转发。
+
+
+
+# 基础
 
 
 
@@ -69,8 +164,6 @@ tags:
 | /tmp  | 这是一般用户或者时正在执行的程序暂时放置文件的地方。这个目录任何人都能访问并且创建数据，但是只用root和数据的使用者才能删除所创建的数据。 |
 | /usr  | （Unix software Resource ） Unix软件资源                     |
 
-
-
 > /usr不是user的缩写，其实usr是Unix Software Resource的缩写， 也就是Unix操作系统软件资源所放置的目录，而不是用户的数据；所有系统默认的软件都会放置到/usr, 系统安装完时，这个目录会占用最多的硬盘容量
 
 
@@ -84,8 +177,6 @@ tags:
 ###  linux硬链接和软连接
 
 [https://xzchsia.github.io/2020/03/05/linux-hard-soft-link/](https://xzchsia.github.io/2020/03/05/linux-hard-soft-link/)
-
-
 
 原理上，硬链接和源文件的inode节点号相同，两者互为硬链接。软连接和源文件的inode节点号不同，进而指向的block也不同，软连接block中存放了源文件的路径名。 
 
@@ -101,19 +192,11 @@ tags:
 
 -rw-r--r--.  1  root  root 
 
-
-
 > 第一个root是所有者 第二个root是所属组
 >
 > . 代表ACL权限
 >
 > 1 代表引用计数
-
-
-
-
-
-
 
 * 第一位代表文件类型（-文件    d目录   l软连接文件）
 
@@ -128,6 +211,7 @@ tags:
 
 
 ### ps
+
 * -e   显示所有进程
 * -f    全格式
 * -h   不显示标题
@@ -142,6 +226,7 @@ tags:
 
 
 ### netstat
+
 netstat命令用来打印Linux中网络系统的状态信息，可让你得知整个Linux系统的网络情况。
 
 
@@ -168,11 +253,7 @@ netstat命令用来打印Linux中网络系统的状态信息，可让你得知�
 
 #### ls颜色区分
 
-
-
 ls命令显示的文件可能会出现颜色
-
-
 
 * 白色：表示普通文bai件
 * 蓝色：表示du目录
@@ -191,6 +272,7 @@ ls命令显示的文件可能会出现颜色
 
 
 ### rm -rf
+
 删除文件夹的命令 使用rm -rf 目录名字 命令即可
 
 * -r 就是向下递归，不管有多少级目录，一并删除
@@ -202,11 +284,7 @@ ls命令显示的文件可能会出现颜色
 
 **.tar.gz是一个压缩包**，**.tar只是打包而没有压缩**
 
-
-
 #### tar后的zxvf
-
-
 
 * z：通过gzip支持压缩或解压缩。还有其他的压缩或解压缩方式，比如j表示bzip2的方式。
 
@@ -235,8 +313,6 @@ ls命令显示的文件可能会出现颜色
 ### cat 
 
 查看文件内容
-
-
 
 * at     由第一行开始显示内容，并将所有内容输出
 * tac     从最后一行倒序显示内容，并将所有内容输出
@@ -336,6 +412,21 @@ free -h
 
 
 
+### openssl
+
+[https://wangchujiang.com/linux-command/c/openssl.html](https://wangchujiang.com/linux-command/c/openssl.html)
+
+**OpenSSL** 是一个强大的安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及SSL协议，并提供丰富的应用程序供测试或其它目的使用
+
+```bash
+// 例子：
+openssl rand -base64 10
+```
+
+
+
+
+
 ### curl
 
 curl命令是一个利用URL规则在命令行下工作的文件传输工具。它支持文件的上传和下载，所以是综合传输工具，但按传统，习惯称curl为下载工具。作为一款强力工具，curl支持包括HTTP、HTTPS、ftp等众多协议，还支持POST、cookies、认证、从指定偏移处下载部分文件、用户代理字符串、限速、文件大小、进度条等特征。做网页处理流程和数据检索自动化，curl可以祝一臂之力。
@@ -352,43 +443,43 @@ curl(选项)(参数)
 * -A/--user-agent `<string>`	设置用户代理发送给服务器
 * -anyauth	可以使用“任何”身份验证方法
 * -b/--cookie `<name=string/file>`	cookie字符串或文件读取位置
-     * --basic	使用HTTP基本验证
+  * --basic	使用HTTP基本验证
 * -B/--use-ascii	使用ASCII /文本传输
 * -c/--cookie-jar `<file>`	操作结束后把cookie写入到这个文件中
 * -C/--continue-at `<offset>`	断点续转
 * -d/--data` <data>`	HTTP POST方式传送数据
-     * --data-ascii `<data>`	以ascii的方式post数据
-     * --data-binary `<data>`	以二进制的方式post数据
-     * --negotiate	使用HTTP身份验证
-     * --digest	使用数字身份验证
-     * --disable-eprt	禁止使用EPRT或LPRT
-     * --disable-epsv	禁止使用EPSV
+  * --data-ascii `<data>`	以ascii的方式post数据
+  * --data-binary `<data>`	以二进制的方式post数据
+  * --negotiate	使用HTTP身份验证
+  * --digest	使用数字身份验证
+  * --disable-eprt	禁止使用EPRT或LPRT
+  * --disable-epsv	禁止使用EPSV
 * -D/--dump-header `<file>`	把header信息写入到该文件中
-     * --egd-file `<file>`	为随机数据(SSL)设置EGD socket路径
-     * --tcp-nodelay	使用TCP_NODELAY选项
+  * --egd-file `<file>`	为随机数据(SSL)设置EGD socket路径
+  * --tcp-nodelay	使用TCP_NODELAY选项
 * -e/--referer	来源网址
 * -E/--cert `<cert[:passwd]>`	客户端证书文件和密码 (SSL)
-     * --cert-type `<type>`	证书文件类型 (DER/PEM/ENG) (SSL)
-     * --key `<key>`	私钥文件名 (SSL)
-     * --key-type `<type>`	私钥文件类型 (DER/PEM/ENG) (SSL)
-     * --pass `<pass>`	私钥密码 (SSL)
-     * --engine `<eng>`	加密引擎使用 (SSL). "--engine list" for list
-     * --cacert `<file>`	CA证书 (SSL)
-     * --capath `<directory>`	CA目录 (made using c_rehash) to verify peer against (SSL)
-     * --ciphers `<list>`	SSL密码
-     * --compressed	要求返回是压缩的形势 (using deflate or gzip)
-     * --connect-timeout `<seconds>`	设置最大请求时间
-     * --create-dirs	建立本地目录的目录层次结构
-     * --crlf	上传是把LF转变成CRLF
+  * --cert-type `<type>`	证书文件类型 (DER/PEM/ENG) (SSL)
+  * --key `<key>`	私钥文件名 (SSL)
+  * --key-type `<type>`	私钥文件类型 (DER/PEM/ENG) (SSL)
+  * --pass `<pass>`	私钥密码 (SSL)
+  * --engine `<eng>`	加密引擎使用 (SSL). "--engine list" for list
+  * --cacert `<file>`	CA证书 (SSL)
+  * --capath `<directory>`	CA目录 (made using c_rehash) to verify peer against (SSL)
+  * --ciphers `<list>`	SSL密码
+  * --compressed	要求返回是压缩的形势 (using deflate or gzip)
+  * --connect-timeout `<seconds>`	设置最大请求时间
+  * --create-dirs	建立本地目录的目录层次结构
+  * --crlf	上传是把LF转变成CRLF
 * -f/--fail	连接失败时不显示http错误
-     * --ftp-create-dirs	如果远程目录不存在，创建远程目录
-     * --ftp-method [multicwd/nocwd/singlecwd]	控制CWD的使用
-     * --ftp-pasv	使用 PASV/EPSV 代替端口
-     * --ftp-skip-pasv-ip	使用PASV的时候,忽略该IP地址
-     * --ftp-ssl	尝试用 SSL/TLS 来进行ftp数据传输
-     * --ftp-ssl-reqd	要求用 SSL/TLS 来进行ftp数据传输
+  * --ftp-create-dirs	如果远程目录不存在，创建远程目录
+  * --ftp-method [multicwd/nocwd/singlecwd]	控制CWD的使用
+  * --ftp-pasv	使用 PASV/EPSV 代替端口
+  * --ftp-skip-pasv-ip	使用PASV的时候,忽略该IP地址
+  * --ftp-ssl	尝试用 SSL/TLS 来进行ftp数据传输
+  * --ftp-ssl-reqd	要求用 SSL/TLS 来进行ftp数据传输
 * -F/--form `<name=content>`	模拟http表单提交数据
-     * --form-string `<name=string>`	模拟http表单提交数据
+  * --form-string `<name=string>`	模拟http表单提交数据
 
 
 
@@ -398,23 +489,13 @@ curl(选项)(参数)
 
 [https://www.cnblogs.com/ftl1012/p/9265699.html](https://www.cnblogs.com/ftl1012/p/9265699.html)
 
-
-
 > "wget" 这个名称来源于 “World Wide Web” 与 “get” 的结合。
-
-
 
  wget是一个下载文件的工具，它用在命令行下。对于Linux用户是必不可少的工具，我们经常要下载一些软件或从远程服务器恢复备份到本地服务器。
 
-
-
  wget支持HTTP，HTTPS和FTP协议，可以使用HTTP代理。所谓的**自动下载**是指，wget可以在用户退出系统的之后在后台执行。这意味这你可以登录系统，启动一个wget下载任务，然后退出系统，wget将在后台执行直到任务完成
 
-
-
   wget 可以跟踪HTML页面上的链接依次下载来创建远程服务器的本地版本，完全重建原始站点的目录结构。这又常被称作”递归下载”。
-
-
 
   wget 非常稳定，它在带宽很窄的情况下和不稳定网络中有很强的适应性.如果是由于网络的原因下载失败，wget会不断的尝试，直到整个文件下载完毕。如果是服务器打断下载过程，它会再次联到服务器上从停止的地方继续下载。这对从那些限定了链接时间的服务器上下载大文件非常有用。
 
@@ -424,8 +505,6 @@ curl(选项)(参数)
 
 [https://blog.csdn.net/luhengchang/article/details/81365484](https://blog.csdn.net/luhengchang/article/details/81365484?utm_medium=distribute.pc_relevant_bbs_down.none-task-blog-BlogCommendFromBaidu-4.nonecase&depth_1-utm_source=distribute.pc_relevant_bbs_down.none-task-blog-BlogCommendFromBaidu-4.nonecase)
 
-
-
 使用mwget
 
 
@@ -434,31 +513,15 @@ curl(选项)(参数)
 
 [https://www.runoob.com/linux/linux-comm-grep.html](https://www.runoob.com/linux/linux-comm-grep.html)
 
-
-
 Linux grep 命令用于查找文件里符合条件的字符串。
 
-
-
 grep 指令用于查找内容包含指定的范本样式的文件，如果发现某文件的内容符合所指定的范本样式，预设 grep 指令会把含有范本样式的那一列显示出来。若不指定任何文件名称，或是所给予的文件名为 **-**，则 grep 指令会从标准输入设备读取数据。
-
-
-
----
-
-
 
 在当前目录中，查找后缀有 file 字样的文件中包含 test 字符串的文件，并打印出该字符串的行
 
 ```bash
 grep test *file 
 ```
-
-
-
-
-
-
 
 
 
@@ -540,6 +603,7 @@ $HOME这个是一个环境变量，它代表的是当前登录的用户的主文
 
 
 ### mv命令
+
 mv命令来为文件或目录改名或将文件由一个目录移入另一个目录中。该命令等同于DOS系统下的ren和move命令的组合。它的使用权限是所有用户。
 
 
@@ -555,6 +619,7 @@ mv test.txt wbk.txt
 
 
 #### [options]主要参数
+
 * －i：交互方式操作。如果mv操作将导致对已存在的目标文件的覆盖，此时系统询问是否重写，要求用户回答”y”或”n”，这样可以避免误覆盖文件。
 * －f：禁止交互操作。mv操作要覆盖某个已有的目标文件时不给任何指示，指定此参数后i参数将不再起作用。
 
@@ -566,6 +631,11 @@ mv test.txt wbk.txt
 * /是指根目录：就是所有目录最顶层的目录
 * ~是当前用户的主目录：如果是root用户就是/root/目录， 如果是其他用户就是/home/下用户名命名的用户 
 
+```bash
+# 举个例子
+~ 等价于 /Users/qz
+```
+
 
 
 
@@ -576,11 +646,7 @@ mv test.txt wbk.txt
 
 Linux 服务管理两种方式service和systemctl
 
-
-
 systemd是Linux系统最新的初始化系统(init),作用是提高系统的启动速度，尽可能启动较少的进程，尽可能更多进程并发启动。
-
-
 
 systemd对应的进程管理命令是systemctl
 
@@ -603,18 +669,22 @@ lsof -i:80
 export will make the variable appear in the environment of subsequently executed commands
 
 ```bash
-TEST=foo your-application
+export AZURE_TTS_KEY=123
 ```
 
-The shell syntax describes this as being *functionally* equivalent to:
+获取某一个环境变量
 
-```ts
-export TEST=foo
-your-application
-unset TEST
+```bash
+echo $AZURE_TTS_KEY
 ```
 
 
+
+
+
+### printenv
+
+查看当前环境变量
 
 
 
@@ -686,11 +756,9 @@ unset TEST
 
 码的安装一般由3个步骤组成：配置（configure）、编译（make）、安装（make install）
 
-
+#### Configure
 
 Configure是一个可执行脚本，它有很多选项，使用命令./configure –help输出详细的选项列表，如下
-
-
 
 ```bash
 -bash-3.00# ./configure --help
@@ -711,11 +779,7 @@ Directory and file names:
 ……….(省略若干)
 ```
 
-
-
 注意：
-
-
 
 安装源码库之前需要安装这个
 
@@ -723,11 +787,17 @@ yum groupinstall "Development tools"
 
 
 
+#### make
+
+make命令是一个构建工具，用于自动化构建和编译代码。
+
+它基于Makefile文件来控制和管理源代码的构建过程。
+
+
+
 
 
 ### CentOS 下源码安装 Node.js
-
-
 
 
 
@@ -753,17 +823,11 @@ make
 make install
 ```
 
-
-
-
-
-> ./configure是源代码安装的bai第一步，主要的作用du是对即将安装的软件进行配置，检查zhi当前的环dao境是否满足要安装软件的依赖关系，但并不是所有的tar包都是源代码的包
+> ./configure是源代码安装的第一步，主要的作用是对即将安装的软件进行配置，检查当前的环境是否满足要安装软件的依赖关系，但并不是所有的tar包都是源代码的包
 
 
 
 ### 安装C++ compiler
-
-
 
 出现下面这个WARNING 导致node安装不成功
 
@@ -777,15 +841,9 @@ WARNING: C++ compiler (CXX=g++, 4.8.5) too old, need g++ 6.3.0 or clang++ 8.0.0
 
 ### EPEL
 
-
-
 **EPEL的全称叫 Extra Packages for Enterprise Linux** 。EPEL是由 Fedora 社区打造，为 RHEL 及衍生发行版如 CentOS、Scientific Linux 等提供高质量软件包的项目。装上了 EPEL之后，就相当于添加了一个第三方源。
 
-
-
-如果你知道rpmfusion.org的话，拿 rpmfusion 做比较还是很恰当的，rpmfusion 主要为桌面发行版提供大量rpm包，而***EPEL则为服务器版本提供大量的rpm包，而且大多数rpm包在官方 repository 中是找不到的\***。
-
-
+如果你知道rpmfusion.org的话，拿 rpmfusion 做比较还是很恰当的，rpmfusion 主要为桌面发行版提供大量rpm包，而EPEL则为服务器版本提供大量的rpm包，而且大多数rpm包在官方 repository 中是找不到的\**。
 
 另外一个特点是**绝大多数rpm包要比官方repository 的rpm包版本要来得新**，比如我前些日子在CentOS上安装的php，RHEL为了稳定性还在延用5.1.6版，我记得这是去年上半年的版本，而php 的最新版本已经到5.3.2，如果在php5.1.6的基础上安装phpmyadmin，则会提示php版本过低，这时候，EPEL中提供的较新php rpm就能很方便的派上用场了。
 
@@ -827,11 +885,7 @@ yum list installed | grep php
 
 #### 查看库安装位置
 
-
-
 例子：
-
-
 
 ```bash
 rpm -ql nginx
@@ -851,15 +905,9 @@ rpm -ql nginx
 
 [https://www.cnblogs.com/applelife/p/10474704.html](https://www.cnblogs.com/applelife/p/10474704.html)
 
-
-
 wget 类似于迅雷，是一种下载工具，
 
 通过HTTP、HTTPS、FTP三个最常见的TCP/IP协议下载，并可以使用HTTP代理名字是World Wide Web”与“get”的结合。
-
-
-
-
 
 yum: 是redhat, centos 系统下的软件安装方式，基于Linux，
 
@@ -867,23 +915,11 @@ yum: 是redhat, centos 系统下的软件安装方式，基于Linux，
 
 基于RPM包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软件包。
 
-
-
-
-
 rpm: 软件管理;  redhat的软件格式 rpm 
 
 r=redhat  p=package  m=management
 
 用于安装 卸载 .rpm软件
-
-
-
-
-
-----
-
-
 
 串联下：
 
@@ -912,11 +948,7 @@ r=redhat  p=package  m=management
 
 [堡垒机](https://www.huaweicloud.com/product/cbh.html)，即在一个特定的网络环境下，为了保障网络和数据不受来自外部和内部用户的入侵和破坏，而运用各种技术手段实时收集和监控网络环境中每一个组成部分的系统状态、安全事件、网络活动，以便集中报警、及时处理及审计定责。
 
-
-
 堡垒机能够集中管理资产权限，全程记录操作数据，实时还原运维场景，助力企业用户构建云上统一、安全、高效运维通道；保障云端运维工作权限可管控、操作可审计、合规可遵从。在一个特定的网络环境下，为了保障网络和数据不受来自外部和内部用户的入侵和破坏，而运用各种技术手段实时收集和监控网络环境中每一个组成部分的系统状态、安全事件、网络活动，以便集中报警、及时处理及审计定责。
-
-
 
 从功能上讲，它综合了核心系统运维和安全审计管控两大主干功能，从技术实现上讲，通过切断终端计算机对网络和服务器资源的直接访问，而采用协议代理的方式，接管了终端计算机对网络和服务器的访问。形象地说，终端计算机对目标的访问，均需要经过运维安全审计的翻译。能够拦截非法访问，和恶意攻击，对不合法命令进行命令阻断，过滤掉所有对目标设备的非法访问行为，并对内部人员误操作和非法操作进行审计监控，以便事后责任追踪。
 
@@ -961,6 +993,18 @@ SIGTERM是一个软件中断信号，用来请求进程正常终止。当收到S
 与之相反，SIGKILL信号（进程终止信号）是一个不能被忽略、阻塞或者捕获的信号，一旦进程接收到SIGKILL信号，就会立即被终止，无法进行清理工作。
 
 因此，为了保证进程能够优雅退出，一般会先发送SIGTERM信号给进程，然后等待一段时间（例如几秒钟），如果进程仍未退出，则再发送SIGKILL信号强制终止进程。这样可以给进程一个机会先进行清理工作，避免数据丢失或其他问题。
+
+
+
+### file descriptor
+
+[https://wiyi.org/linux-file-descriptor.html](https://wiyi.org/linux-file-descriptor.html)
+
+file descriptor(以下简称fd)又叫文件描述符，他是一个抽象的指示符，用一个整数表示(非负整数)。它指向了由系统内核维护的一个file table中的某个条目(entry)。
+
+本文描述的所有场景仅限于类unix系统环境，在windows中这玩意叫file handle(臭名昭著的翻译: 句柄)。
+
+
 
 
 

@@ -48,9 +48,37 @@ tags:
 
 
 
+### React.ReactNode vs React.ReactNode
+
+React.ReactNode => 这是可以在 JSX 中作为子元素传递的所有可能类型的并集
+
+React.ReactElement => 它只包括 JSX 元素，而不包括 JavaScript 原始类型，如 string 或 number
 
 
-### 默认值
+
+### defaultValue vs value
+
+Controlled vs. Uncontrolled
+
+If you're using state to manage the value of an input, you'd use the value attribute to make it a controlled component. This means React would manage the input's state.
+
+如果您使用state来管理输入的值，那么您将使用value属性使其成为受控组件。这意味着React将管理输入的状态。
+
+However, since you're not using state, you can use defaultValue. This means the native input will manage its own state. This is okay since you're saving the search query to the URL instead of state.
+
+但是，由于没有使用state，所以可以使用defaultValue。这意味着本机输入将管理自己的状态。这是可以的，因为您将搜索查询保存到URL而不是状态。
+
+```html
+<input
+  placeholder={placeholder}
+  onChange={(e) => {
+    handleSearch(e.target.value);
+  }}
+  defaultValue={searchParams.get('query')?.toString()}
+/>
+```
+
+
 
 在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下, 你可以指定一个 `defaultValue` 属性，而不是 `value`。在一个组件已经挂载之后去更新 `defaultValue` 属性的值，不会造成 DOM 上值的任何更新。
 
@@ -404,7 +432,7 @@ interface MutableRefObject<T> {
 
 
 
-### render prop
+### render prop 惰性初始化
 
 `someExpensiveComputation` 是一个相对耗时的操作。如果我们直接采用
 
@@ -427,6 +455,108 @@ const [state, setState] = useState(() => {
 
 
 
+### css 样式隔离 
+
+
+
+#### css module
+
+[https://github.com/css-modules/css-modules](https://github.com/css-modules/css-modules)
+
+探究了一些方式，最终采用 css module 的方式 
+
+```tsx
+import style from './index.module.scss'
+
+const WelcomePage = () => {
+  return <div className={style.welcomePage}></div>
+}
+```
+
+vite.config.ts
+
+```tsx
+export default defineConfig({
+  plugins: [react()],
+  css: {
+  	// 可配置 css module 相关
+    // https://vitejs.dev/config/shared-options.html#css-modules
+    modules: {
+      globalModulePaths: [
+        /.*\\.global\\..*/
+      ]
+    },
+  }
+})
+```
+
+
+
+##### Multiple Classes
+
+[Using Multiple Classes With React CSS Modules](https://www.codeconcisely.com/posts/react-css-modules-multiple-classes/)
+
+```tsx
+// 使用多个styles
+
+<button type="button" className={`${styles.button} ${styles.filled}`}>
+  Click here
+</button>
+```
+
+
+
+##### 全局作用域
+
+凡是使用global声明的class，都不会按照我们定义的格式进行转换，简单点说就是css module 不去处理
+
+使用gloabl 此时我们就不能再这样些了className={style.demo}，二是写出这样 className='demo'
+
+例如
+
+```css
+:global(.demo) {
+  margin: 50px;
+  border: 1px solid red;
+  width: 300px;
+  height: 40px;
+  height: 300px;
+}
+```
+
+等同于
+
+```css
+:global {
+  .demo {
+    margin: 50px;
+    border: 1px solid red;
+    width: 300px;
+    height: 40px;
+    height: 300px;
+  }
+}
+```
+
+
+
+##### hot reload
+
+[Configure CSS module class ](https://stackoverflow.com/questions/77072008/configure-css-module-class-name-in-vue-project-with-vite-js)
+
+热更新导致 代码中的class name 和 style 的 class name 对应不上来，导致页面样式丢失
+
+解决：
+
+```tsx
+  css: {
+    ...
+    modules: {
+      generateScopedName: "[name]__[local]__[hash:base64:2]"
+    }
+  },
+```
+
 
 
 
@@ -445,6 +575,29 @@ const [state, setState] = useState(() => {
 
 
 #### useEffect
+
+```tsx
+const countRef = useRef(0);
+
+useEffect(() => {
+  console.log('useEffect triggered',countRef.current);
+  // ref.current 的值发生变更不会触发re-render
+}, [countRef.current]);
+
+const handleIncrement = () => {
+    countRef.current += 1;
+};
+```
+
+不需要吧Ref相关的东西放到useEffect依赖之中
+
+
+
+
+
+#### useRef
+
+
 
 
 
@@ -498,6 +651,12 @@ export default React.memo(MyComponent, areEqual);
 
 #### useMemo 和 useEffect 的区别
 
+> 不能在useMemo中操作DOM之类的副作用操作，不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo
+
+> 在`useMemo`中使用`setState`你会发现会产生死循环，并且会有警告，因为`useMemo`是在渲染中进行的，你在其中操作`DOM`后，又会导致触发`memo`
+
+>  useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
+
 [useMemo 官方文档](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)
 
 [useMemo和useEffect有什么区别](https://blog.csdn.net/hsany330/article/details/106122228)
@@ -508,27 +667,15 @@ export default React.memo(MyComponent, areEqual);
 
 
 
-
-
 * **当你调用 useEffect 时，就是在告诉 React 在完成对 DOM 的更改后运行你的“副作用”函数**。**effect只能在DOM更新后再触发**.
 * useMemo 的函数会在渲染期间执行，所以使用`useMemo`就能解决怎么在`DOM`改变的时候，控制某些函数不被触发。
 
-
-
-> 不能在useMemo中操作DOM之类的副作用操作，不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo
-
-
-
-> 在`useMemo`中使用`setState`你会发现会产生死循环，并且会有警告，因为`useMemo`是在渲染中进行的，你在其中操作`DOM`后，又会导致触发`memo`
-
-
-
-* **memo是在DOM更新前触发的，就像官方所说的，类比生命周期就是shouldComponentUpdate**
+* **
 * useEffect 可以看成 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的替代。
 
 
 
-> useEffect 是官方推荐拿来代替 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的，但其实他们并不是完全等价，useEffect 是在浏览器渲染结束之后才执行的，而这三个生命周期函数是在浏览器渲染之前同步执行的，React 还有一个官方的 hook 是完全等价于这三个生命周期函数的，叫 useLayoutEffect。
+> 
 
 
 
@@ -673,6 +820,8 @@ function useCustomHook() {
 #### useHistory
 
 > 从React Router v5.1.0开始，新增了useHistory钩子（hook），如果是使用React >16.8.0，使用useHistory即可实现编程时页面跳转导航。
+>
+> **React Router 6 已经废弃 使用useLocation代替**
 
 ```js
 const history = useHistory();
@@ -730,6 +879,16 @@ function Counter() {
 > `useReducer` 返回的 `dispatch` 函数是自带了 `memoize` 的，不会在多次渲染时改变。所以如果你想同时把 `state` 作为 context 传递下去，请分成两个 context 来声明。
 
 
+
+
+
+#### useInsertionEffect
+
+[https://react.dev/reference/react/useInsertionEffect](https://react.dev/reference/react/useInsertionEffect)
+
+`useInsertionEffect` is for CSS-in-JS library authors. Unless you are working on a CSS-in-JS library and need a place to inject the styles, you probably want [`useEffect`](https://react.dev/reference/react/useEffect) or [`useLayoutEffect`](https://react.dev/reference/react/useLayoutEffect) instead.
+
+useInsertionEffect是为CSS-in-JS库作者准备的。除非你正在做一个CSS-in-JS库，并且需要一个地方来注入样式，否则你可能会想要useEffect或uselayouteeffect。
 
 
 
@@ -848,9 +1007,17 @@ useImperativeHandle(ref, createHandle, [deps])
   const [isPending, startTransition] = useTransition()
 ```
 
+---
 
+[https://react.dev/reference/react/startTransition](https://react.dev/reference/react/startTransition)
 
+startTransition lets you update the state without blocking the UI.
 
+startTransition 的作用是告诉 React 在下一个渲染周期中，有一些优先级较低的更新，可以推迟执行，以便在同一渲染周期内将多个更新批量处理，以提高性能。
+
+使用 startTransition 在函数组件内部对某个代码块进行包装，可以将该代码块标记为优先级较低，React 将在下一个渲染周期内异步执行这个代码块，以避免阻塞更重要的任务。
+
+通过使用 startTransition，React 可以根据需求进行优化，比如将多个状态更新批量执行，减少不必要的渲染，并与浏览器的空闲时间协作，以提升用户体验。
 
 
 
@@ -864,7 +1031,152 @@ useImperativeHandle(ref, createHandle, [deps])
 
 
 
+
+
+### 自定义hook
+
+
+
+
+
+#### useCatchError
+
+监听全局错误信息
+
+```ts
+export const useCatchError = () => {
+  const TOAST_DURATION = 5000
+
+  const handleError = (e: ErrorEvent) => {
+    const { error } = e
+    if (error?.message) {
+      Toast.fail({
+        message: error.message,
+        duration: TOAST_DURATION,
+      })
+    }
+  }
+
+  const unhandledRejection = (e: PromiseRejectionEvent) => {
+    const { reason } = e
+    if (reason?.message) {
+      Toast.fail({
+        message: reason.message,
+        duration: TOAST_DURATION,
+      })
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("error", handleError, true)
+    window.addEventListener("unhandledrejection", unhandledRejection)
+
+    return () => {
+      window.removeEventListener("error", handleError, true)
+      window.removeEventListener("unhandledrejection", unhandledRejection)
+    }
+  }, [])
+}
+```
+
+
+
+#### useScreen 
+
+监听屏幕大小信息
+
+```ts
+export const useScreen = () => {
+  const dispatch = useAppDispatch()
+
+  const onResize = () => {
+    dispatch(
+      // redux store 
+      setScreenInfo({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }),
+    )
+  }
+
+  useEffect(() => {
+    onResize()
+    window.addEventListener("resize", onResize)
+    return () => {
+      window.removeEventListener("resize", onResize)
+    }
+  }, [])
+}
+```
+
+
+
+
+
+#### useRouteNavigation
+
+```ts
+export const useRouteNavigation = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  // 维护一个路由栈
+  const [locationArr, setLocationArr] = useState<Location[]>([])
+  const [locationIndex, setLocationIndex] = useState(0)
+
+  const calc = (location: Location) => {
+    const index = locationArr.findIndex(
+      (item) => item.pathname === location.pathname,
+    )
+    if (index === -1) {
+      setLocationArr((pre) => [...pre, location])
+      setLocationIndex((pre) => pre + 1)
+    } else {
+      setLocationIndex(index)
+    }
+  }
+
+  const canGoBack = useMemo(() => {
+    return locationIndex > 0 && locationArr.length > 1
+  }, [locationIndex, locationArr])
+
+  const canGoForward = useMemo(() => {
+    return locationIndex < locationArr.length - 1 && locationArr.length > 1
+  }, [locationIndex, locationArr])
+
+  useEffect(() => {
+    calc(location)
+  }, [location])
+
+  const goBack = () => {
+    if (canGoBack) {
+      navigate(-1)
+    }
+  }
+
+  const goForward = () => {
+    if (canGoForward) {
+      navigate(1)
+    }
+  }
+
+  return {
+    canGoBack,
+    canGoForward,
+    goBack,
+    goForward,
+  }
+}
+```
+
+
+
+
+
+
+
 #### usePrevious 
+
+[uidotdev/usehooks 是怎么实现 usePrevious 的？](https://blog.shadowfish0.top/2023-06-10-useprevious.html)
 
 [https://react.docschina.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state](https://react.docschina.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state)
 
@@ -891,6 +1203,14 @@ function Counter() {
   return <h1>Now: {count}, before: {prevCount}</h1>;
 }
 ```
+
+`usePrevious`就是利用了`useRef`的值更改后不会触发重渲染的特性，来实现的保存变量的上个状态
+
+并且`useEffect`内的函数是在完成了渲染后再执行
+
+由于`useRef`的值不会触发重新渲染，所以页面上渲染的previous的值和它现在实际存的值是**不一样**的。
+
+
 
 
 
@@ -946,12 +1266,6 @@ export const useClassroomStyle = ({
 
 ```
 
-
-
-
-
-
-
 使用： 
 
 ```tsx
@@ -979,6 +1293,106 @@ const FixedAspectRatioContainer: React.FC<FixedAspectRatioProps> = observer(
 
 
 
+
+#### useMap
+
+中央区域保持恒定的宽高比
+
+```ts
+// page
+export const PAGE_RATIO = 1.777778 // page ratio  16:9
+export const PAGE_MIN_WIDTH = 1440 // page min width 1440
+export const PAGE_MIN_HEIGHT = Math.floor(PAGE_MIN_WIDTH / PAGE_RATIO) // page min height
+export const PAGE_MAX_WIDTH = PAGE_MIN_WIDTH * 2 // page max width
+export const PAGE_MAX_HEIGHT = Math.floor(PAGE_MAX_WIDTH / PAGE_RATIO) // page max height
+```
+
+
+
+```ts
+export const useMap = () => {
+  const { width: pageWidth, height: pageHeight } = useSelector((state: RootState) => state.globalInfo.pageInfo);
+  const position = useSelector((state: RootState) => state.globalInfo.position)
+
+  let mapWidth = 0
+  let mapHeight = 0
+  let scale = 1 // 和 min width/height 的比例
+
+  if (pageWidth / pageHeight >= PAGE_RATIO) {
+    mapWidth = pageHeight * PAGE_RATIO;
+    mapHeight = pageHeight;
+    scale = pageHeight / PAGE_MIN_HEIGHT
+  } else {
+    mapWidth = pageWidth;
+    mapHeight = pageWidth / PAGE_RATIO;
+    scale = pageWidth / PAGE_MIN_WIDTH
+  }
+
+  if (mapWidth < PAGE_MIN_WIDTH || mapHeight < PAGE_MIN_HEIGHT) {
+    mapWidth = PAGE_MIN_WIDTH
+    mapHeight = PAGE_MIN_HEIGHT
+    scale = 1
+  } else if (mapWidth > PAGE_MAX_WIDTH || mapHeight > PAGE_MAX_HEIGHT) {
+    mapWidth = PAGE_MAX_WIDTH
+    mapHeight = PAGE_MAX_HEIGHT
+    scale = mapWidth / PAGE_MIN_WIDTH
+  }
+
+  mapWidth = Math.floor(mapWidth)
+  mapHeight = Math.floor(mapHeight)
+
+  const { bgPositionX, bgPositionY } = useMemo(() => {
+    let [x, y] = position
+    // bgPositionX/bgPositionY 均需要负值
+    let bgPositionX = 0
+    let bgPositionY = 0
+    if (pageHeight && mapHeight) {
+      if (pageWidth < mapWidth) {
+        // map need move
+        let centerX = pageWidth / 2 // 到达 centerX 时背景开始移动
+        let max = -(mapWidth - pageWidth) // 负值
+        if (x > centerX) {
+          bgPositionX = centerX - x // 负值
+          bgPositionX = bgPositionX <= max ? max : bgPositionX
+        }
+      }
+      if (pageHeight < mapHeight) {
+        // map need move
+        let centerY = pageHeight / 2 // 到达 centerY 时背景开始移动
+        let max = -(mapHeight - pageHeight) / 2 // 负值
+        bgPositionY = -max
+        if (y > centerY) {
+          const dis = centerY - y// 负值
+          bgPositionY = bgPositionY + dis
+          bgPositionY = bgPositionY <= max ? max : bgPositionY
+        }
+      }
+    }
+
+    return {
+      bgPositionX,
+      bgPositionY
+    }
+
+  }, [mapWidth, mapHeight, position, pageWidth, pageHeight])
+
+
+
+  return {
+    // page
+    pageWidth: pageWidth,  // 页面宽度
+    pageHeight: pageHeight, // 页面高度
+    // map
+    mapWidth: mapWidth,  // 中央地图宽度
+    mapHeight: mapHeight, // 中央地图高度
+    bgPositionX, // 中央地图背景X偏移值 
+    bgPositionY, // 中央地图背景X偏移值 
+ 		// TIP: when scale, width/height will change,figure x/y will not change
+    scale: Number(scale.toFixed(4)) // 地图缩放值
+  }
+
+}
+```
 
 
 
@@ -1149,8 +1563,6 @@ setState(prevState => {
 
 ## React 18
 
-
-
 ### **useTransition**
 
 [https://juejin.cn/post/7038402899860258847](https://juejin.cn/post/7038402899860258847)
@@ -1163,6 +1575,101 @@ setState(prevState => {
 
 - 更新协调过程是**可中断**的，**渲染引擎**不会长时间被**阻塞**，用户可以及时得到响应；
 - 不需要开发人员去做额外的考虑，整个优化过程交给 **react** 和**浏览器**即可；
+
+
+
+###  SSR
+
+[Next.js 14 Tutorial - 48 - Suspense for SSR](https://www.youtube.com/watch?v=NdSthd1Ek8Q&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=48)
+Use the `<Suspense>` component to unlock two major SSR features:
+
+1. HTML streaming on the server  (Suspense)
+1. Selective hydration on the client
+
+---
+
+HTML streaming on the Server
+
+You don't have to fetch everything befor you can show anything 
+
+If a particular section delays the initial HIML, it can be seamlessly integrated into the stream later
+
+**This is the essence of how Suspense facilitates server-side HTML streaming**
+
+---
+
+Selective Hydration on the Client contd  (选择性水合)
+
+Selective Hydration offers a solution to the third issue: the necessity to "hydrate everything to interact with anything'
+
+React begins hydrating as soon as possible, enabling interactions with elements like the header and side navigation without waiting for the main content to be hydrated.(无需等待主要内容水合) This process is managed automatically by React
+
+In scenarios where multiple components are awaiting hydration, React prioritizeshydration based on user interactions (React 根据用户交互优先考虑水合作用)
+
+
+
+### React Server Components(RSC)
+
+> CSR => SSR => Suspense for SSR
+
+Suspense for SSR brought us closer to a seamless rendering experience
+Challenges:
+
+* Increased bundle sizes leading to excessive downloads for users  (捆绑包大小增加导致用户下载过多)
+* Unnecessary hydration delaying interactivity  (不必要的水合会延迟互动)
+* Extensive client-side processing that could result in poor performance (大量的客户端处理可能会导致性能不佳)
+
+----
+
+This approach aims to leverage the strengths of both server and clientenvironments, optimizing for efficiency, load times, and interactivity
+
+这种方法旨在利用服务器和客户端环境的优势，优化效率、加载时间和交互性
+
+The architecture introduces a dual-component model
+
+* Client Components  **(rendered once on the server and then on the client)**
+* Server Components  **(rendered only on the server)**
+
+This distinction is not based on the functionality of the components but rather onwhere they execute and the specific environments they are designed to interact with (这种区别不是基于组件的功能，而是基于它们执行的位置以及它们设计用于交互的特定环境)
+
+#### Benefits 优点
+
+**Reduced Bundle Sizes** (减少打包体积)
+
+* code to the client, allowing large dependencies ServerComponents do not send to remain server-side (服务器组件不向客户端发送代码，从而允许较大的依赖关系保持在服务器端)
+* This benefits users with slower internet connections or less capable devices by eliminating the need to download parse, and execute JavaScript for these components (这使互联网连接速度较慢或设备性能较差的用户无需为这些组件下载、解析和执行JavaScript，从而受益匪浅)
+
+**Direct Access to server-side Resources** (直接访问服务器端资源)
+
+**Enhanced Security** (增强的安全性)
+
+* Server Components' exclusive server-side execution enhances security by keeping sensitive data and logic, including tokens and APl keys, away from the client-side
+
+**Improved Data Fetching** (改进的数据获取)
+
+**Caching** (高速缓存)
+
+**Faster Initial Page Load and First Contentful Paint** (更快的初始页面加载和第一次内容绘制)
+
+**Improved SEO**
+
+**Efficient Streaming** (高效流媒体)
+
+
+
+
+
+
+
+# Performance Tools
+
+[https://legacy.reactjs.org/docs/perf.html](https://legacy.reactjs.org/docs/perf.html)
+
+```ts
+import Perf from 'react-addons-perf'; // ES6
+```
+
+
 
 
 
@@ -1409,6 +1916,36 @@ declare module 'react' {
 
 
 
+### 非必要渲染
+
+[https://ant-design.antgroup.com/docs/blog/render-times-cn](https://ant-design.antgroup.com/docs/blog/render-times-cn)
+
+在示例中，虽然 `prop1` 和 `prop2` 并没有变化，但是显然 MyContext 里的 `value` 是一个新的 Object 导致子组件即便 `prop1` 没有变化也会重新渲染。因而我们需要对 Context `value` 进行 Memo：
+
+```tsx
+const context = React.useMemo(() => ({ prop1, prop2 }), [prop1, prop2]);
+
+return (
+  <MyContext.Provider value={context}>
+    <Child />
+  </MyContext.Provider>
+);
+```
+
+
+
+
+
+
+
+### useRef不能作为依赖项
+
+[useRef不能作为依赖项](https://juejin.cn/s/useref%20%E8%83%BD%E4%BD%9C%E4%B8%BA%E4%BE%9D%E8%B5%96%E9%A1%B9%E5%90%97)
+
+React 中的 `useRef` 不能作为依赖项。
+
+`useRef` 返回的是一个稳定的对象引用，不会在组件重新渲染时发生变化。因此，在函数组件中使用 `useRef` 创建的引用不会触发组件重新渲染。与此相反，依赖项应该是组件中可能会导致重新渲染的状态变量、props、函数等等。**如果使用 `useRef` 作为依赖项，React 将无法检测到变化并触发重新渲染，这会导致问题。**
+
 
 
 
@@ -1437,6 +1974,14 @@ Allow `npm test` to not run in watch mode for better cross-platform / tooling CI
 ```
 
 
+
+
+
+## **rc-util**
+
+[https://util.vercel.app/](https://util.vercel.app/)
+
+Common Utils For React Component
 
 
 

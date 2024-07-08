@@ -474,6 +474,43 @@ undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 
 
 
+## **redux-toolkit**
+
+[https://redux-toolkit.js.org/introduction/getting-started](https://redux-toolkit.js.org/introduction/getting-started)
+
+
+
+### in next.js
+
+[https://redux-toolkit.js.org/usage/nextjs](https://redux-toolkit.js.org/usage/nextjs)
+
+```tsx
+import { configureStore } from '@reduxjs/toolkit'
+
+export const makeStore = () => {
+  return configureStore({
+    reducer: {},
+  })
+}
+
+// Infer the type of makeStore
+export type AppStore = ReturnType<typeof makeStore>
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
+
+```
+
+We don't have a `store` variable exported, but we can infer the `RootState` and `AppDispatch` types from the return type of `makeStore`.
+
+---
+
+- **Create a Redux store per request by using `configureStore` wrapped in a `makeStore` function**
+- **Provide the Redux store to the React application components using a "client" component**
+- **Only interact with the Redux store in client components** because only client components have access to React context
+- **Use the store as you normally would using the hooks provided in React-Redux**
+- **You need to account for the case where you have per-route state in a global store located in the layout**
+
 
 
 # MobX
@@ -636,6 +673,10 @@ Technically speaking, mobx-state-tree (also known as MST) is a state container s
     ["@babel/plugin-proposal-class-properties", { "loose" : true }]
 ```
 
+
+
+
+
 ### **mobx6.0为什么移除装饰器**
 
 https://www.yuque.com/mosinng/blog/gmq6ra
@@ -727,6 +768,60 @@ name.set("Dave");
 
 
 
+## Immer
+
+[https://immerjs.github.io/immer/zh-CN/](https://immerjs.github.io/immer/zh-CN/)
+
+[Immer 简介：简单的方法实现不变性](https://medium.com/hackernoon/introducing-immer-immutability-the-easy-way-9d73d8f71cb3)
+
+Immer 简化了不可变数据结构的处理
+
+Immer 可以在需要使用不可变数据结构的任何上下文中使用。例如与 React state、React 或 Redux reducers 或者 configuration management 结合使用。不可变的数据结构允许（高效）的变化检测：如果对对象的引用没有改变，那么对象本身也没有改变。此外，它使克隆对象相对便宜：数据树的未更改部分不需要复制，并且在内存中与相同状态的旧版本共享
+
+一般来说，这些好处可以通过确保您永远不会更改对象、数组或映射的任何属性来实现，而是始终创建一个更改后的副本。
+
+
+
+### Immer 和 Immutable
+
+[Immutable.js了解一下](https://juejin.cn/post/6844903587458334733#heading-75)
+
+[immer.js:也许更适合你的immutable js库](https://juejin.cn/post/6844904111402385422)
+
+Immer.js 是一个基于 Proxy 实现的简化版不可变数据库，它提供了一种更简单的方式来创建和修改不可变数据。
+
+主要思想：
+
+通过使用 immer 函数，可以在修改不可变数据时编写可变代码。它允许你直接修改数据，而无需手动创建和返回新的数据对象。Immer.js 在内部利用了 JavaScript 的 Proxy 特性来捕获对象属性的修改，并对这些修改进行跟踪和记录，从而保证原始数据对象不会被修改。**使用 Immer.js 可以使代码更简洁、易于理解和维护**
+
+实现原理：
+
+使用了一个 ES6 的新特性 Proxy 对象
+
+immer 的做法就是维护一份 state 在内部，劫持所有操作，内部来判断是否有变化从而最终决定如何返回。
+
+----
+
+Immutable.js 是一个强大的库，用于创建不可变的数据结构。它提供了多种不可变数据类型，如 List（列表）、Map（映射）、Set（集合）等。
+
+核心思想：
+
+不可变的数据结构可以提高性能和可预测性，因为它们保证了数据不能被意外修改。Immutable.js 的数据操作是通过创建和返回新的不可变数据来实现的，这意味着每次操作都会生成一个新的数据对象，而不会修改原始数据对象。
+
+缺点：
+
+Immutable的API设计的和原生对象类似，而且非常多，容易混淆操作
+
+---
+
+**immutable逐渐被immer取代，redux-toolkit集成了immer**
+
+**与 immutable-js 最大的不同，immer 是使用原生数据结构的 API 而不是像 immutable-js 那样转化为内置对象之后使用内置的 API**
+
+Immer 最大的好处就在这里，我们的学习没有太多成本，因为它的 API 很少，无非就是把我们之前的操作放置到 produce 函数的第二参数函数中去执行。
+
+
+
 ## Redux vs Mobx
 
 [https://juejin.cn/post/6844903466029023246](https://juejin.cn/post/6844903466029023246)
@@ -739,8 +834,9 @@ Redux ：
 * 有时间回溯的特征，可以增强业务的可预测性与错误定位能力。
 * 对 typescript 支持困难
 * 有中间件机制
-* 使用纯函数修改状态
+* 使用纯函数修改状态，无副作用
 * JavaScript对象
+* **行为稳定可预测**，**易于测试**
 
 Mobx:
 
@@ -748,10 +844,23 @@ Mobx:
 * 没有时间回溯能力，因为数据只有一份引用。
 * 完美支持 typescript
 * 没有中间件机制
+* 面向对象编程，可以直接赋值更新状态对象，简单直接
 * 可观察对象 （是包裹的对象）
+* 存在Derivations(派生）  
 * Mobx 使用了 Object.defineProperty 拦截 getter 和 setter
 
 **前端数据流不太复杂的情况，使用 Mobx，因为更加清晰，也便于维护；如果前端数据流极度复杂，建议谨慎使用 Redux，通过中间件减缓巨大业务复杂度**
+
+---
+
+Derivations(派生)：
+
+* *Reactions*, 当 State 改变时需要自动运行的副作用
+* *Computed values*,总是可以通过纯函数从当前的可观测 State 中派生。
+
+
+
+
 
 
 

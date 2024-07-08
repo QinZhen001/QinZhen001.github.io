@@ -17,6 +17,10 @@ tags:
 
 [Exploring EcmaScript Decorators](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841)
 
+[https://www.typescriptlang.org/docs/handbook/decorators.html#decorators](https://www.typescriptlang.org/docs/handbook/decorators.html#decorators)
+
+
+
 装饰器对类的行为的改变，是代码**编译**时发生的，而不是在运行时。这意味着，装饰器能在编译阶段运行代码。也就是说，装饰器本质就是编译时执行的函数。
 
 - 使用简单，易于理解
@@ -66,7 +70,7 @@ function testable(target) {
 上面代码中，testable函数的参数target，就是会被修饰的类。
 如果觉得一个参数不够用，可以在修饰器外面再封装一层函数。
 
-```
+```ts
 function testable(isTestable) {
   return function(target) {
     target.isTestable = isTestable;
@@ -87,7 +91,7 @@ MyClass.isTestable // false
 注意，修饰器对类的行为的改变，是代码编译时发生的，而不是在运行时。这意味着，修饰器能在编译阶段运行代码。也就是说，修饰器本质就是编译时执行的函数。
 
 前面的例子是为类添加一个静态属性，如果想添加实例属性，可以通过目标类的prototype对象操作。
-```
+```ts
 function testable(target) {
   target.prototype.isTestable = true;
 }
@@ -101,7 +105,7 @@ obj.isTestable // true
 上面代码中，修饰器函数testable是在目标类的prototype对象上添加属性，因此就可以在实例上调用。
 
 下面是另外一个例子。
-```
+```ts
 // mixins.js
 export function mixins(...list) {
   return function (target) {
@@ -123,7 +127,7 @@ let obj = new MyClass();
 obj.foo() // 'foo'
 ```
 上面代码通过修饰器mixins，把Foo对象的方法添加到了MyClass的实例上面。可以用Object.assign()模拟这个功能。
-```
+```ts
 const Foo = {
   foo() { console.log('foo') }
 };
@@ -139,7 +143,7 @@ obj.foo() // 'foo'
 
 ### 类方法的修饰
 修饰器不仅可以修饰类，还可以修饰类的属性。
-```
+```ts
 class Person {
   @readonly
   name() { return `${this.first} ${this.last}` }
@@ -170,7 +174,7 @@ Object.defineProperty(Person.prototype, 'name', descriptor);
 另外，上面代码说明，修饰器（readonly）会修改属性的描述对象（descriptor），然后被修改的描述对象再用来定义属性。
 
 下面是另一个例子，修改属性描述对象的enumerable属性，使得该属性不可遍历。
-```
+```ts
 class Person {
   @nonenumerable
   get kidCount() { return this.children.length; }
@@ -183,7 +187,7 @@ function nonenumerable(target, name, descriptor) {
 ```
 
 如果同一个方法有多个修饰器，会像剥洋葱一样，先从外到内进入，然后由内向外执行。
-```
+```ts
 function dec(id){
   console.log('evaluated', id);
   return (target, property, descriptor) => console.log('executed', id);
@@ -207,13 +211,13 @@ class Example {
 
 ### 应用在react的connect中
 际开发中，React 与 Redux 库结合使用时，常常需要写成下面这样。
-```
+```ts
 class MyReactComponent extends React.Component {}
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyReactComponent);
 ```
 有了装饰器，就可以改写上面的代码。
-```
+```ts
 @connect(mapStateToProps, mapDispatchToProps)
 export default class MyReactComponent extends React.Component {}
 ```
@@ -228,7 +232,7 @@ export default class MyReactComponent extends React.Component {}
 
 ### 装饰器不能用于函数
 修饰器只能用于类和类的方法，不能用于函数，因为存在函数提升。
-```
+```ts
 var counter = 0;
 
 var add = function () {
@@ -240,7 +244,7 @@ function foo() {
 }
 ```
 上面的代码，意图是执行后counter等于 1，但是实际上结果是counter等于 0。因为函数提升，使得实际执行的代码是下面这样。
-```
+```ts
 @add
 function foo() {
 }
@@ -255,7 +259,7 @@ add = function () {
 };
 ```
 下面是另一个例子。
-```
+```ts
 var readOnly = require("some-decorator");
 
 @readOnly
@@ -263,7 +267,7 @@ function foo() {
 }
 ```
 面代码也有问题，因为实际执行是下面这样。
-```
+```ts
 var readOnly;
 
 @readOnly
@@ -452,6 +456,23 @@ export default defineConfig({
 
 
 
+## parameter-decorators
+
+```ts
+class BugReport {
+
+  print(@required verbose: boolean) {
+
+  }
+}
+```
+
+默认情况下不支持 parameter decorators 需要使用 babel 插件 
+
+[https://www.npmjs.com/package/babel-plugin-parameter-decorator](https://www.npmjs.com/package/babel-plugin-parameter-decorator)
+
+
+
 ## 依赖注入
 
 [https://angular.cn/guide/dependency-injection](https://angular.cn/guide/dependency-injection)
@@ -459,6 +480,73 @@ export default defineConfig({
 **将创建对象的任务转移给其他 class，并直接使用依赖项的过程，被称为“依赖项注入”。**（DI）
 
 DI 系统中存在两个主要角色：依赖使用者和依赖提供者。
+
+需要 用到 reflect-metadata 库
+
+
+
+## async function
+
+[typescript decorator async function](https://juejin.cn/s/typescript%20decorator%20async%20function)
+
+**下面是错误例子**
+
+**下面是错误例子**
+
+**下面是错误例子**
+
+```ts
+function asyncDecorator(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  if (isAsyncFunction(originalMethod)) {
+    descriptor.value = async function (...args: any[]) {
+      console.log('Async operation started...');
+      const result = await originalMethod.apply(this, args);
+      console.log('Async operation completed.');
+      return result;
+    }
+  } else {
+    descriptor.value = function (...args: any[]) {
+      // ...
+    }
+  }
+}
+```
+
+TIP:  descriptor.value 只能判断出是函数，无法判断出AsyncFunction
+
+正确方式：
+
+```ts
+
+export const AsyncDecorator: MethodDecorator = (target, propertyKey, descriptor: PropertyDescriptor) => {
+  const originalMethod = descriptor.value;
+
+  const before = () => {
+    console.log("[test] before", new Date())
+  }
+
+  const after = () => {
+    console.log("[test] after", new Date())
+  }
+
+
+  descriptor.value = async function (...args: any[]) {
+    before()
+    const result = originalMethod.apply(this, args);
+    if (result instanceof Promise) {
+      result.then((res)=>{
+        after()
+      })
+    }else{
+      after
+    }
+    return result;
+  }
+
+}
+```
 
 
 

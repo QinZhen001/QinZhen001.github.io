@@ -84,7 +84,6 @@ UMD模块是指那些既可以作为模块使用（通过导入）又可以作�
     }
 }(this, function (b) {
     //use b in some fashion.
-
     // Just return a value to define the module export.
     // This example returns an object, but the module
     // can return a function as the exported value.
@@ -97,10 +96,6 @@ UMD模块是指那些既可以作为模块使用（通过导入）又可以作�
 ### CommonJS
 
  CommonJS规范规定，每个模块内部，module变量代表当前模块。这个变量是一个对象，它的exports属性（即module.exports）是对外的接口。**加载某个模块，其实是加载该模块的module.exports属性。**
-
-
-
-
 
 ```tsx
 /**
@@ -340,6 +335,30 @@ commonjs 规范只定义了exports，而 module.exports是nodejs对commonjs的�
 
 
 
+### ESM
+
+块（ES Modules）是 ECMAScript 2015（ES6）中引入的一种模块化系统，用于组织和管理 JavaScript 代码。
+
+ES 模块采用了静态编译的方式，并且具有以下特点：
+
+1. 模块化：ES 模块将 JavaScript 代码分割成一系列独立的模块，每个模块可以导入（import）其他模块的功能，并且可以导出（export）自己的功能。这种模块化的方式使得代码更加模块化和易于维护。
+2. 文件级别导入和导出：ES 模块的导入和导出是基于文件级别的，每个模块都是一个独立的文件。通过导入和导出，可以明确地指定哪些功能对外部可见，从而实现模块的封装和隐藏内部实现。
+3. 静态编译：ES 模块在代码解析时就会静态地分析导入和导出语句，确定模块的依赖关系。这种方式使得编译器可以在运行前检查模块的有效性，并且可以进行优化，提高代码的执行效率。
+4. 默认导出和命名导出：ES 模块支持默认导出和命名导出。默认导出是每个模块只能有一个默认导出，而命名导出可以有多个。默认导出使用 `export default` 语法，命名导出使用 `export` 语法。
+5. 动态导入：ES 模块支持动态导入，允许在代码执行时根据需要动态加载模块。动态导入使用 `import()` 函数，返回一个 Promise 对象。
+
+
+
+
+
+#### Pure ESM package
+
+[https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)
+
+[Pure ESM package 中文版](https://www.albertaz.com/blog/pure-esm-package)
+
+
+
 ### script 模块
 
 [https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script)
@@ -364,6 +383,42 @@ commonjs 规范只定义了exports，而 module.exports是nodejs对commonjs的�
 ```
 
 
+
+
+
+### Dual CommonJS/ES module packages
+
+[https://nodejs.org/api/packages.html#dual-commonjses-module-packages](https://nodejs.org/api/packages.html#dual-commonjses-module-packages)
+
+```ts
+"exports": {
+	"require":"./lib/index.js",
+	"import":"./lib/esm/index.js
+}
+```
+
+
+
+### AIl Mode package
+
+再进一步考虑前面提到的 ModernjavaScript，如果一个包同时要面向 Node.js 和浏览器，同时要兼顾现代和传统浏览器，其实可以把包目录结构和 package.json设计成这样:
+
+```ts
+{
+  "name": "my-pkg"
+  "type": "module",
+  "exports": {
+    "types":"legacy/lib/index.d.ts",
+    "require":"legacy/lib/index.js",
+    "import":"legacy/esm/index.js",
+    "modern":"modern/index.js",
+  }
+    "main": "legacy/lib/index.js"
+    "types":"legacy/lib/index.d.ts"
+    "module": "legacy/esm/index.js"
+    "browser":"./dist/index.umd.js"
+}
+```
 
 
 
@@ -615,4 +670,40 @@ Object.defineProperty(exports, '__esModule', { value: true })
 Webpack 会根据 __esModule 标识来自动处理 CommonJS 的模块导出对象，兼容 ES 模块中的导入。
 
 
+
+
+
+### import相同文件多次
+
+假设：
+
+```ts
+// index.js
+console.log(111)
+```
+
+我们在 a.js/b.js/c.js 中 import 上面文件 index.js
+
+一个页面中同时 import  a.js/b.js/c.js
+
+**console.log 只会打印一次**
+
+因为： 第一次加载 index.js 后，之后在import index.js 就会从cache缓存中获取，不会走再次加载index.js的逻辑了
+
+
+
+
+
+### ERR_MODULE_NOT_FOUND
+
+> 在 node 中
+
+常见的报错 ErrOr: ERR_MODULE_NOT_FOUNDCannot find module
+"../src/foo" 改 import { bar } from './src/foo 成 import { bar } from./src/foo.js'即可。
+
+当然在 Node.js 中.cjs 会被识别为Commonjs
+
+.mjs 会被识别为 ESM，所以也可以通过后缀.cts(以 .cjs引入)、.mts(以 .mjs 引入)
+
+但感觉看起来更乱，还是统一保持 .js 用文件夹区分比较好。
 

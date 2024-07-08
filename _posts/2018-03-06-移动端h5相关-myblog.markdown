@@ -17,21 +17,21 @@ tags:
 
 ## 移动端适配
 
-
+让网页在各终端上的展示效果就像缩放设计稿图片一样，在不同屏幕上等比缩放，每一个元素与整体比例保持不变，真实还原设计稿。
 
 
 
 ### **flexible 实现**
 
+> 由于`viewport`单位得到众多浏览器的兼容，`lib-flexible`这个过渡方案已经可以放弃使用
+
+[https://github.com/amfe/lib-flexible](https://github.com/amfe/lib-flexible)
+
 [https://www.toyou.xyz/posts/flexible.js.html](https://www.toyou.xyz/posts/flexible.js.html)
 
-让网页在各终端上的展示效果就像缩放设计稿图片一样，在不同屏幕上等比缩放，每一个元素与整体比例保持不变，真实还原设计稿。
+lib-flexible + postcss-pxtorem
 
-
-
-
-
-### 设置根字体
+设置根字体
 
 设置根字体 = UI设计稿尺寸/100
 
@@ -46,6 +46,7 @@ tags:
     document.querySelector('html').style.fontSize =  rem + 'px';
   };
 
+// 也可以使用库 amfe-flexible 
 ```
 
 所以：
@@ -67,6 +68,8 @@ tags:
 
 ### vw 实现
 
+> 新一代解决方案 =>  使用vw来替代以前Flexible中的rem缩放方案。
+
 
 首要解决的是适配终端。回想一下，以前的Flexible方案是通过JavaScript来模拟vw的特性，那么到今天为止，vw已经得到了众多浏览器的支持，也就是说，可以直接考虑将vw单位运用于我们的适配布局中。
 
@@ -82,47 +85,7 @@ tags:
 
 >vmin和vmax是根据Viewport中长度偏大的那个维度值计算出来的，如果window.innerHeight > window.innerWidth则vmin取百分之一的window.innerWidth，vmax取百分之一的window.innerHeight计算。
 
-使用vw来替代以前Flexible中的rem缩放方案。
-
-目前出视觉设计稿，我们都是使用750px宽度的，从上面的原理来看，那么100vw = 750px，即1vw = 7.5px。那么我们可以根据设计图上的px值直接转换成对应的vw值。看到这里，很多同学开始感到崩溃，又要计算，能不能简便一点，能不能再简单一点，其实是可以的，我们可以使用PostCSS的插件postcss-px-to-viewport，让我们可以直接在代码中写px，比如：
-
-```css
-[w-369]{
-    width: 369px;
-}
-
-[w-369] h2 span {
-    background: #FF5000;
-    color: #fff;
-    display: inline-block;
-    border-radius: 4px;
-    font-size: 20px;
-    text-shadow: 0 2px 2px #FF5000;
-    padding: 2px 5px;
-    margin-right: 5px;
-}
-```
-
-PostCSS编译之后就是我们所需要的带vw代码：
-
-```css
-[w-369] {
-    width: 49.2vw;
-}
-[w-369] h2 span {
-    background: #ff5000;
-    color: #fff;
-    display: inline-block;
-    border-radius: .53333vw;
-    text-shadow: 0 0.26667vw 0.26667vw #ff5000;
-    padding: .26667vw .66667vw;
-}
-[w-369] h2 span,
-[w-369] i {
-    font-size: 2.66667vw;
-    margin-right: .66667vw;
-}
-```
+目前出视觉设计稿，我们都是使用750px宽度的，从上面的原理来看，那么100vw = 750px，即1vw = 7.5px。那么我们可以根据设计图上的px值直接转换成对应的vw值。看到这里，很多同学开始感到崩溃，又要计算，能不能简便一点，能不能再简单一点，其实是可以的，我们可以使用PostCSS的插件 **postcss-px-to-viewport**，让我们可以直接在代码中写p
 
 在实际使用的时候，你可以对该插件进行相关的参数配置：
 
@@ -138,15 +101,19 @@ PostCSS编译之后就是我们所需要的带vw代码：
 }
 ```
 
-假设你的设计稿不是750px而是1125px，那么你就可以修改vewportWidth的值
-
-**总结**
-
-* 使用vw来实现页面的适配，并且通过PostCSS的插件postcss-px-to-viewport把px转换成vw。这样的好处是，我们在撸码的时候，不需要进行任何的计算，你只需要根据设计图写px单位
-* 为了更好的实现长宽比，特别是针对于img、vedio和iframe元素，通过PostCSS插件postcss-aspect-ratio-mini来实现，在实际使用中，只需要把对应的宽和高写进去即可
-* 为了解决1px的问题，使用PostCSS插件postcss-write-svg,自动生成border-image或者background-image的图片
+假设你的设计稿不是750px而是375px，那么你就可以修改vewportWidth的值
 
 
+
+#### postcss-px-to-viewport的问题
+
+[include配置不生效问题](https://juejin.cn/post/7309290887363297321)
+
+**postcss-px-to-viewport插件已弃用，使用postcss-px-to-viewport-8-plugin代替**
+
+---
+
+**如果 要 使用 exclude/include option 和 支持 vite 的话  使用 @minko-fe/postcss-pxtoviewport 代替**
 
 
 
@@ -163,16 +130,12 @@ PostCSS编译之后就是我们所需要的带vw代码：
 物理分辨率：硬件所支持的
 逻辑分辨率：软件可以达到的    
 
-
-
 window.devicePixelRatio是设备上物理像素和设备独立像素(device-independent pixels (dips))的比例。
 
 
 >公式表示就是：window.devicePixelRatio = 物理像素 / dips
 
 > CSS像素也就是逻辑像素
-
-
 
 而对于视网膜屏幕的iphone，如iphone4s, 纵向显示的时候，屏幕物理像素640像素。同样，当用户设置`<meta name="viewport" content="width=device-width">`的时候，其视区宽度并不是640像素，而是320像素，这是为了有更好的阅读体验 – 更合适的文字大小。
 
@@ -249,7 +212,13 @@ css识别
 
 
 
-## 端滚动属性
+
+
+## 滚动
+
+
+
+### 获取窗口滚动高度
 
 页面需要获取和修改页面的滚动高度，进行窗口移动的定位操作。这里有个安卓手机和 iOS 的兼容性问题。
 
@@ -258,8 +227,6 @@ css识别
 对于 `document.body.scrollTop` ，安卓可以正常读取和设置值，iOS 不可以；
 
 对于 `window.scrollY` ，貌似两者都可以。
-
-
 
 获取窗口滚动高度的兼容写法：
 
@@ -274,7 +241,19 @@ document.body.scrollTop = 100 // 安卓有效
 document.documentElement.scrollTop = 100 // iOS有效
 ```
 
-## passive 改善滚屏性能
+
+
+### 快速轻触滚动
+
+[https://developer.chrome.com/blog/scrolling-intervention?hl=zh-cn](https://developer.chrome.com/blog/scrolling-intervention?hl=zh-cn)
+
+滚动响应对于用户与移动设备上的网站互动至关重要，但触摸事件监听器经常会导致严重的滚动性能问题。
+
+
+
+### 使用 passive提升滚动性能
+
+[https://developer.chrome.com/blog/passive-event-listeners?hl=zh-cn](https://developer.chrome.com/blog/passive-event-listeners?hl=zh-cn)
 
 [passive 改善滚屏性能](https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener#%E4%BD%BF%E7%94%A8_passive_%E6%94%B9%E5%96%84%E6%BB%9A%E5%B1%8F%E6%80%A7%E8%83%BD)
 
@@ -282,19 +261,9 @@ document.documentElement.scrollTop = 100 // iOS有效
 
 `passive` 可选  =>  一个布尔值，设置为 `true` 时，表示 `listener` 永远不会调用 `preventDefault()`
 
+根据规范，`addEventListener()` 的 `passive` 默认值始终为 `false`。然而，这引入了触摸事件和滚轮事件的事件监听器在浏览器尝试滚动页面时阻塞浏览器主线程的可能性——这可能会大大降低浏览器处理页面滚动时的性能。
 
 
-根据规范，`addEventListener()` 的 `passive` 默认值始终为 `false`
-
-然而，这引入了触摸事件和滚轮事件的事件监听器在浏览器尝试滚动页面时阻塞浏览器主线程的可能性——这可能会大大降低浏览器处理页面滚动时的性能。
-
-
-
-大部分浏览器（Safari 和 Internet Explorer 除外）将文档级节点 [`Window`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window)、[`Document`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document) 和 [`Document.body`](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/body) 上的 [`wheel`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/wheel_event)、[`mousewheel`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/mousewheel_event)、[`touchstart`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/touchstart_event) 和 [`touchmove`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/touchmove_event) 事件的 `passive` 默认值更改为 `true`。
-
-**我们监听touchmove事件基本在window上**
-
-所以我们无需担心基本 [`scroll`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/scroll_event) 事件的 `passive` 值，也就能获得最好性能体验。
 
 
 
@@ -582,6 +551,8 @@ ev.target.appendChild(document.getElementById(data));
 
 [https://juejin.cn/post/6844904017051549703](https://juejin.cn/post/6844904017051549703)
 
+[https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit/](https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit/)
+
 在移动端使用 100vh 时，发现在 Chrome、Safari 浏览器中，因为浏览器栏和一些导航栏、链接栏导致不一样的。
 
 呈现：
@@ -593,54 +564,21 @@ ev.target.appendChild(document.getElementById(data));
 
 **移动端不要使用100vh**
 
-
-
 **解决方案**
 
+[https://www.youtube.com/watch?v=pOuE9sgK9jY](https://www.youtube.com/watch?v=pOuE9sgK9jY)
+
 ```tsx
-    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-    let vh = window.innerHeight * 0.01
-    // Then we set the value in the --vh custom property to the root of the document
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-
-    // We listen to the resize event
-    window.addEventListener('resize', () => {
-      // We execute the same script as before
-      let vh = window.innerHeight * 0.01
-      console.log(vh);
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
-    })
-```
-
-```cs
-<style>
-.container {
-  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
-  height: calc(var(--vh, 1vh) * 100 - 46px);
-</style>
-```
-
-
-
-
-
----
-
-安装 vh-check `npm install vh-check --save`
-
-```js
-import vhCheck from 'vh-check';
-vhCheck('browser-address-bar');
-```
-
-定义一个 CSS Mixin
-
-```scss
-@mixin vh($height: 100vh) {
-  height: $height;
-  height: calc(#{$height} - var(--browser-address-bar, 0px));
+body {
+  // 100% of the viewport height
+  /* mobile viewport bug fix */
+  height: 100svh;
 }
 ```
+
+
+
+
 
 
 
@@ -695,6 +633,57 @@ viewport并非只是ios上的独有属性，在android、winphone上同样也有
 
 
 
+## 顶部隔开状态栏
+
+![](https://s1.ax1x.com/2020/04/14/GzQhkT.gif)
+
+其实就是app自带tabbar 和 手机自带状态栏 
+
+我们做内嵌app的h5要隔离开这两个距离
+
+实现：
+
+```html
+  <div class="schedule-wrapper" :style="{paddingTop: headerHeight + 'px'}">
+    <div class="schedule-scroll">
+        // 内容
+    </div>
+  </div>  
+```
+
+headerHeight 这里是计算出来的
+
+一般调用移动提供的方法 拿到tabbar和状态栏这两个的高度，headerHeight 就是这两个高度的和。
+
+```css
+.schedule-wrapper {		
+  position: relative;
+  width:100%
+  height: 100vh;
+  overflow: hidden;
+    .schedule-scroll {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: scroll;
+    }
+ }   
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ios问题
 
 
@@ -707,29 +696,18 @@ viewport并非只是ios上的独有属性，在android、winphone上同样也有
 
 上下滑动页面会产生卡顿，手指离开页面，页面立即停止运动。整体表现就是滑动不流畅，没有滑动惯性。
 
-
-
 **为什么 iOS 的 webview 中 滑动不流畅，它是如何定义的？**
-
-
-
-
 
  原来在 iOS 5.0 以及之后的版本，滑动有定义有两个值 `auto` 和 `touch`，默认值为 `auto`。
 
-
-
 ```css
 -webkit-overflow-scrolling: touch; /* 当手指从触摸屏上移开，会保持一段时间的滚动 */
-
 -webkit-overflow-scrolling: auto; /* 当手指从触摸屏上移开，滚动会立即停止 */
 ```
 
 
 
 ### 解决方案
-
-
 
 将`-webkit-overflow-scrolling` 值设置为 `touch`
 
@@ -738,8 +716,6 @@ viewport并非只是ios上的独有属性，在android、winphone上同样也有
 	-webkit-overflow-scrolling: touch;
 }
 ```
-
-
 
 设置滚动条隐藏：
 
@@ -757,11 +733,7 @@ viewport并非只是ios上的独有属性，在android、winphone上同样也有
 
 设置 overflow
 
-
-
 设置外部 `overflow` 为 `hidden`,设置内容元素 `overflow` 为 `auto`。内部元素超出 body 即产生滚动，超出的部分 body 隐藏。
-
-
 
 ```css
 body {
@@ -771,10 +743,6 @@ body {
     overflow-y: auto;
 }
 ```
-
-
-
-
 
 **两者结合使用更佳！**
 
@@ -786,15 +754,9 @@ body {
 
 ## ios 上拉边界下拉出现白色空白
 
-
-
 手指按住屏幕下拉，屏幕顶部会多出一块白色区域。手指按住屏幕上拉，底部多出一块白色区域。
 
-
-
 产生原因
-
-
 
 在 iOS 中，手指按住屏幕上下拖动，会触发 `touchmove` 事件。这个事件触发的对象是整个 `webview` 容器，容器自然会被拖动，剩下的部分会成空白。
 
@@ -806,17 +768,9 @@ body {
 
 **监听事件禁止滑动**
 
-
-
-
-
 1. touchstart ：手指放在一个DOM元素上。
 2. touchmove ：手指拖曳一个DOM元素。
 3. touchend ：手指从一个DOM元素上移开。
-
-
-
-
 
 **`touchmove` 事件的速度是可以实现定义的，取决于硬件性能和其他实现细节**
 
@@ -845,23 +799,9 @@ if(e._isScroller) return;
 });
 ```
 
-
-
-
-
------
-
-
-
 **滚动妥协填充空白，装饰成其他功能**
 
-
-
-
-
 在很多时候，我们可以不去解决这个问题，换一直思路。根据场景，**我们可以将下拉作为一个功能性的操作**。
-
-
 
 **比如：下拉后刷新页面**
 
@@ -1177,6 +1117,18 @@ padding-bottom: constant(safe-area-inset-bottom); }
 
 
 
+## UIWebView和WKWebView
+
+1. 技术实现：UIWebView是基于UIWebView类的，而WKWebView是基于WebKit框架的WKWebView类的。
+2. 性能：WKWebView相对于UIWebView在性能上有很大的提升。WKWebView引入了新的JavaScript引擎**（新的JavaScriptCore这是苹果公司自家的 JavaScript 引擎）**，能够实现更快的网页加载速度和更流畅的滚动操作。此外，WKWebView还支持多线程访问和边加载边解析的功能，能够更好地处理复杂的网页内容。
+3. 安全性：WKWebView拥有更高的安全性。由于WKWebView的JavaScript与应用程序的JavaScript运行在不同的进程中，使得恶意网页脚本无法访问应用程序的数据，提升了应用程序的安全性。
+4. 内存管理：WKWebView对于内存管理的优化也要优于UIWebView。UIWebView在加载大量网页时容易出现内存泄漏的问题，而WKWebView具备更好的内存管理能力，能够更好地处理内存的释放。
+5. 兼容性：由于WKWebView是在iOS 8中引入的，所以对于iOS 7以及更早的版本是不兼容的。而UIWebView是从iOS 2.0开始引入的，所以对于较旧的iOS版本是兼容的。
+
+
+
+WKWebView相对于UIWebView在性能、安全性、内存管理等方面具备较大的优势。因此，在iOS应用开发中，推荐使用WKWebView来显示网页内容。
+
 
 
 # 微信h5问题
@@ -1287,6 +1239,8 @@ flutter是有编译优化概念的，如果它提供动态性支持，会影响�
 
 
 
+
+
 ## JIT和AOT
 
 JIT (Just-In-Time - 实时编译)     代表 javaScript、python
@@ -1317,10 +1271,6 @@ JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Na
 - JS 向 Native 发送消息 : 调用相关功能、通知 Native 当前 JS 的相关状态等。
 - Native 向 JS 发送消息 : 回溯调用结果、消息推送、通知 JS 当前 Native 的状态等。
 
-
-
----
-
 ### **Native -> Web**
 
 `Native` 调用 `JavaScript` 的方式本质就是 **执行拼接 `JavaScript` 字符串**，这就好比我们通过 `eval()` 函数来执行 `JavaScript` 字符串形式的代码一样，不同的系统也有相应的方法执行 `JavaScript` 脚本。
@@ -1330,8 +1280,7 @@ JSBridge 就像其名称中的『Bridge』的意义一样，是 Native 和非 Na
 Android 4.4之后提供了**evaluateJavascript**来执行JS代码，并且可以获取返回值执行回调：
 
 ```java
-String jsCode = String.format("window.showWebDialog('%s')", text);
-webView.evaluateJavascript(jsCode, new ValueCallback<String>() {
+webView.evaluateJavascript("javascriptCode", new ValueCallback<String>() {
   @Override
   public void onReceiveValue(String value) {
 
@@ -1342,9 +1291,24 @@ webView.evaluateJavascript(jsCode, new ValueCallback<String>() {
 iOS的UIWebView使用**stringByEvaluatingJavaScriptFromString**：
 
 ```objective-c
-NSString *jsStr = @"执行的JS代码";
+NSString *jsStr = "要执行的JS代码";
 [webView stringByEvaluatingJavaScriptFromString:jsStr];
 ```
+
+举个例子：
+
+```objective-c
+let webView = UIWebView()
+let javaScript = "document.getElementById('myElement').innerText"
+
+if let result = webView.stringByEvaluatingJavaScript(from: javaScript) {
+    print("JavaScript执行结果: \(result)")
+} else {
+    print("JavaScript执行出错")
+}
+```
+
+
 
 
 
@@ -1369,7 +1333,7 @@ NSString *jsStr = @"执行的JS代码";
 WebSettings webSettings = mWebView.getSettings();
 // Android容器允许js脚本，必须要
 webSettings.setJavaScriptEnabled(true);
-// Android 容器设置侨连对象
+// Android 容器设置侨连对象  (在js中注入全局变量)
 mWebView.addJavascriptInterface(getJSBridge(), "JSBridge");
 
 // Android中JSBridge的业务代码
@@ -1391,6 +1355,7 @@ private Object getJSBridge() {
 
 // js调用原生的代码
 // JSBridge 通过addJavascriptInterface已被注入到 window 对象上了
+// android 可以
 window.JSBridge.foo(); // 返回 'foo'
 window.JSBridge.foo2(); // 返回 'foo2:test'
 ```
@@ -1467,15 +1432,15 @@ native会劫持webview onJsAlert、onJsConfirm、onConsoleMessage、onJsPrompt�
 
 
 
+### WebViewJavascriptBridge
 
+[https://github.com/marcuswestin/WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)
 
+[JSBridge原理解析——以WebviewJavascriptBridge实现方式为例](https://juejin.cn/post/6981388210580488206)
 
+WebViewJavascriptBridge 是一个用于在 Android 和 iOS 同时使用的 WebView 和 JavaScript 进行通信的桥接库。它可以方便地在 WebView 中注册 JavaScript 函数和 Native 函数，从而实现 JavaScript 和 Native 之间的相互调用和数据传递。WebViewJavascriptBridge 可以解决 WebView 和 JavaScript 之间通信想复杂、局限性高的问题，提供了一个简单、高效的解决方案。
 
-
-
-
-
-
+原理：URL SCHEME
 
 
 

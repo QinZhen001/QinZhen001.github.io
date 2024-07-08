@@ -25,14 +25,16 @@ tags:
 # 个人技能
 
 - 掌握 html， css， js，ts 相关知识，掌握常⻅的⻚面布局方式
-- 熟悉 node.js 在前端中的应用
-- 了解 web rtc，了解音视频相关知识 
+- 熟悉 node.js 在前端中的应用，熟悉koa,nest.js等框架
 - 熟悉微信小程序相关开发
-- 熟悉 electorn 相关开发
+- 熟悉 electron 相关开发
 - 熟悉 vue 和 react 相关，了解其关键实现原理
-- 熟悉 webpack 和 vite，对前端组件化，工程化，自动化有一定的理解
-- 熟悉 babel，写过 babel 插件和 ast 相关的工具
+- 熟悉常见的ui组件库: antd, element-ui, vant 等 
+- 熟悉 webpack, rollup 和 vite，对前端组件化，工程化，自动化有一定的理解
+- 熟悉 babel，写过 babel 插件和 ast 相关处理工具
 - 掌握基本的算法和数据结构，了解设计模式
+- 了解 web rtc，了解音视频相关知识 
+- 了解后端开发相关知识: go, nginx, docker, mysql, kubernetes等
 
 
 
@@ -40,11 +42,10 @@ tags:
 
 2021.4 - 至今 声网 agora 商业服务与交付中心(CSDC)    web 前端开发高级工程师
 
-* 负责教育场景 aPaas (灵动课堂) / 会议场景 aPaas 相关开发，参与架构设计，协议制定，api 文档编写等
-* 参与灵动课堂 1.x 升级 2.0，进行代码结构重构，进行工作流改造
-* 负责 m3u8 前端播放器封装
-* 负责前端音视频场景最佳实践的搭建
-* 负责前端音视频小程序sdk的迭代更新
+* 负责教育场景 aPaas (灵动课堂) / 会议场景 aPaas / ktv合唱场景相关开发，参与架构设计，协议制定，api 文档编写，协助客户解决集成中的问题等。参与灵动课堂 1.x 升级 2.0，进行代码结构重构，性能优化，工作流改造。
+* 负责基于video.js 封装 m3u8 前端播放器
+* 负责元宇宙场景RangeEngine空间订阅引擎相关开发
+* 负责微信小程序音视频sdk的迭代更新
 * 担任前端面试官
 
 2020.3 - 2021.3 晓教育集团 星火在线一对一事业部    web 前端开发工程师
@@ -67,33 +68,69 @@ tags:
 
 2021.4 - 至今    教育场景 aPaas (灵动课堂) / 会议场景 aPaas
 
- ( react + mobx + ts + electorn + agora rtc/rtm sdk + IndexedDB + lerna)
+（react + mobx + immutable + electorn + agora rtc/rtm sdk + IndexedDB + web worker）
 
- 项目概述: aPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成到自主品牌的产品方案里，又能灵活定制，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
+项目概述: aPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成到自主品牌的产品方案里，又能灵活定制，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
 
- 项目成果:  lerna 实现 monorepo 管理，分层架构设计(rte => core/ui-kit => sdk)，基于 mobx 最佳实践重构 stores(domain store 和 ui store)从网状结构变为树状结构，设计 onInstall 和 onDestroy 钩子，用于初始化和销毁事件监听，采用工厂模式针对不同场景创建不同 rootStore。errorEnter 统一错误处理，Logger 采取装饰器模式，分级分环境设计，结合 web worker 自动存入 IndexedDB。支持 ExtApp 和 plugin，支持使用者开发自己的 plugin。底层 rte 采用适配器模式同时支持 web 和 pc，封装 synchronizer 管理 snapshot 和 queueTasks 等，基于 async-await-retry 封装重试机制。
+项目成果:  
 
- 工作流优化: webpack4 升级到 5，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取 webpack.base.config。优化 babel 配置，按需引入 polyfill。
+* lerna 实现 monorepo 管理，分层架构设计(rte => core/ui-kit => sdk)
+* 基于 mobx 最佳实践重构 store(domain store 和 ui store)从网状结构变为树状结构，设计 onInstall 和 onDestroy 钩子，采用工厂模式针对不同场景创建不同 rootStore
+* 设计统一错误处理ErrorEnter。设计装饰器模式Logger分级分环境，结合 web worker 自动存入 IndexedDB。
+* 支持 widget机制，支持使用者开发自定义widget。
+* 底层 rte sdk采用适配器模式同时支持 web 和 pc 平台，基于 async-await-retry 封装重试机制，基于mutex封装锁机制处理大量异步任务的情况。
+* 封装react rc-component相关组件形成基础UI库，利用Storybook调试和展示效果，基于UI库参与开发花名册，投票器，白板，聊天等组件。
+* 工作流优化: webpack4 升级到 5，手动处理node polyfill，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取   base webpack 配置，优化 babel相关 配置，按需引入 polyfill。
+
+
+
+2022.1 - 2022.6  m3u8前端播放器
+
+（videojs + react + typescript）
+
+项目成果：
+
+1. 基于videojs二次封装，支持m3u8自动更新，支持自动加载策略，切片平滑过渡，可根据事件seek到指定进度。
+2. ui调整（进度条 控制栏 首帧海报 样式覆盖），基于videojs事件封装自己的事件，对外暴露控制播放器的api。
 
 
 
 2021.4 - 至今    音视频小程序sdk
 
-项目概述:  利用微信小程序 [live-player](https://developers.weixin.qq.com/miniprogram/dev/component/live-player.html) 和 [live-pusher](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html) 组件实现音视频通话
+ 项目概述:  利用微信小程序 [live-player](https://developers.weixin.qq.com/miniprogram/dev/component/live-player.html) 和 [live-pusher](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html) 组件实现音视频通话
 
-项目成果: 分层架构设计(wx socket => worker => client)，解耦重构日志模块 (日志规范化，切片上传，支持客户自己收集保存日志或通过sdk api上传日志)，支持小程序原生npm，wx socket重试机制以及错误捕获，对外api同时支持callback和promise返回，协助文档组更新迭代官网api文档，维护sdk最佳实践demo小程序迭代更新。
+ 项目成果: 
 
- 工作流优化: 依赖整理，支持开发环境和生产环境打包，改为esbuild打包，体积优化190kb => 150+kb
+* 分层架构设计(wx socket => worker => client)，解耦重构日志模块 (日志规范化，切片上传，支持客户自己收集保存日志或通过sdk api上传日志)
+* 支持以小程序原生npm方式集成sdk
+* 完善wx socket重试机制以及error捕获处理流程，对外api同时支持callback和promise返回
+* 协助文档组更新迭代官网api文档，迭代更新集成sdk的demo小程序。
+*  工作流优化: 依赖整理，支持开发环境和生产环境打包，将webpack改为rollup打包，体积优化190kb => 150+kb
 
 
 
-2023.1 - 2023.4  web ktv 场景解决方案
+2023.1 - 2023.6  web ktv 场景解决方案
 
-项目概述:  利用web rtc sdk 和  webAssembly（实时监听人声声调） 实现web端ktv实时歌唱场景，采用canvas逐帧绘制歌曲声调视图，当监听到主播端声调进行打分，分数满足条件时进行视图着色，combo激励等。
+项目概述:  利用web rtc sdk 和  wasm（实时监听人声声调）模块实现web端ktv实时歌唱场景，采用canvas逐帧绘制歌曲声调视图，当监听到主播端声调进行实时打分，分数满足条件时进行视图着色，combo激励动画等。
 
-项目成果：完成UI层（歌词组件，打分组件，激励动画，粒子效果，等级视图，音调谱线组件）等组件开发。完成逻辑层engine设计（包括歌词解析器Parser，任务调度器Scheduler，分数计算器Calculator，声调转换器PitchChanger等）。封装MessageHandler用于主播端和观众端同步歌词信息，进度校准等。
+ 项目成果：
 
-进行canvas性能优化（分层渲染），和移动端对齐相关api设计，数据结构和单元测试用例等。使用vitest编写单元测试，保证在打分逻辑等一些边界处理上和移动端保持一致。
+* 完成UI层（歌词组件，打分组件，激励动画，粒子效果，等级视图，音调谱线组件）等组件开发。
+* 完成逻辑层engine设计开发（包括歌词解析器Parser，任务调度器Scheduler，分数计算器Calculator，声调转换器PitchChanger等）。封装MessageHandler用于主播端和观众端同步歌词信息，进度校准等。
+* 进行canvas性能优化（分层渲染），和移动端对齐相关api设计，数据结构和单元测试用例等。使用Vitest编写单元测试，保证在打分逻辑等一些边界处理上和移动端保持一致。
+
+
+
+2024.1 - 至今  RangeEngine
+
+项目概述: RangeEngine是一个基于位置信息和组队信息的音视频流管理模块，它可以让用户在元宇宙虚拟世界时不同的模式下订阅和取消订阅彼此的音视频流，实现更灵活和高效的音视频通信。
+
+ 项目成果： 
+
+* 完成RangeEngine SDK 的相关开发工作，实现地图/人物信息配置，实现有效半径可配置，用户位置采用高频/低频更新两种方式，定时更新当前人物的大/小地图信息。
+* 集成公司内部wasm模块SpatialAudioExtension 3D空间音频 和 AIDenoiserExtension ai降噪。
+* UI层实现地图动态渲染，人物移动渲染，自适应屏幕大小缩放，支持原生dom渲染和WebGL渲染(pixi.js)， 实现三种不同layout展示用户音视频列表
+* 工程化相关基于pnpm的monorepo架构，UI app可直接link workspace sdk开发测试，RangeEngine SDK采用rollup打包，对外支持 umd/commonjs/esmodule规范，利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts，配置external和peerDependencies减少包体积。
 
 
 
@@ -105,9 +142,12 @@ tags:
 
  项目概述: 一个 b 端内部运营管理系统，主要使用角色有老师，学规，学管，销售，教培，数据分析等。
 
- 项目成果: 负责学规工作台， 学管工作台， 老师海报编辑， 课堂报告等模块开发， 重构批量导入资源模块。参与封装通用业务组件， 通用 select 组件 (支持初始化回显， 高级筛选)通用 table 组件(自带索引， 集成分⻚器组件， 文字超出隐藏， 鼠标悬浮显示 tooltip 等)通用上传组件 (支持扫码上传， 剪贴板复制上传等)。参与权限控制，自定义上报，自定义命令等封装，参与开发系统组织架构调整。
+ 项目成果：
 
-工程化优化: 分析 webpack 编译速度以及打包体积， 将@antv 相关库移出 vendors， 配置 cache， 移除 moment 其 他语言包，整理项目依赖， 最终编译时间从 1 分 30s 降到 1 分 10s， 体积减少近 15%。
+1. 负责学规工作台， 学管工作台， 老师海报编辑， 课堂报告等模块开发， 重构批量导入资源模块。
+2. 参与封装通用业务组件， 通用select组件 （支持初始化回显， 高级筛选）通用table组件（自带索引， 集成分⻚器组件， 文字超出隐藏， 鼠标悬浮显示tooltip等）通用上传组件 （支持扫码上传， 剪贴板复制上传等）。
+3. 参与权限控制，自定义上报自定义命令等封装，参与系统组织架构调整开发。
+4. 工程化优化：分析webpack编译速度以及打包体积， 将@antv相关库移出vendors， 配置cache， 移除moment其他语言包，整理项目依赖， 最终编译时间从1分30s降到1分10s， 体积减少近15%。
 
 
 
@@ -115,19 +155,30 @@ tags:
 
 (vue + vant ui + webpack)
 
-项目成果: 负责课程日历，课程表，题目面板，题目展示，入学测报告， 课堂报告等⻚面， 精确还原设计稿实现复杂交 互， 对复杂组件进行懒加载，基于 vant 组件库二次封装，同时适配部分 h5⻚面在 pc 端的展示效果 。基于 webViewjsBridge 封装与 app 通信的相关函数。
+ 项目成果:
+
+1. 负责课程日历，课程表，题目面板，题目展示，入学测报告， 课堂报告等⻚面， 精确还原设计稿实现复杂交互。
+2. 对复杂组件进行懒加载，基于vant组件库二次封装，同时适配部分h5⻚面在pc端的展示效果 。
+3. 基于webView jsBridge封装与app通信的相关函数。
 
 
 
 2018.9 - 2020.2  公司内部微信小程序框架
 
-项目概述: 由于原生微信小程序更新速度过快， 市面主流框架存在一些 bug， 难以胜任公司业务快速迭代，遂决定从零 开发公司自己的框架 ，集合公司内部沉淀下来的一些优化方案。
+ 项目概述: 由于原生微信小程序更新速度过快， 市面主流框架存在一些 bug， 难以胜任公司业务快速迭代，遂决定从零 开发公司自己的框架 ，集合公司内部沉淀下来的一些优化方案。
 
-项目成果: 实现网络请求封装 (请求模式， 请求配置， 拦截器， 请求依赖， 请求加密， 请求重试机制等)。实现 store 对全局数据状态进行管理， 内部实现 observer 监听数据的变更自动 setData 更新⻚面。针对大的 Object 进行 diff， 提高 setData 效率。采用 Ioc 模式实现插件化机制， 可使用内部插件， 可自己编写插件。实现全局错误监控上报机制。对原生 wx api 进行 promisefy 化， 实现全局通信机制， 解决长列表数据加载渲染过慢问题， 解决小程序⻚面栈 最多十层的问题等。
+ 项目成果: 
 
-工作流搭建: 使用 gulp 结合 npm script 搭建工作流， 实现文件监听， 分环境打包， 预编译， 支持 less， 静态资源压缩， 配置 eslint 规则，自动安装依赖，正式环境将小图标集合自动转为精灵图， 同时将其上传至阿里云。结 合内部 cli 工具，实现矩阵小程序系列切换，集成微信命令行工具，可使用命令上传代码包。利用 husky 钩子检查代码，保证提交 到 git 代码的一致性。
+1. 实现网络请求封装 （请求模式， 请求配置， 拦截器， 请求依赖， 请求加密， 请求重试机制等）。
+2. 实现store对全局数据状态进行管理， 内部实现observer监听数据的变更自动setData更新⻚面。针对大的Object进行diff， 提高setData效率。
+3. 采用Ioc模式实现插件化机制， 可使用内部插件， 可自己编写插件。
+4. 实现全局错误监控上报机制。
+5. 对原生wx api进行promisefy化， 实现全局通信机制， 解决长列表数据加载渲染过慢问题， 解决小程序⻚面栈最多十层的问题等。
+6. 工作流搭建：使用gulp结合npm script搭建工作流， 实现文件监听， 分环境打包， 预编译， 支持less， 静态资源压缩， 配置eslint规则，正式环境将小图标集合自动转为精灵图， 同时将其上传至阿里云。结合内部cli工具，实现矩阵小程序系列切换，集成微信命令行工具，可使用命令上传代码包。利用husky钩子检查代码，保证提交到git代码的一致性。
 
-使用框架后，常规业务迭代从原来一星期 4 人 4 天降至 3 人 2 天，保证百万 DAU 级别的小程序稳定运行。
+使用框架后，常规业务迭代从原来一星期4人4天降至3人2天，保证百万DAU级别的小程序稳定运行。
+
+
 
 
 
@@ -135,11 +186,12 @@ tags:
 
 (koa + node-schedule + pm2)
 
-项目概述:为了方便运营同学查找素材和编辑素材，提高运营同学工作效率。
+项目概述：为了方便运营同学查找素材和编辑素材，提高运营同学工作效率。
 
-项目成果: fiddler 抓包分析接口，自动化复杂异步流程(抓取数据，存储服务器，生成 json 信息文件，上传腾讯云 cos 桶，添加水印，导入后端数据库，设置定时任务)。同时负责后台系统中素材编辑的相关⻚面开发，使爬取下来的素 材可以展示和二次编辑。
+项目成果：
 
-
+1. fiddler抓包分析接口，自动化复杂异步流程（抓取数据，存储服务器，生成json信息文件，上传腾讯云cos桶，添加水印，导入后端数据库，设置定时任务）。
+2. 负责后台系统中素材编辑的相关⻚面开发，使爬取下来的素材可以展示和二次编辑。
 
 # 个人评价
 

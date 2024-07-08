@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "单元测试test相关"
+title:      "单元测试相关"
 date:       2019-08-22 16:04:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -829,6 +829,10 @@ fileInput = wrapper.container.querySelector('.viking-file-input')
 
 
 
+### demo
+
+
+
 
 
 ### 基础
@@ -935,6 +939,16 @@ vi的advanceTimersByTime方法用于模拟时间的推进。它会将时间前�
 [https://www.npmjs.com/package/ts-jest](https://www.npmjs.com/package/ts-jest)
 
 A Jest transformer with source map support that lets you use Jest to test projects written in TypeScript.
+
+
+
+## rc-test
+
+[https://www.npmjs.com/package/rc-test](https://www.npmjs.com/package/rc-test)
+
+test for react component
+
+
 
 
 

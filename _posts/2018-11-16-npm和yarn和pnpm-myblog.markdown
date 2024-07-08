@@ -30,7 +30,7 @@ npm 脚本的退出码，也遵守 Shell 脚本规则。如果退出码不是`0`
 
 
 
-## 传参
+## 参数
 
 向 npm 脚本传入参数，要使用`--`标明。
 
@@ -43,6 +43,24 @@ npm 脚本的退出码，也遵守 Shell 脚本规则。如果退出码不是`0`
 ```
 $ npm run lint --  --reporter checkstyle > checkstyle.xml
 ```
+
+
+
+
+
+### --if-present
+
+[https://stackoverflow.com/questions/50683885/how-to-check-if-npm-script-exists](https://stackoverflow.com/questions/50683885/how-to-check-if-npm-script-exists)
+
+```bash
+npm run test --if-present
+```
+
+ if you only want to run the command if it exists, npm has an option for that
+
+如果你只想在命令存在的情况下运行它，npm有一个选项
+
+
 
 
 
@@ -177,6 +195,33 @@ npm dist-tag rm <pkg> <tag>
 - 然后，依照 `package-lock.json`（或 `npm-shrinkwrap.json`）文件 创建新得`node_modules` 文件夹并**精准安装对应的依赖版本**；
 
 `npm i` 不能精准安装依赖主要是因为`package.json`文件里面的依赖版本往往是一个范围，并不是一个固定的版本，它允许依赖的升级；而`package-lock.json` 文件，是对`package.json`文件，做了依赖的版本检查以及梳理后生成的，所以`npm ci`能够快速精确的安装依赖；
+
+
+
+
+
+## npm create
+
+[https://dev.to/mikhaelesa/create-your-own-npm-create-cli-like-create-vite-3ig7](https://dev.to/mikhaelesa/create-your-own-npm-create-cli-like-create-vite-3ig7)
+
+[npm create命令解析](https://juejin.cn/post/7241514309717573692)
+
+**也就是说npm create其实就是npm init的别名**
+
+**`npm` 将在你提供的初始项前拼接 `create-` 然后使用`npx`工具下载并执行该方法**，也就是说
+
+```bash
+npm create vite
+// 等同于
+npm init vite
+// 等同于
+npx create-vite
+// 等同于
+npm install create-vite -g
+create-vite
+```
+
+
 
 
 
@@ -585,7 +630,13 @@ pnpm store prune
 
 [https://pnpm.io/zh/blog/2020/10/17/node-modules-configuration-options-with-pnpm](https://pnpm.io/zh/blog/2020/10/17/node-modules-configuration-options-with-pnpm)
 
-即使使用pnpm的默认配置，某些工具也可能无法工作，默认配置下所有内容都悬挂在虚拟存储的根目录中，而某些软件包则悬挂在根目录中。 在这种情况下，您可以将所有内容或部分依赖关系提升到modules目录的根目录。
+它的作用是将依赖项的公共模块移到项目的根目录下，以减少依赖项的嵌套层级。
+
+当一个项目中有多个依赖项时，每个依赖项通常会有自己的模块依赖关系。这些依赖项的模块可能会存在相同的依赖模块，导致模块的重复安装和冗余的磁盘空间使用。
+
+```bash
+pnpm install --shamefully-hoist
+```
 
 要将所有内容提升到node_modules的根目录：
 

@@ -560,23 +560,135 @@ function uint8ArrayToString(arr) {
 
 
 
-## mpvue相关
+
+
+## 插件
+
+
+
+### 获取插件信息
+
+[https://developers.weixin.qq.com/community/develop/doc/0006445710c678ad974e46ce359c00](https://developers.weixin.qq.com/community/develop/doc/0006445710c678ad974e46ce359c00)
+
+```ts
+console.log(__wxConfig)  // 里面有 plugins 相关信息
+```
+
+
+
+
+
+### 区分是否插件环境
+
+如何区分当前是 微信小程序环境 还是 微信小程序插件环境？
+
+[https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html](https://developers.weixin.qq.com/miniprogram/dev/api/open-api/account-info/wx.getAccountInfoSync.html)
+
+**使用 api： wx.getAccountInfoSync();**
+
+返回值中如果有plugin =>  标识当前环境为 微信小程序插件 
+
+
+
+
+
+
+
+
+
+
+
+# Taro
+
+[https://docs.taro.zone/docs/](https://docs.taro.zone/docs/)
+
+**Taro** 是一个开放式跨端跨框架解决方案，支持使用 React/Vue/Nerv 等框架来开发 [微信](https://mp.weixin.qq.com/) / [京东](https://mp.jd.com/?entrance=taro) / [百度](https://smartprogram.baidu.com/) / [支付宝](https://mini.open.alipay.com/) / [字节跳动](https://developer.open-douyin.com/) / [QQ](https://q.qq.com/) / [飞书](https://open.feishu.cn/document/uYjL24iN/ucDOzYjL3gzM24yN4MjN) 小程序 / H5 / RN 等应用。
+
+
+
+## 依赖预编译
+
+Taro 参考 [Vite](https://link.juejin.cn/?target=https%3A%2F%2Fcn.vitejs.dev%2F) 使用了 esbuild 收集用户使用到的第三方依赖，并分别进行打包。打包后的模块会作为 Webpack 的 entry，最终打包为模块联邦 Remote 应用，供主应用（Host）消费。
+
+
+
+## 小程序编译模式
+
+[https://github.com/NervJS/taro-rfcs/blob/feat/compile-mode/rfcs/0000-compile-mode.md](https://github.com/NervJS/taro-rfcs/blob/feat/compile-mode/rfcs/0000-compile-mode.md)
+
+**小程序编译模式（CompileMode）**通过在编译阶段对开发者的代码进行扫描，把 JSX、Vue template 代码提前编译为对应的小程序模板代码，达到减少小程序渲染层虚拟 DOM 树节点数量的效果，从而提升渲染性能。
+
+
+
+在小程序分层架构的限制下，Taro3 的渲染方式仍然是动态渲染节点的唯一写法，只有这样才能使真正的 React、Vue 等 Web 框架在小程序中运行起来。
+
+然而借鉴 Vue3 的思路，JSX、Vue template 中除了动态的部分外还会存在静态的部分。假设我们提前在编译阶段把静态部分识别出来，然后生成对应的小程序模板，就能使这部分对应的小程序渲染层虚拟 DOM 节点数趋近原生写法：
+
+
+
+## 跨端原理
+
+[Taro3跨端跨框架原理初探](https://juejin.cn/post/6989968343163731981)
+
+[Taro源码解析（3.5.4）](https://onehacker.top/posts/taro%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%903.5.4/)
+
+
+
+1. 一套代码多端输出：开发者可以使用一套基于 React 的语法编写代码，而不需要关注不同平台的差异。Taro.js 提供了一套统一的 API 和组件，这些 API 和组件在运行时会根据目标平台进行转译，从而在不同的平台上实现相同的效果。
+2. 平台适配层：Taro.js 在运行时会根据当前的平台进行适配。它会根据目标平台的差异，例如小程序和 H5 在 API 使用、组件渲染等方面的差异，动态生成相应的代码来实现跨平台适配。
+3. 转译工具链：Taro.js 使用了一系列的转译和编译工具来实现跨平台的能力。这些工具链包括了基于 Babel 的代码转译器、基于 PostCSS 的样式转译器等。
+
+----
+
+Taro3之前（重编译时，轻运行时）：
+
+编译时是使用 **babel-parser** 将 Taro 代码解析成抽象语法树，然后通过 **babel-types** 对抽象语法树进行一系列修改、转换操作，最后再通过 **babel-generate** 生成对应的目标代码。
+
+之前Taro团队是采用**穷举**的方式对 JSX 可能的写法进行了一一适配，这一部分工作量很大。
+
+再看⼀下运⾏时的缺陷。对于每个⼩程序平台，都会提供对应的⼀份运⾏时框架进⾏适配。当修改⼀些 Bug 或者新增⼀些特性的时候，需要同时去修改多份运⾏时框架。
+
+---
+
+Taro3之后（重运行时）：
+
+Taro 3 则可以大致理解为解释型架构（相对于 Taro 1/2 而言），**主要通过在小程序端模拟实现 DOM、BOM API 来让前端框架直接运行在小程序环境中，从而达到小程序和 H5 统一的目的**，而对于生命周期、组件库、API、路由等差异，依然可以通过定义统一标准，各端负责各自实现的方式来进行抹平。
+
+偏运行时的适配方案，一方面可以带来更好的用户开发体验，不去限制开发者的语法规范。另一方面能兼容更多的 Web 生态，支持绝大多数已有的开源工具和依赖的运行。
+
+偏运行时的适配方案可以继承部分小程序运行时和编译时逻辑
+
+---
+
+
+
+
+
+# mpvue
 
 [http://mpvue.com/mpvue/](http://mpvue.com/mpvue/)
 
-### 不支持函数
+
+
+## 不支持函数
+
 不支持在 template 内使用 methods 中的函数。
 
 解决方法:写在computed里
 
 
 
-### 滑动组件相关
+## 滑动组件相关
+
 [http://kuangpf.com/mpvue-weui/#/slider](http://kuangpf.com/mpvue-weui/#/slider)
 
 bindchange和bindchanging 在mpvue框架中的写法为: @change和@changing
 
 类型为事件的属性在完成触发事件后，取值的方式为：event.mp.detail = {value: value}
+
+
+
+
 
 
 
@@ -604,6 +716,8 @@ try {
   }
 }
 ```
+
+
 
 
 
@@ -671,6 +785,8 @@ try {
     this.ws.onMessage(this._onmessage.bind(this));
     this.ws.onError(this._onError.bind(this));
 ```
+
+
 
 
 

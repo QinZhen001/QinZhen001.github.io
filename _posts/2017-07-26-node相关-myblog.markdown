@@ -51,7 +51,7 @@ Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步
 
 
 
-## 正文
+## 基础
 
 [https://juejin.im/post/5d43017be51d4561f40adcf9#heading-5](https://juejin.im/post/5d43017be51d4561f40adcf9#heading-5)
 
@@ -548,14 +548,24 @@ cluster模块使用内置的负载均衡来更好地处理线程之间的压力�
 
 [https://nodejs.org/docs/latest/api/child_process.html](https://nodejs.org/docs/latest/api/child_process.html)
 
-`spawn` 和 `fork` 都是 Node.js 中用于创建子进程的方法，两者有以下几点区别：
+child_process模块是Node.js中用于创建子进程的模块。它提供了多个函数来创建子进程，主要有spawn、fork和exec。
 
-1. **执行环境不同**：`spawn` 创建的子进程在一个新的命令行窗口中执行，而 `fork` 创建的子进程在一个新的 Node.js 实例中执行。
-2. **进程间通信机制不同**：`spawn` 使用标准输入输出流（stdin/stdout）进行进程间通信，而 `fork` 则使用 IPC 通信管道。
-3. **传递参数方式不同**：`spawn` 可以通过命令行参数的形式传递参数给子进程，而 `fork` 可以通过消息对象的形式传递参数给子进程。
-4. **返回值不同**：`spawn` 方法返回一个可写流对象，通过该对象可以向子进程写入数据；而 `fork` 方法返回一个代表子进程的 ChildProcess 对象，通过该对象可以与子进程进行交互。
+spawn：spawn函数用于创建一个新的进程，并通过标准输入输出流来进行通信。它可以执行任意可执行文件。(适合 run dev)
 
-综上所述，`spawn` 适用于创建独立的命令行进程，可以通过输入输出流与子进程通信；而 `fork` 主要用于创建新的 Node.js 进程，并且可以通过消息传递机制与子进程进行通信。
+- 优点：可以实现并行执行多个子进程任务，并且可以与子进程进行双向通信。
+- 缺点：不能执行shell命令，而且无法获取shell命令的返回结果。
+
+fork：fork函数是基于spawn函数的一种特殊形式，主要用于创建一个与当前进程相同的副本。它可以通过进程间的IPC通道来实现主从通信。
+
+- 优点：可以在子进程和主进程之间进行双向通信，并且可以实现主进程和子进程之间的共享内存。
+- 缺点：不能执行shell命令，而且无法获取shell命令的返回结果。
+
+exec：exec函数用于执行一个shell命令。它会创建一个新的shell进程，并运行指定的命令，然后返回命令的执行结果。
+
+- 优点：可以执行shell命令，并且可以获取到命令的返回结果。
+- 缺点：无法实现主从通信，一次只能执行一个命令，无法并行执行多个命令。
+
+综上所述，spawn适合用于执行非shell命令且需要双向通信的场景，fork适合用于创建与当前进程相同副本的场景，exec适合用于执行shell命令并获取结果的场景。
 
 
 
@@ -778,17 +788,9 @@ depth 表示最大递归的层数，如果对象很复杂，你可以指定层�
 特别要指出的是，util.inspect 并不会简单地直接把对象转换为字符串，即使该对 象定义了toString 方法也不会调用。
 
 
-
-
 ### node调试
 
-
-
 [http://www.ruanyifeng.com/blog/2018/03/node-debugger.html](http://www.ruanyifeng.com/blog/2018/03/node-debugger.html)
-
-
-
-
 
 ### utility
 
@@ -799,6 +801,190 @@ https://github.com/node-modules/utility
 A collection of useful utilities.
 
 (包括一些常用的加密方式)
+
+
+
+
+
+# koa
+
+## 何时使用await next()
+
+[网页链接](https://blog.csdn.net/u014445339/article/details/79372834)
+
+问题场景还原
+
+```js
+app.use((context, next) => {
+    if (context.request.method === 'OPTIONS') {
+        context.response.status = 200
+        context.response.set('Access-Control-Allow-Origin', context.request.headers.origin)
+        context.response.set('Access-Control-Allow-Headers', 'content-type')
+    } else {
+        next()
+    }
+})
+
+app.use(async (context, next) => {
+    // 异步操作数据库
+    let result = await readdb()
+    context.response.status = 200
+    context.response.set('Access-Control-Allow-Origin', context.request.headers.origin)
+    context.response.set('Access-Control-Allow-Headers', 'content-type')
+    context.response.message = '读取成功'
+}) 
+```
+
+
+在上述代码中，第一个use的回调对options请求做过滤，第二个use的回调等待读取数据库，然后设置response。
+
+
+
+### 问题：
+
+所有除options请求外的请求，返回的都是404。在第二个use的回调中打断点，发现确实执行了，但是返回的却不是设置的200，而是404，很是奇怪。
+
+
+### 原因：
+
+
+第二个use的回调是异步函数，而第一个use不是，所以执行next()后，不会等待第二个use的异步操作完成，而直接返回response，从而第二个use回调中异步操作之后的代码没有影响到这个返回的response（此时，response没有设置任何返回信息，koa会默认是404），而在第二个use的异步操作完成之后，后面的代码会执行（打断点能有反应的原因），但此时response已经返回，后面代码虽然改变了response，但是已经不会发送给客户端了。
+
+
+### 正确玩法
+
+
+在第一个use回调中添加await next()，等待第二个use回调函数完整执行完毕，再发送response。代码如下。
+
+```js
+app.use(async (context, next) => {
+    if (context.request.method === 'OPTIONS') {
+        context.response.status = 200
+        context.response.set('Access-Control-Allow-Origin', context.request.headers.origin)
+        context.response.set('Access-Control-Allow-Headers', 'content-type')
+    } else {
+        await next()
+    }
+})
+
+app.use(async (context, next) => {
+    // 异步操作数据库
+    let result = await readdb()
+    context.response.status = 200
+    context.response.set('Access-Control-Allow-Origin', context.request.headers.origin)
+    context.response.set('Access-Control-Allow-Headers', 'content-type')
+    context.response.message = '读取成功'
+}) 
+```
+
+
+
+
+
+
+
+
+
+## 中间件
+
+
+
+
+
+### koa-bodyparser
+
+[ https://www.npmjs.com/package/koa-bodyparser ]( https://www.npmjs.com/package/koa-bodyparser )
+
+To use `koa-bodyparser` with koa@1, please use [bodyparser 2.x](https://github.com/koajs/bodyparser/tree/2.x).
+
+```
+npm install koa-bodyparser@2 --save
+```
+
+> **Notice: this module don't support parsing multipart format data**, please use [co-busboy](https://github.com/cojs/busboy) to parse multipart format data.
+
+**很重要的一点 koa-bodyparser 不支持 multipart/form-data**  
+
+
+
+
+
+
+
+# 原理
+
+[https://chenshenhai.github.io/koa2-note/note/start/info.html](https://chenshenhai.github.io/koa2-note/note/start/info.html)
+
+```js
+├── lib
+│   ├── application.js
+│   ├── context.js
+│   ├── request.js
+│   └── response.js
+└── package.json
+```
+
+核心代码就是lib目录下的四个文件
+
+- application.js 是整个koa2 的入口文件，封装了context，request，response，以及最核心的中间件处理流程。
+- context.js 处理应用上下文，里面直接封装部分request.js和response.js的方法
+- request.js 处理http请求
+- response.js 处理http响应
+
+
+
+
+
+## **Context**
+
+[https://github.com/berwin/Blog/issues/8](https://github.com/berwin/Blog/issues/8)
+
+![img](https://camo.githubusercontent.com/b0e0a46aa132ed314f3058e922f000de85c0a58e2de5dd46b80a46334c798a21/687474703a2f2f62657277696e2e6769746875622e696f2f707074732f6b6f612f696d672f6b6f612d666c6f772e6a7067)
+
+```js
+// 下面是Context源码片段。
+
+var delegate = require('delegates');
+var proto = module.exports = {}; // 一些自身方法，被我删了
+
+/**
+ * Response delegation.
+ */
+
+delegate(proto, 'response')
+  .method('attachment')
+  .method('redirect')
+  .method('remove')
+  .method('vary')
+  .method('set')
+  
+.....
+
+/**
+ * Request delegation.
+ */
+
+delegate(proto, 'request')
+  .method('acceptsLanguages')
+  .method('acceptsEncodings')
+  .method('acceptsCharsets')
+  .method('accepts')
+  .method('get')
+
+......
+```
+
+delegates是第三方npm包，功能就是把一个对象上的方法，属性委托到另一个对象上
+
+面那一排方法，都是Request和Response静态类中的方法
+
+method方法是委托方法，getter方法用来委托getter，access方法委托getter+setter
+
+
+
+
+
+
 
 
 
@@ -1040,7 +1226,6 @@ PM2的原理，用一句话来概括，就是我们通过rpc跟守护进程通�
 
 
 [网页链接](https://www.npmjs.com/package/body-parser)
-
 
 Node.js body parsing middleware.
 Node.js正文解析中间件。
