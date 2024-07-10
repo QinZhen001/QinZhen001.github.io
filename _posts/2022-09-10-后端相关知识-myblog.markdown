@@ -85,6 +85,10 @@ webhook 是一种基于 HTTP 的回调函数，**可在 2 个[应用编程接口
 
 
 
+
+
+
+
 ## ID
 
 
@@ -471,6 +475,18 @@ Istio addresses the challenges developers and operators face with a distributed 
 
 
 
+# calico
+
+[https://docs.tigera.io/calico/latest/about](https://docs.tigera.io/calico/latest/about)
+
+Calico is a networking and security solution that enables Kubernetes workloads and non-Kubernetes/legacy workloads to communicate seamlessly and securely.
+
+
+
+# HyperKit
+
+HyperKit是一个轻量级的虚拟化工具，用于在macOS上运行轻量级Linux容器。它是Docker for Mac的一部分，由Docker公司开发和维护。HyperKit实际上是一个基于xhyve虚拟机技术的超轻量级Hypervisor，它使用macOS的核心框架Hypervisor.framework来运行和管理Linux容器。HyperKit提供了一种在macOS上本地运行和测试容器化应用程序的方式，可以提供与Linux环境相似的操作体验，并允许容器与macOS宿主机进行通信和共享资源。它主要用于开发和测试目的，让开发人员能够在本地开发环境中方便地构建和运行容器应用。
+
 
 
 # **微服务**
@@ -836,6 +852,18 @@ Kubernetes（简称k8s）的addon是一组可选的功能插件，它们为k8s�
 7. Cluster Autoscaler：自动调整k8s集群中的节点数量，以匹配当前工作负载的需求。
 
 这些addon可以根据实际需求进行选择和配置，以扩展和增强k8s集群的功能。
+
+
+
+
+
+### CNI
+
+CNI 是 Container Network Interface（容器网络接口）的缩写，它是一个用于定义和配置容器运行时网络的规范。CNI 定义了插件接口以及与容器运行时（如 Docker、Kubernetes 等）交互的标准协议。
+
+CNI 使得不同的容器运行时可以采用不同的网络插件，而不需要对核心功能进行修改。这样，用户可以根据自己的需求选择和切换不同的网络解决方案。CNI 插件可以用来配置容器的网络，包括创建和管理虚拟网络设备、IP 地址分配以及路由等操作。CNI 还支持多种网络模型，如主机模式、桥接模式、Overlay 网络等。
+
+总之，CNI 是一个用于定义和配置容器运行时网络的标准接口，使得容器运行时和网络插件可以更加灵活地集成和协同工作。
 
 
 
