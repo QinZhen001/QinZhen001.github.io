@@ -223,6 +223,48 @@ create-vite
 
 
 
+### @latest
+
+[https://stackoverflow.com/questions/73594809/what-is-the-difference-between-npm-init-vitelatest-and-npm-init-vite](https://stackoverflow.com/questions/73594809/what-is-the-difference-between-npm-init-vitelatest-and-npm-init-vite)
+
+我们用 create-vite 举例子
+
+IF you had already the `create-vite` package **globally** installed, and for example, a **older version**, it will be what `npm init` uses.
+
+当你全局已经有安装create-vite，npm create vite/npm init 会去找全局的这个create-vite而不会用最新的版本
+
+fetches and runs the latest
+
+所以要获取和运行最新的话使用
+
+```bash
+npm create vite@latest
+```
+
+
+
+
+
+
+
+## user-agent
+
+[https://docs.npmjs.com/cli/v7/using-npm/config#user-agent](https://docs.npmjs.com/cli/v7/using-npm/config#user-agent)
+
+```
+Default: "npm/{npm-version} node/{node-version} {platform} {arch} workspaces/{workspaces} {ci}"
+```
+
+通过这个可以判断当前是否是使用 npm
+
+```
+process.env.npm_config_user_agent
+```
+
+
+
+
+
 
 
 ## workspaces
@@ -903,6 +945,36 @@ npm 中的每条 script 在引擎内部都会运行三个单独的 script 。一
 ```
 
 > 请注意，你应该使用的 `rimraf` 包进行跨平台兼容性，因为上面的代码无法在 Windows 上运行。
+
+
+
+
+
+## 判断包管理器
+
+[https://4ark.me/post/weekly-npm-packages-01.html/](https://4ark.me/post/weekly-npm-packages-01.html/)
+
+有的时候我们需要判断当前环境用的包管理器 是npm or yarn or pnpm 等
+
+使用：
+
+```ts
+const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
+
+function pkgFromUserAgent(userAgent: string | undefined) {
+  if (!userAgent) return undefined;
+  const pkgSpec = userAgent.split(" ")[0];
+  const pkgSpecArr = pkgSpec.split("/");
+  return {
+    name: pkgSpecArr[0],
+    version: pkgSpecArr[1],
+  };
+}
+
+// pkgManager 为 pkgInfo.name
+```
+
+
 
 
 

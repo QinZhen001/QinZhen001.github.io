@@ -687,9 +687,27 @@ docker kill 973322dc1872
 
 
 
+## dockerignore
+
+```
+.dockerignore 文件
+```
+
+它类似于.gitignore文件，用于忽略不需要包含在镜像中的文件，从而减少构建上下文的大小并提高构建性能。
+
+---
+
+1. 增加构建性能：Docker在构建镜像时，会将构建上下文的所有文件和目录发送给Docker引擎。如果构建上下文中包含大量的不必要文件和目录，将导致构建时间变长。通过使用Dockerignore文件，可以排除这些不必要的文件和目录，从而减少构建上下文的大小，提高构建性能。
+2. 减少镜像大小：构建镜像时，Docker会将构建上下文中的所有文件和目录复制到镜像中。如果构建上下文中包含大量的不必要文件和目录，将导致镜像大小增加。通过使用Dockerignore文件，可以排除这些不必要的文件和目录，从而最小化镜像的大小。
+3. 保护敏感信息：Dockerignore文件还可以用于排除包含敏感信息（如密码、秘钥等）的文件和目录，以防止它们被包含在镜像中。
+
+
+
 ## Dockerfile
 
 [https://docs.docker.com/engine/reference/builder/#dockerfile-reference](https://docs.docker.com/engine/reference/builder/#dockerfile-reference)
+
+[Packaging your software](https://docs.docker.com/build/building/packaging/)
 
 Docker can build images automatically by reading the instructions from a Dockerfile
 
