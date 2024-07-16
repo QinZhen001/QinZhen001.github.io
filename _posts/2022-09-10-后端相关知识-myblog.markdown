@@ -598,7 +598,14 @@ Docker 中有三个核心概念：Image、Container、Repository。
 - **Container：** 容器的存在离不开镜像的支持，他是镜像运行时的一个载体（类似于实例和类的关系）。依托 Docker 的虚拟化技术，给容器创建了独立的端口、进程、文件等“空间”，Container 就是一个与宿机隔离 “容器”。容器可宿主机之间可以进行 port、volumes、network 等的通信。
 - **Repository：** Docker 的仓库和 git 的仓库比较相似，拥有仓库名、tag。在本地构建完镜像之后，即可通过仓库进行镜像的分发。常用的 Docker hub 有 https://hub.docker.com/ 、 https://cr.console.aliyun.com/ 等。
 
+---
 
+Docker镜像（Image）和容器（Container）的区别
+
+1. Docker镜像（Image）是一个只读的模板，包含了运行Docker容器所需要的所有文件和依赖。它可以看作是一个容器的静态快照，具有可移植性和版本管理的特性。
+2. Docker容器（Container）是基于Docker镜像创建的可运行实体，具有独立的文件系统、运行时环境，以及在容器中运行的进程。容器可以被启动、停止、删除等操作，提供了一种轻量级且隔离的运行环境。
+
+简而言之，镜像是一种静态的模板，而容器是镜像的运行实例。从镜像可以创建多个容器，每个容器都是相互独立的，拥有自己的文件系统、网络、进程等。镜像主要用于构建和分发应用程序，而容器用于部署和运行应用程序。
 
 
 
@@ -610,7 +617,53 @@ Docker 中有三个核心概念：Image、Container、Repository。
 
 
 
-### docker-compose
+### -idt
+
+"docker -idt" 命令的作用是以交互模式（-i）、分配伪终端（-t）和在后台运行（-d）的方式启动一个 Docker 容器。
+
+具体作用如下：
+
+- 以交互模式运行：在容器中输入命令，并查看命令的输出结果。
+- 分配伪终端：分配一个伪终端，使得用户可以与容器进行交互，输入命令和查看命令输出。
+- 后台运行：容器进程在后台运行，不会占据当前终端，并允许终端进行其他操作。
+
+综上所述，"docker -idt" 命令可以方便地在 Docker 容器中运行命令，并查看输出结果。
+
+---
+
+举个例子：
+
+```
+docker run --name tomcat001 -idt tomcat
+```
+
+
+
+### --mount
+
+Docker的`--mount`用于将主机上的文件或目录与容器中的文件或目录进行挂载（共享），以实现主机和容器之间的数据共享和持久化存储。
+
+`--mount`选项可以接受多个参数来指定挂载的配置，常用的参数有：
+
+- `type`：指定挂载类型，可以是`bind`（主机文件系统上的目录或文件）、`volume`（Docker卷）、`tmpfs`（临时的内存文件系统）等。
+- `source`：指定挂载源，即主机上的目录或文件的路径。
+- `target`：指定挂载目标，即容器内部的目录或文件的路径。
+- `readonly`：可选参数，指定挂载为只读。
+- `volume-opt`：可选参数，用于指定挂载选项，如`volume-opt=type=nfs`表示挂载一个NFS卷。
+
+使用`--mount`选项示例：
+
+```bash
+docker run --mount type=bind,source=/host/path,target=/container/path,readonly=true
+```
+
+这个命令可以将主机上的`/host/path`目录挂载到容器内的`/container/path`目录，并将挂载设置为只读。
+
+通过使用`--mount`选项，可以更加灵活地控制挂载的方式和选项，以适应不同的应用场景和需求。
+
+
+
+### compose
 
 [https://pythondjango.cn/python/tools/3-docker-compose/](https://pythondjango.cn/python/tools/3-docker-compose/)
 
@@ -641,11 +694,23 @@ docker run -d -p 80:80 nginx
 
 docker ps 
 
----
+
+
+### images
+
+```ba
+docker images ls
+```
+
+该命令将会列出你所有本地的镜像，其中包括镜像的名称、标签、镜像 ID、大小等信息。
 
 
 
 ### inspect
+
+```bash
+docker inspect <镜像名称或 ID>
+```
 
 docker inspect命令的作用是返回有关Docker对象的详细信息，包括容器、镜像、网络和卷等。
 
@@ -656,6 +721,14 @@ docker inspect命令的作用是返回有关Docker对象的详细信息，包括
 ### build
 
 [https://docs.docker.com/build/](https://docs.docker.com/build/)
+
+```bash
+// 举个例子
+
+docker build -t cascas321sdo/ddd .
+```
+
+
 
 
 
@@ -685,19 +758,13 @@ docker kill 973322dc1872
 
 
 
+### info
 
+该命令将显示与您登录的个人身份相关的详细信息，包括仓库的数量、镜像的数量、运行的容器的数量以及其他相关统计信息。
 
-### WorkDir
-
-
-
-### EntryPoint
-
-
-
-
-
-### CMD
+```
+docker info
+```
 
 
 
@@ -748,19 +815,23 @@ RUN apt-get update && \
 
 
 
+
+
+## publish 发布包
+
+```
+docker login
+docker tag <IMAGE_ID> <REPOSITORY>:<TAG>
+docker push <REPOSITORY>:<TAG>
+```
+
+
+
+
+
 ## Daemon
 
 Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以分为Docker Server、Engine和Job三部分。 Docker Daemon可以认为是通过Docker Server模块接受Docker Client的请求，并在Engine中处理请求，然后根据请求类型，创建出指定的Job并运行
-
-
-
-
-
-## 镜像
-
-
-
-
 
 ## Multi-stage
 
