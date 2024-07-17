@@ -611,7 +611,7 @@ Docker镜像（Image）和容器（Container）的区别
 
 
 
-## 命令 
+## 命令
 
 [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
 
@@ -669,6 +669,28 @@ docker run --mount type=bind,source=/host/path,target=/container/path,readonly=t
 
 https://www.cnblogs.com/davis12/p/14312267.html
 
+`docker-compose up`：启动容器。如果当前不存在容器，则会构建镜像并创建容器，并将容器启动起来。`docker-compose up -d`（以后台方式启动容器）
+
+`docker-compose down`：停止并移除容器。会移除已创建的容器以及相关的网络、卷等资源。
+
+`docker-compose start`：启动已创建的容器，不会进行构建镜像和创建容器的操作。
+
+`docker-compose stop`：停止已创建的容器。
+
+`docker-compose restart`：重启已创建的容器。
+
+`docker-compose build`：构建镜像。根据配置的 Dockerfile 构建镜像，并可以指定镜像标签等参数。
+
+`docker-compose logs`：查看容器日志。
+
+`docker-compose ps`：查看容器的状态。
+
+`docker-compose exec`：在容器中执行命令。
+
+`docker-compose run`：在新容器中运行命令。
+
+
+
 
 
 ### run
@@ -682,24 +704,52 @@ https://www.cnblogs.com/davis12/p/14312267.html
 
 例子：
 
+```bash
 docker run -it alpine sh
-
 docker run -d -p 80:80 nginx   
+docker run --name=base-container -ti ubuntu   // name: container name
+```
 
----
+
 
 ### ps
 
+```bash
+docker ps 
+```
+
 查看进程
 
-docker ps 
+
+
+
+
+### container
+
+```
+docker container ls
+```
+
+container 相关的命令
+
+
+
+docker container commit
+
+
+
+### init
+
+[https://docs.docker.com/reference/cli/docker/init/](https://docs.docker.com/reference/cli/docker/init/)
+
+Creates Docker-related starter files for your project
 
 
 
 ### images
 
 ```ba
-docker images ls
+docker images 
 ```
 
 该命令将会列出你所有本地的镜像，其中包括镜像的名称、标签、镜像 ID、大小等信息。
@@ -739,6 +789,42 @@ docker build -t cascas321sdo/ddd .
 具体来说，使用`-t`标志可以在构建镜像时为其指定一个易于记忆和识别的标签。例如，`docker build -t myimage:1.0 .`会将构建的镜像命名为`myimage`，并设置其标签为`1.0`。
 
 有了标签，可以更轻松地识别和管理镜像。标签可以用于检索和使用特定版本的镜像，也可以用于发布和共享镜像。
+
+
+
+#### --target
+
+`docker build --target` 命令用于在构建Docker镜像时指定要构建的目标阶段（target stage）。
+
+在Dockerfile中，可以使用多个 `FROM` 命令指定多个基础镜像，并且每个基础镜像可以有不同的阶段。可以使用 `--target` 参数来指定构建过程中要使用的特定阶段。这样可以跳过之前的构建步骤，并从指定的阶段开始构建。
+
+使用 `--target` 参数可以加快构建过程，因为不需要重新构建之前的阶段。同时，还可以避免构建不需要的组件或服务，从而减小生成的镜像的大小。
+
+例如，假设Dockerfile的内容如下：
+
+```
+FROM base AS build
+# 构建阶段1
+...
+
+FROM base AS test
+# 构建阶段2
+...
+
+FROM base AS deploy
+# 构建阶段3
+...
+```
+
+如果要构建并且只关心 `deploy` 阶段，可以使用以下命令：
+
+```
+docker build --target=deploy .
+```
+
+这样将会跳过构建 `build` 和 `test` 阶段，并仅构建 `deploy` 阶段。
+
+
 
 
 
@@ -795,6 +881,20 @@ docker info
 Docker can build images automatically by reading the instructions from a Dockerfile
 
 Docker可以通过读取Dockerfile中的指令来自动构建镜像
+
+
+
+
+
+### EXPOSE
+
+Dockerfile 中的 EXPOSE 指令用于声明容器运行时所监听的网络端口，以便让外部的其他容器或主机能够访问该容器的网络服务。
+
+**EXPOSE 指令只是起到文档化的作用，不会自动进行端口映射或将端口暴露给主机，因此在创建容器时，仍需要使用 -p 或 -P(所有暴露的接口) 参数来进行端口映射**
+
+[https://docs.docker.com/guides/docker-concepts/running-containers/publishing-ports/#publishing-all-ports](https://docs.docker.com/guides/docker-concepts/running-containers/publishing-ports/#publishing-all-ports)
+
+
 
 
 
