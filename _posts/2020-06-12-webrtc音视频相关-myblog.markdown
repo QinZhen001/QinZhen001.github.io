@@ -438,6 +438,69 @@ AudioBuffer 接口表示存在内存里的一段短小的音频资源，利用[`
 
 
 
+## **WebVTT**
+
+包含实际字幕数据的文件是遵循指定格式的简单文本文件，在这种情况下是[Web视频文本轨道](https://link.juejin.cn/?target=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FHTML%2FWebVTT)（WebVTT）格式。该**WebVTT插入规范仍在开发中**，但它的**主要部分是稳定的**，所以我们今天可以使用它。
+
+**Web 视频文本轨格式**（**WebVTT**）是一种使用 [track](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/track)元素显示定时文本轨道（例如字幕或者标题）的格式。WebVTT 文件的主要用途是将文本叠加到 [video](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/video) 中。WebVTT 是一种基于文本的格式，必须使用 [UTF-8](https://developer.mozilla.org/zh-CN/docs/Glossary/UTF-8) 进行编码。在可以使用空格的地方，也可以使用制表符。这里也有一个小的 API 可用于表示和管理这些轨道以及在正确时间执行文本回放所需的数据。
+
+https://www.zhangxinxu.com/sp/webvtt.html
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/WebVTT_API
+
+[Simple SubRip to WebVTT converter](https://atelier.u-sub.net/srt2vtt/)
+
+
+
+**::cue伪元件是用于在VTT轨道的媒体中使用字幕和其他线索。只有少数CSS属性可以应用于文本提示：**
+
+- color
+- opacity
+- visibility
+- text-decoration
+- text-shadow
+- background
+- outline
+- font
+- line-height
+- white-space
+
+WebVTT还支持一些HTML标签进行样式控制，常见的有声音 **v** 标签，颜色 **c** 标签，加粗**b**标签，倾斜**i**标签，下划线**u**标签，还有**ruby**和**lang**标签等。
+
+```
+//设置字幕的样式
+video::cue{
+    background-color:transparent;
+    color:white;
+    font-size:20px;
+    line-height: 100px;
+}
+
+// 设置单行字幕的样式 
+video::cue(v[voice=aa]){
+    color:green;
+}
+
+video::cue(v[voice=bb]){
+    color:rgb(0, 26, 128);
+}
+```
+
+一个 WebVTT 文件（`.vtt`）包含一行或者多行的时间提示性内容（cue）
+
+
+
+I looked into it. In fact, the solution to this problem is to create a css:
+
+```
+::cue(.yellow) {color: yellow;}
+::cue(.bg_blue) {background-color: blue;}
+```
+
+
+
+
+
 
 
 # Web RTC
@@ -575,6 +638,12 @@ General purpose WebRTC server
 
 # video.js
 
+[https://videojs.com/getting-started](https://videojs.com/getting-started)
+
+Video.js is an extendable framework/library around the native video element. 
+
+
+
 
 
 ## Tech
@@ -587,20 +656,33 @@ videojs 核心源码中提供了 Html5 作为默认 Tech，用于播放浏览器
 
 
 
+## screenfull
+
+videojs的源码，发现可以用screenfull.js这个库直接实现全屏，非常方便。
+
+```ts
+// 无需自己做浏览器兼容
+import screenfull from "screenfull";
+
+if (screenfull.isEnabled) {
+    screenfull.request(video);
+}
+```
+
+
+
+
+
 ## middleware
 
 [https://videojs.com/blog/feature-spotlight-middleware/](https://videojs.com/blog/feature-spotlight-middleware/)
 
 Video.js middleware are like Express middleware but routes are based on video MIME types.
 
-
-
 There are two important pieces to be aware of with middleware:
 
 1. dynamic source handling
 2. intercepting the player and tech interactions.
-
-
 
 ```tsx
 <video controls class="video-js">
@@ -746,10 +828,6 @@ ffmpeg -f avfoundation -i :0 out.wav
 ## copy 模式
 
 在FFmpeg中，复制（copy）模式是指直接复制输入文件的音频或视频流，不进行任何编码或解码操作。这种模式可以快速地将输入文件复制到输出文件中，而不会改变编码格式或压缩质量。使用复制模式可以节省时间和系统资源，并且可以保留原始的音视频质量。
-
-
-
-
 
 浏览器环境需要 [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm)
 
@@ -1145,7 +1223,9 @@ js是一种将应用程序与WebRTC中的规范变化和前缀差异隔离开来
 
 
 
-### m3u8
+### M3U8
+
+M3U8 文件是一种播放列表文件，用于描述一系列媒体段（通常是 TS 文件）的位置和顺序。它是 M3U 文件格式的扩展版本，使用 UTF-8 编码。
 
 application/vnd.apple.mpegURL 是一种MPEG-DASH（Dynamic Adaptive Streaming over HTTP）视频流的容器格式，也即.m3u8文件。
 
@@ -1157,6 +1237,22 @@ browserHlsSupported(): boolean {
     return !!mediaElement.canPlayType('application/vnd.apple.mpegURL');
   }
 ```
+
+- **播放列表**：M3U8 文件包含指向实际媒体段（如 TS 文件）的 URL 或路径。
+- **文本格式**：M3U8 文件是纯文本文件，可以用任何文本编辑器打开和查看。
+- **动态更新**：在直播场景中，M3U8 文件可以动态更新，以包含新的媒体段。
+
+
+
+### TS 文件
+
+TS 文件（Transport Stream 文件）是一种媒体段文件，包含实际的音视频数据。TS 是一种容器格式，常用于存储和传输视频、音频和数据。
+
+- **媒体段**：TS 文件包含实际的音视频数据段，通常是几秒钟的长度。
+- **分段传输**：在 HLS 中，视频被分割成多个 TS 文件，这些文件可以独立下载和播放。
+- **容器格式**：TS 文件可以包含多种编码格式的数据，常见的是 H.264 视频和 AAC 音频。
+
+
 
 
 
@@ -1191,6 +1287,20 @@ HLS使用了自适应码率技术，根据网络条件动态调整码率和缓�
 
 
 
+### MP4
+
+MP4（MPEG-4 Part 14）是一种数字多媒体容器格式，用于存储视频、音频、字幕和其他数据。MP4 文件的扩展名通常是 `.mp4`。它可以包含多种编码格式的数据，包括但不限于：
+
+- **视频编码格式**：H.264（也称为 AVC）、H.265（也称为 HEVC）、MPEG-4 Part 2、VP9 等。
+- **音频编码格式**：AAC、MP3、ALAC、Opus 等。
+- **字幕**：SRT、VTT、TTML 等。
+
+---
+
+**MP4 作为容器**：MP4 可以包含 H.264 编码的视频流，但也可以包含其他编码格式的视频流。
+
+**H.264 作为编码格式**：H.264 编码的视频流可以存储在 MP4 容器中，但也可以存储在其他容器格式中，如 MKV、AVI、FLV 等。
+
 
 
 ### 卡顿率
@@ -1204,6 +1314,69 @@ HLS使用了自适应码率技术，根据网络条件动态调整码率和缓�
 ### PVC
 
 PVC（Perceptual Video Coding）视频感知编码，是一种在保障同等画质的前提下降低带宽消耗的视频编码方式。例如，在带宽受限场景下提升视频流畅性，在移动网络场景下降低流量消耗。
+
+
+
+### FLV 和 FLS
+
+FLV（Flash Video）和 FLS（Flash Live Streaming）是两种与 Adobe Flash 技术相关的文件格式和传输协议。尽管它们都与 Flash 相关，但它们的用途和功能有所不同。以下是对 FLV 和 FLS 的详细解释：
+
+FLV（Flash Video）
+
+概述
+
+- **文件扩展名**：.flv
+- **用途**：用于存储和传输视频内容。
+- **开发者**：Adobe Systems（原 Macromedia）
+
+特点
+
+- **视频编码**：通常使用 H.263、VP6 或 H.264 编码。
+- **音频编码**：通常使用 MP3 或 AAC 编码。
+- **容器格式**：FLV 是一种容器格式，能够封装视频、音频、字幕和元数据。
+- **流媒体支持**：支持通过 HTTP 或 RTMP（Real-Time Messaging Protocol）进行流媒体传输。
+
+使用场景
+
+- **在线视频**：广泛用于视频网站，如 YouTube（早期）、Vimeo 等。
+- **嵌入网页**：通过 Flash 播放器嵌入网页，实现视频播放。
+- **多媒体应用**：用于多媒体应用和广告。
+
+FLS（Flash Live Streaming）
+
+概述
+
+- **协议名称**：FLS 通常指 Flash Live Streaming。
+- **用途**：用于实时视频流传输。
+
+特点
+
+- **实时传输**：FLS 是一种协议，支持实时视频和音频流的传输，通常用于直播。
+- **基于 RTMP**：FLS 通常基于 RTMP 协议，用于低延迟的实时流传输。
+- **服务器支持**：需要专门的流媒体服务器，如 Adobe Media Server 或开源的 Red5、Wowza 等。
+
+使用场景
+
+- **实时直播**：用于直播活动、网络研讨会、在线教育等实时视频流传输。
+- **互动视频**：支持实时互动视频应用，如视频会议、视频聊天等。
+
+### 对比
+
+| 特性     | FLV                            | FLS                                   |
+| -------- | ------------------------------ | ------------------------------------- |
+| 类型     | 文件格式（容器格式）           | 流媒体传输协议                        |
+| 用途     | 存储和传输视频内容             | 实时视频流传输                        |
+| 视频编码 | H.263、VP6、H.264              | 取决于具体实现，通常为 H.264          |
+| 音频编码 | MP3、AAC                       | 取决于具体实现，通常为 AAC            |
+| 传输方式 | HTTP、RTMP                     | RTMP                                  |
+| 使用场景 | 在线视频、嵌入网页、多媒体应用 | 实时直播、互动视频、网络研讨会        |
+| 依赖     | Flash 播放器                   | 流媒体服务器（如 Adobe Media Server） |
+
+### 总结
+
+FLV 是一种用于存储和传输视频内容的文件格式，广泛应用于在线视频和多媒体应用。FLS 则是一种用于实时视频流传输的协议，通常基于 RTMP，用于直播和互动视频场景。尽管两者都与 Flash 技术相关，但它们在用途和实现方式上有显著区别。
+
+
 
 
 
@@ -1250,27 +1423,6 @@ PVC（Perceptual Video Coding）视频感知编码，是一种在保障同等画
 
 
 
-### video.js
-
-[https://videojs.com/getting-started](https://videojs.com/getting-started)
-
-Video.js is an extendable framework/library around the native video element. 
-
-
-
-#### 全屏 screenfull
-
-videojs的源码，发现可以用screenfull.js这个库直接实现全屏，非常方便。
-
-```ts
-// 无需自己做浏览器兼容
-import screenfull from "screenfull";
-
-if (screenfull.isEnabled) {
-    screenfull.request(video);
-}
-```
-
 
 
 
@@ -1278,6 +1430,12 @@ if (screenfull.isEnabled) {
 ## 科普
 
 [「完全理解」video 标签到底能播放什么](https://juejin.cn/post/7018373086072766472)
+
+
+
+### SEI
+
+SEI（Supplemental Enhancement Information）是一种嵌入在 H.264 和 H.265 视频流中的元数据，用于提供额外的信息以增强解码器的功能和性能。SEI 信息可以包含时间戳、显示信息、用户数据、场景切换信息和质量信息等，帮助解码器更好地处理和显示视频内容。
 
 
 
@@ -1388,6 +1546,49 @@ I和IDR帧都是使用帧内预测的。它们都是同一个东西而已,在编
 
 一般平均来说，I的压缩率是7（跟JPG差不多），P是20，B可以达到50，可见使用B帧能节省大量空间
 
+**一个 I 帧可以不依赖其他帧就解码出一幅完整的图像，而 P 帧、B 帧不行。P 帧需要依赖视频流中排在它前面的帧才能解码出图像。B 帧则需要依赖视频流中排在它前面或后面的帧才能解码出图像。**
+
+
+
+
+
+### DTS 和 PTS
+
+在视频和音频处理领域，DTS（Decoding Time Stamp）和 PTS（Presentation Time Stamp）是两个重要的时间戳概念，它们用于同步和控制媒体流的解码和显示。以下是它们的详细区别和作用：
+
+DTS（Decoding Time Stamp）
+
+DTS（解码时间戳）指示一个视频或音频帧应该被解码的时间。
+
+作用
+
+- **解码顺序**：DTS 用于确定解码器何时应该解码某个帧。特别是在 B 帧（双向预测帧）存在的情况下，帧的解码顺序和显示顺序可能不同。
+- **缓冲管理**：DTS 帮助解码器管理缓冲区，确保帧在正确的时间被解码。
+
+示例
+
+假设视频流中有三个帧：I 帧、B 帧和 P 帧。解码顺序可能是 I 帧 -> P 帧 -> B 帧，但显示顺序是 I 帧 -> B 帧 -> P 帧。在这种情况下，DTS 用于告诉解码器按 I -> P -> B 的顺序解码。
+
+PTS（Presentation Time Stamp）
+
+PTS（显示时间戳）指示一个视频或音频帧应该被呈现（显示或播放）的时间。
+
+作用
+
+- **播放顺序**：PTS 用于确定帧的播放顺序，确保视频和音频按正确的时间顺序播放。
+- **音视频同步**：PTS 是音频和视频同步的关键，用于确保音频和视频在播放时保持同步。
+
+示例
+
+继续上面的例子，PTS 用于告诉播放器按 I -> B -> P 的顺序显示帧，以确保正确的播放顺序。
+
+| 特性         | DTS（Decoding Time Stamp）    | PTS（Presentation Time Stamp） |
+| ------------ | ----------------------------- | ------------------------------ |
+| **作用**     | 确定帧的解码时间              | 确定帧的显示时间               |
+| **使用场景** | 帧的解码顺序和缓冲管理        | 帧的播放顺序和音视频同步       |
+| **适用对象** | 解码器                        | 播放器                         |
+| **典型应用** | 处理 B 帧等需要重新排序的情况 | 确保音视频同步播放             |
+
 
 
 
@@ -1403,6 +1604,65 @@ I和IDR帧都是使用帧内预测的。它们都是同一个东西而已,在编
 
 
 
+### 音视频同步
+
+音视频同步（A/V Sync）是指在播放多媒体内容时，确保音频和视频能够正确地协调和同步播放。这是一个复杂的过程，涉及多个阶段，包括捕获、编码、传输、解码和播放。以下是一些关键技术和方法，用于实现音视频同步：
+
+时间戳（Timestamps）
+
+PTS（Presentation Time Stamp）
+
+- **作用**：PTS 用于标记每个音频和视频帧的显示时间。
+- **同步机制**：播放器使用 PTS 来确保音频和视频帧在正确的时间被播放。通过比较当前播放时间和帧的 PTS，播放器可以决定是否应该播放、延迟或跳过帧。
+
+缓冲区（Buffers）
+
+- **音频缓冲区**：用于存储解码后的音频数据，以便平滑播放。
+- **视频缓冲区**：用于存储解码后的视频帧，以便平滑播放。
+- **同步机制**：播放器会根据音频和视频的 PTS 调整缓冲区的内容，确保音视频同步播放。例如，如果视频帧的 PTS 比当前时间早，而音频帧的 PTS 比当前时间晚，播放器可能会延迟视频播放以等待音频。
+
+时钟（Clocks）
+
+- **系统时钟**：通常由操作系统提供，用于跟踪当前的播放时间。
+- **音频时钟**：由音频硬件提供，用于精确控制音频播放时间。
+- **同步机制**：播放器使用系统时钟和音频时钟来协调音频和视频的播放时间。通常，音频时钟被认为是更精确的时钟源，视频播放时间会根据音频时钟进行调整。
+
+AV 同步算法
+
+- **音频主导**：以音频播放时间为主，调整视频播放时间以匹配音频。这种方法利用音频时钟的高精度，减少音视频不同步的可能性。
+- **视频主导**：以视频播放时间为主，调整音频播放时间以匹配视频。这种方法适用于视频播放要求更高的场景。
+- **双向调整**：同时调整音频和视频的播放时间，以达到最佳的同步效果。
+
+延迟和补偿
+
+- **音频延迟**：有时音频解码和播放可能会有延迟，播放器需要补偿这种延迟，以保持同步。
+- **视频延迟**：类似地，视频解码和播放也可能会有延迟，需要进行补偿。
+- **同步机制**：通过调整缓冲区的大小和内容，播放器可以补偿解码和播放过程中的延迟，确保音视频同步。
+
+网络传输中的同步
+
+在流媒体传输中，音视频同步更加复杂，因为网络延迟和抖动可能影响同步性。常用的方法包括：
+
+- **RTP（Real-time Transport Protocol）**：用于实时传输音视频数据，支持时间戳和序列号，帮助接收端进行同步。
+- **RTCP（RTP Control Protocol）**：用于监控和控制 RTP 流，提供反馈信息，帮助维持同步。
+- **缓冲策略**：通过增加缓冲区大小，平滑网络抖动，确保音视频同步。
+
+实际应用中的同步
+
+媒体播放器
+
+- **VLC、MPC-HC 等播放器**：这些播放器使用上述同步机制，通过时间戳、缓冲区和时钟协调音视频播放。
+
+流媒体服务
+
+- **YouTube、Netflix 等**：这些服务使用 RTP/RTCP 等协议和自定义同步算法，确保在不同网络条件下音视频的同步播放。
+
+总结
+
+音视频同步是通过多种技术和方法实现的，包括使用时间戳（PTS）、缓冲区、系统时钟和音频时钟、同步算法、延迟补偿以及网络传输协议。通过这些手段，播放器和流媒体服务可以确保音频和视频在播放过程中保持同步，提供良好的用户体验。
+
+
+
 # 问题
 
 
@@ -1411,17 +1671,15 @@ I和IDR帧都是使用帧内预测的。它们都是同一个东西而已,在编
 
 抖音视频的url直接在浏览器中打开是没有问题的,直接打开本地的.html文件也是可以正常播放视频的,但访问服务器上的请求过来的页面就无法播放视频，浏览器里按F12查看network发现video标签里的src请求视频资源时报**403 Forbiddn** 错误。
 
-
-
 经过对比发现错误的请求头中多了个**Referer**
-
-
 
 估计请求的是服务器 referer 做了判断，不是正常的referer就拒绝了，可以模拟他们的 referer 请求试下，测试发现, 通过 https 站点打开的页面, 可以正常打开视频链接，在 https 下, 发送的请求是不会带有 Referer 的header 的, 这个时候是可以正常加载视频的. 所以, 我们在 页面的 head 标签内, 增加一行代码,指定浏览器任何情况下都不发送Referer,这样就可以正常加载资源了。
 
 ```xml
 <meta name="referrer" content="no-referrer">
 ```
+
+
 
 ## autoplay
 

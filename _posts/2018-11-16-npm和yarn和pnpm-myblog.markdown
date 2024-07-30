@@ -60,7 +60,7 @@ npm run test --if-present
 
 如果你只想在命令存在的情况下运行它，npm有一个选项
 
-
+`--if-present` 选项允许在 脚本命令存在时执行，而在不存在时不报错，直接退出命令。这在某些情况下可以帮助绕过因缺少必须的脚本命令而导致的错误。
 
 
 
@@ -88,7 +88,20 @@ npm unpublish <package-name>@<version>
 
 
 
+### npm ci
+
+[https://stackoverflow.com/questions/63187000/what-is-the-npm-equivalent-of-yarn-install-frozen-lockfile](https://stackoverflow.com/questions/63187000/what-is-the-npm-equivalent-of-yarn-install-frozen-lockfile)
+
+npm ci bypasses a package’s package.json to install modules from a package’s lockfile. This ensures reproducible builds—you are getting exactly what you expect on every install.
+
+npm ci 绕过包的 package.json 从包的锁定文件安装模块。这确保了可重复的构建——您在每次安装时都能得到您所期望的结果。
+
+
+
+
+
 ## npm link
+
 [https://docs.npmjs.com/cli/link](https://docs.npmjs.com/cli/link)
 
 First, npm link in a package folder will create a symlink in the global folder `{prefix}/lib/node_modules/<package>`  that links to the package where the npm link command was executed. 
@@ -527,6 +540,26 @@ const task = process.env.npm_lifecycle_event.startsWith('pre') ? process.env.npm
 
 
 # yarn 
+
+
+
+## yarn install
+
+[https://classic.yarnpkg.com/lang/en/docs/cli/install/](https://classic.yarnpkg.com/lang/en/docs/cli/install/)
+
+
+
+### --frozen-lockfile
+
+[https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-frozen-lockfile](https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-frozen-lockfile)
+
+If you need reproducible dependencies, which is usually the case with the continuous integration systems, you should pass --frozen-lockfile flag.
+
+如果您需要可重现的依赖关系（持续集成系统通常就是这种情况），您应该传递 --frozen-lockfile 标志。
+
+`yarn install --frozen-lockfile` 的作用是在安装依赖包时，如果 package-lock.json 文件被修改过并且与 yarn.lock 文件不匹配，Yarn 会提示错误并停止安装。这个命令可以用来确保安装过程中不会意外改变 package-lock.json 文件，保持它的一致性。
+
+
 
 
 

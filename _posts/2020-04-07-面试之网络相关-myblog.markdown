@@ -61,6 +61,42 @@ tags:
 
 
 
+##### multipart/form-data
+
+[multipart/form-data 类型HTTP请求详解](https://juejin.cn/post/6864189266399150088)
+
+POST请求时发送FormData类型的数据会将设置multipart/form-data，完整的设置如下：
+
+```
+Content-Type: multipart/form-data; boundary=xxxx
+```
+
+前半部分代表数据类型，而boundary代表分隔符,boundary对应的xxxx是由请求方自定义设置的。
+
+```ts
+const formData = new FormData()
+
+formData.append('file', file)
+formData.append('firstName', 'Harlan')
+formData.append('LastName', 'Zhang')
+
+http.post('example.com', formData)
+```
+
+**使用 formData 时 我们不需要设置Content-Type**
+
+**使用 formData 时 我们不需要设置Content-Type**
+
+**使用 formData 时 我们不需要设置Content-Type**
+
+如果我们手动设置了Content-type,会覆盖掉浏览器自己的设置，而因为我们不知道formData对象里面的boundary分隔符是什么，所以就会导致后端接受到数据以后在Content-type中找不到boundary或者boundary的值与formData中的boundary不一致，导致无法获取正确的数据。
+
+
+
+
+
+
+
 ### http常用响应头
 
 * Access-Control-Allow-Origin   指定哪些网站可以跨域源资源共享	
