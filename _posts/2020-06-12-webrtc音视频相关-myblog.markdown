@@ -499,6 +499,32 @@ I looked into it. In fact, the solution to this problem is to create a css:
 
 
 
+### VTTCue
+
+[https://dev.opera.com/articles/zh-cn/an-introduction-to-webvtt-and-track/](https://dev.opera.com/articles/zh-cn/an-introduction-to-webvtt-and-track/)
+
+VTTCue
+
+
+
+```css
+    video::cue {
+      font-size: 1rem;
+      color: yellow;
+    }
+
+		// 查找特定c标签
+    video::cue(c.asd) {
+      color: blue
+    }
+```
+
+```
+ const cue = new VTTCue(0, 15, "<c.asd>Cue text</c>: 11111");
+```
+
+
+
 
 
 
@@ -1439,6 +1465,61 @@ SEI（Supplemental Enhancement Information）是一种嵌入在 H.264 和 H.265 
 
 
 
+### SODB、RBSP 和 EBSP
+
+[https://lazybing.github.io/blog/2017/06/22/sodb-rbsp-ebsp/](https://lazybing.github.io/blog/2017/06/22/sodb-rbsp-ebsp/)
+
+SODB、RBSP 和 EBSP 是与视频编码和传输相关的术语，特别是在 H.264/AVC 和 H.265/HEVC 等视频编码标准中。这些术语涉及编码视频数据的不同级别和结构。
+
+SODB (String Of Data Bits)
+
+SODB 是指数据位串（String Of Data Bits），它是编码数据的最基本形式，不包括任何填充位或附加信息。SODB 是最原始的编码数据，直接从编码器输出。
+
+RBSP (Raw Byte Sequence Payload)
+
+RBSP 是指原始字节序列有效载荷（Raw Byte Sequence Payload）。它是在 SODB 基础上添加了一些填充位，以确保数据对齐到字节边界。RBSP 是一个包含了编码数据和必要的填充位的字节序列。
+
+EBSP (Encapsulated Byte Sequence Payload)
+
+EBSP 是指封装字节序列有效载荷（Encapsulated Byte Sequence Payload）。在 RBSP 的基础上，EBSP 添加了防止起始码前缀（start code prefix）的防止机制（即字节填充），以便在传输或存储过程中避免与起始码混淆。EBSP 是最终用于传输或存储的编码数据格式。
+
+关系和转换
+
+1. **SODB 到 RBSP**：在 SODB 的基础上添加填充位，使数据对齐到字节边界，形成 RBSP。
+2. **RBSP 到 EBSP**：在 RBSP 的基础上添加防止起始码前缀的机制，形成 EBSP。
+
+### 示例
+
+假设我们有一个 SODB，如下所示：
+
+```
+SODB: 1101001110100011 (16 bits)
+```
+
+为了形成 RBSP，我们可能需要添加一些填充位，使其对齐到字节边界：
+
+```
+RBSP: 11010011 10100011 (分成两个字节)
+```
+
+接下来，为了形成 EBSP，我们需要确保没有字节序列与起始码前缀冲突（例如，避免出现 `0x000001`）。假设在这个例子中不需要额外的防止机制，那么：
+
+```
+EBSP: 11010011 10100011 (与 RBSP 相同)
+```
+
+然而，如果我们需要防止起始码前缀，我们可能会插入一些额外的字节来避免冲突。
+
+总结
+
+- **SODB** 是最原始的编码数据位串。
+- **RBSP** 是在 SODB 基础上添加填充位后的字节序列。
+- **EBSP** 是在 RBSP 基础上添加防止起始码前缀机制后的封装字节序列。
+
+这些概念在视频编码标准中非常重要，用于确保视频数据在编码、传输和解码过程中保持一致性和可靠性。
+
+
+
 ### 封装与解包
 
 H.264 和 AAC，可以被封装成 MP4 或 FLV。但是 Chrome 只能播放前者而不支持后者，细想其实很没道理。就好比两个东西被装在 A 盒子里的时候能拆开用，但是装在 B 盒子里就不行了
@@ -1450,6 +1531,54 @@ H.264 和 AAC，可以被封装成 MP4 或 FLV。但是 Chrome 只能播放前�
 封装，抽象的说其实就是把**东西**按**不同排列**码到一块
 
 
+
+### Remux 和 Demux
+
+"Remux" 和 "Demux" 是与多媒体文件处理相关的术语，主要涉及到文件的封装和解封装。它们在视频编辑、转换和传输中起着重要作用。
+
+**Demux** 是“Demultiplexing”的缩写，意为“解复用”。它指的是从一个多路复用的媒体文件中分离出不同的流（如视频流、音频流、字幕流等）的过程。
+
+具体过程
+
+1. **输入文件**：一个多路复用的媒体文件，如 MP4、MKV、TS 等。
+2. **分离流**：将视频流、音频流、字幕流等分离成独立的文件或数据流。
+3. **输出**：得到独立的流文件，如 .h264（视频流）、.aac（音频流）、.srt（字幕流）等。
+
+示例应用
+
+- **视频编辑**：需要单独处理视频和音频流。
+- **音频提取**：从视频文件中提取音频。
+- **格式转换**：将多路复用的文件转换为其他格式。
+
+---
+
+**Remux** 是“Remultiplexing”的缩写，意为“重新复用”。它指的是将多个独立的流（如视频流、音频流、字幕流等）重新组合成一个多路复用的媒体文件的过程。
+
+具体过程
+
+1. **输入流**：独立的视频流、音频流、字幕流等。
+2. **组合流**：将这些独立的流组合成一个多路复用的文件。
+3. **输出文件**：得到一个多路复用的媒体文件，如 MP4、MKV、TS 等。
+
+示例应用
+
+- **视频制作**：将编辑好的视频和音频流重新组合成一个文件。
+- **格式转换**：将独立的流文件组合成一个特定格式的媒体文件。
+- **文件优化**：重新封装以获得更好的兼容性或更小的文件大小。
+
+区别总结
+
+- **Demux（解复用）**：从一个多路复用的媒体文件中分离出独立的流。
+  - **用例**：从 MP4 文件中提取视频和音频流。
+- **Remux（重新复用）**：将独立的流重新组合成一个多路复用的媒体文件。
+  - **用例**：将独立的视频和音频流重新组合成一个 MKV 文件。
+
+实际工具
+
+- **Demux 工具**：FFmpeg、MKVToolNix、tsMuxer 等。
+- **Remux 工具**：FFmpeg、MKVToolNix、tsMuxer 等。
+
+通过使用这些工具，用户可以方便地进行媒体文件的解复用和重新复用，以满足不同的需求。
 
 
 
