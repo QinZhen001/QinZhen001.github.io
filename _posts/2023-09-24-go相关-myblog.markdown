@@ -138,9 +138,12 @@ go run xxx.go
 go run -race xxx.go 
 
 
+
 ## build
 
 变成一个可执行文件，将始终打印出Hello World。如果我们想让程序再次运行，我们不需要再次编译程序，我们只需要运行可执行文件。
+
+
 
 
 ## tool1
@@ -153,6 +156,20 @@ go tool pprof http://localhost:8888/debug/profile
 
 查看文档
 godoc -http :8888
+
+
+
+## gob
+
+
+
+### register
+
+[What's the purpose of gob.Register method?](https://stackoverflow.com/questions/32676898/whats-the-purpose-of-gob-register-method)
+
+在Go中，`gob.Register`函数的作用是向Gob编码/解码器注册具体的类型。Gob是Go语言中用于编码和解码数据结构的库，它可以将数据序列化为字节流，然后再反序列化回原始数据结构。
+
+
 
 
 
