@@ -21,6 +21,33 @@ tags:
 
 
 
+## tailwind-merge
+
+[https://www.npmjs.com/package/tailwind-merge](https://www.npmjs.com/package/tailwind-merge)
+
+Utility function to efficiently merge [Tailwind CSS](https://tailwindcss.com/) classes in JS without style conflicts.
+
+
+
+```tsx
+import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+// test
+className={cn(
+  "absolute top-[50%] z-10 h-3 w-3 translate-y-[-50%] rounded-full bg-background",
+  left ? "-left-[4px] -ml-0.5" : "-right-[4px] -mr-0.5",
+)}
+```
+
+
+
+
+
 
 
 ## Just-in-Time Mode

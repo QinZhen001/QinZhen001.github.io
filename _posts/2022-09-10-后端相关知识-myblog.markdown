@@ -598,23 +598,98 @@ Docker 中有三个核心概念：Image、Container、Repository。
 - **Container：** 容器的存在离不开镜像的支持，他是镜像运行时的一个载体（类似于实例和类的关系）。依托 Docker 的虚拟化技术，给容器创建了独立的端口、进程、文件等“空间”，Container 就是一个与宿机隔离 “容器”。容器可宿主机之间可以进行 port、volumes、network 等的通信。
 - **Repository：** Docker 的仓库和 git 的仓库比较相似，拥有仓库名、tag。在本地构建完镜像之后，即可通过仓库进行镜像的分发。常用的 Docker hub 有 https://hub.docker.com/ 、 https://cr.console.aliyun.com/ 等。
 
+---
+
+Docker镜像（Image）和容器（Container）的区别
+
+1. Docker镜像（Image）是一个只读的模板，包含了运行Docker容器所需要的所有文件和依赖。它可以看作是一个容器的静态快照，具有可移植性和版本管理的特性。
+2. Docker容器（Container）是基于Docker镜像创建的可运行实体，具有独立的文件系统、运行时环境，以及在容器中运行的进程。容器可以被启动、停止、删除等操作，提供了一种轻量级且隔离的运行环境。
+
+简而言之，镜像是一种静态的模板，而容器是镜像的运行实例。从镜像可以创建多个容器，每个容器都是相互独立的，拥有自己的文件系统、网络、进程等。镜像主要用于构建和分发应用程序，而容器用于部署和运行应用程序。
 
 
 
 
 
-
-## 命令 
+## 命令
 
 [https://docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
 
 
 
-### docker-compose
+### -idt
+
+"docker -idt" 命令的作用是以交互模式（-i）、分配伪终端（-t）和在后台运行（-d）的方式启动一个 Docker 容器。
+
+具体作用如下：
+
+- 以交互模式运行：在容器中输入命令，并查看命令的输出结果。
+- 分配伪终端：分配一个伪终端，使得用户可以与容器进行交互，输入命令和查看命令输出。
+- 后台运行：容器进程在后台运行，不会占据当前终端，并允许终端进行其他操作。
+
+综上所述，"docker -idt" 命令可以方便地在 Docker 容器中运行命令，并查看输出结果。
+
+---
+
+举个例子：
+
+```
+docker run --name tomcat001 -idt tomcat
+```
+
+
+
+### --mount
+
+Docker的`--mount`用于将主机上的文件或目录与容器中的文件或目录进行挂载（共享），以实现主机和容器之间的数据共享和持久化存储。
+
+`--mount`选项可以接受多个参数来指定挂载的配置，常用的参数有：
+
+- `type`：指定挂载类型，可以是`bind`（主机文件系统上的目录或文件）、`volume`（Docker卷）、`tmpfs`（临时的内存文件系统）等。
+- `source`：指定挂载源，即主机上的目录或文件的路径。
+- `target`：指定挂载目标，即容器内部的目录或文件的路径。
+- `readonly`：可选参数，指定挂载为只读。
+- `volume-opt`：可选参数，用于指定挂载选项，如`volume-opt=type=nfs`表示挂载一个NFS卷。
+
+使用`--mount`选项示例：
+
+```bash
+docker run --mount type=bind,source=/host/path,target=/container/path,readonly=true
+```
+
+这个命令可以将主机上的`/host/path`目录挂载到容器内的`/container/path`目录，并将挂载设置为只读。
+
+通过使用`--mount`选项，可以更加灵活地控制挂载的方式和选项，以适应不同的应用场景和需求。
+
+
+
+### compose
 
 [https://pythondjango.cn/python/tools/3-docker-compose/](https://pythondjango.cn/python/tools/3-docker-compose/)
 
 https://www.cnblogs.com/davis12/p/14312267.html
+
+`docker-compose up`：启动容器。如果当前不存在容器，则会构建镜像并创建容器，并将容器启动起来。`docker-compose up -d`（以后台方式启动容器）
+
+`docker-compose down`：停止并移除容器。会移除已创建的容器以及相关的网络、卷等资源。
+
+`docker-compose start`：启动已创建的容器，不会进行构建镜像和创建容器的操作。
+
+`docker-compose stop`：停止已创建的容器。
+
+`docker-compose restart`：重启已创建的容器。
+
+`docker-compose build`：构建镜像。根据配置的 Dockerfile 构建镜像，并可以指定镜像标签等参数。
+
+`docker-compose logs`：查看容器日志。
+
+`docker-compose ps`：查看容器的状态。
+
+`docker-compose exec`：在容器中执行命令。
+
+`docker-compose run`：在新容器中运行命令。
+
+
 
 
 
@@ -647,23 +722,63 @@ docker rmi [OPTIONS] IMAGE [IMAGE...]
 
 例子：
 
+```bash
 docker run -it alpine sh
-
 docker run -d -p 80:80 nginx   
+docker run --name=base-container -ti ubuntu   // name: container name
+```
 
----
+
 
 ### ps
 
+```bash
+docker ps 
+```
+
 查看进程
 
-docker ps 
 
----
+
+
+
+### container
+
+```
+docker container ls
+```
+
+container 相关的命令
+
+
+
+docker container commit
+
+
+
+### init
+
+[https://docs.docker.com/reference/cli/docker/init/](https://docs.docker.com/reference/cli/docker/init/)
+
+Creates Docker-related starter files for your project
+
+
+
+### images
+
+```ba
+docker images 
+```
+
+该命令将会列出你所有本地的镜像，其中包括镜像的名称、标签、镜像 ID、大小等信息。
 
 
 
 ### inspect
+
+```bash
+docker inspect <镜像名称或 ID>
+```
 
 docker inspect命令的作用是返回有关Docker对象的详细信息，包括容器、镜像、网络和卷等。
 
@@ -675,6 +790,14 @@ docker inspect命令的作用是返回有关Docker对象的详细信息，包括
 
 [https://docs.docker.com/build/](https://docs.docker.com/build/)
 
+```bash
+// 举个例子
+
+docker build -t cascas321sdo/ddd .
+```
+
+
+
 
 
 #### -t
@@ -684,6 +807,42 @@ docker inspect命令的作用是返回有关Docker对象的详细信息，包括
 具体来说，使用`-t`标志可以在构建镜像时为其指定一个易于记忆和识别的标签。例如，`docker build -t myimage:1.0 .`会将构建的镜像命名为`myimage`，并设置其标签为`1.0`。
 
 有了标签，可以更轻松地识别和管理镜像。标签可以用于检索和使用特定版本的镜像，也可以用于发布和共享镜像。
+
+
+
+#### --target
+
+`docker build --target` 命令用于在构建Docker镜像时指定要构建的目标阶段（target stage）。
+
+在Dockerfile中，可以使用多个 `FROM` 命令指定多个基础镜像，并且每个基础镜像可以有不同的阶段。可以使用 `--target` 参数来指定构建过程中要使用的特定阶段。这样可以跳过之前的构建步骤，并从指定的阶段开始构建。
+
+使用 `--target` 参数可以加快构建过程，因为不需要重新构建之前的阶段。同时，还可以避免构建不需要的组件或服务，从而减小生成的镜像的大小。
+
+例如，假设Dockerfile的内容如下：
+
+```
+FROM base AS build
+# 构建阶段1
+...
+
+FROM base AS test
+# 构建阶段2
+...
+
+FROM base AS deploy
+# 构建阶段3
+...
+```
+
+如果要构建并且只关心 `deploy` 阶段，可以使用以下命令：
+
+```
+docker build --target=deploy .
+```
+
+这样将会跳过构建 `build` 和 `test` 阶段，并仅构建 `deploy` 阶段。
+
+
 
 
 
@@ -703,19 +862,13 @@ docker kill 973322dc1872
 
 
 
+### info
 
+该命令将显示与您登录的个人身份相关的详细信息，包括仓库的数量、镜像的数量、运行的容器的数量以及其他相关统计信息。
 
-### WorkDir
-
-
-
-### EntryPoint
-
-
-
-
-
-### CMD
+```
+docker info
+```
 
 
 
@@ -751,6 +904,20 @@ Docker可以通过读取Dockerfile中的指令来自动构建镜像
 
 
 
+### EXPOSE
+
+Dockerfile 中的 EXPOSE 指令用于声明容器运行时所监听的网络端口，以便让外部的其他容器或主机能够访问该容器的网络服务。
+
+**EXPOSE 指令只是起到文档化的作用，不会自动进行端口映射或将端口暴露给主机，因此在创建容器时，仍需要使用 -p 或 -P(所有暴露的接口) 参数来进行端口映射**
+
+[https://docs.docker.com/guides/docker-concepts/running-containers/publishing-ports/#publishing-all-ports](https://docs.docker.com/guides/docker-concepts/running-containers/publishing-ports/#publishing-all-ports)
+
+
+
+
+
+
+
 ### 反斜杠
 
 在 Dockerfile 中，`\`反斜杠的作用是将一行命令拆分成多行。它允许你在多行命令中编写更易于阅读和维护的代码。反斜杠需要放在命令的末尾，以表示下一行是命令的延续，而不是独立的命令。使用反斜杠可以提高 Dockerfile 的可读性，特别是当有较长的命令时。例如：
@@ -766,19 +933,23 @@ RUN apt-get update && \
 
 
 
+
+
+## publish 发布包
+
+```
+docker login
+docker tag <IMAGE_ID> <REPOSITORY>:<TAG>
+docker push <REPOSITORY>:<TAG>
+```
+
+
+
+
+
 ## Daemon
 
 Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以分为Docker Server、Engine和Job三部分。 Docker Daemon可以认为是通过Docker Server模块接受Docker Client的请求，并在Engine中处理请求，然后根据请求类型，创建出指定的Job并运行
-
-
-
-
-
-## 镜像
-
-
-
-
 
 ## Multi-stage
 
