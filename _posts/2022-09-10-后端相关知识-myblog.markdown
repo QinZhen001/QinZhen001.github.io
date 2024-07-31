@@ -679,7 +679,7 @@ https://www.cnblogs.com/davis12/p/14312267.html
 
 `docker-compose restart`：重启已创建的容器。
 
-`docker-compose build`：构建镜像。根据配置的 Dockerfile 构建镜像，并可以指定镜像标签等参数。
+`docker-compose build`：构建镜像。根据配置的 Dockerfile 构建镜像，并可以指定镜像标签等参数。 (可以加上 --build 参数，Build images before starting containers)
 
 `docker-compose logs`：查看容器日志。
 
@@ -688,6 +688,10 @@ https://www.cnblogs.com/davis12/p/14312267.html
 `docker-compose exec`：在容器中执行命令。
 
 `docker-compose run`：在新容器中运行命令。
+
+
+
+
 
 
 
@@ -735,6 +739,22 @@ container 相关的命令
 
 
 docker container commit
+
+
+
+
+
+### network
+
+[https://docs.docker.com/reference/cli/docker/network/](https://docs.docker.com/reference/cli/docker/network/)
+
+```
+docker network
+```
+
+docker network create命令用于创建一个Docker网络。Docker网络是一组连接在一起的容器的虚拟网络。使用Docker网络，可以为容器提供独立的网络环境，使其能够相互通信，并与主机或其他网络进行通信。
+
+
 
 
 
