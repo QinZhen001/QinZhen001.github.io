@@ -627,6 +627,69 @@ package.json:
 
 
 
+
+
+## resolutions
+
+[https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/)
+
+`resolutions` 字段是 `yarn` 包管理器的一个特性，允许你在 `package.json` 文件中指定项目中依赖的特定包的版本，解决依赖包版本冲突的问题。通过使用 `resolutions` 字段，你可以更好地控制项目中使用的包版本，确保项目的依赖关系符合你的预期。
+
+`resolutions` 字段允许你指定项目中依赖的包的特定版本，覆盖依赖包的版本。这是 `yarn` 的特性，`npm` 并不支持。
+
+示例
+
+假设你的项目依赖的某个包 `packageA`，而 `packageA` 又依赖 `packageB` 的某个版本。你希望在你的项目中强制使用 `packageB` 的特定版本。这时你可以在 `package.json` 文件中使用 `resolutions` 字段。
+
+```json
+{
+  "name": "your-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "packageA": "^1.0.0"
+  },
+  "resolutions": {
+    "packageB": "2.0.0"
+  }
+}
+```
+
+在这个例子中，`resolutions` 字段强制项目中所有依赖 `packageB` 的包使用 `packageB` 的 `2.0.0` 版本。
+
+解决依赖冲突
+
+假设你的项目依赖 `packageA` 和 `packageC`，而 `packageA` 依赖 `packageB` 的 `1.0.0` 版本，`packageC` 依赖 `packageB` 的 `2.0.0` 版本。你希望在项目中强制使用 `packageB` 的 `2.0.0` 版本。
+
+```json
+{
+  "name": "your-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "packageA": "^1.0.0",
+    "packageC": "^1.0.0"
+  },
+  "resolutions": {
+    "packageB": "2.0.0"
+  }
+}
+```
+
+具体的 `resolutions` 规则
+
+你可以使用更具体的规则来指定特定的依赖关系。例如，强制 `packageA` 依赖的 `packageB` 版本。
+
+```json
+{
+  "resolutions": {
+    "packageA/packageB": "2.0.0"
+  }
+}
+```
+
+
+
+
+
 # pnpm
 
 [https://www.pnpm.cn/](https://www.pnpm.cn/)
@@ -736,6 +799,88 @@ public-hoist-pattern[]=babel-*
 给软件包添加补丁
 
 该命令会将指定的软件包提取到一个可以随意编辑的临时目录中。
+
+
+
+
+
+## overrides
+
+[https://pnpm.io/zh/next/package_json#pnpmoverrides](https://pnpm.io/zh/next/package_json#pnpmoverrides)
+
+**请注意，overrides 字段只能在项目的根目录下设置。**
+
+**请注意，overrides 字段只能在项目的根目录下设置。**
+
+**请注意，overrides 字段只能在项目的根目录下设置。**
+
+
+
+在 `pnpm` 中，`package.json` 中的 `resolutions` 字段确实不起作用，因为 `resolutions` 是 `yarn` 包管理器的特性。`pnpm` 有自己的一套机制来处理依赖版本的管理和冲突。尽管 `pnpm` 不支持 `resolutions` 字段，它提供了一些替代方法来处理依赖版本冲突和特定版本的依赖管理。
+
+`pnpm` 中的替代方法
+
+1. 使用 `pnpm.overrides` 字段
+
+`pnpm` 允许在 `package.json` 中使用 `pnpm.overrides` 字段来覆盖特定依赖的版本。`pnpm.overrides` 字段的作用类似于 `yarn` 中的 `resolutions`。
+
+```json
+{
+  "name": "your-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "packageA": "^1.0.0",
+    "packageC": "^1.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "packageB": "2.0.0"
+    }
+  }
+}
+```
+
+在这个例子中，`pnpm.overrides` 字段强制项目中所有依赖 `packageB` 的包使用 `packageB` 的 `2.0.0` 版本。
+
+2. 使用 `pnpm` 的 `dependenciesMeta` 字段
+
+`dependenciesMeta` 字段允许你为特定的依赖包定义元数据。尽管它的主要用途不是覆盖版本，它可以在某些特定情况下提供帮助。
+
+```json
+{
+  "name": "your-project",
+  "version": "1.0.0",
+  "dependencies": {
+    "packageA": "^1.0.0",
+    "packageC": "^1.0.0"
+  },
+  "pnpm": {
+    "dependenciesMeta": {
+      "packageB": {
+        "version": "2.0.0"
+      }
+    }
+  }
+}
+```
+
+3. 通过 `pnpm` 的 `shrinkwrap.yaml` 文件
+
+`pnpm` 使用 `shrinkwrap.yaml` 文件来锁定依赖的版本。你可以手动编辑这个文件来强制使用特定版本的依赖包，但这不是推荐的做法，因为它可能会导致依赖管理的复杂性和不一致性。
+
+
+
+## circular dependency
+
+当两个或多个模块相互依赖时，如果出现循环依赖，即 A 依赖于 B，而 B 又依赖于 A，就会导致循环依赖错误。这可能会引起程序运行时的问题，例如堆栈溢出错误或模块加载失败等。
+
+pnpm 使用了一个叫做 "Hoist Algorithm" 的方式来处理循环依赖。它会将循环依赖的模块全部安装在同一个目录下，并将它们的依赖关系解析为符号链接（symbolic links）。这样可以避免循环依赖问题，并且确保依赖模块的单一实例被共享。
+
+在使用 pnpm 进行包安装时，如果发现存在循环依赖，pnpm 会给出警告或错误提示，然后尝试通过 Hoist Algorithm 处理该问题。在处理完成后，pnpm 会生成一个类似于 `node_modules/.pnpm` 的目录，在其中包含了解析后的模块及其符号链接。
+
+需要注意的是，虽然 pnpm 可以处理循环依赖问题，但在编写应用程序时，尽量避免循环依赖可以提高代码的可维护性和可理解性。循环依赖通常会导致代码耦合度增加，难以进行有效的单元测试和重构等。因此，建议在设计模块间的依赖关系时，尽量避免出现循环依赖的情况。
+
+
 
 
 
