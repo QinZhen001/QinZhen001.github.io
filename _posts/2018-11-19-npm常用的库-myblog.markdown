@@ -622,6 +622,26 @@ This module has utilities for URL resolution and parsing meant to have feature p
 
 
 
+### diff2html
+
+[https://www.npmjs.com/package/diff2html-cli](https://www.npmjs.com/package/diff2html-cli)
+
+Diff to Html generates pretty HTML diffs from unified and git diff output in your terminal
+
+从 git 差异输出生成漂亮的 HTML 差异到您的终端。
+
+举个例子：
+
+```bash
+diff2html -F my-pretty-diff.html -- -M HEAD~1
+```
+
+
+
+
+
+
+
 # browser
 
 

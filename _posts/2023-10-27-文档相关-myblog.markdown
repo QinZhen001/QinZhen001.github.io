@@ -57,3 +57,40 @@ TypeDoc 的 output 默认带上了每个api的Defined来自的地方，看起来
 
 [Disable "Defined in:"](https://github.com/TypeStrong/typedoc/issues/808)
 
+
+
+
+
+## 问题 
+
+
+
+### not supported in watch mode
+
+```bash
+"doc:watch": "typedoc --watch"
+```
+
+报错 error:
+
+```bash
+[error] The provided tsconfig file looks like a solution style tsconfig, which is not supported in watch mode
+```
+
+在使用 TypeDoc 生成文档时，如果你的项目使用了 TypeScript 的项目引用，你需要手动处理每个子项目的文档生成，或使用脚本来协调这些任务。TypeDoc 目前不支持监视模式，你可以使用 `nodemon` 这样的工具来监视文件变化并在变化时运行生成文档的脚本。通过这些方法，你可以在项目引用的环境中生成 TypeDoc 文档。
+
+---
+
+TypeScript 的项目引用:
+
+```ts
+// tsconfig.json
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+```
+

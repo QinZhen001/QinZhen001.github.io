@@ -355,6 +355,46 @@ The file is only imported once, no matter how many times you @use it in a projec
 
 
 
+## :global
+
+全局样式
+
+有的时候我们在module.scss想使用全局样式，不希望className被module改变
+
+```scss
+.passwordInput {
+
+  :global(.rv-password-input__item--focus) {
+    box-sizing: border-box;
+    border: 2px solid #2e6cf6;
+  }
+}
+```
+
+
+
+
+
+## 覆盖antd样式
+
+```tsx
+  <Select rootClassName="customSelect"></Select>
+```
+
+```scss
+  :global(.customSelect) {
+    background-color: rebeccapurple !important;
+
+    :global(.ant-select-selector) {
+      padding-left: calc(3rem - 8px) !important;
+    }
+  }
+```
+
+
+
+
+
 ## 变量
 
 举一个循环的例子：

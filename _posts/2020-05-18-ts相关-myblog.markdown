@@ -2770,6 +2770,9 @@ import * as name from 'module';
     "resolveJsonModule": true,
     // 将每个文件作为单独的模块
     "isolatedModules": true,
+    // 在默认情况下，TypeScript 不允许导入时使用 .ts、.tsx、.d.ts 文件的扩展名。
+    // 启用 allowImportingTsExtensions 选项后，TypeScript 将允许你在导入时使用这些扩展名。
+    "allowImportingTsExtensions":true
     "noEmit": true,
     "jsx": "react"
   },
@@ -3226,6 +3229,50 @@ tsconfig.json 中的 resolveJsonModule 设置为 true 时，可以在 TypeScript
 - 如果设置为"classic"（默认值），TypeScript编译器将使用经典的模块解析算法来解析模块路径。这意味着当引入一个模块时，编译器将首先尝试在相同目录下查找该模块，然后再尝试在父目录中逐级向上查找该模块。这种解析算法适用于非模块加载器的项目。
 
 **"bundler"选项是在TypeScript 3.2版本中添加的一个实验性选项。当设置为"bundler"时，TypeScript编译器将通过使用bundler的路径映射来解析模块路径。这种模块解析策略用于支持基于bundler（如Webpack、Rollup）的项目，以便在构建过程中将模块打包到单个文件中。**
+
+
+
+
+
+### allowImportingTsExtensions
+
+在 TypeScript 中，`allowImportingTsExtensions` 是在 TypeScript 4.7 版本中引入的一个编译选项。它的作用是允许在导入 TypeScript 文件时，使用 `.ts`、`.tsx`、`.d.ts` 文件的扩展名。
+
+作用
+
+在使用 TypeScript 时，通常在导入模块时不需要指定扩展名，例如：
+
+```typescript
+import { foo } from './module';
+```
+
+但是在某些情况下，特别是当你需要兼容某些模块解析策略时，指定扩展名是必要的。例如：
+
+```typescript
+import { foo } from './module.ts';
+```
+
+在默认情况下，TypeScript 不允许导入时使用 `.ts`、`.tsx`、`.d.ts` 文件的扩展名。启用 `allowImportingTsExtensions` 选项后，TypeScript 将允许你在导入时使用这些扩展名。
+
+用法
+
+在 `tsconfig.json` 文件中启用 `allowImportingTsExtensions` 选项：
+
+```json
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true
+  }
+}
+```
+
+启用后，你可以在导入 TypeScript 文件时使用扩展名：
+
+```typescript
+import { foo } from './module.ts';
+import { bar } from './component.tsx';
+import { types } from './types.d.ts';
+```
 
 
 
@@ -4017,6 +4064,60 @@ MAP_BY_VALUE; // { 1: { key: 'POP', value: 1, name: '流行音乐' }, 2: { key: 
 
 
 
+
+## PropertyKey 限制类型
+
+在 TypeScript 中，`PropertyKey` 是一个联合类型，它表示一个对象的键，可以是 `string`、`number` 或 `symbol`。有时候，你可能希望限制对象的键类型，以确保键符合某些特定的类型约束。以下是一些常见的情况，以及如何在 TypeScript 中限制键的类型。
+
+限制对象的键类型为特定类型
+
+假设你有一个对象类型，你希望对象的键类型限制为特定的类型，比如 `string` 或 `number`。你可以使用 TypeScript 的映射类型和 `keyof` 操作符来实现。
+
+示例
+
+假设你希望对象的键类型为 `string`，可以这样定义：
+
+```typescript
+type StringKeyedObject<T> = {
+  [K in string]: T;
+};
+
+const obj: StringKeyedObject<number> = {
+  key1: 1,
+  key2: 2,
+  // key3: "string" // 这会导致类型错误
+};
+
+console.log(obj.key1); // 1
+console.log(obj.key2); // 2
+```
+
+限制对象的键类型为联合类型
+
+假设你希望对象的键类型限制为某些特定的字符串，可以使用字符串字面量类型和映射类型来实现。
+
+示例
+
+```typescript
+type SpecificKeys = "key1" | "key2" | "key3";
+
+type SpecificKeyedObject<T> = {
+  [K in SpecificKeys]: T;
+};
+
+const obj: SpecificKeyedObject<number> = {
+  key1: 1,
+  key2: 2,
+  key3: 3,
+  // key4: 4 // 这会导致类型错误
+};
+
+console.log(obj.key1); // 1
+console.log(obj.key2); // 2
+console.log(obj.key3); // 3
+```
+
+在 TypeScript 中，可以使用映射类型和 `keyof` 操作符来限制对象的键类型。你可以限制键类型为特定的 `string`、`number` 或 `symbol`，或者结合 `PropertyKey` 来实现更灵活的键类型限制。希望这些示例能够帮助你在 TypeScript 中更好地限制对象的键类型。
 
 
 
