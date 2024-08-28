@@ -29,7 +29,7 @@ tags:
 - 熟悉微信小程序相关开发
 - 熟悉 electron 相关开发
 - 熟悉 vue 和 react 相关，了解其关键实现原理
-- 熟悉常见的ui组件库: antd, element-ui, vant 等 
+- 熟悉常见的ui组件库: antd, element-ui, vant 等，熟悉xyflow流式可视化编排，熟悉Pixi.js 渲染引擎 
 - 熟悉 webpack, rollup 和 vite，对前端组件化，工程化，自动化有一定的理解
 - 熟悉 babel，写过 babel 插件和 ast 相关处理工具
 - 掌握基本的算法和数据结构，了解设计模式
@@ -43,8 +43,7 @@ tags:
 2021.4 - 至今 声网 agora 商业服务与交付中心(CSDC)    web 前端开发高级工程师
 
 * 负责教育场景 aPaas (灵动课堂) / 会议场景 aPaas / ktv合唱场景相关开发，参与架构设计，协议制定，api 文档编写，协助客户解决集成中的问题等。参与灵动课堂 1.x 升级 2.0，进行代码结构重构，性能优化，工作流改造。
-* 负责基于video.js 封装 m3u8 前端播放器
-* 负责元宇宙场景RangeEngine空间订阅引擎相关开发
+* 负责 AI agent的playground 和 graph designer 开发
 * 负责微信小程序音视频sdk的迭代更新
 * 担任前端面试官
 
@@ -66,23 +65,53 @@ tags:
 
 # 项目经历
 
+
+
+## 教育场景 aPaas (灵动课堂) / 会议场景 aPaas
+
+https://doc.shengwang.cn/doc/flexible-classroom/javascript/landing-page
+
 2021.4 - 至今    教育场景 aPaas (灵动课堂) / 会议场景 aPaas
 
-（react + mobx + immutable + electorn + agora rtc/rtm sdk + IndexedDB + web worker）
+(typescript + react + mobx  + electorn + agora rtc/rtm sdk)
 
-项目概述: aPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成到自主品牌的产品方案里，又能灵活定制，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
+项目概述: aPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成到自主品牌的产品方案里，快速搭建出教育/会议场景，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
 
 项目成果:  
 
-* lerna 实现 monorepo 管理，分层架构设计(rte => core/ui-kit => sdk)
+* monorepo 项目管理（先基于lerna 实现，后更改为pnpm），分层架构设计(rtc/rtm sdk => core/ui-kit/widget => classroom)
 * 基于 mobx 最佳实践重构 store(domain store 和 ui store)从网状结构变为树状结构，设计 onInstall 和 onDestroy 钩子，采用工厂模式针对不同场景创建不同 rootStore
 * 设计统一错误处理ErrorEnter。设计装饰器模式Logger分级分环境，结合 web worker 自动存入 IndexedDB。
-* 支持 widget机制，支持使用者开发自定义widget。
-* 底层 rte sdk采用适配器模式同时支持 web 和 pc 平台，基于 async-await-retry 封装重试机制，基于mutex封装锁机制处理大量异步任务的情况。
-* 封装react rc-component相关组件形成基础UI库，利用Storybook调试和展示效果，基于UI库参与开发花名册，投票器，白板，聊天等组件。
-* 工作流优化: webpack4 升级到 5，手动处理node polyfill，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取   base webpack 配置，优化 babel相关 配置，按需引入 polyfill。
+* 支持 widget插件机制，支持使用者开发自定义widget。
+* 底层采用适配器模式同时支持 web 和 pc 平台，基于 async-await-retry 封装重试机制，基于mutex封装锁机制处理大量异步任务的情况。
+* 基于rc-component封装相关业务基础UI库，利用Storybook调试和展示效果，参与花名册，投票器，白板，聊天等组件开发。
+* 工作流优化: webpack4 升级到 5，手动处理node polyfill，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取   base webpack 配置，优化 babel相关 配置，按需引入 polyfill。利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts。
 
+## AI agent
 
+https://github.com/TEN-framework/ASTRA.ai
+
+playground：https://theastra.ai/
+
+graph-designer：https://github.com/TEN-framework/graph-designer
+
+2024.3 - 至今
+
+Astra是一个开源的多模态 AI agent，可以说话、查看和访问知识库 (RAG)，基于TEN Platform。graph-designer用于编辑AI agent工作流程和extention的属性。
+
+项目成果:  
+
+(typescript + next.js + xyflow)
+
+* 负责playground 相关页面搭建以及移动端适配。    
+
+* 利用AnalyserNode/MediaElementAudioSourceNode等获取和处理音频数据，完成音频可视化相关ui。
+
+* graph-designer使用xyflow实现可视化工作流编排，支持Custom Nodes/Edges。使用vitest编写单元测试用例，保障数据处理/转换的可靠性。
+
+  
+
+## 播放器
 
 2022.1 - 2022.6  m3u8前端播放器
 
@@ -94,6 +123,8 @@ tags:
 2. ui调整（进度条 控制栏 首帧海报 样式覆盖），基于videojs事件封装自己的事件，对外暴露控制播放器的api。
 
 
+
+## 音视频小程序sdk
 
 2021.4 - 至今    音视频小程序sdk
 
@@ -109,6 +140,8 @@ tags:
 
 
 
+## web ktv 场景解决方案
+
 2023.1 - 2023.6  web ktv 场景解决方案
 
 项目概述:  利用web rtc sdk 和  wasm（实时监听人声声调）模块实现web端ktv实时歌唱场景，采用canvas逐帧绘制歌曲声调视图，当监听到主播端声调进行实时打分，分数满足条件时进行视图着色，combo激励动画等。
@@ -120,6 +153,8 @@ tags:
 * 进行canvas性能优化（分层渲染），和移动端对齐相关api设计，数据结构和单元测试用例等。使用Vitest编写单元测试，保证在打分逻辑等一些边界处理上和移动端保持一致。
 
 
+
+## RangeEngine
 
 2024.1 - 至今  RangeEngine
 
@@ -134,7 +169,7 @@ tags:
 
 
 
-
+## op 运营管理系统
 
 2020.3 - 2021.3 op 运营管理系统
 
@@ -151,6 +186,8 @@ tags:
 
 
 
+## 家长公众号以及移动端 h5
+
 2020.3 - 2021.3  家长公众号以及移动端 h5
 
 (vue + vant ui + webpack)
@@ -162,6 +199,8 @@ tags:
 3. 基于webView jsBridge封装与app通信的相关函数。
 
 
+
+## 公司内部微信小程序框架
 
 2018.9 - 2020.2  公司内部微信小程序框架
 
@@ -180,7 +219,7 @@ tags:
 
 
 
-
+## 数据爬虫
 
 2018.9 - 2020.2  数据爬虫
 
@@ -192,6 +231,8 @@ tags:
 
 1. fiddler抓包分析接口，自动化复杂异步流程（抓取数据，存储服务器，生成json信息文件，上传腾讯云cos桶，添加水印，导入后端数据库，设置定时任务）。
 2. 负责后台系统中素材编辑的相关⻚面开发，使爬取下来的素材可以展示和二次编辑。
+
+
 
 # 个人评价
 
