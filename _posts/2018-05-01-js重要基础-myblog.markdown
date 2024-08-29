@@ -5039,7 +5039,82 @@ const encodeData = LrcTime.encode(msg).finish()
 
 
 
+
+
+### crypto.getRandomValues 和 Math.random
+
+`crypto.getRandomValues` 和 `Math.random` 都是 JavaScript 中生成随机数的方法，但它们有显著的区别，尤其在随机数的质量和安全性方面。
+
+`crypto.getRandomValues`
+
+`crypto.getRandomValues` 是 JavaScript 中的一个安全随机数生成器，它是加密安全的随机数生成器，适用于需要高质量随机数的场景。
+
+使用示例：
+
+```javascript
+const array = new Uint32Array(1);
+window.crypto.getRandomValues(array);
+console.log(array[0]);  // 生成一个随机的32位整数
+```
+
+`Math.random`
+
+`Math.random` 是 JavaScript 中的一个基本随机数生成器，生成的随机数在 0 和 1 之间，适用于一般的随机数生成场景。
+
+使用示例：
+
+```javascript
+const randomNum = Math.random();
+console.log(randomNum);  // 生成一个 0 到 1 之间的随机数
+```
+
+主要区别：
+
+1. **安全性**:
+   - `crypto.getRandomValues` 是加密安全的，适用于需要高安全性要求的场景。
+   - `Math.random` 不是加密安全的，不适用于需要高安全性要求的场景。
+
+2. **随机性**:
+   - `crypto.getRandomValues` 生成的随机数质量高，随机性强。
+   - `Math.random` 生成的随机数质量一般，随机性较低。
+
+3. **适用场景**:
+   - `crypto.getRandomValues` 适用于加密、身份验证、生成安全令牌等需要高质量随机数的场景。
+   - `Math.random` 适用于一般的随机数生成场景，如随机选择、生成随机颜色等。
+
+选择指南：
+
+- **需要高安全性和高质量随机数**: 使用 `crypto.getRandomValues`。
+- **一般随机数生成**: 使用 `Math.random`。
+
+例子对比：
+
+生成一个随机的 32 位整数：
+
+- 使用 `crypto.getRandomValues`：
+
+```javascript
+const array = new Uint32Array(1);
+window.crypto.getRandomValues(array);
+console.log(array[0]);  // 生成一个随机的32位整数
+```
+
+- 使用 `Math.random`：
+
+```javascript
+const randomNum = Math.floor(Math.random() * Math.pow(2, 32));
+console.log(randomNum);  // 生成一个随机的32位整数
+```
+
+总结来说，`crypto.getRandomValues` 是生成高安全性随机数的首选，而 `Math.random` 适用于一般的随机数生成场景。
+
+
+
+
+
 ## V8引擎
 
 [https://juejin.cn/post/6844904186165870606](https://juejin.cn/post/6844904186165870606)
+
+
 

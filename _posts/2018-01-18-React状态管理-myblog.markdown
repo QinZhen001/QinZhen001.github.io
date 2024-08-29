@@ -764,6 +764,26 @@ name.set("Dave");
 
 
 
+# zustand
+
+[https://awesomedevin.github.io/zustand-vue/docs/introduce/what-is-zustand](https://awesomedevin.github.io/zustand-vue/docs/introduce/what-is-zustand)
+
+[https://zustand-demo.pmnd.rs/](https://zustand-demo.pmnd.rs/)
+
+基于 `Flux` 模型实现的小型、快速和可扩展的状态管理解决方案，拥有基于 `hooks` 的舒适的API，非常地灵活且有趣.
+
+
+
+## 瞬时更新
+
+[https://awesomedevin.github.io/zustand-vue/docs/advanced/transiend-updates](https://awesomedevin.github.io/zustand-vue/docs/advanced/transiend-updates)
+
+
+
+
+
+
+
 # 补充
 
 

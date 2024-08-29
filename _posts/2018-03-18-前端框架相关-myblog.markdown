@@ -521,6 +521,17 @@ With dynamic rendering, **your application is only as fast as your slowest data 
 
 
 
+```ts
+import dynamic from 'next/dynamic';
+
+// 动态导入组件，禁用服务器端渲染
+const DynamicComponent = dynamic(() => import('../components/HeavyComponent'), { ssr: false });
+```
+
+
+
+
+
 ## component-hierarchy
 
 组件等级结构
@@ -635,6 +646,18 @@ next/font模块时自动优化应用程序中的字体。在构建时下载字�
 
 
 
+## `next/dynamic`  和 `use client`
+
+1. **用途不同**：
+   - `next/dynamic` 主要用于代码拆分和按需加载组件，减少初始页面加载的大小和时间。
+   - `use client` 主要用于指示组件在客户端执行，确保客户端特定的逻辑和交互只在客户端执行。
+2. **工作方式不同**：
+   - `next/dynamic` 通过动态导入组件，生成单独的 JavaScript 包，按需加载组件。
+   - `use client` 是一个指令，放在文件的顶部，指示文件中的组件和逻辑在客户端执行。
+3. **SSR 处理**：
+   - `next/dynamic` 可以通过选项禁用服务器端渲染（SSR），使组件仅在客户端渲染。
+   - `use client` 通过指示文件中的组件在客户端执行，确保客户端特定的逻辑在服务器端渲染时不会执行。
+
 
 
 ## Error
@@ -686,4 +709,6 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 }
 ```
+
+
 
