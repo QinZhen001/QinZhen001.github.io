@@ -430,6 +430,32 @@ Redis是一个开源的、高性能的键值对存储数据库。它以内存为
 
 
 
+## install
+
+[https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-mac-os/](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-mac-os/)
+
+
+
+
+
+## redis-cli
+
+```shell
+redis-cli -h <host> -p <port> -a <password>
+```
+
+
+
+
+
+# Go
+
+参考go的blog
+
+
+
+
+
 # consul
 
 Identity-based networking with Consul
