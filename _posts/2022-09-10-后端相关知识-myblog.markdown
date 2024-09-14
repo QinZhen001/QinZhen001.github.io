@@ -483,6 +483,22 @@ Calico is a networking and security solution that enables Kubernetes workloads a
 
 
 
+# service/repostiory/dao 三层结构
+
+DAO（Data Access Object）层
+
+**职责**：DAO 层主要负责与数据库的直接交互。它封装了所有的数据库操作（如增、删、改、查），并将数据库的具体实现细节与应用程序的其他部分隔离开来。
+
+Repository 层
+
+**职责**：Repository 层（在某些架构中与 DAO 层合并）主要负责将 DAO 层的操作封装为应用程序的业务操作。它提供了更高层次的数据库操作接口，通常与业务逻辑更紧密。
+
+Service 层
+
+**职责**：Service 层负责处理应用程序的业务逻辑。它调用 Repository 层来获取和操作数据，并将数据转换为业务逻辑所需的格式。Service 层通常是应用程序的核心部分，负责实现具体的业务规则和逻辑。
+
+
+
 # HyperKit
 
 HyperKit是一个轻量级的虚拟化工具，用于在macOS上运行轻量级Linux容器。它是Docker for Mac的一部分，由Docker公司开发和维护。HyperKit实际上是一个基于xhyve虚拟机技术的超轻量级Hypervisor，它使用macOS的核心框架Hypervisor.framework来运行和管理Linux容器。HyperKit提供了一种在macOS上本地运行和测试容器化应用程序的方式，可以提供与Linux环境相似的操作体验，并允许容器与macOS宿主机进行通信和共享资源。它主要用于开发和测试目的，让开发人员能够在本地开发环境中方便地构建和运行容器应用。
