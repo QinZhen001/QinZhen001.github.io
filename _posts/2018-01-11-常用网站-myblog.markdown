@@ -127,6 +127,10 @@ animejs
 
 [https://animejs.com/](https://animejs.com/)
 
+- **Lottie**: 适用于高质量、复杂的动画效果，通常由设计师使用 After Effects 创建，适用于 Web 和移动应用。
+- **GSAP**: 适用于高性能和复杂动画效果，功能强大，适用于需要高帧率和复杂动画的应用。
+- **Anime.js**: 适用于轻量级和中等复杂度的动画效果，易于上手，适用于简单和中等复杂度的动画场景。
+
 
 
 ### clip-path: polygon(x1 y1, x2 y2, x3 y3, …)

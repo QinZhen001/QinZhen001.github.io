@@ -999,7 +999,65 @@ function elementInView(element) {
 
 
 
+## FOUC
 
+[gsap使用时避免FOUC](https://gsap.com/resources/fouc)
+
+FOUC（Flash of Unstyled Content，未样式内容闪烁）是指在网页加载时，用户在短时间内看到未应用样式的原始 HTML 内容，然后样式突然应用上去的现象。这种现象通常会导致用户体验不佳，因为页面在加载过程中会出现闪烁或布局变化。
+
+FOUC 产生的原因
+
+FOUC 通常是由于以下原因引起的：
+
+1. **样式表加载延迟**：
+   - 样式表（CSS）文件加载较慢，导致浏览器在渲染 HTML 内容时没有样式可用。
+
+2. **异步加载样式表**：
+   - 使用 `<link rel="stylesheet" href="styles.css" media="none" onload="this.media='all';">` 等方法异步加载样式表，但在样式表加载完成前页面已经开始渲染。
+
+3. **JavaScript 动态加载样式**：
+   - 使用 JavaScript 动态加载样式表，导致样式表在 HTML 内容加载后才应用。
+
+解决 FOUC 的方法
+
+以下是一些常见的解决方法，可以帮助减少或消除 FOUC 现象：
+
+1. **将关键 CSS 内联到 HTML 中**：
+   - 将关键的 CSS 直接内联到 HTML 文档的 `<head>` 部分，这样在页面加载时立即应用样式：
+     ```html
+     <style>
+       /* 关键 CSS */
+       body { font-family: Arial, sans-serif; }
+       /* 其他关键样式 */
+     </style>
+     ```
+
+2. **确保 CSS 文件尽早加载**：
+   - 确保样式表尽早加载，可以将 `<link>` 标签放在 HTML 文档的 `<head>` 部分：
+     ```html
+     <head>
+       <link rel="stylesheet" href="styles.css">
+     </head>
+     ```
+
+3. **减少 CSS 文件的数量和大小**：
+   - 减少 CSS 文件的数量和大小，合并和压缩 CSS 文件，减少加载时间。
+
+4. **使用服务器端渲染（SSR）**：
+   - 使用服务器端渲染技术，将 HTML 和 CSS 在服务器端生成并发送给客户端，减少客户端加载时间。
+
+5. **优化网络请求**：
+   - 使用内容分发网络（CDN）加速样式表的加载。
+   - 启用浏览器缓存，减少重复加载样式表。
+
+6. **预加载关键资源**：
+   - 使用 `<link rel="preload" href="styles.css" as="style">` 提前加载关键资源：
+     ```html
+     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+     <noscript><link rel="stylesheet" href="styles.css"></noscript>
+     ```
+
+通过这些方法，可以有效减少或消除 FOUC 现象，提升用户体验。
 
 
 
