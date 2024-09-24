@@ -597,7 +597,16 @@ const handleIncrement = () => {
 
 #### useRef
 
+`useRef` 的初始值通常设置为 `null`：
 
+ ```ts
+  const spanRef = useRef<HTMLSpanElement | null>(null); 
+ ```
+
+设置初始值为 `null` 的主要原因是：
+
+- 在初次渲染时，引用的 DOM 元素还没有被挂载到 DOM 中，`useRef` 的初始值为 `null` 是一个合理的初始状态。
+- `null` 是一个常用的初始值，表示引用对象还没有被赋值。
 
 
 
