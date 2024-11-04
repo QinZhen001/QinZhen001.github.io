@@ -569,6 +569,22 @@ In Next.js, these dynamic functions are: cookies(), headers(), and searchParams
 
 
 
+## Runtimes
+
+[https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes](https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes)
+
+Next.js has two server runtimes you can use in your application:
+
+- The **Node.js Runtime** (default), which has access to all Node.js APIs and compatible packages from the ecosystem.
+- The **Edge Runtime** which contains a more limited [set of APIs](https://nextjs.org/docs/app/api-reference/edge).
+
+[Use Cases](https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes#use-cases)
+
+- The Node.js runtime is used for rendering your application.
+- The Edge runtime is used for Middleware (routing rules like redirects, rewrites, and setting headers).
+
+
+
 ## Streaming
 
 Streaming is a data transfer technique that allows you to break down a route into smaller "chunks" and progressively stream them from the server to the client as they become ready.

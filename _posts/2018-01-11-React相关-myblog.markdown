@@ -388,7 +388,9 @@ config.disabled = true
 
 
 
-#### Ref with ts
+
+
+#### with ts
 
 [https://www.designcise.com/web/tutorial/how-to-fix-useref-react-hook-cannot-assign-to-read-only-property-typescript-error](https://www.designcise.com/web/tutorial/how-to-fix-useref-react-hook-cannot-assign-to-read-only-property-typescript-error)
 
@@ -397,8 +399,6 @@ function useRef<T>(initialValue: T): MutableRefObject<T>;
 function useRef<T>(initialValue: T|null): RefObject<T>;
 function useRef<T = undefined>(): MutableRefObject<T | undefined>;
 ```
-
-
 
 ```tsx
 interface RefObject<T> {
@@ -416,7 +416,189 @@ interface MutableRefObject<T> {
 
 
 
+#### LegacyRef 和 RefObject
 
+在 React 中，`LegacyRef` 和 `RefObject` 是两种不同的类型，用于处理引用（ref）。它们在使用场景和定义上有一些区别。以下是它们的详细区别和使用方法。
+
+`LegacyRef`
+
+`LegacyRef` 是一个联合类型，可以是一个回调函数或者一个 `RefObject`。它主要用于兼容早期版本的 React 中的 ref 使用方式。
+
+定义
+
+```tsx
+type LegacyRef<T> = string | RefObject<T> | ((instance: T | null) => void) | null;
+```
+
+使用场景
+
+`LegacyRef` 主要用于需要兼容旧版 React 的代码中。在现代 React 中，推荐使用 `RefObject` 和 `useRef` 来处理 refs。
+
+示例
+
+```tsx
+import React, { LegacyRef } from 'react';
+
+const MyComponent = React.forwardRef((props, ref: LegacyRef<HTMLInputElement>) => {
+  return <input ref={ref} />;
+});
+```
+
+在这个示例中，`ref` 可以是一个字符串（旧版 React 不推荐）、一个回调函数或者一个 `RefObject`。
+
+`RefObject`
+
+`RefObject` 是现代 React 中推荐使用的类型，它是通过 `React.createRef` 或 `useRef` 创建的对象。`RefObject` 有一个 `current` 属性，用于存储对 DOM 元素或组件实例的引用。
+
+定义
+
+```tsx
+interface RefObject<T> {
+  readonly current: T | null;
+}
+```
+
+使用场景
+
+`RefObject` 是现代 React 中推荐的方式，用于获取对 DOM 元素或组件实例的引用。它通常与 `useRef` 和 `React.createRef` 一起使用。
+
+示例
+
+```tsx
+import React, { useRef, RefObject, useEffect } from 'react';
+
+const MyComponent: React.FC = () => {
+  const inputRef: RefObject<HTMLInputElement> = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  return <input ref={inputRef} />;
+};
+```
+
+在这个示例中，我们使用 `useRef` 创建了一个 `RefObject`，并将其传递给 `<input>` 元素。通过访问 `inputRef.current`，我们可以获取对输入框的引用。
+
+主要区别
+
+1. **类型定义**：
+   - `LegacyRef` 是一个联合类型，可以是字符串、回调函数或 `RefObject`。
+   - `RefObject` 是一个对象类型，具有一个 `current` 属性。
+
+2. **使用场景**：
+   - `LegacyRef` 主要用于兼容旧版 React 的代码。
+   - `RefObject` 是现代 React 中推荐的方式，用于获取对 DOM 元素或组件实例的引用。
+
+3. **创建方式**：
+   - `LegacyRef` 可以是字符串（旧版 React）、回调函数或 `RefObject`。
+   - `RefObject` 是通过 `React.createRef` 或 `useRef` 创建的。
+
+总结
+
+在现代 React 中，推荐使用 `RefObject` 和 `useRef` 来处理 refs，因为它们更直观且类型安全。`LegacyRef` 主要用于兼容旧版 React 的代码，通常不建议在新的代码中使用。
+
+
+
+#### ElementRef 和 ComponentPropsWithoutRef
+
+在 React 中，`React.ElementRef` 和 `React.ComponentPropsWithoutRef` 是 TypeScript 类型工具，用于处理组件的引用和属性类型。它们有助于提高代码的类型安全性和可读性。以下是它们的详细作用和使用方法。
+
+`React.ElementRef`
+
+`React.ElementRef` 用于获取一个 React 元素的引用类型。它特别适用于获取对某个 DOM 元素或组件实例的引用，以便在代码中进一步操作。
+
+使用场景
+
+1. **访问 DOM 元素**：你可能需要直接访问一个 DOM 元素的属性或方法，例如在表单验证或动画中。
+2. **访问类组件实例**：你可能需要访问一个类组件的实例，以调用其方法或访问其状态。
+
+示例
+
+假设你有一个 `Button` 组件，并希望在父组件中获取这个按钮的引用：
+
+```typescript
+import React, { useRef } from 'react';
+
+// 假设这是一个简单的 Button 组件
+const Button = React.forwardRef<HTMLButtonElement>((props, ref) => (
+  <button ref={ref} {...props}>Click me</button>
+));
+
+const ParentComponent = () => {
+  const buttonRef = useRef<React.ElementRef<typeof Button>>(null);
+
+  const handleClick = () => {
+    if (buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  };
+
+  return (
+    <div>
+      <Button ref={buttonRef} />
+      <button onClick={handleClick}>Focus the button</button>
+    </div>
+  );
+};
+
+export default ParentComponent;
+```
+
+在这个例子中，`useRef<React.ElementRef<typeof Button>>(null)` 用于创建对 `Button` 组件的引用，并在 `handleClick` 函数中使用它。
+
+`React.ComponentPropsWithoutRef`
+
+`React.ComponentPropsWithoutRef` 用于获取一个组件的属性类型，而不包括 `ref` 属性。这在你需要复用组件属性类型但不需要 `ref` 时非常有用。
+
+使用场景
+
+1. **创建高阶组件（HOC）**：你可能需要获取被包裹组件的属性类型，但不包括 `ref`。
+2. **复用组件属性类型**：在定义其他组件或函数时，你可能需要复用某个组件的属性类型。
+
+示例
+
+假设你有一个 `Input` 组件，并希望创建一个高阶组件来增强它：
+
+```typescript
+import React, { forwardRef } from 'react';
+
+type InputProps = React.ComponentPropsWithoutRef<'input'>;
+
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => (
+  <input ref={ref} {...props} />
+));
+
+const withLogging = <P extends object>(
+  WrappedComponent: React.ComponentType<P>
+) => {
+  const ComponentWithLogging = (props: P) => {
+    console.log(props);
+    return <WrappedComponent {...props} />;
+  };
+
+  return ComponentWithLogging;
+};
+
+const LoggedInput = withLogging(Input);
+
+const ParentComponent = () => {
+  return <LoggedInput placeholder="Type here" />;
+};
+
+export default ParentComponent;
+```
+
+在这个例子中，`React.ComponentPropsWithoutRef<'input'>` 用于获取 `input` 元素的属性类型，而不包括 `ref`。然后，我们使用这个类型来定义 `Input` 组件的属性类型，并创建一个高阶组件 `withLogging` 来增强 `Input` 组件。
+
+### 总结
+
+- **`React.ElementRef`**：用于获取一个 React 元素或组件实例的引用类型，适用于需要直接操作 DOM 元素或类组件实例的场景。
+- **`React.ComponentPropsWithoutRef`**：用于获取一个组件的属性类型而不包括 `ref`，适用于需要复用组件属性类型的场景。
+
+这两个工具在 TypeScript 中非常有用，可以帮助你编写类型安全且可维护的 React 代码。
 
 
 
@@ -597,7 +779,16 @@ const handleIncrement = () => {
 
 #### useRef
 
+`useRef` 的初始值通常设置为 `null`：
 
+ ```ts
+  const spanRef = useRef<HTMLSpanElement | null>(null); 
+ ```
+
+设置初始值为 `null` 的主要原因是：
+
+- 在初次渲染时，引用的 DOM 元素还没有被挂载到 DOM 中，`useRef` 的初始值为 `null` 是一个合理的初始状态。
+- `null` 是一个常用的初始值，表示引用对象还没有被赋值。
 
 
 

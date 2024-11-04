@@ -690,6 +690,28 @@ package.json:
 
 
 
+## yarn4
+
+项目中会生成一个 `.yarn` 目录。这个目录在 Yarn 的新版本中扮演了重要的角色。以下是 `.yarn` 目录的详细介绍及其作用：
+
+`.yarn` 目录的作用
+
+1. **缓存依赖**：`.yarn` 目录中会缓存项目的依赖包，确保在没有网络连接时也能进行依赖的安装和项目的构建。这个缓存机制也能加快依赖的安装速度。
+2. **Plug'n'Play（PnP）**：在 Yarn 2 及更高版本中，Yarn 引入了 Plug'n'Play（PnP）机制，取代了传统的 `node_modules` 目录。PnP 机制通过 `.yarn` 目录中的 `.pnp.cjs` 文件和 `.pnp.loader.mjs` 文件来管理依赖的解析和加载。
+3. **Yarn 的内部配置和元数据**：`.yarn` 目录中包含 Yarn 的内部配置和元数据文件，这些文件用于管理项目的依赖和构建配置。
+
+
+
+### nodeLinker
+
+[https://yarnpkg.com/features/linkers#nodelinker-node-modules](https://yarnpkg.com/features/linkers#nodelinker-node-modules)
+
+
+
+
+
+
+
 # pnpm
 
 [https://www.pnpm.cn/](https://www.pnpm.cn/)
@@ -944,6 +966,25 @@ $ npx create-react-app my-react-app
 
 
 # 补充
+
+
+
+## Corepack
+
+[https://yarnpkg.com/corepack](https://yarnpkg.com/corepack)
+
+Corepack 是一个工具，旨在简化 Node.js 包管理器的管理和使用。它提供了一种标准化的方式来管理和使用不同版本的包管理器（如 Yarn 和 pnpm），并确保在不同的项目中使用正确的包管理器版本。Corepack 是 Node.js 的一个附带工具，旨在解决包管理器版本管理的复杂性和一致性问题。
+
+1. **启用 Corepack**：
+
+   - Corepack 是 Node.js 的一个附带工具，通常在 Node.js 的安装包中已经包含。
+   - 你可以使用 `corepack enable` 命令来启用 Corepack。
+
+   ```sh
+   corepack enable
+   ```
+
+   
 
 
 

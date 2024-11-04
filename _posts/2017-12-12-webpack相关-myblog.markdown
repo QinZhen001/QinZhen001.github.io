@@ -1292,31 +1292,67 @@ libraryTarget配置如何暴露 library。如果不设置library,那这个librar
 
 **externals是决定的是以哪种模式去加载所引入的额外的包**
 
-## 动态import
+### 动态导入 import
 
->需要翻墙 [https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655](https://medium.com/webpack/webpack-4-import-and-commonjs-d619d626b655)
+使用 `await import("xxxx")` 进行动态导入时，不会造成重复引用。动态导入的模块会被 Webpack 处理并确保模块只被加载一次，无论你在应用中多次动态导入相同的模块。
 
-目前，类函模import()块加载的语法建议——syntax proposal整体交给ECMAScript。
-ES2015(es6)加载器说明定义import()作为一个方法用来动在运行时态加载es6模块。
+1. **按需加载**：动态导入可以实现按需加载，减少初始加载时间，提高应用性能。
+2. **代码分割**：Webpack 会自动将动态导入的模块分割成单独的 chunk，有助于优化资源加载。
+3. **避免重复加载**：Webpack 会缓存已经加载的模块，确保模块只加载一次，避免重复引用。
 
+工作原理：
 
+使用 `await import("xxxx")` 时，Webpack 会将这个模块分割成一个单独的 chunk，并在需要时动态加载它。Webpack 会自动管理这些 chunk，并确保每个模块只加载一次，即使在多个地方动态导入相同的模块。
 
+### 示例
 
-在webpack中的import()是个分离点——**split-point**，用来把被请求的模块独立成一个单独的模块。**import()把模块的名字作为一个参数，并且返回一个Promise: import(name)->Promise.**
-
-
+假设你有一个模块 `module.js`，内容如下：
 
 ```javascript
-function determineDate() {
-  import('moment').then(function(moment) {
-    console.log(moment().format());
-  }).catch(function(err) {
-    console.log('Failed to load moment', err);
-  });
+// module.js
+export default function sayHello() {
+  console.log("Hello, world!");
 }
-
-determineDate();
 ```
+
+你可以在多个组件中动态导入这个模块：
+
+```jsx
+// ComponentA.js
+import React, { useEffect } from 'react';
+
+const ComponentA = () => {
+  useEffect(() => {
+    const loadModule = async () => {
+      const module = await import('./module');
+      module.default();
+    };
+    loadModule();
+  }, []);
+
+  return <div>Component A</div>;
+};
+
+export default ComponentA;
+// ComponentB.js
+import React, { useEffect } from 'react';
+
+const ComponentB = () => {
+  useEffect(() => {
+    const loadModule = async () => {
+      const module = await import('./module');
+      module.default();
+    };
+    loadModule();
+  }, []);
+
+  return <div>Component B</div>;
+};
+
+export default ComponentB;
+```
+
+在这个例子中，`ComponentA` 和 `ComponentB` 都动态导入了 `module.js`，但 Webpack 会确保 `module.js` 只被加载一次。
 
 
 

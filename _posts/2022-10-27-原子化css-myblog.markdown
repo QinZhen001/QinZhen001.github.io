@@ -58,6 +58,44 @@ Tailwind CSS v2.1 introduces a new just-in-time compiler for Tailwind CSS that g
 
 
 
+## postcss-preset-env
+
+[https://www.npmjs.com/package/postcss-preset-env](https://www.npmjs.com/package/postcss-preset-env)
+
+**在使用 Tailwind CSS 时，通常不需要单独使用 `postcss-preset-env`。**
+
+因为 Tailwind CSS 已经包含了许多现代 CSS 特性，并且它的构建工具已经处理了浏览器兼容性问题。然而，如果你在 Tailwind CSS 之外还使用了许多现代 CSS 特性，或者有特定的浏览器兼容性要求，`postcss-preset-env` 仍然可以帮助你确保所有 CSS 特性在这些浏览器中兼容。
+
+如果一定要使用：
+
+使用 Tailwind CSS 时，通常建议禁用 `postcss-preset-env` 中的 `nesting-rules` 功能
+
+----
+
+https://github.com/csstools/postcss-plugins/tree/main/plugins/postcss-nesting
+
+Given they have no support they will always be enabled if they match by Stage:
+
+鉴于它们没有支持，如果它们按 Stage 匹配，则它们将始终处于启用状态：
+
+nesting-rules
+
+```ts
+module.exports = {
+  plugins: {
+    'postcss-import': {},  // 如果需要处理 @import 语句
+    'tailwindcss': {},  // Tailwind CSS
+    'autoprefixer': {},  // 自动添加浏览器前缀
+    'postcss-preset-env': {
+      stage: 1,  // 选择支持的阶段
+      features: {
+        'nesting-rules': false,  // 禁用 CSS 嵌套规则
+      },
+    },
+  },
+};
+```
+
 
 
 # unocss
