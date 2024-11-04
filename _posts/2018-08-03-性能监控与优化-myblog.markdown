@@ -15,6 +15,8 @@ tags:
 
 
 
+[前端异常监控 ](https://github.com/wayou/wayou.github.io/issues/8)
+
 
 
 # 监控
@@ -26,6 +28,8 @@ tags:
 性能相关：首屏性能
 
 错误相关：接口错误，js执行错误，资源加载错误（css，js，静态资源）
+
+
 
 ## 首屏性能
 
@@ -162,6 +166,35 @@ window.addEventListener('unhandledrejection', (e) => {
   console.log(e)
 })
 ```
+
+
+
+## iframe 错误
+
+iframe 中发生异常，window.onerror是不会触发的。但如果 iframe 地址同域，那么我们就可以设置 iframe 的全局 `onerror` 进行监听。
+
+```ts
+document.getElementById("myiframe").contentWindow.onerror=function() {
+    alert('error!!');
+    return false;
+}
+```
+
+以上代码需要保证在 iframe 加载完成后进行。
+
+```ts
+document.getElementById("myiframe").onload = () => {
+	// ...
+}
+```
+
+非同域且内容不受自己控制的情况下，除了在控制台查看错误详细信息，真的没其他办法可以捕获了。
+
+Cannot access iframe content: SecurityError: Failed to set a named property 'onerror' on 'Window': Blocked a frame with origin "http://localhost:3000" from accessing a cross-origin frame
+
+如果 ifame 内的内容不来自第三方，那么可以通过与 iframe 内进行通信的方式，将异常信息抛出来。iframe 通信试有很多，譬如 `postMessage`。这里不展开了。
+
+
 
 
 

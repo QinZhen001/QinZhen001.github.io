@@ -1214,25 +1214,21 @@ The [UNIX command](https://en.wikipedia.org/wiki/Cp_(Unix)) `cp` for Node.js whi
 
 ## husky
 
+[https://www.youtube.com/watch?v=TT1TpPwbMVQ&t=4s](https://www.youtube.com/watch?v=TT1TpPwbMVQ&t=4s)
+
 
 Husky can prevent bad git commit, git push and more 🐶 woof!
 
 
 Husky可以防止糟糕的git提交，git推送和更多的woof
 
-
-```json
-// package.json
-{
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm test",
-      "...": "..."
-    }
-  }
-}
 ```
+# 在项目根目录执行
+
+npx husky-init
+```
+
+
 
 
 
@@ -1289,6 +1285,14 @@ A spring-physics first animation library giving you flexible tools to confidentl
 
 
 # other
+
+
+
+## bolt
+
+[https://bolt.new/](https://bolt.new/)
+
+通过ai生成一个新项目
 
 
 

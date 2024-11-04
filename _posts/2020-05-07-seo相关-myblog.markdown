@@ -15,25 +15,23 @@ tags:
 
 
 
-
-
-
-
 # 正文
-
-
 
 蜘蛛spider在访问一个网站时，会首先会检查该网站的根域下是否有一个叫做 robots.txt的纯文本文件，这个文件用于指定spider在您网站上的抓取范围。早期robots协议是防止网站内的隐私，防止抓取用户不想让搜索引擎曝光的页面。
 
 
 
-###  **搜索引擎工作原理** 
+###  **搜索引擎爬虫工作原理** 
 
-
+[https://nextjs.org/learn-pages-router/seo/introduction-to-seo/webcrawlers](https://nextjs.org/learn-pages-router/seo/introduction-to-seo/webcrawlers)
 
 爬行抓取、预处理、服务输出
 
 
+
+Web crawlers identify themselves using custom [user-agents](https://developer.mozilla.org/docs/Web/HTTP/Headers/User-Agent). Google [has several web crawlers](https://developers.google.com/search/docs/advanced/crawling/overview-google-crawlers), but the ones that are used more often are **Googlebot Desktop** and **Googlebot Smartphone**.
+
+网络爬虫使用自定义用户代理来识别自己。 Google 有多种网络爬虫，但最常用的是 Googlebot Desktop 和 Googlebot Smartphone。
 
 
 
@@ -221,7 +219,9 @@ Metadata plays a significant role in enhancing a webpage's SEO, making it more a
 
 ###   robots.txt 
 
-​     robots.txt声明网站中哪些目录不让搜索引擎收录，**执行顺序从上到下**，robots.txt写法，添加sitemap链接。sitemap是谷歌创造出来的，搜索引擎会优先读取sitemap.xml文件，如果没有就逐个抓取URL。 
+[https://nextjs.org/learn-pages-router/seo/crawling-and-indexing/robots-txt](https://nextjs.org/learn-pages-router/seo/crawling-and-indexing/robots-txt)
+
+robots.txt声明网站中哪些目录不让搜索引擎收录，**执行顺序从上到下**，robots.txt写法，添加sitemap链接。sitemap是谷歌创造出来的，搜索引擎会优先读取sitemap.xml文件，如果没有就逐个抓取URL。 
 
 
 
@@ -238,19 +238,9 @@ Allow:允许收录
 
 
 
-
-
-
-
 #### 全站屏蔽所有蜘蛛
 
-
-
- 网站改版之前，为了避免蜘蛛抓取错误或临时的链接，可以采用全站屏蔽蜘蛛的操作，在根目录建立robots.txt，添加如下内容： 
-
-
-
-
+网站改版之前，为了避免蜘蛛抓取错误或临时的链接，可以采用全站屏蔽蜘蛛的操作，在根目录建立robots.txt，添加如下内容： 
 
 ```
 User-agent:*
@@ -263,9 +253,7 @@ Disallow:/
 
 #### 屏蔽某个目录、文件
 
-
-
- 案例：屏蔽所有蜘蛛抓取根目录下的inc文件夹及里面的所有内容，根目录下的wap目录下的index.html文件。robots.txt文件添加如下内容：
+案例：屏蔽所有蜘蛛抓取根目录下的inc文件夹及里面的所有内容，根目录下的wap目录下的index.html文件。robots.txt文件添加如下内容：
 
 ```
 User-agent:*
@@ -276,8 +264,6 @@ Disallow:/wap/index.html
 
 
 #### 屏蔽某个目录，但抓取目录下的文件或文件夹
-
-
 
 案例：屏蔽所有蜘蛛抓取根目录下的wap文件夹，但抓取里面后缀名为html的文件
 
@@ -291,11 +277,7 @@ Allow:/wap/*.html
 
 #### 屏蔽动态URL
 
-
-
 网站有些动态页面可能会和静态页面相同，造成重复收录。
-
-
 
  用robots屏蔽动态URL 
 
@@ -303,8 +285,6 @@ Allow:/wap/*.html
 User-agent:*
 Disallow:/*?*
 ```
-
- 
 
 仅允许访问“.html”为后缀的URL 
 
@@ -327,11 +307,24 @@ Sitemap: http://www.vi586.com/sitemap.html
 
 
 
+### XML Sitemaps
+
+[https://nextjs.org/learn-pages-router/seo/crawling-and-indexing/xml-sitemaps](https://nextjs.org/learn-pages-router/seo/crawling-and-indexing/xml-sitemapss)
 
 
 
 
 
+### Special Meta Tags
+
+[https://nextjs.org/learn-pages-router/seo/crawling-and-indexing/metatags](https://nextjs.org/learn-pages-router/seo/crawling-and-indexing/metatags)
 
 
 
+
+
+### AMP
+
+ a technology that enables developers to create web pages that load faster on mobile devices – at the cost of building and maintaining them over time.
+
+该技术使开发人员能够创建在移动设备上加载速度更快的网页，但代价是随着时间的推移构建和维护它们。

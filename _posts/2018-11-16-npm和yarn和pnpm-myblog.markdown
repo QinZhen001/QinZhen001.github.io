@@ -11,7 +11,6 @@ tags:
 
 > “Yeah It's on. ”
 
-
 # npm
 
 [https://www.cnblogs.com/penghuwan/p/6973702.html#_label4](https://www.cnblogs.com/penghuwan/p/6973702.html#_label4)
@@ -264,13 +263,13 @@ npm create vite@latest
 
 [https://docs.npmjs.com/cli/v7/using-npm/config#user-agent](https://docs.npmjs.com/cli/v7/using-npm/config#user-agent)
 
-```
+```bash
 Default: "npm/{npm-version} node/{node-version} {platform} {arch} workspaces/{workspaces} {ci}"
 ```
 
 通过这个可以判断当前是否是使用 npm
 
-```
+```bash
 process.env.npm_config_user_agent
 ```
 
@@ -302,6 +301,41 @@ npm workspaces是npm 7.0.0版本中新引入的功能，它允许您在具有相
 上面的例子中，`packages/*`表示项目中所有位于`packages`目录下的包都将被包含在工作区中。
 
 当您使用`npm install`命令时，npm会自动将所有被声明的工作区中的包安装到项目的`node_modules`目录下，而不是每个包都有自己的
+
+
+
+## Life Cycle Scripts
+
+[https://juejin.cn/post/7121605730309767175](https://juejin.cn/post/7121605730309767175)
+
+### prepare
+
+### **prepare** (`npm@4.0.0`之后)
+
+这个钩子触发的场景有很多，具体如下：
+
+- 在`npm pack`命令之前执行
+
+  这里简单的介绍下`npm pack`命令，这个命令大家都不常用，实际上是官方提供的，给大家**本地测试待发布的包**，简单的说就是执行`npm pack`之后，会生成一个`.tgz`文件，和发布到`npm`仓库的一致，然后我们可以其他项目对其进行本地测试，简单的添加一下依赖即可：
+
+  ```json
+  json
+  
+   代码解读
+  复制代码"dependencies": {
+    "some-module": "file:~/some-module-1.0.0.tgz"
+  }
+  ```
+
+- 在`npm publish`命令之前执行
+
+- 在本地`npm install`命令之前 执行（但是`npm install`不能带其他参数）
+
+- 在 `prepublish`之后, 在 `prepublishOnly`之前执行
+
+
+
+
 
 
 
@@ -538,8 +572,9 @@ const task = process.env.npm_lifecycle_event.startsWith('pre') ? process.env.npm
 
 
 
-
 # yarn 
+
+[https://yarnpkg.com/getting-started/install](https://yarnpkg.com/getting-started/install)
 
 
 
@@ -580,6 +615,24 @@ npm用下来比较强的一个痛点就是：当包的依赖层次比较深时�
 而yarn天生就能实现版本固化。会生成一个类似npm-shrinkwrap.json的yarn.lock文件，文件内会描述包自身的版本号，还会锁定所有它依赖的包的版本号：yarn.lock存储这你的每个包的确切依赖版本，能确保从本地开发到生产环境，所有机器上都有精确相同的依赖版本。
 
 
+
+## 不支持 prepare
+
+[https://typicode.github.io/husky/how-to.html#manual-setup](https://typicode.github.io/husky/how-to.html#manual-setup)
+
+[https://yarnpkg.com/advanced/lifecycle-scripts](https://yarnpkg.com/advanced/lifecycle-scripts)
+
+```json
+{
+  "scripts": {
+    // Yarn doesn't support prepare script
+    "postinstall": "husky",
+    //   "prepare": "husky"
+  }
+}
+```
+
+yarn 不支持 scripts 中 prepare 用 postinstall 代替
 
 
 
@@ -699,6 +752,8 @@ package.json:
 1. **缓存依赖**：`.yarn` 目录中会缓存项目的依赖包，确保在没有网络连接时也能进行依赖的安装和项目的构建。这个缓存机制也能加快依赖的安装速度。
 2. **Plug'n'Play（PnP）**：在 Yarn 2 及更高版本中，Yarn 引入了 Plug'n'Play（PnP）机制，取代了传统的 `node_modules` 目录。PnP 机制通过 `.yarn` 目录中的 `.pnp.cjs` 文件和 `.pnp.loader.mjs` 文件来管理依赖的解析和加载。
 3. **Yarn 的内部配置和元数据**：`.yarn` 目录中包含 Yarn 的内部配置和元数据文件，这些文件用于管理项目的依赖和构建配置。
+
+
 
 
 

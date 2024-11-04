@@ -24,17 +24,18 @@ tags:
 
 # 个人技能
 
-- 掌握 html， css， js，ts 相关知识，掌握常⻅的⻚面布局方式
-- 熟悉 node.js 在前端中的应用，熟悉koa,nest.js等框架
+- 掌握 html/css/js/ts 相关知识，掌握常⻅的⻚面布局方式
+- 掌握现代化css相关工具 less/sass/tailwind 等
+- 熟悉 node.js 在前端中的应用，熟悉koa/nest.js等框架
 - 熟悉微信小程序相关开发
 - 熟悉 electron 相关开发
-- 熟悉 vue 和 react 相关，了解其关键实现原理
-- 熟悉常见的ui组件库: antd, element-ui, vant 等，熟悉xyflow流式可视化编排，熟悉Pixi.js 渲染引擎 
+- 熟悉 vue/react/nextjs 相关，了解其关键实现原理
+- 熟悉常见的ui组件库: antd/element-ui/radix-ui/vant 等，熟悉xyflow流式可视化编排，熟悉Pixi.js 渲染引擎 
 - 熟悉 webpack, rollup 和 vite，对前端组件化，工程化，自动化有一定的理解
 - 熟悉 babel，写过 babel 插件和 ast 相关处理工具
 - 掌握基本的算法和数据结构，了解设计模式
 - 了解 web rtc，了解音视频相关知识 
-- 了解后端开发相关知识: go, nginx, docker, mysql, kubernetes等
+- 了解后端开发相关知识: go/nginx/docker/mysql/kubernetes等
 
 
 
@@ -42,7 +43,8 @@ tags:
 
 2021.4 - 至今 声网 agora 商业服务与交付中心(CSDC)    web 前端开发高级工程师
 
-* 负责教育场景 aPaas (灵动课堂) / 会议场景 aPaas / ktv合唱场景相关开发，参与架构设计，协议制定，api 文档编写，协助客户解决集成中的问题等。参与灵动课堂 1.x 升级 2.0，进行代码结构重构，性能优化，工作流改造。
+* 负责教育场景 apaas (灵动课堂) / 会议场景 apaas / ktv合唱场景相关开发，参与架构设计，协议制定，api 文档编写，协助客户解决集成中的问题等。参与灵动课堂 1.x 升级 2.0，进行代码结构重构，性能优化，工作流改造。
+* 负责RTC web场景化和开发者体验工具开发
 * 负责 AI agent的playground 和 graph designer 开发
 * 负责微信小程序音视频sdk的迭代更新
 * 担任前端面试官
@@ -69,45 +71,77 @@ tags:
 
 ## 教育场景 aPaas (灵动课堂) / 会议场景 aPaas
 
+2021.4 - 至今     (ts + react + mobx  + electorn + agora rtc/rtm sdk)
+
 https://doc.shengwang.cn/doc/flexible-classroom/javascript/landing-page
 
-2021.4 - 至今    教育场景 aPaas (灵动课堂) / 会议场景 aPaas
-
-(typescript + react + mobx  + electorn + agora rtc/rtm sdk)
-
-项目概述: aPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成到自主品牌的产品方案里，快速搭建出教育/会议场景，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
+项目概述: vaPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成RTC到自主品牌的产品方案里，快速搭建出教育/会议场景，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
 
 项目成果:  
 
-* monorepo 项目管理（先基于lerna 实现，后更改为pnpm），分层架构设计(rtc/rtm sdk => core/ui-kit/widget => classroom)
-* 基于 mobx 最佳实践重构 store(domain store 和 ui store)从网状结构变为树状结构，设计 onInstall 和 onDestroy 钩子，采用工厂模式针对不同场景创建不同 rootStore
-* 设计统一错误处理ErrorEnter。设计装饰器模式Logger分级分环境，结合 web worker 自动存入 IndexedDB。
-* 支持 widget插件机制，支持使用者开发自定义widget。
+* monorepo 项目管理（先基于lerna 实现，后更改为pnpm），分层架构设计(rtc/rtm sdk => core/ui-kit/widget => classroom/meeting)
+
+* 基于 mobx 最佳实践重构 store(domain store 和 ui store)从网状结构变为树状结构，设计生命周期钩子，采用工厂模式针对不同场景创建不同 rootStore
+
+* 设计统一错误处理机制，自定义Error对象，Logger采用装饰器模式区分等级/环境，结合 web worker 自动存入 IndexedDB。
+
+* 支持 widget插件机制，支持使用者开发自定义widget或者使用官方提供的widget。
+
 * 底层采用适配器模式同时支持 web 和 pc 平台，基于 async-await-retry 封装重试机制，基于mutex封装锁机制处理大量异步任务的情况。
-* 基于rc-component封装相关业务基础UI库，利用Storybook调试和展示效果，参与花名册，投票器，白板，聊天等组件开发。
-* 工作流优化: webpack4 升级到 5，手动处理node polyfill，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取   base webpack 配置，优化 babel相关 配置，按需引入 polyfill。利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts。
 
-## AI agent
+* 基于rc-component封装相基础UI库，利用Storybook调试和展示效果，参与花名册，投票器，白板，聊天等业务组件开发。
 
-https://github.com/TEN-framework/ASTRA.ai
+* 工作流优化: webpack4 升级到 5，手动处理node polyfill，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取   base webpack 配置，优化 babel相关 配置，按需引入 polyfill。
 
-playground：https://theastra.ai/
+* 利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts。
 
-graph-designer：https://github.com/TEN-framework/graph-designer
+  
+
+## Create Agora App
+
+2024.7 - 2024.8
+
+[https://github.com/AgoraIO-Community/create-agora-app](https://github.com/AgoraIO-Community/create-agora-app)
+
+Npm: [https://www.npmjs.com/package/create-agora-app](https://www.npmjs.com/package/create-agora-app)
+
+Create Agora App 是Agora支持的创建 RTC  web应用程序的快捷方式，它提供了无需配置的现代构建设置，只需一行命令即可快速创建项目。
+
+* 支持yarn/pnpm/npm/bunx
+* 支持vanilla/vue/react/svelte的js/ts项目模版
+* 使用 github workflows 进行 npm 发包
+
+
+
+
+
+
+
+## AI Agent
 
 2024.3 - 至今
 
-Astra是一个开源的多模态 AI agent，可以说话、查看和访问知识库 (RAG)，基于TEN Platform。graph-designer用于编辑AI agent工作流程和extention的属性。
+https://github.com/TEN-framework/ASTRA.ai
+
+Playground：[https://agent.theten.ai/](https://agent.theten.ai/)
+
+Graph Designer：https://github.com/TEN-framework/graph-designer
+
+Astra是一个开源的多模态 AI agent，可以说话、查看和访问知识库 (RAG)，基于TEN Platform。
+
+Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RAG 等，轻松构建复杂的 AI 应用程序。
 
 项目成果:  
 
-(typescript + next.js + xyflow)
+(ts + next.js + xyflow)
 
 * 负责playground 相关页面搭建以及移动端适配。    
 
-* 利用AnalyserNode/MediaElementAudioSourceNode等获取和处理音频数据，完成音频可视化相关ui。
+* 利用Audio Context/AnalyserNode/MediaElementAudioSourceNode等获取和处理音频数据，完成音频相关可视化。
 
-* graph-designer使用xyflow实现可视化工作流编排，支持Custom Nodes/Edges。使用vitest编写单元测试用例，保障数据处理/转换的可靠性。
+* graph-designer使用xyflow实现可视化工作流编排，支持Custom Nodes/Edges。
+
+* 使用vitest编写单元测试用例，保障数据处理/转换的正确性。
 
   
 
@@ -150,7 +184,8 @@ Astra是一个开源的多模态 AI agent，可以说话、查看和访问知识
 
 * 完成UI层（歌词组件，打分组件，激励动画，粒子效果，等级视图，音调谱线组件）等组件开发。
 * 完成逻辑层engine设计开发（包括歌词解析器Parser，任务调度器Scheduler，分数计算器Calculator，声调转换器PitchChanger等）。封装MessageHandler用于主播端和观众端同步歌词信息，进度校准等。
-* 进行canvas性能优化（分层渲染），和移动端对齐相关api设计，数据结构和单元测试用例等。使用Vitest编写单元测试，保证在打分逻辑等一些边界处理上和移动端保持一致。
+* 进行canvas性能优化（分层渲染），和移动端对齐相关api设计，数据结构和单元测试用例等。
+* 使用vitest编写单元测试，保证在打分逻辑等一些边界处理上和移动端保持一致。
 
 
 

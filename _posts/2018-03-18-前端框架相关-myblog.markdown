@@ -447,6 +447,8 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 # next.js
 
+[https://nextjs.org/learn-pages-router/basics/create-nextjs-app](https://nextjs.org/learn-pages-router/basics/create-nextjs-app)
+
 
 
 ## Pages Router 和 App Router
@@ -456,6 +458,34 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 > Next.js 从 v13 起就使用了新的路由模式 —— App Router。之前的路由模式我们称之为“Pages Router”
 
 
+
+
+
+## getServerSideProps 和 getStaticProps
+
+- **`getServerSideProps`**：用于每次请求时都需要获取最新数据的页面，适合动态内容和需要实时数据的场景。
+- **`getStaticProps`**：用于在构建时生成静态页面，适合不频繁变化的数据，可以通过 ISR 实现定期更新。
+
+增量静态再生成（ISR）
+
+```ts
+export async function getStaticProps() {
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+
+  return {
+    props: { data },
+    revalidate: 60, // 每 60 秒重新生成一次页面
+  };
+}
+```
+
+Development vs Production 
+
+- In **development** (`npm run dev` or `yarn dev`), [`getStaticProps`](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation) runs on *every request*.
+  在开发中（或），根据每个请求运行。
+- In **production**, [`getStaticProps`](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation) runs at *build time*. However, this behavior can be enhanced using the [`fallback` key](https://nextjs.org/docs/api-reference/data-fetching/get-static-paths#fallback-false) returned by [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation)
+  在生产中，在构建时运行。但是，可以使用返回的密钥来增强此行为
 
 
 
@@ -643,6 +673,39 @@ Next.js automatically optimizes fonts in the application when you use the `next/
 next/font模块时自动优化应用程序中的字体。在构建时下载字体文件，并将它们与其他静态资产一起托管。这意味着当用户访问您的应用程序时，不存在会影响性能的字体的额外网络请求。
 
 
+
+## Script
+
+[https://nextjs.org/learn-pages-router/basics/assets-metadata-css/third-party-javascript](https://nextjs.org/learn-pages-router/basics/assets-metadata-css/third-party-javascript)
+
+[https://nextjs.org/docs/pages/building-your-application/optimizing/scripts](https://nextjs.org/docs/pages/building-your-application/optimizing/scripts)
+
+例子：
+
+```ts
+import Script from 'next/script';
+
+export default function FirstPost() {
+  return (
+    <>
+      <Script
+        src="https://connect.facebook.net/en_US/sdk.js"
+        strategy="lazyOnload"
+        onLoad={() =>
+          console.log(`script loaded correctly, window.FB has been populated`)
+        }
+      />
+      <h1>First Post</h1>
+    </>
+  );
+}
+```
+
+
+
+## Global Styles
+
+[https://nextjs.org/learn-pages-router/basics/assets-metadata-css/global-styles](https://nextjs.org/learn-pages-router/basics/assets-metadata-css/global-styles)
 
 
 

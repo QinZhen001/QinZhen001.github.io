@@ -2525,6 +2525,15 @@ export const REMOVE_TODO = 'REMOVE_TODO' as const;
 
 
 
+#### 转换联合类型
+
+```ts
+const Values = ["lazy", "eager", undefined] as const;
+type LoadingValue = (typeof Values)[number];   // "lazy" | "eager" | undefined
+```
+
+
+
 
 
 ## 类型编程
