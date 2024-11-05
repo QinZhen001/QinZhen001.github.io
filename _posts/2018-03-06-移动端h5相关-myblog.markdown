@@ -11,7 +11,13 @@ tags:
 
 > “Yeah It's on. ”
 
+
+
+
+
 # 正文
+
+[总结移动端H5开发常用技巧](https://juejin.cn/post/6844904066301050893)
 
 
 
@@ -208,7 +214,74 @@ css识别
 
 > 一般用于大图如背景图，小图标没必要用这种方式，不值得
 
+## 如何禁止保存或拷贝图像
 
+```css
+img {
+  -webkit-touch-callout: none;
+}
+
+```
+
+
+
+
+
+## meta
+
+```html
+<meta name="screen-orientation" content="portrait"> //Android 禁止屏幕旋转
+<meta name="full-screen" content="yes">             //全屏显示
+<meta name="browsermode" content="application">     //UC应用模式，使用了application这种应用模式后，页面讲默认全屏，禁止长按菜单，禁止收拾，标准排版，以及强制图片显示。
+<meta name="x5-orientation" content="portrait">     //QQ强制竖屏
+<meta name="x5-fullscreen" content="true">          //QQ强制全屏
+<meta name="x5-page-mode" content="app">            //QQ应用模式
+```
+
+
+
+### 电话号码识别
+
+在 iOS Safari （其他浏览器和 Android 均不会）上会对那些看起来像是电话号码的数字处理为电话链接，比如：
+
+- 7 位数字，形如：1234567
+- 带括号及加号的数字，形如：(+86)123456789
+- 双连接线的数字，形如：00-00-00111
+- 11 位数字，形如：13800138000
+
+关闭识别
+
+```
+<meta name="format-detection" content="telephone=no" />
+```
+
+开启识别
+
+```
+<a href="tel:123456">123456</a>
+```
+
+
+
+
+
+
+
+
+
+### 邮箱识别（Android）
+
+安卓上会对符合邮箱格式的字符串进行识别，我们可以通过如下的 meta 来管别邮箱的自动识别：
+
+```
+<meta content="email=no" name="format-detection" />
+```
+
+同样地，我们也可以通过标签属性来开启长按邮箱地址弹出邮件发送的功能：
+
+```
+<a mailto:dooyoe@gmail.com">dooyoe@gmail.com</a>
+```
 
 
 
@@ -816,10 +889,20 @@ if(e._isScroller) return;
 
  HTML 本身会产生放大或缩小的行为，比如在 PC 浏览器上，可以自由控制页面的放大缩小。但是在移动端，我们是不需要这个行为的。所以，我们需要禁止该不确定性行为，来提升用户体验。
 
-
-
 ```html
 <meta name=viewport content="width=device-width, initial-scale=1.0, minimum-scale=1.0 maximum-scale=1.0, user-scalable=no">
+```
+
+
+
+### 清除输入框内阴影
+
+在 iOS 上，输入框默认有内部阴影,以这样关闭：
+
+```css
+div {
+  -webkit-appearance: none;
+}
 ```
 
 
@@ -1095,6 +1178,44 @@ setTimeout(function(){
 ## ios的fixed定位问题
 
 通常我们理解的fixed元素的相对于视窗来定位的，但是在ios里，fixed元素是相对于最先的，tranfrom属性不为none（或者will-change不为none）的祖宗元素来定位的。
+
+----
+
+软键盘唤起后，页面的 fixed 元素将失效，变成了 absolute，所以当页面超过一屏且滚动时，失效的 fixed 元素就会跟随滚动了。不仅限于 type=text 的输入框，凡是软键盘（比如时间日期选择、select 选择等等）被唤起，都会遇到同样地问题。
+
+解决方法: 不让页面滚动，而是让主体部分自己滚动,主体部分高度设为 100%，overflow:scroll
+
+```html
+<body>
+  <div class='warper'>
+    <div class='main'></div>
+  <div>
+  <div class="fix-bottom"></div>
+</body>
+```
+
+```css
+.warper {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch; /* 解决ios滑动不流畅问题 */
+}
+.fix-bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+```
+
+
+
+
 
 
 

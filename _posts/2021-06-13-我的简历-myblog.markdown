@@ -280,3 +280,11 @@ Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RA
 * 我的博客: https://qinzhen001.github.io/ 
 * 算法系列: https://github.com/QinZhen001/leetcode 
 * 手写源码: https://github.com/QinZhen001/front-end-demo
+
+
+
+
+
+# 针对简历问题
+
+TODO:   deadline  11.14
