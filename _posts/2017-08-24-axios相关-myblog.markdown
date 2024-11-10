@@ -332,6 +332,37 @@ axios默认在Request Config里已经设置了
 
 
 
+### 流式处理
+
+当后端返回的 response
+
+content-type: application/octet-stream
+
+可以利用axios 的 onDownloadProgress 处理数据 
+
+```tsx
+axios.get(url, {  
+    responseType: 'stream', 
+    onDownloadProgress: (progressEvent) => {  
+        const total = progressEvent.total;  
+        const current = progressEvent.loaded;  
+        const percentage = Math.round((current / total) * 100);  
+        console.log(`已下载 ${current} bytes / ${total} bytes (${percentage}%)`);  
+
+        const { event } = progressEvent
+        const xhr = event.target
+        const { responseText } = xhr
+        // 处理相应内容
+    }  
+})  
+```
+
+
+
+
+
+
+
 
 ## 补充
 
