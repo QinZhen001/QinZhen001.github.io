@@ -959,6 +959,26 @@ pnpm 使用了一个叫做 "Hoist Algorithm" 的方式来处理循环依赖。�
 
 
 
+## catalog
+
+[https://pnpm.io/catalogs](https://pnpm.io/catalogs)
+
+"*Catalogs*" are a [workspace feature](https://pnpm.io/workspaces) for defining dependency version ranges as reusable constants. Constants defined in catalogs can later be referenced in `package.json` files.
+
+用于将依赖项版本范围定义为可重用常量。catalogs中定义的常量稍后可以在package.json文件中引用。
+
+
+
+## dedupe
+
+[https://pnpm.io/cli/dedupe](https://pnpm.io/cli/dedupe)
+
+Perform an install removing older dependencies in the lockfile if a newer version can be used.
+
+当有依赖冲突时，删掉旧的依赖，用新的依赖。 
+
+
+
 
 
 ## 原理

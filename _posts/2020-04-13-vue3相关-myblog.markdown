@@ -735,3 +735,12 @@ data.name.value === 'Peter Griffin' // false
 
 
 
+## vue-tsc
+
+[https://www.npmjs.com/package/vue-tsc](https://www.npmjs.com/package/vue-tsc)
+
+Usage: `vue-tsc --noEmit && vite build`
+
+Vue 3 command line Type-Checking tool base on IDE plugin [Volar](https://github.com/vuejs/language-tools).
+
+用来做Type检查的

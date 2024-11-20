@@ -1081,6 +1081,22 @@ Node.js的应用是通过javascript开发的，然后直接在Google的变态V8�
 
 
 
+### fileURLToPath
+
+```ts
+import { fileURLToPath } from 'node:url';
+
+const dir = fileURLToPath(new URL('.', import.meta.url));
+```
+
+在 ES 模块中，`import.meta.url` 提供了当前模块的完整 URL。  file://xxx
+
+**`new URL('.', import.meta.url)`** 这行代码创建了一个新的 URL 对象，`'.'` 表示当前目录。
+
+`fileURLToPath` 是 Node.js 的一个方法，它接受一个 URL 对象并返回对应的本地文件系统路径。
+
+ file://xxx => 
+
 ### tsc 和 ts-node
 
 [What's the difference between tsc (TypeScript compiler) and ts-node?](https://stackoverflow.com/questions/51448376/whats-the-difference-between-tsc-typescript-compiler-and-ts-node)

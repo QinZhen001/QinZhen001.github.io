@@ -343,13 +343,13 @@ Run linters against staged git files and don't let 💩 slip into your code base
 
 **对暂存的git文件运行**，不要让它滑入您的代码库
 
-```
+```json
 // package.json
-
-{
-  "husky": { "hooks": { "pre-commit": "lint-staged" } },
-  "lint-staged": { "src/**/*.js?(x)": ["eslint --fix", "git add"] }
-}
+  "lint-staged": {
+    "*.{js,ts,tsx,vue,md}": [
+      "eslint --cache --fix"
+    ]
+  }
 ```
 
 
@@ -1230,6 +1230,21 @@ npx husky-init
 
 
 
+## simple-git-hooks
+
+[https://github.com/toplenboren/simple-git-hooks/tree/master](https://github.com/toplenboren/simple-git-hooks/tree/master)
+
+husky 的代替品 (更加轻量简单)
+
+```bash
+# 在项目根目录执行
+npx husky-init
+
+# 为了解决项目中可能缺乏某些git钩子  (例如: .git文件中 无pre-commit)
+```
+
+
+
 
 
 ## concurrently
@@ -1266,7 +1281,11 @@ Easily find and **remove** old and heavy **node_modules** folders ✨
 
 
 
+## taze
 
+[https://github.com/antfu-collective/taze](https://github.com/antfu-collective/taze)
+
+A modern cli tool that keeps your deps fresh
 
 
 

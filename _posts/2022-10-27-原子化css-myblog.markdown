@@ -48,6 +48,14 @@ className={cn(
 
 
 
+## dark-mode
+
+[https://www.tailwindcss.cn/docs/dark-mode](https://www.tailwindcss.cn/docs/dark-mode)
+
+
+
+
+
 
 
 ## Just-in-Time Mode
@@ -95,6 +103,22 @@ module.exports = {
   },
 };
 ```
+
+
+
+## @tailwind
+
+```css
+// tailwind.css
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+当你使用 Tailwind CSS 时，通常有一个构建工具（如 PostCSS）。在构建过程中，这些 `@tailwind` 指令会被处理并替换成对应的 CSS 规则。这样，你的最终 CSS 文件就包含了所需的所有样式，而不仅仅是你在 HTML 中显式使用的类。
+
+
 
 
 

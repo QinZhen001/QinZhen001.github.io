@@ -429,7 +429,7 @@ server {
 
 # 补充 
 
-## vue-router history 
+## vue-router history
 
 [https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90](https://router.vuejs.org/zh/guide/essentials/history-mode.html#后端配置例子)
 
@@ -441,7 +441,8 @@ server {
 
 ```nginx
 location / {
-  try_files $uri $uri/ /index.html;
+  # 如果文件或目录不存在，则重定向到 index.html  
+  try_files $uri $uri/ /index.html;  
 }
 ```
 
