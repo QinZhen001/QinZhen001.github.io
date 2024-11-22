@@ -1080,7 +1080,7 @@ When you commit with Commitizen, you'll be prompted to fill out any required com
 
 
 
-## @commitlint
+## commitlint
 
 > 处理 git commit message
 
@@ -1096,7 +1096,6 @@ When you commit with Commitizen, you'll be prompted to fill out any required com
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",   // 与commitlint交互的主要方式
     "@commitlint/config-conventional": "^17.7.0",  // 可共享的常规commitlint提交配置
-    "@commitlint/prompt-cli": "^17.7.2",  // 提交提示用于 commitlint
   },
 ```
 
@@ -1108,13 +1107,9 @@ When you commit with Commitizen, you'll be prompted to fill out any required com
 }
 ```
 
-To make prompt-cli easy to use, add a npm run-script to your `package.json`
 
-```json
-  "scripts": {
-    "commit": "commit"  // 触发 @commitlint/prompt-cli
-  }
-```
+
+
 
 
 
@@ -1511,11 +1506,7 @@ prettyBytes(100);
 
 
 
-
-
-
-
-### consola
+## consola
 
 [https://www.npmjs.com/package/consola](https://www.npmjs.com/package/consola)
 
