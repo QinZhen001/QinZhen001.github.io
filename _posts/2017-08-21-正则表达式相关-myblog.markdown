@@ -37,11 +37,7 @@ document.write("Result: " + result);
 
 [replace#指定一个函数作为参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#指定一个函数作为参数)
 
-
-
 **`replace()`** 方法返回一个由替换值（`replacement`）替换部分或所有的模式（`pattern`）匹配项后的新字符串。模式可以是一个字符串或者一个[正则表达式](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/RegExp)，替换值可以是一个字符串或者一个每次匹配都要调用的回调函数。**如果`pattern`是字符串，则仅替换第一个匹配项。**
-
-
 
 ```javascript
 var str = "我爱北京天安门，天安门上太阳升。";
@@ -72,8 +68,6 @@ alert(str2)  //我爱*****，***上太阳升
 <strong>replace是一个很有用的方法，经常会用到。</strong>
 
 | : 或的意思。
-
-
 
 语法
 
@@ -131,16 +125,26 @@ str.replace(regexp|substr, newSubStr|function)
 | `string`     | 被匹配的原字符串。                                           |
 | groups       | 命名捕获组匹配的对象                                         |
 
+举个例子：
 
+template parser
 
 ```js
-function replacer(match, p1, p2, p3, offset, string,groups) {
-  // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-  return [p1, p2, p3].join(' - ');
-}
-var newString = 'abc12345#$*%'.replace(/([^\d]*)(\d*)([^\w]*)/, replacer);
-console.log(newString);  // abc - 12345 - #$*%
+let str = '<div>{{ aaa }} {{ bbb }}</div>';
+let reg = /\{\{\s*(\S+)\s*\}\}/g;
 
+let data = {
+  aaa: '我是aaa',
+  bbb: '我是bbbb',
+};
+
+const res = str.replace(reg, (match, p1, offset, string, groups) => {
+  if (p1) {
+    return data[p1];
+  }
+});
+
+console.log(111, res);
 ```
 
 
@@ -164,16 +168,17 @@ var re = /\d+/g;
 alert( str.match(re) );   // [123，54，33，879]
 ```
 
-1. 如果有g全局标志,那么返回的数组保存的是,所有匹配的内容，**不包括子匹配**。
-2. 如果没有g全局标志,**那么返回的数组arr.arr[0]保存的是完整的匹配.arr[1]保存的是第一个括号里捕获的字串,依此类推arr[n]保存的是第n个括号捕获的内容**.也就是当包含有全局的标志时则返回的结果第一个是正确匹配的结果，后面依次是子匹配的结果。
+`match()` 返回一个 **数组** 或 `null`：
+
+- 如果正则表达式没有找到匹配项，返回 `null`。
+- 如果找到了匹配项，返回一个数组，数组的第一个元素是匹配的完整字符串，后面的元素是所有捕获的分组（如果有的话）。
+- 如果使用的是带有 `g`（全局）标志的正则表达式，`match()` 会返回一个数组，包含所有的匹配字符串，而不会包含分组信息。
 
 
 ### exec
 与match方法不同exec属于正则表达式的方法。
 语法:var result1 = regexp.exec(str);
 regexp:正则表达式（可以直接定义也可以利用RegExp的方式定义） str:要匹配的字串
-
-exec与match的关联就是exec**(g有没有都无影响)**就等价于**不含有g全局标志的match.即返回数组arr[0]为匹配的完整串.其余的为括号里捕获的字符串（当含有子匹配时）.**
 
 
 当exec和match中具有相同的子表达式且为非全局匹配时两者的输出也是相同的
@@ -201,38 +206,46 @@ Exec中没有子表达式其输出为W3cschool，其输出只一个，match全�
 
 
 ### match和exec总结
-exec中不管是不是全局的匹配，只要没有子表达式，**其返回的都只有一个元素的数组**，如果是全局匹配，可以利用lastIndex进行下一个匹配(**更好的办法是反复调用exec方法**)，匹配成功后reg的lastIndex的值将会变为上次匹配的字符的最后一个位置的索引。在设置g属性后，虽然匹配结果不受g的影响，返回结果仍然是一个数组（第一个值是第一个匹配到的字符串，以后的为分组匹配内容），但是会改变index和 lastIndex等的值
+**全局标志（`g`）的影响**
 
-```javascript
-  var patt = new RegExp('ab', 'g');
-  var str = 'abcdef12ab34cd56ef';
-  var ret;
-  while((ret = patt.exec(str))!=null) {
-    document.write(ret+"</br>");
-    document.write("ret.input="+ret.input+"</br>");
-    document.write("ret.index="+ret.index+"</br>");
-    document.write("RegExp.lastIndex ="+patt.lastIndex +"</br>");
+- 对于带有全局标志 `g` 的正则表达式，`match()` 返回所有的匹配项（仅匹配字符串），不会返回捕获的分组信息。
+- 对于带有全局标志 `g` 的正则表达式，`exec()` 每次调用会返回一个匹配项，并且它会保存“搜索位置”，使得每次调用时返回下一个匹配项。
+
+**捕获组的差异**
+
+- 如果没有全局标志，`match()` 和 `exec()` 都能返回捕获组（即正则表达式中括号 `()` 中的内容）。
+- 如果有全局标志，`match()` 只返回匹配的字符串，不包含捕获组信息，而 `exec()` 则会返回捕获组（如果有的话）。
+
+对于单次匹配，`match()` 通常更方便；对于多次匹配，特别是带 `g` 标志时，`exec()` 提供了更多的控制。
+
+```ts
+const str = 'The quick brown fox';
+const regex = /(\w+)\s(\w+)/;
+// 返回一致
+console.log(str.match(regex));  // ["The quick","The","quick"]
+console.log(regex.exec(str));  // ["The quick","The","quick"]
+```
+
+```ts
+const str = 'The quick brown fox';
+const regex = /(\w+)\s(\w+)/g;
+
+console.log(str.match(regex)); //  ['The quick', 'brown fox']
+
+let match = null;
+while ((match = regex.exec(str)) != null) {
+  console.log(match[0]); // 匹配项
+  console.log(match[1]); // 匹配项中分组1
+  console.log(match[2]); // 匹配项中分组2
+  console.log('----------');
 }
 ```
 
-输出结果：
-```javascript
-ab
-ret.input=abcdef12ab34cd56ef
-ret.index=0
-RegExp.lastIndex =2
-ab
-ret.input=abcdef12ab34cd56ef
-ret.index=8
-RegExp.lastIndex =10
-```
-
->这里之所以会有两次ab 是因为RegExp('ab', 'g')
-
-当没有全局的变量g时，由于index和lastindex的值不会变化（除非手动修改），则会导致每次的陪匹配都是从字符串的头开始的，所以只要字符串中有匹配，就会导致死循环，**当时设置g后，会自动改变前面的两个属性，会依次向后匹配直到没有匹配项退出循环**
 
 
-Match在非全局匹配时其他几种情况下（有无子匹配的情况下）的返回结果和exec是相同的，在全局匹配时其将返回包含所有匹配项的数组（**其中不包含子匹配**）。
+
+
+
 
 
 ## 其他
@@ -525,39 +538,19 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 ### `\b`和`\B`的区别
 
-
-
 [ https://segmentfault.com/a/1190000013084624 ]( https://segmentfault.com/a/1190000013084624 )
-
-
 
 `\b` - 一个词的边界
 
  **匹配必须出现在 `\w`（字母数字）和 `\W`（非字母数字）字符之间的边界上。** 
 
-
-
 `\B` - 一个非单词边界
 
-
-
-```haskell
-模式: `\Bend\w*\b`
-
+```asp
+模式: /\Bend\w*\b/g
 原字符串: `end sends endure lender`
-
 匹配结果: `ends`和`ender`
 ```
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -606,10 +599,6 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 
 
-
-
-
-
 ### 一道很好的题目
 
 说明：给定一个编码字符，按编码规则进行解码，输出字符串，编码规则是cout[letter],将letter的内容count次输出，count是0或正整数，letter是区分大小写的纯字母。
@@ -634,10 +623,6 @@ const s = '3[a2[c]]' 返回accaccacc
 
 
 
-
-
-
-
 ## 原理
 
 
@@ -646,7 +631,17 @@ const s = '3[a2[c]]' 返回accaccacc
 
 ### 正则表达式原理
 
+正则表达式（Regular Expression，简称 regex）是一种用来描述文本模式的工具，可以在文本中进行复杂的查找、匹配、替换等操作。正则表达式的原理基于有限状态机、模式匹配和字符集等概念，下面我们将从 **基本原理** 和 **常见概念** 两个角度来理解正则表达式的工作原理。
 
+ **基本原理：有限状态机（Finite State Machine, FSM）**
+
+正则表达式的工作机制本质上是通过构建一个 **有限状态机** 来扫描输入的文本。有限状态机是一种数学模型，具有以下特点：
+
+- **状态**：每个状态代表一个文本处理的阶段。
+- **转移**：根据当前的字符，状态机可以从一个状态转移到另一个状态。
+- **接受状态**：如果状态机扫描完输入文本并最终停留在一个特定的接受状态，就表示匹配成功。
+
+简言之，正则表达式通过不断地扫描输入的字符，并根据字符和当前状态的规则进行状态转移。如果扫描完输入字符串后，状态机最终停留在一个接受状态，则表示输入字符串符合正则表达式的模式。
 
 
 

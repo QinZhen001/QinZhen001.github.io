@@ -366,6 +366,65 @@ location ^~/apis/ {
 - ip_hash：按照 ip 的 hash 分配，保证每个访客的请求固定访问一个服务器，解决 session 问题。
 - fair：按照响应时间来分配，这个需要安装 nginx-upstream-fair 插件。
 
+举个例子：
+
+通过 `proxy_pass` 与 `upstream` 即可实现最为简单的负载均衡。如下配置会对流量均匀地导向 `172.168.0.1`，`172.168.0.2` 与 `172.168.0.3` 三个服务器
+
+```nginx
+http {
+  upstream backend {
+      server 172.168.0.1;
+      server 172.168.0.2;
+      server 172.168.0.3;
+  }
+
+  server {
+      listen 80;
+      location / {
+          proxy_pass http://backend;
+      }
+  }
+}
+```
+
+加权轮询：
+
+```nginx
+upstream backend {
+  server 172.168.0.1 weight=8;
+  server 172.168.0.2 weight=1;
+  server 172.168.0.3 weight=1;
+}
+```
+
+ip_hash：
+
+对每次的 IP 地址进行 Hash，进而选择合适的节点，如此，每次用户的流量请求将会打在固定的服务器上，利于缓存，也更利于 AB 测试等。
+
+```nginx
+upstream backend {
+  server 172.168.0.1;
+  server 172.168.0.2;
+  server 172.168.0.3;
+  ip_hash;
+}
+```
+
+least_conn:
+
+选择连接数最少的服务器节点优先负载
+
+```nginx
+upstream backend {
+  server 172.168.0.1;
+  server 172.168.0.2;
+  server 172.168.0.3;
+  least_conn;
+}
+```
+
+
+
 
 
 ## **适配PC端与移动端** 
@@ -427,30 +486,7 @@ server {
 
 
 
-# 补充 
 
-## vue-router history
-
-[https://router.vuejs.org/zh/guide/essentials/history-mode.html#%E5%90%8E%E7%AB%AF%E9%85%8D%E7%BD%AE%E4%BE%8B%E5%AD%90](https://router.vuejs.org/zh/guide/essentials/history-mode.html#后端配置例子)
-
-`vue-router` 默认 hash 模式 —— 使用 URL 的 hash 来模拟一个完整的 URL，于是当 URL 改变时，页面不会重新加载。
-
-如果不想要很丑的 hash，我们可以用路由的 **history 模式**，这种模式充分利用 `history.pushState` API 来完成 URL 跳转而无须重新加载页面。
-
-不过这种模式要玩好，还需要后台配置支持。因为我们的应用是个单页客户端应用，如果后台没有正确的配置，当用户在浏览器直接访问 `http://oursite.com/user/id` 就会返回 404，这就不好看了。
-
-```nginx
-location / {
-  # 如果文件或目录不存在，则重定向到 index.html  
-  try_files $uri $uri/ /index.html;  
-}
-```
-
-当用户请求 `http://localhost/example` 时，这里的 `$uri` 就是 `/example`。 
-
-try_files 会到硬盘里尝试找这个文件。如果存在名为 `/$root/example`（其中 `$root` 是项目代码安装目录）的文件，就直接把这个文件的内容发送给用户。 显然，目录中没有叫 example 的文件。然后就看 `$uri/`，增加了一个 `/`，也就是看有没有名为 `/$root/example/` 的目录。 
-
-又找不到，就会 fall back 到 try_files 的最后一个选项 /index.html，发起一个内部 “子请求”，也就是相当于 nginx 发起一个 HTTP 请求到 `http://localhost/index.html`。 
 
 
 
@@ -463,6 +499,10 @@ try_files 会到硬盘里尝试找这个文件。如果存在名为 `/$root/exam
 * 常用的、复用频率比较高的配置可以放到 `/etc/nginx/snippets` 文件夹，在 Nginx 的配置文件中需要用到的位置 include 进去，以功能来命名，并在每个 snippet 配置文件的开头注释标明主要功能和引入位置，方便管理。比如之前的 `gzip`、`cors` 等常用配置，我都设置了 snippet。
 
 * Nginx 日志相关目录，内以 `域名.type.log` 命名（比如 `be.sherlocked93.club.access.log` 和 `be.sherlocked93.club.error.log` ）位于 `/var/log/nginx/` 目录中，为每个独立的服务配置不同的访问权限和错误日志文件，这样查找错误时，会更加方便快捷。
+
+
+
+
 
 # 问题
 

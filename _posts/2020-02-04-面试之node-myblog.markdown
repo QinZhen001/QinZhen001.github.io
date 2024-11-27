@@ -28,8 +28,6 @@ Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量�
 
 它是单线程单进程模式，nodeJS的单线程指js的引擎只有一个实列。且是在主线程执行的，这样的。
 
-
-
 ```text
 Nodejs封装了所有与底层交流的信息，给开发者提供一致的接口定义。在不断升级v8和libuv的同时，依然能够做到接口的一致性，这个就是nodejs想要实现的目标。
 
@@ -199,8 +197,6 @@ var exportes = load(module.exports, module);
 ```
 
 也就是说，默认情况下，Node准备的exports变量和module.exports变量实际上是同一个变量，并且初始化为空对象{}
-
-
 
 如果我们要输出的是一个函数或数组，那么，只能给module.exports赋值
 
@@ -391,13 +387,9 @@ When `delay` is larger than `2147483647` or less than `1`, the `delay` will be s
 
 ## node的http模块创建服务与Express或Koa框架有何不同
 
-
-
 express是一个服务端框架,框架简单封装了node的http模块,express支持node原生的写法,express不仅封装好服务器，还封装了中间件、路由等特征，方便开发web服务器，换句话说express = http模块 + 中间件 + 路由 
 
 https://juejin.im/post/5a5f5a126fb9a01cb0495b4c)
-
-
 
 
 
@@ -407,10 +399,7 @@ https://juejin.im/post/5a5f5a126fb9a01cb0495b4c)
 
 [https://juejin.im/post/5d43017be51d4561f40adcf9?utm_source=gold_browser_extension](https://juejin.im/post/5d43017be51d4561f40adcf9?utm_source=gold_browser_extension)
 
-
 **进程**
-
-
 
 进程Process是计算机中的程序关于某数据集合上的一次运行活动，是系统进行资源分配和调度的基本单位，是操作系统结构的基础，进程是线程的容器（来自百科）。**进程是资源分配的最小单位**。我们启动一个服务、运行一个实例，就是开一个服务进程，例如 Java 里的 JVM 本身就是一个进程，Node.js 里通过 node app.js 开启一个服务进程，多进程就是进程的复制（fork），fork 出来的每个进程都拥有自己的独立空间地址、数据栈，一个进程无法访问另外一个进程里定义的变量、数据结构，只有建立了 IPC 通信，进程之间才可数据共享。
 
@@ -433,8 +422,6 @@ server.listen(3000,()=>{
 
 **线程**
 
-
-
 **线程是操作系统能够进行运算调度的最小单位，首先我们要清楚线程是隶属于进程的，被包含于进程之中。一个线程只能隶属于一个进程，但是一个进程是可以拥有多个线程的。**
 
 -------
@@ -442,15 +429,10 @@ server.listen(3000,()=>{
 
 **单线程**
 
-
 **单线程就是一个进程只开一个线程**
 
 
-
-
 Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步)，可以想象一下队列，前面一个执行完之后，后面才可以执行，当你在使用单线程语言编码时切勿有过多耗时的同步操作，否则线程会造成阻塞，导致后续响应无法处理。你如果采用 Javascript 进行编码时候，请尽可能的利用Javascript异步操作的特性。
-
-
 
 >Node.js 虽然是单线程模型，但是其基于事件驱动、异步非阻塞模式，可以应用于高并发场景，避免了线程创建、线程之间上下文切换所产生的资源开销。
 
@@ -460,17 +442,11 @@ Javascript 就是属于单线程，程序顺序执行(这里暂且不提JS异步
 
 >Node.js 开发过程中，错误会引起整个应用退出，应用的健壮性值得考验，尤其是错误的异常抛出，以及进程守护是必须要做的。
 
-
-
-
-
 >单线程无法利用多核CPU，但是后来Node.js 提供的API以及一些第三方工具相应都得到了解决
 
 在单核 CPU 系统之上我们采用 单进程 + 单线程 的模式来开发。在多核 CPU 系统之上，可以通过 child_process.fork 开启多个进程（Node.js 在 v0.8 版本之后新增了Cluster 来实现多进程架构） ，即 多进程 + 单线程 模式。注意：开启多进程不是为了解决高并发，主要是解决了单进程模式下 Node.js CPU 利用率不足的情况，充分利用多核 CPU 的性能。
 
 [https://juejin.im/post/5a996a87f265da239d48bebc](https://juejin.im/post/5a996a87f265da239d48bebc)
-
-
 
 * 在Node.js中每个应用程序都是一个进程类的实例对象。
 * 使用process对象代表应用程序,这是一个全局对象，可以通过它来获取Node.jsy应用程序以及运行该程序的用户、环境等各种信息的属性、方法和事件。
@@ -531,7 +507,6 @@ const EventEmitter = require('events');
 
 ```javascript
 const EventEmitter = require('events');
-
 class MyEmitter extends EventEmitter {}
 
 const myEmitter = new MyEmitter();
@@ -575,8 +550,6 @@ https://juejin.im/post/5a5f5a126fb9a01cb0495b4c
 
 - 阻塞：在等待调用结果时，线程挂起了，不往下执行
 - 非阻塞：与上面相反，当前线程继续往下执行
-
-
 
 > 什么时候会出现请求阻塞呢？涉及到大量计算的时候，因为计算是在 js 引擎上执行的，执行栈一直卡着，别的函数就没法执行，举个栗子，构建一个层级非常深的大对象，反复对这个这个对象 `JSON.parse(JSON.stringify(bigObj))`
 

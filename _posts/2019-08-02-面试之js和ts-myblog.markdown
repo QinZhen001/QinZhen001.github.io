@@ -69,22 +69,14 @@ tags:
 
 执行栈，也叫调用栈，具有 LIFO（后进先出）结构，用于存储在代码执行期间创建的所有执行上下文。
 
-
-
 首次运行JS代码时，会创建一个**全局执行上下文**并Push到当前的执行栈中。每当发生函数调用，引擎都会为该函数创建一个**新的函数执行上下文**并Push到当前执行栈的栈顶。
-
-
 
 根据执行栈LIFO规则，当栈顶函数运行完成后，其对应的函数执行上下文将会从执行栈中Pop出，上下文控制权将移到当前执行栈的下一个执行上下文。
 
 --------
 
-
-
 执行上下文的创建
 执行上下文分两个阶段创建：1）创建阶段； 2）执行阶段
-
-
 
 创建阶段
 
@@ -105,7 +97,7 @@ ExecutionContext = {
 ```
 
 
-This Binding
+
 
 
 
@@ -121,11 +113,7 @@ https://blog.csdn.net/Ancecis/article/details/104382441
 1. 变量对象（VO）是规范上或者是JS引擎上实现的，并不能在JS环境中直接访问。 （全局上下文的变量对象VO）
 2. 当进入到一个执行上下文后，这个变量对象才会被激活，所以叫函数活动对象（AO），这时候活动对象上的各种属性才能被访问。
 
-
-
 **AO可以理解为VO的一个实例，也就是VO是一个构造函数，然后VO(Context) === AO**，所以VO提供的是一个函数中所有变量数据的模板。
-
-
 
 VO和AO其实是一个东西，只是处于不同的执行上下文生命周期。AO存在于执行上下文位于执行上下文堆栈顶部(就是上边说的’当控制进入函数代码的执行上下文时’)的时期。再粗暴点，就是**函数调用时，VO被激活成了AO**。
 
@@ -194,17 +182,11 @@ function A() {
 
 在执行一段代码时，JS 引擎会首先创建一个执行栈
 
-
-
 然后JS引擎会创建一个全局执行上下文，并push到执行栈中, 这个过程JS引擎会为这段代码中所有变量分配内存并赋一个初始值（undefined），在创建完成后，JS引擎会进入执行阶段，这个过程JS引擎会逐行的执行代码，即为之前分配好内存的变量逐个赋值(真实值)。
-
-
 
 如果这段代码中存在function的声明和调用，那么JS引擎会创建一个函数执行上下文，并push到执行栈中，其创建和执行过程跟全局执行上下文一样。但有特殊情况，即当函数中存在对其它函数的调用时，JS引擎会在父函数执行的过程中，将子函数的全局执行上下文push到执行栈，这也是为什么子函数能够访问到父函数内所声明的变量。
 
-
-
-还有一种特殊情况是，在子函数执行的过程中，父函数已经return了，这种情况下，JS引擎会将父函数的上下文从执行栈中移除，与此同时，JS引擎会为还在执行的子函数上下文创建一个闭包，这个闭包里保存了父函数内声明的变量及其赋值，子函数仍然能够在其上下文中访问并使用这边变量/常量。当子函数执行完毕，JS引擎才会将子函数的上下文及闭包一并从执行栈中移除。
+还有一种特殊情况是，在子函数执行的过程中，父函数已经return了，这种情况下，JS引擎会将父函数的上下文从执行栈中移除，**与此同时，JS引擎会为还在执行的子函数上下文创建一个闭包，这个闭包里保存了父函数内声明的变量及其赋值，子函数仍然能够在其上下文中访问并使用这边变量/常量**。当子函数执行完毕，JS引擎才会将子函数的上下文及闭包一并从执行栈中移除。
 
 
 
@@ -217,8 +199,6 @@ function A() {
 * requestAnimationFrame 每一帧必定会执行不同  （一般用于执行动画）
 * requestIdleCallback 是捡浏览器空闲来执行任务。
 
-
-
 **`requestAnimationFrame` 的时间间隔都会紧跟屏幕刷新一次所需要的时间**；例如某一设备的刷新率是 75 Hz，那这时的时间间隔就是 13.3 ms（1 秒 / 75 次）。需要注意的是这个方法虽然能够**保证回调函数在每一帧内只渲染一次**，但是**如果这一帧有太多任务执行，还是会造成卡顿的；因此它只能保证重新渲染的时间间隔最短是屏幕的刷新时间。**
 
 浏览器一帧中可以用于执行`JS`的时机：
@@ -228,8 +208,6 @@ function A() {
 ```
 
 requestAnimationFrame 这是浏览器渲染前的最后时机，所以动画能快速被渲染。
-
-
 
 **`setTimeout` 或 `setInterval` 是使用定时器来触发回调函数的，而定时器并无法保证能够准确无误的执行，有许多因素会影响它的运行时机，比如说：当有同步代码执行时，会先等同步代码执行完毕，异步队列中没有其他任务，才会轮到自己执行**。
 
@@ -321,8 +299,6 @@ console.log(p2) // -> ?
 
 ```
 
-
-
 结果:
 
 ```javascript
@@ -330,9 +306,9 @@ p1：{name: “fyq”, age: 26}
 p2：{name: “hzj”, age: 18}
 ```
 
-
-
 > 原因: 在函数传参的时候传递的是对象在堆中的内存地址值，test函数中的实参person是p1对象的内存地址，通过调用person.age = 26确实改变了p1的值，但随后person变成了另一块内存空间的地址，并且在最后将这另外一份内存空间的地址返回，赋给了p2。
+
+
 
 ## cookie
 
@@ -368,8 +344,6 @@ MDN 对闭包的定义为：
 
 ----
 
-
-
 闭包的简单定义是：函数 A 返回了一个函数 B，并且函数 B 中使用了函数 A 的变量，函数 B 就被称为闭包。
 
 闭包是指有权访问另一个函数作用域的变量的函数。--《javascript高级程序设计》 
@@ -389,15 +363,7 @@ function A() {
 
 函数 A 弹出调用栈后，函数 A 中的变量这时候是存储在堆上的，所以函数B依旧能引用到函数A中的变量。现在的 JS 引擎可以通过逃逸分析辨别出哪些变量需要存储在堆上，哪些需要存储在栈上。
 
-
-
-
-
 **闭包产生的本质就是，当前环境中存在指向父级作用域的引用**
-
-
-
-
 
 ---
 
@@ -445,13 +411,7 @@ Context = {
 
 
 
-
-
-
-
 ### 闭包的用处
-
-
 
 1. 返回一个函数。刚刚已经举例。
 2. 作为函数参数传递
@@ -479,67 +439,9 @@ foo();
 
 
 
-
-
 ### 闭包的缺点
 
 由于闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包，否则会造成网页的性能问题，在IE中可能导致内存泄露
-
-
-
-
-
-### 一个闭包的问题
-
-[https://github.com/yygmind/blog/issues/18](https://github.com/yygmind/blog/issues/18)
-
-```javascript
-var scope = "global scope";
-function checkscope(){
-    var scope = "local scope";
-    function f(){
-        return scope;
-    }
-    return f;
-}
-
-var foo = checkscope(); // foo指向函数f
-console.log(foo());  //local scope		// 调用函数f()
-```
-
-
-简要的执行过程如下：
-
-
-* 进入全局代码，创建全局执行上下文，全局执行上下文压入执行上下文栈
-* 全局执行上下文初始化
-* 执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 执行上下文被压入执行上下文栈
-* checkscope 执行上下文初始化，创建变量对象、作用域链、this等
-* checkscope 函数执行完毕，checkscope 执行上下文从执行上下文栈中弹出
-* 执行 f 函数，创建 f 函数执行上下文，f 执行上下文被压入执行上下文栈
-* f 执行上下文初始化，创建变量对象、作用域链、this等
-* f 函数执行完毕，f 函数上下文从执行上下文栈中弹出
-
-
-
-那么问题来了， 函数f 执行的时候，checkscope 函数上下文已经被销毁了，那函数f是如何获取到scope变量的呢？
-
-
-
-**函数f 执行上下文维护了一个作用域链，会指向指向checkscope作用域，作用域链是一个数组，结构如下。**
-
-
-```javascript
-fContext = {
-    Scope: [AO, checkscopeContext.AO, globalContext.VO],
-}
-```
-
-所以指向关系是当前作用域 --> checkscope作用域--> 全局作用域
-
-
-
-即使 checkscopeContext 被销毁了，但是 **JavaScript 依然会让 checkscopeContext.AO（活动对象） 活在内存中**，f 函数依然可以通过 f 函数的作用域链找到它，**这就是闭包实现的关键**。
 
 
 
@@ -564,8 +466,6 @@ data[2]();
 
 循环结束后，全局执行上下文的VO是
 
-
-
 ```javascript
 globalContext = {
     VO: {
@@ -577,8 +477,6 @@ globalContext = {
 
 
 执行 data[0] 函数的时候，data[0] 函数的作用域链为：
-
-
 
 ```javascript
 data[0]Context = {
@@ -594,11 +492,7 @@ data[0]Context = {
 解决办法
 
 
-
-
 改成闭包，方法就是data[i]返回一个函数，并访问变量i
-
-
 
 ```javascript
 var data = [];
@@ -620,8 +514,6 @@ data[2]();	// 2
 循环结束后的全局执行上下文没有变化。
 
 执行 data[0] 函数的时候，data[0] 函数的作用域链发生了改变：
-
-
 
 ```javascript
 data[0]Context = {
@@ -750,22 +642,17 @@ console.log('res', res)
 
 ### 变量提升和函数提升
 
-```
+```ts
 <script>
     console.log(fun)
-
     console.log(person)
 </script>
 
 <script>
     console.log(person)
-
     console.log(fun)
-
     var person = "Eric";
-
     console.log(person)
-
     function fun() {
         console.log(person)
         var person = "Tom";
@@ -773,7 +660,6 @@ console.log('res', res)
     }
 
     fun()
-
     console.log(person)
 </script>
 ```
@@ -781,14 +667,8 @@ console.log('res', res)
 
 上面代码的执行结果是什么？
 
-
-
-------
-
-
-
 第一个 script ：
-```
+```ts
 <script>
     console.log(fun)
     console.log(person)
@@ -797,7 +677,7 @@ console.log('res', res)
 当前全局作用域中并没有定义 fun 和 person，那么执行 console.log(fun) 会导致报错提示 fun 没有定义，并且会阻断代码继续执行，也就不会执行 console.log(person) 。
 
 第二个 script：
-```
+```ts
 <script>
     console.log(person)     // (1)
     console.log(fun)           // (2)
@@ -815,7 +695,6 @@ console.log('res', res)
     console.log(person)      // (6)
 </script>
 ```
-
 
 虽然变量 person 和函数 fun 是在下方定义的，但是会发生变量提升和函数提升，因此：
 (1) 处打印 undefined
@@ -848,8 +727,6 @@ scopeTest(); //undefined
 
 上面的代码输出是undefined，这是因为局部变量scope变量提升了，等效于下面
 
-
-
 ```javascript
 var scope="global";
 function scopeTest(){
@@ -860,14 +737,7 @@ function scopeTest(){
 scopeTest(); //undefined
 ```
 
-
 **注意，如果在局部作用域中忘记var，那么变量就被声明为全局变量。**
-
-
-
----
-
-
 
 ```js
 var scope = 'global scope'
@@ -893,15 +763,11 @@ function checkScope() {
 checkScope()() // 'local scope'
 ```
 
-
-
 两段代码都会打印 `local scope` ，这是因为 JS 采用词法作用域，函数作用域基于函数创建的位置。
 
 > JavaScript 函数的执行用到了作用域链，**这个作用域链是在函数定义的时候创建的**。嵌套的函数 f() 定义在这个作用域链里，其中的变量 scope 一定是局部变量，不管何时何地执行函数 f()，这种绑定在执行 f() 时依然有效。
 
 
-
- 
 
 
 
@@ -959,11 +825,11 @@ checkScope()() // 'local scope'
     }
     fn.a = 100;
 
-    console.log(obj.__proto__); //Object{}
-    console.log(arr.__proto__); //[Symbol(Symbol.unscopables):Object]
-    console.log(fn.__proto__); //function(){}
-    console.log(fn.prototype); //Object{}
-    console.log(obj.__proto__ === Object.prototype) //true
+    console.log(obj.__proto__); // Object{}
+    console.log(arr.__proto__); // [Symbol(Symbol.unscopables):Object]
+    console.log(fn.__proto__); // function(){}
+    console.log(fn.prototype); // Object{}
+    console.log(obj.__proto__ === Object.prototype) // true
 ```
 
 
@@ -981,7 +847,6 @@ checkScope()() // 'local scope'
   Ofo.prototype = new Bick()
 
   var youbick = new Bick()
-
 
   console.log(myBick.name)  // undefined
   console.log(youbick.name) // mybick
@@ -1539,11 +1404,7 @@ bar.call2(foo); // 1
 
 
 
-
-
 **模拟实现第二步**
-
-
 
 
 第一版有一个问题，那就是函数 bar 不能接收参数，所以我们可以从 arguments中获取参数，取出第二个到最后一个参数放到数组中，为什么要抛弃第一个参数呢，因为第一个参数是 this。
@@ -1579,8 +1440,6 @@ bar.call2(foo); // 1
 
 
 **模拟实现第三步**
-
-
 
 还有一些细节的东西需要注意
 
@@ -1707,8 +1566,6 @@ Function.prototype.bind2 = function(context) {
 
 
 到现在已经完成大部分了，但是还有一个难点，bind 有以下一个特性
-
-
 
 >一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器，提供的 this 值被忽略，同时调用时的参数被提供给模拟函数。
 
@@ -2351,25 +2208,15 @@ car.start();
 
 这里的this是指上面的obj
 
-
-
 ---
 
 **模拟实现第二步**
 
-
-
 构造函数返回值有如下三种情况：
-
-
 
 1. 返回一个对象
 2. 没有 return，即返回 undefined
 3. 返回undefined 以外的基本类型
-
-
-
-
 
 情况3：返回undefined 以外的基本类型
 
@@ -2391,12 +2238,6 @@ car.name;
 实例 car 中只能访问到**构造函数中的属性**，和情况1完全相反，结果相当于没有返回值。
 
 **所以需要判断下返回的值是不是一个对象，如果是对象则返回这个对象，不然返回新创建的 obj对象。**
-
-
-
-
-
-
 
 
 ```javascript
@@ -2470,6 +2311,8 @@ new (Foo.getName());
 * Object.assign()
 * 展开语法 Spread
 * Array.prototype.slice()
+
+
 
 
 #### 什么是深拷贝
@@ -2844,8 +2687,6 @@ for(var i in Object) {
 通过 Object.create(null) 来创建，这种情况下，使用 myObject.hasOwnProperty(..) 就会失败。
 
 
-
-
 **因为没有连接到 Object.prototype**
 
 
@@ -2901,11 +2742,7 @@ for (var nextKey in nextSource) {
 
 ## 原型 Prototype
 
-
-
 ### constructor 值只读吗
-
-
 
 这个得分情况，对于引用类型来说 constructor 属性值是可以修改的，但是对于基本类型来说是只读的。
 
@@ -3033,15 +2870,7 @@ Object.__proto__ === Function.prototype
 // true
 ```
 
-
-
------
-
-
-
 再看Function
-
-
 
 
 >The Function constructor is itself a Function object and its [[Class]] is "Function". The value of the [[Prototype]] internal property of the Function constructor is the standard built-in Function prototype object.
@@ -3102,13 +2931,9 @@ Function.__proto__ === Function.prototype					// true
 
 https://zhuanlan.zhihu.com/p/33058983
 
-
-
-[深入探究 eventloop 与浏览器渲染的时序问题](https://www.404forest.com/2017/07/18/how-javascript-actually-works-eventloop-and-uirendering/#4-requestAnimationFrame-callback-%E7%9A%84%E6%89%A7%E8%A1%8C%E6%97%B6%E6%9C%BA)
-
 **并不是每轮 eventloop 都会执行 UI Render**
 
-
+**我们只需记住当当前执行栈执行完毕时会立刻先处理所有微任务队列中的事件，然后再去宏任务队列中取出一个事件。同一次事件循环中，微任务永远在宏任务之前执行。**
 
 
 
@@ -3120,13 +2945,7 @@ https://zhuanlan.zhihu.com/p/33058983
 2. 遇到同步任务就放在执行栈中执行.
 3. **异步任务会在异步任务有了结果后，将注册的回调函数放入任务队列中等待主线程空闲的时候（调用栈被清空），被读取到栈内等待主线程的执行。**
 
-
-
 JS中存在一个叫做执行栈的东西。JS的所有同步代码都在这里执行，当执行一个函数调用时，会创建一个新的执行环境并压到栈中开始执行函数中的代码，当函数中的代码执行完毕后将执行环境从栈中弹出，当栈空了，也就代表执行完毕。
-
-
-
-
 
 > ```
 > setTimeout(_=>{}, 1000)
@@ -3220,8 +3039,6 @@ document.addEventListener('DOMContentLoaded',function(){
 * 设置为null的变量或者对象会被内存收集器回收
 
 
-
-
 >相同点:在 if判断语句中,值都默认为 false
 
 
@@ -3284,15 +3101,9 @@ function InnerArraySort(array, length, comparefn) {
 
 pwa渐进式web应用
 
-
-
 sw便是在web worker的基础上增加了离线缓存的能力
 
-
-
 sw是由事件驱动的,具有生命周期
-
-
 
 可以拦截处理页面的所有网络请求(fetch)，可以访问cache和indexDB，支持推送，并且可以让开发者自己控制管理缓存的内容以及版本，为离线弱网环境下的 web 的运行提供了可能，让 web 在体验上更加贴近 native。
 
@@ -3394,15 +3205,9 @@ function foo() {
 
 [https://zhuanlan.zhihu.com/p/79114506](https://zhuanlan.zhihu.com/p/79114506)
 
-
-
 null == 0 ? 结果是什么呢
 
 答案： false
-
-
-
-
 
 这里涉及到了 == 比较法的运算
 
@@ -3526,8 +3331,6 @@ a + b:
 
 ## 箭头函数和普通函数的区别
 
-
-
 * **箭头函数体内的`this`对象，就是定义时所在的对象，而不是使用时所在的对象。**
 
 * 不可以当作构造函数，也就是说，不可以使用`new`命令，否则会抛出一个错误。
@@ -3536,19 +3339,11 @@ a + b:
 
 * 不可以使用`yield`命令，因此箭头函数不能用作 Generator 函数。
 
-
-
 **注意： `this`对象的指向是可变的，但是在箭头函数中，它是固定的。**
 
 
 
-
-
-
-
 举一个例子：
-
-
 
 ```javascript
 var id = 21;
@@ -3583,37 +3378,18 @@ function foo() {
 foo.call({ id: 42 });
 ```
 
-
-
-
-
 **箭头函数可以让`setTimeout`里面的`this`，绑定定义时所在的作用域，而不是指向运行时所在的作用域。**
-
-
-
-
 
 -----
 
-
-
 科普：
 
-```
+```ts
 setTimeout(fn,delay) { fn(); }
-
-fn的调用者是window对象，所以this指向了window
+// fn的调用者是window对象，所以this指向了window
 ```
-
-
-
----
-
-
 
 所以，箭头函数转成 ES5 的代码如下
-
-
 
 ```javascript
 // ES6
@@ -3634,15 +3410,7 @@ function foo() {
 
 ```
 
-
-
-
-
 上面代码中，转换后的 ES5 版本清楚地说明了，箭头函数里面根本没有自己的`this`，而是引用外层的`this`。
-
-
-
-
 
 
 
@@ -3663,13 +3431,7 @@ read-only 的特性很好理解，import 的属性是只读的，不能赋值，
 
 esm 对于 import/export 存在提升的特性，具体表现是规范规定 import/export 必须位于模块顶级，不能位于作用域内；其次对于模块内的 import/export 会提升到模块顶部，**这是在编译阶段完成的**。
 
-
-
 esm 的 import/export 提升在正常情况下，使用起来跟 commonjs 没有区别，因为一般情况下，我们在引入模块的时候，都会在模块的同步代码执行完才获取到输出值。所以即使存在提升，也无法感知。
-
-
-
-
 
 
 
@@ -3712,8 +3474,6 @@ console.log(obj.counter()); // 2
 ## commonjs vs commonjs2
 
 https://blog.csdn.net/qq8427003/article/details/64921642
-
-
 
 * commonjs 规范只定义了exports
 * commonjs2 规范存在 exports 和 module.exports
@@ -4062,10 +3822,6 @@ setTimeout(() => req.abort("用户手动终止请求"), 2000);
 
 
 
-
-
-
-
 补充知识：
 
  **Symbol 函数前不能使用 new 命令，否则会报错。这是因为生成的 Symbol 是一个原始类型的值，不是对象。**
@@ -4155,20 +3911,12 @@ const result = find(items, (item, index) => item.a === 2)
 
 ### **type 和 interface 的区别**
 
-
-
 **type 只是一个类型别名，并不会产生类型**。
-
-
 
 > - An interface can be named in an extends or implements clause, but a type alias for an object type literal cannot.
 > - An interface can have multiple merged declarations, but a type alias for an object type literal cannot.
 
-
-
 **type 关键字的产生的东西官方有一个名字 type aliases ，就是类型别名，重点是它是别名不是真正的类型**
-
-
 
 **interface是接口，type是类型，本身就是两个概念。只是碰巧表现上比较相似。**
 **希望定义一个变量类型，就用type，如果希望是能够继承并约束的，就用interface。**
@@ -4183,10 +3931,6 @@ const result = find(items, (item, index) => item.a === 2)
    *  type extends type (类型继承类型) 
    *  interface extends type (接口继承类型)  
    *  type extends interface (类型继承接口) 
-
-
-
-
 
 interface
 
@@ -4215,8 +3959,6 @@ type Point = {
 type SetPoint = (x: number, y: number) => void;
 
 ```
-
-
 
 **与接口类型不一样，类型别名可以用于一些其他类型，比如原始类型、联合类型和元组：**
 
@@ -4280,20 +4022,6 @@ overload（重载）：
 3. 存在于父类和子类、同类中。
 
 
-
-举个例子：
-
-```ts
-function pickCark(x: any): any {
-  let pickCard = null
-  if (typeof x == 'object') {
-    pickCard = Math.floor(Math.random() * x.length);
-  } else if (typeof x == 'number') {
-    pickCard = Math.floor(x / 13);
-  }
-  return pickCard
-}
-```
 
 
 
@@ -4511,8 +4239,6 @@ new Promise((resolve, reject) => {
 
 ## 一道关于轮询的面试题
 
-
-
 ```javascript
   function poll(checkStatus,callback){
         // 轮询调用checkStatus，当checkStatus为true时，执行callback
@@ -4524,15 +4250,7 @@ new Promise((resolve, reject) => {
 等待2.25s 调用checkStatus返回true，调用callback
 ```
 
-
-
-
-
-
-
 解决：
-
-
 
 ```javascript
  function timeOut(timer) {
@@ -4543,8 +4261,6 @@ new Promise((resolve, reject) => {
                 }, timer)
             })
         }
-
-
 
         async function poll(checkStatus, callback) {
             let timer = 1000
@@ -4569,27 +4285,12 @@ new Promise((resolve, reject) => {
         }
 
 
-
         poll(checkStatus, callback)
 ```
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ## 找到数组中的重复元素
-
-
 
 给定两个排好序的数组A,B,大小分别为n,m。给出一个高效算法查找A中的哪些元素存在B数组中
 
@@ -4599,15 +4300,7 @@ B = [2,3,4,6,8,18,21,42]
 
 答案 [2, 2, 3, 4, 6, 18]
 
-
-
-
-
 解决：双指针
-
-
-
-
 
 ```javascript
 
@@ -4706,12 +4399,6 @@ f(p1, p2, p3, p4, p5)
 1. 优化了dom操作，提升渲染性能；
 
 2. 可以做跨平台开发，如 react native(这个才是重点) 
-
-
-
-
-
-
 
 
 ## ECMAScript 和 JavaScript的关系
@@ -5079,13 +4766,7 @@ var B = /*#__PURE__*/ (function (_A) {
 
 
 
-
-
-
-
 ## 异步串行题
-
-
 
 [https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension](https://juejin.im/post/6860646761392930830?utm_source=gold_browser_extension)
 
@@ -5285,8 +4966,6 @@ console.log('script end');
 
 [https://juejin.im/post/6866920515420815374?utm_source=gold_browser_extension#heading-10](https://juejin.im/post/6866920515420815374?utm_source=gold_browser_extension#heading-10)
 
-
-
 ```js
 console.log([] + [])  // ""
 console.log({} + []) // [object Object]
@@ -5294,11 +4973,7 @@ console.log([] == ![]) // true
 console.log(true + false) // 1
 ```
 
-
-
 **包装类型在运算的时候，会先调用`valueOf`方法，如果`valueOf`返回的还是包装类型，那么再调用`toString`方法**
-
-
 
 ```js
 // 还是 数组
@@ -5313,23 +4988,11 @@ console.log("" + "")
 
 ```
 
-
-
------
-
-
-
 ```js
 console.log({} + [])
 
 // 对象 {}隐氏转换成了[object Object],然后与""相加
 ```
-
-
-
--------
-
-
 
 ```js
 console.log([] == ![])
@@ -5492,15 +5155,9 @@ Object.keys
 
 [javascript函数自执行里的this为什么指向window](https://segmentfault.com/q/1010000004648772)
 
-
-
 当你要确定“函数中的this是什么”的时候，永远不要到函数**定义的地方**去找答案！而是要到**函数被调用**的地方找答案！
 
-
-
 具体说：函数里面的`this`的含义，是由它被调用的方式决定的。
-
-
 
 换句话说，当你看到下面的代码时：
 
@@ -5532,8 +5189,6 @@ f();
 2. 每个该类任务执行完，也会执行微任务(其实不能称为特性，毕竟所有脚本任务都是这样)
 3. 如果以自身递归调用的方式(raf回调内递归调用raf，使用该api的正确姿势)，它的触发时机总是与浏览器的渲染频率保持一致。
 
-
-
 **特别指出，在一个loop中，可能并不会执行这一步，只要浏览器任务不需要执行渲染，就会跳过。**
 
 
@@ -5555,40 +5210,7 @@ f();
 
 ![img](https://pic1.zhimg.com/80/v2-4afcb7df8ddbb488046360ea4920ef4c_720w.jpg)
 
-在一些文章中将 requestAnimationFrame 划分为 task，理由是假如你在 requestAnimationFrame 的 callback 中注册了 microtask 任务，你会发现该 microtask 任务会在 requestAnimationFrame 的 callback 结束后立刻执行。
-
-```js
-setTimeout(() => {
-  console.log('A')
-}, 0)
-requestAnimationFrame(() => {
-  console.log('B')
-  Promise.resolve().then(() => {
-    console.log('C')
-  })
-})
-```
-
-```
-B
-C
-A
-// 有可能出现 A B C 的情况，本节讨论的重点在于 B C 一定紧挨着输出
-```
-
-
-
-![eventloop-2](https://www.404forest.com/imgs/blog/eventloop-2.jpg)
-
-
-
-可以看到 requestAnimationFrame 中注册的 microtask 并没有在下一轮 eventloop 的 task 之后执行，而是直接在本轮 eventloop 中紧跟着 requestAnimationFrame 执行了。
-
-
-
-深入 requestAnimationFrame 的执行过程也能发现：[在执行 animation frame callbacks 时，会唤起 callback（invoke the callback）](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#animation-frames)，[在唤起 callback 的最后一步，会 clean up after running a callback](https://heycam.github.io/webidl/#invoke-a-callback-function)，此时若满足 javascript 执行栈为空的条件，则执行 microtask。
-
-
+在一些文章中将 requestAnimationFrame 划分为 task，理由是假如你在 requestAnimationFrame 的 callback 中注册了 microtask 任务，你会发现该 microtask 任务会在 requestAnimationFrame 的 callback 结束后立刻执行
 
 总结
 
@@ -5596,10 +5218,6 @@ A
 2. microtask 中注册的 microtask 事件会直接加入到当前 microtask 队列。
 3. microtask 执行时机『尽可能早』，只要 javascript 执行栈为空，就会执行。一轮 eventloop 中，可能执行多次 microtask。
 4. requestAnimationFrame callback 的执行时机与浏览器的 render 策略有关，是黑箱的。
-
-
-
-
 
 
 
@@ -5660,8 +5278,6 @@ Object.defineProperty(obj, "name", {
 因为原页面用 form 提交到另一个域名之后，原页面的脚本无法获取新页面中的内容。
 
 所以浏览器认为这是安全的。。
-
-
 
 **浏览器为什么禁止ajax跨域，又为什么允许form表单来跨域?**
 
@@ -5746,65 +5362,6 @@ JavaScript可以实现函数重载，主要有两种思想：
 
 1. 利用arguments类数组来判断接收参数的个数
 2. 利用闭包保存以前注册进来的同名函数
-
-
-
-## this指向题
-
-```tsx
-var name = '123';
-
-var obj = {
-	name: '456',
-	print: function() {
-		function a() {
-			console.log(this.name);
-		}
-		a();
-	}
-}
-
-obj.print(); // "123"
-```
-
-
-
-箭头函数里面的this是在定义它时绑定的，指向它的父级作用域，而不是调用它对象，这个this的指向是不能通过call和apply改变的。
-
-```tsx
-const obj = {
-	fn1: () => console.log(this),
-	fn2: function() {console.log(this)}
-}
-
-obj.fn1(); // window
-obj.fn2(); // obj
-
-
-// 普通对象中的函数其实是在window作用域的
-const f3 = obj.fn2
-f3(); // window
-```
-
-
-
-```tsx
-// 构造函数会形成一个作用域
-function Obj(name) {    
-  this.name = name;
-  this.s1 = function () {
-    return this.name;   
-  }
-  this.s2 = () => {
-    return this.name;   
-  };
-}
-
-var name = 'window'
-var obj = new Obj('obj');
-console.log(obj.s1());  // obj
-console.log(obj.s2());  // obj
-```
 
 
 

@@ -463,7 +463,9 @@ border-bottom: 40px solid #ff0000;
 
 行高是指一行文字的高度，具体说是两行文字间基线的距离。CSS中起高度作用的是height和line-height，没有定义height属性，最终其表现作用一定是line-height。
 
-单行文本垂直居中：把line-height值设置为height一样大小的值可以实现单行文字的垂直居中，
+单行文本垂直居中：把line-height值设置为height一样大小的值可以实现单行文字的垂直居中
+
+
 
 ## 有一个高度自适应的div，里面有两个div，一个高度100px，希望另一个填满剩下的高度
 
@@ -629,9 +631,9 @@ will-change也有副作用，虽然并不直接可见，毕竟它只是在背后
 
 ## transition和animation的区别
 
-* transition关注的是CSS property的变化，property值和时间的关系是一个三次贝塞尔曲线。
-* CSS的`transition`只有两个状态：**开始状态** 和 **结束状态**；但`animation`可能是多个状态，有帧的概念
-* animation作用于元素本身而不是样式属性，可以使用关键帧的概念，应该说可以实现更自由的动画效果。
+- **Transition（过渡）**：用于在元素的状态变化时平滑过渡样式的变化。它通常依赖于事件触发（如 hover、focus 等）。例如，当你将鼠标悬停在一个按钮上时，背景颜色可能会渐变。
+- **Animation（动画）**：用于创建更复杂的效果，可以在时间轴上设置多个关键帧（keyframes），并在这些关键帧之间进行平滑过渡。动画可以独立于元素的状态变化。
+- transition只有两个状态：**开始状态** 和 **结束状态**，但animation可能是多个状态，有帧的概念
 
 
 
@@ -648,15 +650,11 @@ float、clear 和 vertical-align
 
 [ https://zhuanlan.zhihu.com/p/43282197 ]( https://zhuanlan.zhihu.com/p/43282197 )
 
-
-
  js执行会阻塞DOM树的解析和渲染，那么css加载会阻塞DOM树的解析和渲染吗？ 
 
  **css并不会阻塞DOM树的解析 , css加载会阻塞DOM树渲染** 
 
 其实我觉得，这可能也是浏览器的一种优化机制。因为你加载css的时候，可能会修改下面DOM节点的样式，如果css加载不阻塞DOM树渲染的话，那么当css加载完之后，DOM树可能又得重新重绘或者回流了，这就造成了一些没有必要的损耗。所以干脆就先把DOM树的结构先解析完，把可以做的工作做完，然后等你css加载完之后，在根据最终的样式来渲染DOM树，这种做法性能方面确实会比较好一点。
-
-
 
 > 1. DOM解析和CSS解析是两个并行的进程，所以这也解释了为什么CSS加载不会阻塞DOM的解析。
 > 2.  然而，由于Render Tree是依赖于DOM Tree和CSSOM Tree的，所以他必须等待到CSSOM Tree构建完成，也就是CSS资源加载完成(或者CSS资源加载失败)后，才能开始渲染。因此，CSS加载是会阻塞Dom的渲染的。 
@@ -693,11 +691,7 @@ float、clear 和 vertical-align
 </html>
 ```
 
-
-
 位于css加载语句前的那个js代码先执行了，但是位于css加载语句后面的代码迟迟没有执行，直到css加载完成后，它才执行 
-
-
 
 得出结论：
 
@@ -705,11 +699,7 @@ float、clear 和 vertical-align
 
 **渲染用的是GUI线程、js执行用的是js引擎线程就是v8，GUI线程与V8之间是互斥的。又因为浏览器会维持html中css和js的顺序，所以css渲染会阻塞js执行。**
 
-
-
 -----
-
-
 
 因此，为了避免让用户看到长时间的白屏时间，我们应该尽可能的提高css加载速度，比如可以使用以下几种方法:
 
@@ -769,8 +759,6 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 
 浏览器会在构建完布局树之后，还会对特定的节点进行分层，构建一棵 **图层树（Layer Tree）**。
 
-
-
 一般情况下，节点的图层会默认属于父亲节点的图层（这些图层也称为 **合成层**），那么什么时候会提升为一个独立的图层呢？
 
 有两种情况需要分别讨论：
@@ -783,8 +771,6 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 [层叠上下文相关](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
 
 我们假定用户正面向（浏览器）视窗或网页，而 HTML 元素沿着其相对于用户的一条虚构的 z 轴排开，**层叠上下文**就是对这些 HTML 元素的一个三维构想。众 HTML 元素基于其元素属性按照优先级顺序占据这个空间。
-
-
 
 拥有 **层叠上下文** 的节点。
 
@@ -803,6 +789,8 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 需要 **裁剪** 的地方
 
 比如一个 div，你只个他设置了 100 * 100 的大小，而你在里面放置了很多内容，那么超出的文字部分就会被裁剪。如果你设置了滚动条，那么滚动条也会被单独提升为一个图层。
+
+
 
 ### **隐式合成**
 
@@ -933,8 +921,6 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
   </div>
   ```
 
-
-
 在 `display: block` 中，如果 `margin-left` 和 `margin-right` 都是 auto，则它们的表达值相等，从而导致元素的水平居中。( 这里的计算值为元素剩余可用剩余空间的一半) 而如果 `margin-top` 和 `margin-bottom` 都是 auto，则他们的值都为 0，当然也就无法造成垂直方向上的居中。
 
 
@@ -955,10 +941,6 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 **flex 格式化上下文**中，设置了 `margin: auto` 的元素，在通过 `justify-content` 和 `align-self` 进行对齐之前，任何正处于空闲的空间都会分配到该方向的自动 margin 中去
 
 这里，很重要的一点是，margin auto 的生效不仅是水平方向，垂直方向也会自动去分配这个剩余空间。
-
-
-
-
 
 
 
