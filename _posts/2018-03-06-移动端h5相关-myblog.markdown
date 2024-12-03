@@ -1348,8 +1348,6 @@ flutter是有编译优化概念的，如果它提供动态性支持，会影响�
 
 但对于国内的开发者，那是反过来的，中国开发者需要的全端推送（UniPush集成了iOS、华为、小米、OPPO等众多原厂推送）、各种国内登陆、支付、分享SDK、各种国内地图、各种ui库、以及Echart图表等，都是在uni-app体系里，这方面生态可比rn、flutter丰富多了。uni-app的插件市场有数千款插件，不能说应有尽有，但确实是最丰富的跨端开发框架生态了。
 
-
-
 另外，uni-app的生态还比其他竞品强在如下方面：
 
 - App和H5提供了renderjs技术，使得浏览器专用的库也可以在App和H5里使用，比如echart、threejs等[参考](https://uniapp.dcloud.io/frame?id=renderjs)
@@ -1525,11 +1523,9 @@ window.JSBridge.foo2(); // 返回 'foo2:test'
 
 **location.href可能会引起页面的跳转丢失调**
 
+#### 拦截prompt API
 
-
-#### 弹窗拦截
-
-native会劫持webview onJsAlert、onJsConfirm、onConsoleMessage、onJsPrompt并进行重写
+native会劫持webview onJsAlert、onJsConfirm、onConsoleMessage、onJsPrompt等弹窗api并进行重写
 
 
 

@@ -265,6 +265,13 @@ export default defineBuildConfig({
 
 [https://turbo.build/pack/docs/why-turbopack](https://turbo.build/pack/docs/why-turbopack)
 
+Turbopack 是一个新兴的 JavaScript 构建工具，旨在为现代web开发提供高效的打包和编译解决方案。它是 Webpack 的后继者，采用 Rust 语言进行开发，以优化速度和性能。
+
+1. **速度**: 由于采用了 Rust 语言和增量构建技术，Turbopack 在处理大型项目时可以显著减少构建时间。
+2. **现代化**: 它专门为现代 JavaScript 框架（如 React、Vue 和 Svelte）而设计，优化了这些框架的使用体验。
+3. **易用性**: Turbopack 的配置比 Webpack 更加简洁，帮助开发者更容易上手和使用。
+4. **兼容性**: Turbopack 旨在与现有的工具和生态系统兼容，允许开发者逐步迁移现有项目。
+
 
 
 
@@ -280,6 +287,14 @@ father 是一款 NPM 包研发工具，能够帮助开发者更高效、高质�
 
 
 # esbuild
+
+**esbuild** 是一个现代的 JavaScript 打包工具和构建工具，专门设计用于快速构建项目。其主要特点包括：
+
+1. **极快的构建速度**：esbuild 用 Go 语言编写，利用并发处理和其他优化技术，使其在构建速度上远超传统的 JavaScript 工具，例如 Webpack 或 Parcel。
+2. **支持现代 JavaScript 功能**：esbuild 支持 ES6、TypeScript 和 JSX 等现代 JavaScript 特性，使其非常适合与现代前端开发框架（如 React 和 Vue）结合使用。
+3. **简单的配置**：虽然 esbuild 支持复杂的构建需求，其配置相对简单，易于上手。许多基本用例只需要少量配置即可运行。
+4. **代码拆分和树摇（Tree Shaking）**：esbuild 支持代码拆分，从而提高应用的加载性能，并能去除未使用的代码，减少最终输出的包体积。
+5. **用于开发和生产**：esbuild 既可以用于快速开发（支持热重载），也能生成适合生产环境的优化代码。
 
 
 

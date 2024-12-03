@@ -493,7 +493,9 @@ undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 7. **异步操作**：
    - Redux Toolkit 提供 `createAsyncThunk` 来处理异步操作，它简化了处理异步请求的流程，并且自动处理了 loading 和 error 状态。
 
+----
 
+Redux Toolkit 的设计理念是降低使用 Redux 的复杂性，让开发者能更专注于应用逻辑，而不是底层的状态管理。通过引入 `createSlice` 和 `configureStore` 等工具，Redux Toolkit 极大地提高了 Redux 的可用性和效率。
 
 
 
@@ -867,17 +869,17 @@ Immer 最大的好处就在这里，我们的学习没有太多成本，因为�
 
 [https://juejin.cn/post/6844903466029023246](https://juejin.cn/post/6844903466029023246)
 
-
-
 Redux ：
 
 * 数据流流动很自然，因为任何 dispatch 都会导致广播，需要依据对象引用是否变化来控制更新粒度。
 * 有时间回溯的特征，可以增强业务的可预测性与错误定位能力。
 * 对 typescript 支持困难
 * 有中间件机制
-* 使用纯函数修改状态，无副作用
+* 使用纯函数修改状态无副作用
 * JavaScript对象
 * **行为稳定可预测**，**易于测试**
+* 使用单向数据流
+* 由于状态是不可变的，通常会使用浅比较来决定是否重新渲染组件，可能在某些复杂场景下影响性能。
 
 Mobx:
 
@@ -889,6 +891,8 @@ Mobx:
 * 可观察对象 （是包裹的对象）
 * 存在Derivations(派生）  
 * Mobx 使用了 Object.defineProperty 拦截 getter 和 setter
+* 支持双向数据流，组件可以直接修改可观察的状态，MobX 会自动更新视图，这使得它在某些情况下更灵活。
+* 通过细粒度的观察和自动追踪，使得它通常在大型应用中表现优越，避免不必要的更新。
 
 **前端数据流不太复杂的情况，使用 Mobx，因为更加清晰，也便于维护；如果前端数据流极度复杂，建议谨慎使用 Redux，通过中间件减缓巨大业务复杂度**
 
@@ -898,10 +902,6 @@ Derivations(派生)：
 
 * *Reactions*, 当 State 改变时需要自动运行的副作用
 * *Computed values*,总是可以通过纯函数从当前的可观测 State 中派生。
-
-
-
-
 
 
 
@@ -916,9 +916,8 @@ UI 组件有以下几个特征。
 
 下面就是一个 UI 组件的例子。
 
-```
-const Title =
-  value => <h1>{value}</h1>;
+```tsx
+const Title = value => <h1>{value}</h1>;
 ```
 
 因为不含有状态，UI 组件又称为"纯组件"，即它纯函数一样，纯粹由参数决定它的值。
