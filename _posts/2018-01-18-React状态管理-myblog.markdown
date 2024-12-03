@@ -478,6 +478,23 @@ undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 
 [https://redux-toolkit.js.org/introduction/getting-started](https://redux-toolkit.js.org/introduction/getting-started)
 
+1. **简化配置**：
+   - Redux Toolkit 提供了一个 `configureStore` 函数，用于创建 Redux store。这使得配置中间件（如 Redux Thunk）、整合 reducers 更加方便。
+2. **Slice 概念**：
+   - Slice 是 Redux Toolkit 的核心概念，通过 `createSlice` 方法可以创建 reducer 和 actions，自动将两者关联。每个 slice 管理一部分 Redux state，这种划分使得状态和逻辑更易于管理。
+3. **自动生成的 Actions 和 Reducers**：
+   - 使用 `createSlice` 时，Redux Toolkit 会根据定义的 reducers 自动生成对应的 action creators。这样开发者可以直接使用这些 action，而不需要手动定义。
+4. **Immutable 更新**：
+   - **Redux Toolkit 使用了 Immer 库来简化 state 的不可变更新。在 reducers 中，开发者可以直接“修改” state，实际上 Immer 会处理不可变更新。**
+5. **批量 Dispatch**：
+   - Redux Toolkit 允许在一个 dispatch 中批量处理多个 action，提高了性能和代码的清晰度。
+6. **内置的开发者工具支持**：
+   - 通过 `configureStore` 创建的 store 默认集成了 Redux DevTools，方便开发者调试。
+7. **异步操作**：
+   - Redux Toolkit 提供 `createAsyncThunk` 来处理异步操作，它简化了处理异步请求的流程，并且自动处理了 loading 和 error 状态。
+
+
+
 
 
 ### in next.js
@@ -512,6 +529,10 @@ We don't have a `store` variable exported, but we can infer the `RootState` and 
 - **You need to account for the case where you have per-route state in a global store located in the layout**
 
 
+
+
+
+### 
 
 # MobX
 

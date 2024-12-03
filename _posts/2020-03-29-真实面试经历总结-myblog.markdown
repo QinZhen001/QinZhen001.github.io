@@ -46,15 +46,11 @@ tags:
 
 算法
 
-
-
 第一题 字符串处理 （5-10 分钟）
 
 123456 -> 123,456  
 
 12345678.123 -> 12,345,678.123
-
-
 
 第二题 区间合并
 
@@ -64,11 +60,7 @@ tags:
 
 那么合并后的区间段为：[[1, 6](https://marvel.bytedance.net/)], [[8, 12](https://marvel.bytedance.net/)]
 
-
-
 ------
-
-
 
 instanceof到底能不能区分Object和Array?
 

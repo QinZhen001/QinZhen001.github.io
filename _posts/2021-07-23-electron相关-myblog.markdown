@@ -36,6 +36,10 @@ electron 基于 node 和 chromium 做 js 逻辑的执行和页面渲染，并且
 
 有三种方式可以让你在Electron的BrowserWindow里集成（第三方）web内容，`<iframe>`, `<webview>` 和 `BrowserViews`每个功能都略有不同，适用于不同的情况。 为了帮助您在这些选择之间进行选择，本指南将解释他们之间的差异和功能。
 
+
+
+
+
 ## electron-reload
 
 [https://www.npmjs.com/package/electron-reload](https://www.npmjs.com/package/electron-reload)
