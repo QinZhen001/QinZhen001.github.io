@@ -169,19 +169,15 @@ The **`AudioData`** interface of the [WebCodecs API](https://developer.mozilla.o
 navigator.mediaDevices.getUserMedia({ audio: true })
   .then(function(stream) {
     // 创建音频上下文
-    const audioContext = new AudioContext();
-    
+    const audioContext = new AudioContext();   
     // 创建MediaStreamAudioSourceNode
     const sourceNode = audioContext.createMediaStreamSource(stream);
-
     // 创建其他节点进行处理或播放
     const gainNode = audioContext.createGain();
     const destinationNode = audioContext.destination;
-    
     // 连接节点
     sourceNode.connect(gainNode);
-    gainNode.connect(destinationNode);
-    
+    gainNode.connect(destinationNode);  
     // 控制音量
     gainNode.gain.value = 0.5;
   })
@@ -379,8 +375,6 @@ The `createGain()` method of the [`BaseAudioContext`](https://developer.mozilla.
 
 [一文拿下Web端基于AudioWorkletNode录制音频](https://juejin.cn/post/7310787455112413219)
 
-
-
 **`AudioWorkletNode`** 接口代表了用户定义的[`AudioNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioNode)的基类，该基类可以与其他节点一起连接到音频路由图。其
 
 ```tsx
@@ -398,8 +392,6 @@ The `createGain()` method of the [`BaseAudioContext`](https://developer.mozilla.
 
 
 
-
-
 ## AudioBufferSourceNode
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode)
@@ -409,8 +401,6 @@ The `createGain()` method of the [`BaseAudioContext`](https://developer.mozilla.
 一个 [`AudioBufferSourceNode`](https://developer.mozilla.org/zh-CN/docs/Web/API/AudioBufferSourceNode) 只能被播放一次，也就是说，每次调用 [`start()`](https://developer.mozilla.org/en-US/docs/Web/API/AudioScheduledSourceNode/start) 之后，如果还想再播放一遍同样的声音，那么就需要再创建一个 `AudioBufferSourceNode`
 
 庆幸的是，创建该节点的代价并不大，并且想要多次播放声音的话，实际上 `AudioBuffer` 也可以被重用。
-
-
 
 
 
@@ -450,8 +440,6 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/WebVTT_API
 
 [Simple SubRip to WebVTT converter](https://atelier.u-sub.net/srt2vtt/)
 
-
-
 **::cue伪元件是用于在VTT轨道的媒体中使用字幕和其他线索。只有少数CSS属性可以应用于文本提示：**
 
 - color
@@ -467,7 +455,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/WebVTT_API
 
 WebVTT还支持一些HTML标签进行样式控制，常见的有声音 **v** 标签，颜色 **c** 标签，加粗**b**标签，倾斜**i**标签，下划线**u**标签，还有**ruby**和**lang**标签等。
 
-```
+```css
 //设置字幕的样式
 video::cue{
     background-color:transparent;
@@ -488,8 +476,6 @@ video::cue(v[voice=bb]){
 
 一个 WebVTT 文件（`.vtt`）包含一行或者多行的时间提示性内容（cue）
 
-
-
 I looked into it. In fact, the solution to this problem is to create a css:
 
 ```
@@ -504,8 +490,6 @@ I looked into it. In fact, the solution to this problem is to create a css:
 [https://dev.opera.com/articles/zh-cn/an-introduction-to-webvtt-and-track/](https://dev.opera.com/articles/zh-cn/an-introduction-to-webvtt-and-track/)
 
 VTTCue
-
-
 
 ```css
     video::cue {
@@ -545,21 +529,15 @@ VTTCue
 
 [快速入门 WebRTC：屏幕和摄像头的录制、回放、下载](https://mp.weixin.qq.com/s/u6MkezGj1o9h5-ACEkFcRQ)
 
-
-
-
-
 音视频通信的流程有五步：采集、编码、通信、解码、渲染。
 
 WebRTC（Web Real-Time Communication）是一种基于Web技术的实时通信协议，它主要包括三个主要组成部分：RTCPeerConnection、RTCDataChannel和MediaStream。
-
-
 
 RTCPeerConnection是WebRTC的核心组件，它允许浏览器之间建立点对点（Peer-to-Peer）连接，并通过建立网络连接传输音频、视频和数据。RTCPeerConnection使用底层的协议来处理网络传输，例如ICE（Interactive Connectivity Establishment）协议用于处理网络地址的交换和NAT穿越，DTLS（Datagram Transport Layer Security）用于保护传输的数据。
 
 RTCDataChannel是一个可靠的、双向的、有序的连接，可以用于在两个浏览器之间传输任意类型的数据。它使用底层的协议来处理数据传输，例如SCTP（Stream Control Transmission Protocol）用于传输和监控数据流。
 
-MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到其他浏览器。它使用底层的协议来处理音视频流的传输，例如RTP（Real-time Transport Protocol）用于实时传输音视频数据。
+MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到其他浏览器。它使用底层的协议来处理音视频流的传输，例如RTP（Real-time Transport Protocol）**(属于网络协议层中的传输层)** 用于实时传输音视频数据。
 
 除了上述的底层协议，WebRTC还使用其他协议来支持不同功能的实现，例如SDP（Session Description Protocol）用于描述会话信息，STUN（Session Traversal Utilities for NAT）用于处理NAT穿越等。
 
@@ -575,13 +553,9 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 
 
-
-
 ## **网络协商**
 
 参与音视频实时通信的双方要了解彼此的网络情况，这样才有可能找到一条相互通讯的链路。理想的网络情况是每个浏览器的电脑都有自己的私有公网 IP 地址，这样的话就可以直接进行点对点连接。但实际上出于网络安全和 IPV4 地址不够的考虑，我们的电脑与电脑之间或大或小都是在某个局域网内，需要**NAT(Network Address Translation, 网络地址转换)**。在 WebRTC 中我们使用 ICE 机制建立网络连接
-
-
 
 
 
@@ -637,7 +611,7 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 ## UDP
 
-WebRTC底层使用UDP协议主要有以下几个原因：
+**WebRTC 通过 UDP (属于网络协议层中的传输层) 传输 RTP 数据包。**WebRTC底层使用UDP协议主要有以下几个原因：
 
 1. 实时性：UDP协议对实时性要求较高，适用于需要快速传输数据的实时应用场景，如音视频通话、实时游戏等。与TCP协议相比，UDP协议无需建立连接和保持状态，可以更快地传输数据。
 2. 低延迟：UDP协议没有TCP协议中的拥塞控制、流量控制、重传等机制，在数据传输过程中不对数据包进行确认和重传，因此可以减少传输延迟，提高实时传输的效率。

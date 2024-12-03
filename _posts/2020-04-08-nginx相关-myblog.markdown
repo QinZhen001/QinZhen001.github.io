@@ -429,22 +429,48 @@ upstream backend {
 
 ## **适配PC端与移动端** 
 
-**境** 现在很多网站都存在PC站和H5站两个站点，因此根据用户的浏览环境自动切换站点是很常见的需求。Nginx可以通过内置变量$http_user_agent，获取到请求客户端的userAgent，从而知道用户处于移动端还是PC，进而控制重定向到H5站还是PC站。 以笔者本地为例，pc端站点是mysite-base.com，H5端是mysite-base-H5.com。
+[https://juejin.im/post/5f0d19b6f265da230f2848c3?utm_source=gold_browser_extension](https://juejin.im/post/5f0d19b6f265da230f2848c3?utm_source=gold_browser_extension)
 
-Nginx配置如下：
+如果 PC 端和移动端是一套代码则不会出现这个问题。**「这个问题出现在 PC 端和移动端是两套代码，却共用一个域名。」**
+
+使用 `nginx` 配置如下，根据 UA 判断是否移动端，而走不同的逻辑 (判断UA是否移动端容易出问题)
 
 ```nginx
-    location / {
-        # 移动、pc设备适配
-        if ($http_user_agent ~* '(Android|webOS|iPhone|iPod|BlackBerry)') {
-            set $mobile_request '1';
-        }
-        if ($mobile_request = '1') {
-            rewrite ^.+ http://mysite-base-H5.com;
-        }
-    }  
+location / {
+    // 默认 PC 端
+    root /usr/local/website/web;
+
+    # 判断 UA，访问移动端
+    if ( $http_user_agent ~* "(Android|webOS|iPhone|iPad|BlackBerry)" ){
+        root /usr/local/website/mobile;
+    }
+
+    index index.html index.htm;
+}  
 
 ```
+
+[SEO Impact of Vary: User-Agent header](https://webmasters.stackexchange.com/questions/134561/seo-impact-of-vary-user-agent-header)
+
+[google mobile-sites-mobile-first-indexing](https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing)
+
+Vary：User-Agent 标头用于告诉浏览器、CDN 等（用于缓存目的）内容因用户代理而异（特别是对于移动和桌面版本）
+
+[https://zhangzifan.com/vary-user-agent.html](https://zhangzifan.com/vary-user-agent.html)
+
+Nginx 环境网站配置 Vary:User-Agent
+
+```nginx
+add_header Vary "User-Agent";
+```
+
+
+
+
+
+
+
+
 
 
 
