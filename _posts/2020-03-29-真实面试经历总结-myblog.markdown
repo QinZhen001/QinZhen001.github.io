@@ -80,8 +80,6 @@ console.log(obj instanceof Array) // true
 
 **用 instanceof Array 来区分**
 
-
-
 [浅谈script标签的defer和async](https://segmentfault.com/a/1190000006778717)
 
 async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但async是js谁下载完谁就立即执行，会阻塞html解析，defer是html解析完成后才按顺序执行下载的js 
@@ -94,7 +92,7 @@ async还是会阻塞渲染的 async与defer一样 下载不阻塞html解析 但a
 * redux 和 mobx 的区别  =》 原理上有什么不一样  =》 redux 和 mobx 怎么实现数据的响应式 =》 Object.defineProxy  和 Proxy => Object.defineProxy 的局限性 => Proxy的局限性 => Proxy 有什么不好的地方
 
 * 跨域 =>  JSONP 的局限性 =>  CORS 配置
-* csrf 攻击 token怎么解决的  =》 cookie 不能跨域  =》 保证cookie的安全性  samesite  （应该是想问Referer 一时间没想起。。。）
+* csrf 攻击 token怎么解决的  =》 cookie 不能跨域  =》 保证cookie的安全性  samesite  
 * 层叠上下文 =》 开发中有遇见层叠上下文的问题嘛
 * 组件库的全局弹出窗组件怎么实现 （挂载到根节点 z-index++） =>  z-index增加的时机 （挂载时还是显示时）
 * flex 和 grid 布局 =》 flex basic:1 代表什么意思
@@ -112,8 +110,6 @@ tip: 考虑arr里面非Promise的情况
 ```
 a[s6[sd]cd21[ere]]  => 展开
 ```
-
-
 
 算法题目最重要的思路，要考虑边界，要覆盖所有case，其次才是bug free（这个不一定要做到）
 
@@ -173,7 +169,7 @@ function myPromiseAll(fns = []) {
 
 * this 指向的问题。在 Proxy 代理的情况下，目标对象内部的`this`关键字会指向 Proxy 代理。
 
-  
+
 
 
 #### cookie 跨域
@@ -183,8 +179,6 @@ function myPromiseAll(fns = []) {
 domain 属性指定浏览器发出 HTTP 请求时，哪些域名要附带这个 Cookie。
 
 可以设置 domain 为当前服务器域名或者父域名。如果未设置，则该 Cookie 值只能在发向该域名的请求时被携带。如果设置了 domain，则发向该域以及子域的请求都会带上该 Cookie。
-
-
 
 在发送跨域 AJAX 请求时，Cookie 默认不会被发送。如果需要允许跨域请求携带 Cookie ，需要在发起请求的时候设置 withCredentials 请求头
 
@@ -204,10 +198,6 @@ Set-Cookie: id=test123;
 
 
 
-
-
-
-
 #### JSONP 的局限性
 
 * 仅支持get请求；
@@ -219,8 +209,6 @@ Set-Cookie: id=test123;
 #### 全局弹窗组件
 
 [ z-index 的相关控制](https://github.com/ElemeFE/element/blob/dev/src/utils/popup/index.js)
-
-
 
 PopupManager.nextZIndex 的相关逻辑
 
@@ -234,8 +222,6 @@ z-index增加的时机?
 openModal: function(id, zIndex, dom, modalClass, modalFade)
 // 函数内部 appendChild(modalDom)  显示dom
 ```
-
-
 
 PopupManager
 
@@ -297,8 +283,6 @@ maxRequest(fns,max)
 * 你看中的三个能力  （技术之外的）
 * 项目介绍 项目成长 个人经历 个人成长 个人规划。。。
 
-
-
 手写题
 
 ```tsx
@@ -359,7 +343,7 @@ function retry(fn, num, interval) {
 ### 抖音一面
 
 * 狂问项目。项目架构，项目难点，项目优化
-* web worker 会跨域吗？ **如果要传递很大数据怎么办？**  (**Web Worker 提供了一种转移数据的方式Transferable，允许主线程把二进制数据直接转移给子线程**)  （可以尝试SharedArrayBuffer SharedWorker）
+* web worker 会跨域吗？ **如果要传递很大数据怎么办？**  (**Web Worker 提供了一种转移数据的方式Transferable，允许主线程把二进制数据直接转移给子线程**)  （可以尝试 SharedArrayBuffer SharedWorker）
 * 前端性能指标。fcp。。。 谁制定的？google
 * 前端跨项目模块之间应用。pnpm 和 webpack5 联邦模块。
 *  webpack5 联邦模块实现原理？
@@ -375,6 +359,19 @@ function retry(fn, num, interval) {
 * 说一下你实现的插件机制？有没有了解过依赖反转IOC方式去实现插件？
 * class命名冲突怎么解决？css样式隔离怎么做？
 * 暗夜模式怎么实现的？怎么实现多主题切换？
+
+**Web Worker 脚本加载与跨域**:
+
+- 默认情况下，Web Worker 加载的脚本文件 **必须来自与主页面相同的源**（即同一个协议、主机和端口）。如果试图加载跨域的 Worker 脚本，浏览器会阻止并抛出错误。
+- 如果你想加载跨域的 Worker 脚本，你可以通过设置 **CORS（跨域资源共享）** 头来允许跨域访问。例如，服务器可以在响应中添加适当的 `Access-Control-Allow-Origin` 头，从而允许特定域的请求。
+
+**Transferable object**
+
+[https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Transferable_objects)
+
+
+
+
 
 
 
@@ -426,10 +423,6 @@ function findMax(arr = []) {
 * **基于媒体查询 `prefers-color-scheme`** 的结果为 `dark` 时（即系统开启了暗夜模式时），来决定是否采用暗夜模式下的样式。
 
 [微信WeUI如何巧妙定义白天暗夜模式](https://juejin.cn/post/7132133082445905956)
-
-
-
-
 
 toggle 日间模式与暗夜模式
 
@@ -2738,8 +2731,6 @@ const test = (template = "", data = {}) => {
 >
 > 时间：1h30min
 
-
-
 * 什么是闭包？你在哪里会使用到闭包？
 * 浏览器的事件循环
 * 常见的状态码
@@ -3002,10 +2993,6 @@ CDN（Content Delivery Network，内容分发网络）将源站的内容发布�
 
 **通过这一系列的操作，将解析源站的目标域名的权力交给了GSLB，以致于GSLB可以根据地理位置等信息将用户的请求引导至距离其最近的"缓存节点"，减缓了源站的负载压力和网络拥塞。**
 
-
-
-
-
 这种工作方式利用CNAME将域名和目标IP之间进行解耦，将目标IP的解析权下放到GSLB中，方便实现更多自定义的功能，是一种更加灵活的方式。
 
 
@@ -3028,15 +3015,9 @@ CDN 回源？
 
 **回源的请求或流量太多的话，有可能会让源站点的服务器承载着过大的访问压力，进而影响服务的正常访问。**
 
-
-
-
-
 那都有哪些时候会回源呢？
 
 没有资源，资源过期，访问的资源是不缓存资源等都会导致回源。
-
-
 
 [阿里云配置回源协议](https://help.aliyun.com/document_detail/34949.html)
 
@@ -3054,8 +3035,6 @@ CDN 回源？
 
 
 
-
-
 #### canvas
 
   **Canvas提供的功能更原始，适合像素处理，动态渲染和大数据量绘制**
@@ -3065,8 +3044,6 @@ CDN 回源？
 - 弱的文本渲染能力
 - 能够以 .png 或 .jpg 格式保存结果图像
 - 最适合图像密集型的游戏，其中的许多对象会被频繁重绘
-
-
 
 
 
@@ -3138,9 +3115,9 @@ Service Worker 是浏览器在后台独立于网页运行的脚本，它打开�
 * react hook 原理？和utils函数相比优势在哪里 （hook可以封装生命周期）
 * webpack 4 升 webpack 5 注意的点   （node polyfill）
 * vite 存在的问题？ （dev 和 prod 产物会有不一致，浏览器最低兼容性不太够）
-* 原生小程序的一些问题？ 用过哪些小程序框架 (taro 和 wepy)
-* taro跨端的原理？
-* video.js 如何去做编解码？m3u8?
+* 微信原生小程序的一些问题？ 用过哪些小程序框架 (taro 和 wepy)   =>  **答案见小程序blog**
+* taro跨端的原理？  =>  **答案见小程序blog**
+* video.js 如何去做编解码？m3u8?   （编解码由浏览器完成）
 * Error 错误机制的封装
 * **webstock 和 http 协议的区别？** 
 * wasm 相关？ 怎么编译wasm （c++）
@@ -3149,9 +3126,36 @@ Service Worker 是浏览器在后台独立于网页运行的脚本，它打开�
 * js bridge 的原理? native 如何通知回 h5 js  (Native 端通过 evaluateJavascript/stringByEvaluatingJavaScript 方法，执行 JavaScript 逻辑，找到 callBackId 对应的js中callback执行)
 * 码率是什么？  （单位时间传送的数据，一般我们用的单位是kb/s或者Mb/s）
 
+----
 
 
 
+**webpack4 => webpack5** 
+
+* Webpack 5 默认不包括 Node.js 中的一些内置模块 (fs/path/stream/buffer/process)
+* Webpack 5 引入了更智能的 `splitChunks` 配置
+* Webpack 4 中常用的 `CommonsChunkPlugin` 插件已在 Webpack 5 中移除。取而代之的是，Webpack 5 使用 `splitChunks`
+* Webpack 5 引入了 `asset modules`，这是一个新的内置功能，能够代替 `file-loader` 和 `url-loader`
+* Webpack 5 中开发模式（development mode）性能得到了显著提升，尤其是在构建速度和缓存机制方面，但也可能需要更新一些开发环境配置。
+
+
+
+**微信原生小程序存在的问题：**
+
+* setData 效率很低
+* 一个页面需要4个文件
+* 文档写的烂 （一些相关的error code都查不到）
+
+**WebSocket 协议**：
+
+WebSocket 是通过 HTTP 协议进行“升级”的。在建立连接时，客户端会发送一个 `Upgrade` 请求头，表示请求升级到 WebSocket 协议。如果服务器支持 WebSocket，会接受这个升级请求，连接切换到 WebSocket 协议。
+
+**怎么编译wasm？**
+
+* rust => [wasm-pack](https://github.com/rustwasm/wasm-pack) 
+* C/C++ =>  [emscripten ](https://emscripten.org/)   => emcc hello.c -o hello.js
+
+* go(语言本身支持编译成 WebAssembly)  =>   GOARCH=wasm GOOS=js go build -o main.wasm main.go
 
 # 中小厂 
 
@@ -4760,6 +4764,12 @@ function* iterateSteps(steps){
 先translate再rotate表示在物体平移后再进行旋转。这意味着，在平移过程中，物体的中心点也会随着平移而改变，此时进行旋转操作，会绕着新的中心点进行旋转。这种顺序下，旋转的角度和中心点不会受到平移的影响，因为平移并不改变坐标系的方向，只会改变物体的位置。
 
 **具体来说，先rotate再translate会先进行旋转变换，再进行平移变换，而先translate再rotate会先进行平移变换，再进行旋转变换。这两种变换的顺序不同，会产生不同的视觉效果。**
+
+
+
+### 安克 Anker
+
+
 
 
 

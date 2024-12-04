@@ -79,19 +79,11 @@ let tom: Person = {
 //       Type 'number' is not assignable to type 'string'.
 ```
 
-
-
 上例中，任意属性的值允许是 `string`，但是可选属性 `age` 的值却是 `number`，`number` 不是 `string` 的子属性，所以报错了。
-
-
 
 另外，在报错信息中可以看出，此时 `{ name: 'Tom', age: 25, gender: 'male' }` 的类型被推断成了 `{ [x: string]: string | number; name: string; age: number; gender: string; }`，这是联合类型和接口的结合。
 
-
-
 一个接口中只能定义一个任意属性。如果接口中有多个类型的属性，则可以在任意属性中使用联合类型：
-
-
 
 ```tsx
 interface Person {
@@ -176,8 +168,6 @@ export const invert: InvertColor;
 
 **结论：能用 interface 实现，就用 interface**
 
-
-
 相同点：
 
 都可以描述一个对象或者函数
@@ -254,7 +244,7 @@ import type 是TypeScript 和Flow 中特有的语法，它**允许你导入类�
 
 **x! 将从 x 值域中排除 null 和 undefined 。**
 
-```
+```ts
 function myFunc(maybeString: string | undefined | null) {
   // Type 'string | null | undefined' is not assignable to type 'string'.
   // Type 'undefined' is not assignable to type 'string'. 
@@ -265,7 +255,7 @@ function myFunc(maybeString: string | undefined | null) {
 
 **调用函数时忽略 undefined 类型**
 
-```
+```ts
 type NumGenerator = () => number;
 
 function myFunc(numGenerator: NumGenerator | undefined) {
@@ -280,7 +270,7 @@ function myFunc(numGenerator: NumGenerator | undefined) {
 
 在 TypeScript 2.7 版本中引入了确定赋值断言，即允许在实例属性和变量声明后面放置一个 `!` 号，从而告诉 TypeScript 该属性会被明确地赋值。为了更好地理解它的作用，我们来看个具体的例子：
 
-```
+```ts
 let x: number;
 initialize();
 // Variable 'x' is used before being assigned.(2454)
@@ -293,7 +283,7 @@ function initialize() {
 
 很明显该异常信息是说变量 x 在赋值前被使用了，要解决该问题，我们可以使用确定赋值断言：
 
-```
+```ts
 let x!: number;
 initialize();
 console.log(2 * x); // Ok
@@ -639,10 +629,6 @@ let unusable: void = undefined;
 [https://mp.weixin.qq.com/s/PpumNz-3lhJZ4zIUZzbnNg](https://mp.weixin.qq.com/s/PpumNz-3lhJZ4zIUZzbnNg)
 
 `never` 是值集为空的集合。因为集合里面没有值，所以 `never` 类型就不能被赋值，包括 `any` 类型的值（这听起来很绕）。也就是说 `never` 类型代表**永远不会发生的类型，或者话句话说是一个**底层类型的概念。
-
-
-
-
 
 > never的主要作用就是充当Typescript类型系统里的[Bottom Type](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Bottom_type)
 >
@@ -1020,8 +1006,6 @@ b.toString()  // any 相当于不进行任何校验
 
 **把明确类型的工作推迟到创建对象或调用方法的时候才去明确的特殊的类型，简单点来讲我们可以将泛型理解成为把类型当作参数一样去传递**
 
-
-
 举个例子：
 
 ```ts
@@ -1044,12 +1028,9 @@ const person = getInstance(Person);
 
 
 
-
-
 ### 约束泛型
 
 ```ts
-
 interface IHasLength { 
   length: number;
 }
@@ -1262,13 +1243,9 @@ interface Data<D extends DataOption> {
 
 While the idea that "TypeScript supports `Map` natively" is still true, since version 2.1 TypeScript supports something called [`Record`](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeystype).
 
-
-
 TypeScript原生支持Map
 
 但我们也可以使用Record来实现Map
-
-
 
 ```tsx
 type MyMapLikeType = Record<string, IPerson>;
@@ -1303,8 +1280,6 @@ type Exclude<T, U> = T extends U ? never : T;
 
 如果 T 能赋值给 U 类型的话，那么就会返回 never 类型，否则返回 T 类型。最终实现的效果就是将 T 中某些属于 U 的类型移除掉。
 
-
-
 例子：
 
 ```tsx
@@ -1330,8 +1305,6 @@ Extract<T, U> 的作用是从 T 中提取出 U 。
 type Extract<T, U> = T extends U ? T : never;
 ```
 
-
-
 如果 T 能赋值给 U 类型的话，那么就会返回 T 类型，否则返回 never 类型。
 
 示例：
@@ -1351,8 +1324,6 @@ type T1 = Extract<string | number | (() => void), Function>; // () => void
 
 `Omit<T, K>` 类型让我们可以从另一个对象类型中剔除某些属性，并创建一个新的对象类型：
 
-
-
 例子：
 
 ```tsx
@@ -1371,8 +1342,6 @@ name: string;
 };
 ```
 
-
-
 -----
 
 ```tsx
@@ -1390,17 +1359,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>,'size'
 
 ```
 
-
-
-
-
----
-
-
-
 推导：
-
-
 
 ```tsx
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
@@ -1420,6 +1379,8 @@ type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 - Omit utility type works on object type or interfaces to omit one of the key-value pair.
 - Exclude only works on union literal to exclude one of the property.
 - Omit uses Pick and Exclude under the hook.
+- `Omit<T, K>`：用于去除对象类型 `T` 中的属性 `K`。   (用于interface)
+- `Exclude<T, U>`：用于从联合类型 `T` 中排除类型 `U`。  (用于联合类型)
 
 
 
@@ -1499,8 +1460,6 @@ Type 'Function' provides no match for the signature 'new (...args: any): any'.
 
 ReturnType<T> 的作用是用于获取函数 T 的返回类型。
 
-
-
 定义
 
 ```ts
@@ -1513,15 +1472,11 @@ type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => i
 
 ```
 
-
-
 ```tsx
 // 这是一个三元表达式
 T extends (...args: any) => infer R ? R : any;
 // 返回 R 或者 any
 ```
-
-
 
 例子：
 
@@ -1587,8 +1542,6 @@ export const createRemoveTodo = (id: number): RemoveTodoAction => ({
 
 当我们完成了 actionCreator 和 reducer 的连接！这一点非常重要，只有这样，我们才能借助 ts 的类型保证 actionCreator 返回的值一定和 reducer 内部的 action 类型是一致的。
 
-
-
 因为 actionCreator 返回的是 action 对象，为什么我们不使用 ReturnType 直接拿到函数的返回值类型，作为对应的 Action 类型呢，这样就自动完成了关联操作。
 
 
@@ -1597,7 +1550,6 @@ export const createRemoveTodo = (id: number): RemoveTodoAction => ({
 import * as Types from './actionTypes';
 
 type AddTodoAction = ReturnType<typeof createAddTodo>;
-
 type RemoveTodoAction = ReturnType<typeof createRemoveTodo>;
 
 export type Actions = AddTodoAction | RemoveTodoAction;
@@ -1613,15 +1565,9 @@ export const createRemoveTodo = (id: number) => ({
 });
 ```
 
-
-
 让我们来看看此时 reducer 内部 action 的类型
 
-![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9jZG4ubmxhcmsuY29tL3l1cXVlLzAvMjAyMC9wbmcvMTM1MjQyMS8xNTk3Mzc1Nzk2MDUwLWM0ZTczZjY1LTc1ODAtNGU4NC05YjIzLWQxMjFjMmY5MzI4Ni5wbmc?x-oss-process=image/format,png#align=left&display=inline&height=111&margin=%5Bobject%20Object%5D&name=image.png&originHeight=222&originWidth=942&size=28766&status=done&style=none&width=471#pic_center)
-
 推断失败
-
-
 
 这个时候就要使用as const
 
@@ -1632,10 +1578,6 @@ export const createRemoveTodo = (id: number) => ({
 #### 拿到泛型函数的返回类型
 
 https://segmentfault.com/q/1010000015557807
-
-
-
-
 
 
 
@@ -1657,8 +1599,6 @@ type ParamType<T> = T extends (param: infer P) => any ? P : T;
 
 在这个条件语句 `T extends (param: infer P) => any ? P : T` 中，`infer P` 表示待推断的函数参数。
 
-
-
 整句表示为：如果 `T` 能赋值给 `(param: infer P) => any`，则结果是 `(param: infer P) => any` 类型中的参数 `P`，否则返回为 `T`。
 
 ```tsx
@@ -1668,14 +1608,9 @@ interface User {
 }
 
 type Func = (user: User) => void
-
 type Param = ParamType<Func>;   // Param = User
 type AA = ParamType<string>;    // string
 ```
-
-
-
-
 
 
 
@@ -1745,10 +1680,6 @@ const c = create(num);
 
 
 
-
-
-
-
 ### 泛型约束
 
 ```tsx
@@ -1759,8 +1690,6 @@ function loggingIdentity<T>(arg: T): T {
 ```
 
 相比于操作any所有类型，我们想要限制函数去处理任意带有.length属性的所有类型。 只要传入的类型有这个属性，我们就允许，就是说至少包含这一属性。 为此，我们需要列出对于T的约束要求。
-
-
 
 为此，我们定义一个接口来描述约束条件。 创建一个包含 .length属性的接口，使用这个接口和**extends**关键字来实现约束：
 
@@ -1824,7 +1753,6 @@ let fn2!: (a: string, b: number) => string | number | boolean;
 
 fn2 = fn1; // correct 
 fn1 = fn2 // error: 不可以将 string|number|boolean 赋给 string 类型
-
 ```
 
 这里，**函数类型赋值兼容时函数的返回值就是典型的协变场景**

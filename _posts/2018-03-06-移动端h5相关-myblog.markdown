@@ -1402,7 +1402,7 @@ Android 4.4之后提供了**evaluateJavascript**来执行JS代码，并且可以
 webView.evaluateJavascript("javascriptCode", new ValueCallback<String>() {
   @Override
   public void onReceiveValue(String value) {
-
+		  //这里的value即为对应JS方法的返回值
   }
 });
 ```
