@@ -186,7 +186,7 @@ windows下由命名管道(name pipe)实现，linux系统则采用Unix Domain Soc
 
 
 
-### 单线程
+#### 单线程
 
 
 **单线程就是一个进程只开一个线程**
@@ -1057,7 +1057,7 @@ node process-argv.js 1 2 H 3 4
 
 
 
-## 常用工具
+## util
 util 是一个Node.js 核心模块，提供常用函数的集合，用于弥补核心JavaScript 的功能 过于精简的不足。 
 
 #### util.inherits
@@ -1065,7 +1065,7 @@ util.inherits(constructor, superConstructor)是一个实现对象间原型继承
 
 JavaScript 的面向对象特性是基于原型的，与常见的基于类的不同。JavaScript 没有 提供对象继承的语言级别特性，而是通过原型复制来实现的。
 
-```
+```js
 var util = require('util'); 
 function Base() { 
     this.name = 'base'; 
@@ -1091,7 +1091,7 @@ objSub.showName();
 console.log(objSub); 
 ```
 我们定义了一个基础对象Base 和一个继承自Base 的Sub。运行结果如下：
-```
+```js
 base 
 Hello base 
 { name: 'base', base: 1991, sayHello: [Function] } 
@@ -1111,9 +1111,6 @@ depth 表示最大递归的层数，如果对象很复杂，你可以指定层�
 特别要指出的是，util.inspect 并不会简单地直接把对象转换为字符串，即使该对 象定义了toString 方法也不会调用。
 
 
-### node调试
-
-[http://www.ruanyifeng.com/blog/2018/03/node-debugger.html](http://www.ruanyifeng.com/blog/2018/03/node-debugger.html)
 
 ### utility
 
@@ -1124,6 +1121,22 @@ https://github.com/node-modules/utility
 A collection of useful utilities.
 
 (包括一些常用的加密方式)
+
+
+
+# node调试
+
+[http://www.ruanyifeng.com/blog/2018/03/node-debugger.html](http://www.ruanyifeng.com/blog/2018/03/node-debugger.html)
+
+
+
+## Inspector
+
+[https://nodejs.org/en/docs/guides/debugging-getting-started/](https://nodejs.org/en/docs/guides/debugging-getting-started/)
+
+When started with the `--inspect` switch, a Node.js process listens for a debugging client. By default, it will listen at host and port 127.0.0.1:9229. Each process is also assigned a unique [UUID](https://tools.ietf.org/html/rfc4122).
+
+
 
 
 
@@ -1311,71 +1324,6 @@ delegates是第三方npm包，功能就是把一个对象上的方法，属性�
 method方法是委托方法，getter方法用来委托getter，access方法委托getter+setter
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-## 爬坑
-
-
-
-
-
-### node-sass问题
-
-
-
- https://blog.csdn.net/sliver1836/article/details/95950284 
-
-
-
-Error: Cannot find module 'node-sass'问题
-
-
-
-记得先把node-sass卸载掉
-
-npm uninstall node-sass
-
-
-
-```
-1.在项目目录cmd下运行 npm install -g cnpm --registry=https://registry.npm.taobao.org
-
-2.下载成功后再运行 cnpm install node-sass
-```
-
-
-
-
-
-### __dirname is not available
-
-当package.json 中   "type": "module" 时， 我们使用ES modules运行js，这个时候不存在 __dirname 变量了
-
-In ES modules, the `__dirname` variable is not available because ES modules use a different scope than CommonJS modules.
-
-In CommonJS modules, `__dirname` is a global variable that represents the directory name of the current module. It can be used to get the absolute path of the current module's directory.
-
-However, in ES modules, there is no direct equivalent for `__dirname`. Instead, you can use the `import.meta.url` property to get the URL of the current module and then extract the directory name from it.
-
-```tsx
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-console.log(__dirname);
-```
 
 
 
@@ -1659,15 +1607,41 @@ fs.statSync("./reports").isDirectory();
 
 
 
-### Inspector
+## Cannot find node-sass
 
-[https://nodejs.org/en/docs/guides/debugging-getting-started/](https://nodejs.org/en/docs/guides/debugging-getting-started/)
+ https://blog.csdn.net/sliver1836/article/details/95950284 
 
-When started with the `--inspect` switch, a Node.js process listens for a debugging client. By default, it will listen at host and port 127.0.0.1:9229. Each process is also assigned a unique [UUID](https://tools.ietf.org/html/rfc4122).
+Error: Cannot find module 'node-sass'问题
 
+记得先把node-sass卸载掉
 
+npm uninstall node-sass
 
+```
+1.在项目目录cmd下运行 npm install -g cnpm --registry=https://registry.npm.taobao.org
 
+2.下载成功后再运行 cnpm install node-sass
+```
+
+## __dirname is not available
+
+当package.json 中   "type": "module" 时， 我们使用ES modules运行js，这个时候不存在 __dirname 变量了
+
+In ES modules, the `__dirname` variable is not available because ES modules use a different scope than CommonJS modules.
+
+In CommonJS modules, `__dirname` is a global variable that represents the directory name of the current module. It can be used to get the absolute path of the current module's directory.
+
+However, in ES modules, there is no direct equivalent for `__dirname`. Instead, you can use the `import.meta.url` property to get the URL of the current module and then extract the directory name from it.
+
+```tsx
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log(__dirname);
+```
 
 
 
