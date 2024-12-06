@@ -948,6 +948,73 @@ docker info
 
 
 
+## Docker Compose
+
+Docker Compose 文件（通常命名为 `docker-compose.yml`）是用于定义和管理多个 Docker 服务的配置文件。它为应用程序提供了一个清晰、简洁的方式来描述其服务架构、依赖关系、网络和卷等。以下是 Docker Compose 文件的主要作用和特点：
+
+1. 服务定义
+
+Docker Compose 文件允许您定义多个服务，每个服务可以是一个独立的容器。例如，您可以在一个文件中定义一个应用程序的 Web 服务器、数据库服务器和缓存服务等。
+
+```dockerfile
+version: '3.8'  # 指定 Compose 文件的版本  
+services:       # 定义一个或多个服务  
+  web:          # 服务名称  
+    image: nginx  # 使用的 Docker 镜像  
+    ports:  
+      - "8080:80" # 端口映射  
+  db:  
+    image: postgres # 另一个服务，使用 PostgreSQL 镜像  
+    environment:  
+      POSTGRES_USER: user  
+      POSTGRES_PASSWORD: password  
+```
+
+2. 简化管理
+
+通过 `docker-compose up` 命令可以一次性启动所有定义的服务，无需逐个启动每个容器。运行 `docker-compose down` 可以停止并删除所有服务及其网络。
+
+3. 网络和服务之间的连接
+
+Docker Compose 自动为定义的服务创建网络，使它们能够通过服务名称相互通信。例如，`web` 服务可以直接通过名称访问 `db` 服务，而无需使用实际的 IP 地址。
+
+4. 数据持久化
+
+您可以在 Compose 文件中定义数据卷，以确保应用程序的数据在容器重启或更新之间持久化。这样可以避免数据丢失。
+
+```dockerfile
+volumes:  
+  db_data:  
+```
+
+5. 配置环境变量
+
+Docker Compose 文件允许您在服务中轻松配置环境变量，这对于管理应用程序的配置非常重要。
+
+```dockerfile
+environment:  
+  - NODE_ENV=production  
+```
+
+6. 支持多环境配置
+
+通过使用不同的 Compose 文件（例如 `docker-compose.dev.yml` 和 `docker-compose.prod.yml`），可以为不同的环境定义不同的配置，以便在开发、测试和生产环境中灵活操作。
+
+7. 依赖管理
+
+Docker Compose 文件允许您管理服务之间的依赖关系，例如，您可以指定某个服务在另一个服务启动后再启动。使用 `depends_on` 可以设置这种依赖关系。
+
+```
+depends_on:  
+  - db  
+```
+
+8. 重用配置
+
+Compose 文件可以通过 YAML 的扩展功能允许的继承和重用机制，以便重复使用某些服务配置，简化复杂服务的管理。
+
+
+
 ## Dockerfile
 
 [https://docs.docker.com/engine/reference/builder/#dockerfile-reference](https://docs.docker.com/engine/reference/builder/#dockerfile-reference)
@@ -972,9 +1039,71 @@ Dockerfile 中的 EXPOSE 指令用于声明容器运行时所监听的网络端�
 
 
 
+### FROM
+
+在 Dockerfile 中，`FROM` 指令的作用是指定基础镜像，这是构建 Docker 镜像的起点。以下是 `FROM` 指令的主要作用和一些相关的要点：
+
+1. 指定基础镜像
+
+- **基础镜像**：`FROM` 指令定义了要使用的基础镜像，例如 `FROM ubuntu:latest` 或 `FROM node:18`。这个镜像可以是官方的也可以是用户自定义的。
+- **多阶段构建**：可以在一个 Dockerfile 中使用多次 `FROM` 指令，这称为多阶段构建。每个阶段的镜像可以独立，并且可以在后面的阶段中引用前面的阶段。
 
 
 
+### AS
+
+在 Dockerfile 中，`AS` 关键字用于给构建阶段命名，通常与多阶段构建（multi-stage builds）一起使用，它可以帮助你在同一 Dockerfile 中定义多个独立的构建阶段。这样可以提高镜像的构建效率和减少最终镜像的大小。以下是 `AS` 关键字的详细作用：
+
+1. 给构建阶段命名
+
+当使用多阶段构建时，你可以为每个阶段指定一个别名，这样在后续阶段中就可以引用该阶段。通过命名，可以使 Dockerfile 更加清晰，并简化从一个阶段到另一个阶段的复制过程。
+
+2. 简化镜像的构建
+
+在多阶段构建中，使用 `AS` 能够让你选择需要的文件和构建环境，同时避免在最终镜像中包含不必要的开发依赖或构建工具。例如，你可以在一个阶段中构建应用程序，在另一个阶段中仅复制构建结果到一个干净的基础镜像中。
+
+3. 优化镜像大小
+
+通过多阶段构建，你可以只保留最终产品所需的文件，减少最终镜像的大小。这种优化也提高了安全性，因为最终镜像中不会包含构建工具或源代码。
+
+示例
+
+以下是一个使用 `AS` 的多阶段构建的示例：
+
+```
+# 第一阶段: 构建应用  
+FROM node:18 AS builder  
+
+# 设置工作目录  
+WORKDIR /app  
+
+# 复制依赖文件  
+COPY package*.json ./  
+RUN npm install  
+
+# 复制源代码  
+COPY . .  
+
+# 构建应用  
+RUN npm run build  
+
+# 第二阶段: 准备最终镜像  
+FROM nginx:alpine AS production  
+
+# 将构建的结果复制到 Nginx 的默认目录  
+COPY --from=builder /app/dist /usr/share/nginx/html  
+
+# 暴露端口  
+EXPOSE 80  
+
+# 启动 Nginx  
+CMD ["nginx", "-g", "daemon off;"]  
+```
+
+在上面的示例中：
+
+- **第一阶段（builder）**：我们使用了 `FROM node:18 AS builder` 来创建一个名为 `builder` 的构建阶段，其中我们安装依赖并构建应用。
+- **第二阶段（production）**：通过 `COPY --from=builder`，我们只复制 builder 阶段中的构建结果 `/app/dist` 到 Nginx 容器中。
 
 ### 反斜杠
 
@@ -1017,6 +1146,45 @@ Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以
 
 
 
+## nginx
+
+在docker中启动nginx
+
+```dockerfile
+FROM node:20
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY --from=0 /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+# 前台模式下运行
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+如果要配置 nginx config
+
+```dockerfile
+# 使用官方的 Nginx 镜像  
+FROM nginx:latest  
+
+# 复制你的 nginx.conf 到镜像中  
+COPY nginx.conf /etc/nginx/nginx.conf  
+```
+
+
+
 
 
 # nacos
@@ -1024,6 +1192,8 @@ Docker Daemon是**Docker架构中运行在后台的守护进程**，大致可以
 [https://nacos.io/zh-cn/docs/what-is-nacos.html](https://nacos.io/zh-cn/docs/what-is-nacos.html)
 
 Nacos /nɑ:kəʊs/ 是 Dynamic Naming and Configuration Service的首字母简称，一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+
+
 
 
 
