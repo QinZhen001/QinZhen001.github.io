@@ -194,6 +194,28 @@ navigator.mediaDevices.getUserMedia({ audio: true })
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaElementAudioSourceNode)
 
+举个例子：
+
+```html
+<audio controls src="./黄霄雲 - 带我去很远地方.mp3" ></audio>
+```
+
+```ts
+const audioElement = document.querySelector('audio');
+audioElement.addEventListener('play', () => {
+    // 创建Audio Context
+    const audioContext = new AudioContext();
+    // 创建音频源, 之前提到的创建Audio Node第二种方法
+    const source = new MediaElementAudioSourceNode(audioContext, {
+        mediaElement: audioElement // 传入Audio节点
+    })
+})
+```
+
+
+
+
+
 
 
 ### GainNode
@@ -565,11 +587,73 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 
 
+## STUN 和 TURN
+
+STUN（Session Traversal Utilities for NAT）和 TURN（Traversal Using Relays around NAT）是实现网络地址转换（NAT）穿透的重要协议，它们在 WebRTC 中用于实现点对点（P2P）连接。
+
+### STUN 协议
+
+概述
+
+STUN 协议主要用于帮助客户端发现公共 IP 地址和端口，以便能够与外部网络中的其他设备建立连接。STUN 通过客户端发送请求到 STUN 服务器，服务器再返回客户端的公共地址信息。
+
+功能
+
+- **IP 地址和端口发现**：STUN 允许 NAT 后面的设备获取其公共 IP 地址和端口，从而将这些信息提供给其他节点进行连接。
+- **NAT 类型检测**：STUN 还可以帮助确定 NAT 的类型（如全锥形 NAT、受限锥形 NAT、端口受限锥形 NAT 或 Symmetric NAT），这一信息对连接策略的制定至关重要。
+
+使用场景
+
+- 在 WebRTC 中，STUN 服务器通常用于快速找到对等方的公共地址，以便尽量建立直接的 P2P 连接。
+
+示例工作流程
+
+1. 客户端向 STUN 服务器发送请求。
+2. STUN 服务器接收到请求后，获取请求的源 IP 和端口，并将其作为响应发送回客户端。
+3. 客户端可以将这个公共 IP 和端口信息发送给想要连接的其他方。
+
+
+
+### TURN 协议
+
+概述
+
+TURN 协议是 STUN 的补充，专门设计用于在无法直接建立 P2P 连接的情况下提供中继服务。它可以在复杂的 NAT 环境下保证通信。
+
+功能
+
+- **中继通信**：当 P2P 连接无法直接建立时，TURN 允许客户端将数据通过 TURN 服务器中继，从而实现通信。
+- **带宽保障**：TURN 服务器可以承载数据流量，确保在面对复杂网络条件时仍能进行通信。
+
+使用场景
+
+- 当使用 STUN 服务器无法建立对等连接（例如，受限制的 NAT 或防火墙配置），TURN 服务器作为可靠的中转站是选择。
+
+示例工作流程
+
+1. 客户端与 TURN 服务器建立连接。
+2. 客户端请求 TURN 服务器分配一个中继地址。
+3. TURN 服务器分配一个 IP 地址和端口给客户端，并告知其如何转发数据。
+4. 客户端将所有音视频数据发送到 TURN 服务器，服务器再将数据转发给目标客户端。
+
+STUN 与 TURN 的比较
+
+| 特性         | STUN                      | TURN                            |
+| :----------- | :------------------------ | :------------------------------ |
+| 主要功能     | NAT穿透，获取公共IP和端口 | 提供中继服务以确保通信          |
+| 直接连接能力 | 尝试建立 P2P 连接         | 仅在 P2P 连接失败时使用         |
+| 性能         | 较低的延迟和带宽消耗      | 较高的延迟和带宽消耗            |
+| 适用环境     | 简单 NAT 环境             | 复杂 NAT 环境或防火墙阻碍的情况 |
+
+### 结论
+
+STUN 和 TURN 协议是 WebRTC 实现实时通信的基础，STUN 主要用于快速建立 P2P 连接，而 TURN 则作为后盾，当 P2P 连接不可行时，提供可靠的数据中继。这两者的组合确保了 WebRTC 能够在各种网络环境中高效运行。
+
+
+
 ## **ICE**
 
 **ICE (Interactive Connecctivity Establishment, 交互式连接建立)**，ICE 不是一种协议，而是整合了 STUN 和 TURN 两种协议的框架。其中**STUN(Sesssion Traversal Utilities for NAT, NAT 会话穿越应用程序)**，它允许位于 NAT（或多重 NAT）后的客户端找出自己对应的公网 IP 地址和端口，也就是俗称的“打洞”。但是，如果 NAT 类型是对称型的话，那么就无法打洞成功。这时候 TURN 就派上用场了，**TURN**(Traversal USing Replays around NAT)是 STUN/RFC5389 的一个拓展协议在其基础上添加了 Replay(中继)功能，简单来说其目的就是解决对称 NAT 无法穿越的问题，在 STUN 分配公网 IP 失败后，可以通过 TURN 服务器请求公网 IP 地址作为中继地址。
-
-
 
 在 WebRTC 中有三种类型的 ICE 候选者，它们分别是：
 
@@ -583,11 +667,67 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 **中继候选者**，表示的是中继服务器的 IP 地址与端口，即通过服务器中转媒体数据。当 WebRTC 客户端通信双方无法穿越 P2P NAT 时，为了保证双方可以正常通讯，此时只能通过服务器中转来保证服务质量了。
 
+ICE 组件
+
+ICE 由以下几个主要部分组成：
+
+- **候选地址（Candidate）**：候选地址是可以用于建立连接的网络地址，包括：
+  - **主机候选（Host candidates）**：直接来自终端设备的 IP 地址和端口。
+  - **反向代理候选（Server reflexive candidates）**：使用 STUN 服务器获取的公共 IP 地址和端口。
+  - **中继候选（Relay candidates）**：通过 TURN 服务器获取的地址，适用于 NAT 环境复杂的情况。
+- **ICE Agent**：ICE 的主要执行逻辑，负责收集候选地址、处理连接建立过程，并管理候选优先级。
+
+总结：
+
+**通过 ICE，WebRTC 能够高效地处理 NAT 问题，确保可靠的 P2P 连接建立和音视频流传输。这一机制使得 WebRTC 在各种网络环境下具备了更强的适应能力。**
+
 
 
 ## connectivity
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Connectivity](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Connectivity)
+
+
+
+
+
+## NAT
+
+NAT（Network Address Translation，网络地址转换）是一种网络协议，用于将私有 IP 地址（内部网络地址）转换为公共 IP 地址（外部网络地址）和反向转换。NAT 的主要目的是通过允许多台设备共享一个公共 IP 地址来节省有限的 IPv4 地址空间，同时提供基本的安全性。
+
+NAT 的工作原理
+
+NAT 工作在路由器或防火墙上，当内网设备发送数据包到外网时，NAT 会执行以下操作：
+
+1. **转换源地址**：在数据包离开内部网络时，NAT 设备会将数据包的源地址（内部私有 IP 地址）替换为其自身的公共 IP 地址。
+2. **维护映射表**：NAT 设备会维护一个地址映射表，将内部 IP 地址和端口与公共 IP 地址和端口相关联。这确保后续数据包能正确路由回原始设备。
+3. **转换目标地址**：当外部数据包返回时，NAT 会查找映射表，将目标地址的公共 IP 地址转换回相应的内部私有 IP 地址，并将数据包发往正确的内部设备。
+
+NAT 的类型
+
+NAT 有几种主要类型，分别适用于不同的网络场景：
+
+1. **静态 NAT**：
+   - 一对一映射，将特定的内部 IP 地址映射到特定的公共 IP 地址。通常用于需要从外部网络保持可访问性的设备（如服务器）。
+2. **动态 NAT**：
+   - 使用一组公共 IP 地址动态映射内部 IP 地址。当内部设备需要访问外部网络时，NAT 设备在共享的 IP 数组中为其分配一个公共 IP 地址。
+3. **端口地址转换 (PAT)** 或称为 **NAT Overload**：
+   - 多个内部设备共享一个公共 IP 地址，通过不同的端口号进行区分。这是最常用的 NAT 形式，因为它允许大量内网设备通过一个公共 IP 地址访问互联网。
+
+NAT 的优点
+
+- **节省 IP 地址**：NAT 允许多个设备使用同一个公共 IP 地址，帮助缓解 IPv4 地址短缺的问题。
+- **安全性**：NAT 隐藏了内部网络结构，使得外部攻击者更难直接访问内部设备。
+
+NAT 的缺点
+
+- **带来延迟**：NAT 的地址转换可能会导致少量延迟，影响实时应用（如 VoIP 和视频会议）的性能。
+- **复杂的连接管理**：有些应用（尤其是点对点应用，如 WebRTC）需要进行 NAT 穿透，以便在 NAT 后的设备之间建立连接，增加了额外的复杂性。
+- **某些协议的限制**：某些协议（如 FTP 和 SIP）可能在 NAT 环境下无法正常工作，需要额外的配置和支持（例如，使用 STUN 或 TURN 协议进行 NAT 穿透）。
+
+结论
+
+NAT 是现代网络架构中的重要组成部分，通过转换私有和公共 IP 地址，实现了设备之间的通信，同时提供了安全性和 IP 地址的高效利用。但它也带来了诸如延迟和复杂性等挑战。针对特定网络需求，选择合适的 NAT 类型和相关解决方案至关重要。
 
 
 

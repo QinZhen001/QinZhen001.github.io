@@ -264,6 +264,14 @@ maxRequest(fns,max)
 
 * 二叉树蛇形打印
 
+---
+
+
+
+commonjs可以tree-shaking吗？
+
+CommonJS 本身并不支持树摇（tree-shaking），。
+
 
 
 ### 互娱影像三面

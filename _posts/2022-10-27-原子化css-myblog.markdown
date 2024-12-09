@@ -122,6 +122,27 @@ module.exports = {
 
 
 
+## 补充
+
+
+
+### group-hover
+
+这个类用于控制元素在其父元素为 `group` 类时的样式。
+
+举个例子：
+
+```html
+<div class="group">  
+    <div class="bg-blue-500 h-16 w-16 group-hover:opacity-10 transition-opacity duration-300"></div>  
+    <p>将鼠标悬停在这里</p>  
+</div>  
+```
+
+`group-hover:opacity-10` 这个类用于控制元素在其父元素为 `group` 类时的透明度表现。具体而言，它的作用是当你将鼠标悬停在包含 `group` 类的父元素上时，对应的子元素的透明度将变为 10%。
+
+
+
 # unocss
 
 [https://github.com/unocss/unocss](https://github.com/unocss/unocss)

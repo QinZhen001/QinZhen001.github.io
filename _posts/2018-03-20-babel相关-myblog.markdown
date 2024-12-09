@@ -39,10 +39,12 @@ Babel 构建在插件之上，使用现有的或者自己编写的插件可以�
 这些插件只允许 Babel 解析（parse） 特定类型的语法（不是转换），可以在 AST 转换时使用，以支持解析新语法，例如：
 
 ```javascript
-import * as babel from "@babel/core";const code = babel.transformFromAstSync(ast, {   
-//支持可选链 
-plugins: ["@babel/plugin-proposal-optional-chaining"],  
-babelrc: false}).code;
+import * as babel from "@babel/core";
+const code = babel.transformFromAstSync(ast, {   
+  //支持可选链 
+  plugins: ["@babel/plugin-proposal-optional-chaining"],  
+  babelrc: false
+}).code;
 ```
 
 

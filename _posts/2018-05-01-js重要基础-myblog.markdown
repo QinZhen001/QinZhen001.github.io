@@ -182,7 +182,7 @@ for-of循环不仅支持数组，还支持大多数类数组对象，例如DOM N
 
 for-of循环也支持字符串遍历，它将字符串视为一系列的Unicode字符来进行遍历：
 
-```
+```ts
 for (var chr of "") {
   alert(chr);
 }
@@ -192,7 +192,7 @@ for (var chr of "") {
 
 举个例子，Set对象可以自动排除重复项：
 
-```
+```ts
 // 基于单词数组创建一个set对象
 var uniqueWords = new Set(words);
 生成Set对象后，你可以轻松遍历它所包含的内容：
@@ -203,7 +203,7 @@ for (var word of uniqueWords) {
 
 Map对象稍有不同：内含的数据由键值对组成，所以你需要使用解构（destructuring）来将键值对拆解为两个独立的变量：
 
-```
+```ts
 for (var [key, value] of phoneBookMap) {
    console.log(key + "'s phone number is: " + value);
 }
@@ -275,8 +275,6 @@ for (let a of arr) {
 
 
 ### Object.create相关
-
-
 
 Object.create(proto [, propertiesObject ]) 
 
@@ -410,8 +408,6 @@ console.log(o)
 {xxx: "xxx"} __proto__: Object
 ```
 
-
-
 使用Object.create(null)创建对象，屏蔽__proto__，可以节省一些性能
 
 
@@ -465,32 +461,24 @@ rect.move(1, 1); // Outputs, 'Shape moved.'
 #### 重写bind
 
 ```js
- Function.prototype.bind = function () {
-        var self = this,
-            context = [].shift.call(arguments),
-            args = [].slice.call(arguments)
+Function.prototype.myBind = function (context, ...args) {
+  const self = this;
 
-        return function () {
-//            arguments是个类数组 所以没法直接用arguments
-//            console.log(arguments)
-//            console.log([].slice.call(arguments))
-            return self.apply(context, [].concat.call(args, [].slice.call(arguments)))
-        }
+  return function (...innerArgs) {
+    return self.apply(context, [...args, ...innerArgs]);
+  };
+};
 
-    }
+var obj = {
+  name: 'sebe',
+};
 
+var func = function (a, b, c, d) {
+  alert(this.name);
+  alert([a, b, c, d]);
+}.myBind(obj, 1, 2);
 
-    var obj = {
-        name: 'sebe'
-    }
-
-    var func = function (a, b, c, d) {
-        alert(this.name)
-        alert([a, b, c, d])
-    }.bind(obj, 1, 2)
-
-
-    func(3, 4)
+func(3, 4);
 ```
 
 想把arguments转成正的数的时候，可以借用 Array.prototype.slice 方法
@@ -528,11 +516,7 @@ sum.apply(null, [10, 20])这句代码将第一个参数置为null，第二个参
 
 熟悉sum.apply(…)方法的朋友一定知道，如果将sum.apply(…)的第一个参数设置为null，那么就意味着我们并不关心sum在执行时其内部的this指向谁。而Function.apply.bind(sum, null)目的就是将sum.apply(…)的第一个参数固定为null。**其中，Function.apply.bind(sum, null)等价于sum.apply.bind(sum, null)**。
 
-
-
 所以最终我们得到的foo函数就是sum.apply(null, [10, 20]); [10,20]会拆开成10和20传递给sum(…)。
-
-
 
 那么我们再回到最开始的那个Promise的例子，传递给.then()的Promise决议值就是数组[10,20]，.then函数的第一个参数(通常我们称之为fulfilled(…)函数)就相当于我们刚才创建的foo(…)，执行foo([10, 20])输出结果就是10,20。
 
@@ -748,11 +732,7 @@ newApply(Cls.func, [1, 2, 3]) // well done !!
 * &&:从左往右依次判断，当当前值为true则继续，为false则返回此值。是返回未转换为布尔值时的原值
 * ||:从左往右依次判断，当当前值为false则继续，为true则返回此值。是返回未转换为布尔值时的原值
 
-
-
-
-
-```
+```ts
 // => aaa
 var attr = true && 4 && "aaa";
 
@@ -760,9 +740,7 @@ var attr = true && 4 && "aaa";
 var attr = true && 0 && "aaa";
 ```
 
-
-
-```
+```ts
 // => 100
 var attr = 100 || 12;
 
@@ -792,8 +770,6 @@ console.log((x>=15 && 4) || (x>=12 && 3) || (x>=10 && 2) || (x>=5 && 1) || 0);
 
 #### 与对象形式的变量合体
 
-
-
 ```
 /*
 x=15 时 => 4
@@ -806,10 +782,6 @@ console.log( {'5':1,'10':2,'12':3,'15':4}[x] || 0 );
 ```
 
 #### 用于执行语句
-
-
-
-
 
 
 ```
@@ -836,11 +808,7 @@ false && false || alert(1)
 // 结果弹窗1，执行了alert(1)
 ```
 
-
-
 如果按从左往右的顺序执行，短路运算生效，应该不会执行alert(1)
-
-
 
 究竟是怎么回事？
 
@@ -1003,8 +971,6 @@ console.log(Object.getOwnPropertyNames(objWithStrings));
 
 **`AbortController`** 接口表示一个控制器对象，允许你根据需要中止一个或多个 Web 请求。
 
-
-
 ```tsx
   controller = new AbortController();
   const signal = controller.signal;
@@ -1063,8 +1029,6 @@ requestAnimationFrame打印时机不稳定，因为不是每次事件循环都�
 
 我们可以简单地将 Pointer Events 理解成是 Mouse Event 和 Touch Event 的结合。
 
-
-
 ### key
 
 * object的key只能是 string/Symbol (number类型会隐式转换成string)
@@ -1073,10 +1037,6 @@ requestAnimationFrame打印时机不稳定，因为不是每次事件循环都�
 
 
 ## 补充
-
-
-
-
 
 
 
@@ -1723,8 +1683,6 @@ bar(10);
   range.surroundContents(newNode);
 ```
 
-
-
 [surroundContents](https://developer.mozilla.org/zh-CN/docs/Web/API/Range/surroundContents)
 
 > 这个方法与 `newNode.appendChild(range.extractContents()); range.insertNode(newNode)` 等价。应用以后， `newNode` 包含在 `range` 的边界点中。
@@ -1756,7 +1714,6 @@ DOM 有什么用？就是为了操作 HTML 中的元素，比如说我们要通�
 
 ```
 document.title = 'how to make love';
-
 ```
 
 这个 API 使得在网页被下载到浏览器之后改变网页的内容成为可能。
@@ -1847,8 +1804,6 @@ console.log(eval("obj."+keys));   //tom
 ### toUTCString和toGMTString区别
 
 
-
-
 [网页链接](http://www.w3school.com.cn/jsref/jsref_toGMTString.asp)
 
  **定义和用法**
@@ -1864,10 +1819,7 @@ dateObject.toGMTString()
 **返回值**
 dateObject 的字符串表示。此日期会在转换为字符串之前由本地时区转换为 GMT 时区。
 
-
 **不赞成使用此方法。请使用 toUTCString() 取而代之！！**
-
-
 
 **目前UTC已经取代GMT作为新的世界时间标准**
 
@@ -1939,8 +1891,6 @@ console.log(new Date().toUTCString())  //Tue, 17 Apr 2018 14:37:22 GMT
 
  
 
- 
-
 
  **补充**
 
@@ -1961,10 +1911,6 @@ HTML DOM addEventListener() 方法
 
 
 ### 监听滚动条事件
-
-
-
-
 
 在Jquery中:
 $(window).scrollTop()
@@ -3179,8 +3125,6 @@ downloadImage(url,"")
 
 ### fastClick的原理
 
-
-
 **FastClick的实现原理是在检测到touchend事件的时候，会通过DOM自定义事件立即出发模拟一个click事件，并把浏览器在300ms之后的click事件阻止掉。**
 
 
@@ -3189,11 +3133,7 @@ downloadImage(url,"")
 
 #### 点击穿透问题
 
-
-
  既然click点击有300ms的延迟，那对于触摸屏，我们直接监听touchstart事件不就好了吗？ 
-
-
 
 使用touchstart去代替click事件有两个不好的地方。
 
@@ -3210,8 +3150,6 @@ downloadImage(url,"")
 
  什么是**点击穿透**？
 
-
-
 假如页面上有两个元素A和B。B元素在A元素之上。我们在B元素的touchstart事件上注册了一个回调函数，该回调函数的作用是隐藏B元素。我们发现，当我们点击B元素，B元素被隐藏了，随后，A元素触发了click事件。
 
 这是因为在移动端浏览器，事件执行的顺序是touchstart > touchend > click。而click事件有300ms的延迟，当touchstart事件把B元素隐藏之后，隔了300ms，浏览器触发了click事件，但是此时B元素不见了，所以该事件被派发到了A元素身上。如果A元素是一个链接，那此时页面就会意外地跳转。
@@ -3221,8 +3159,6 @@ downloadImage(url,"")
 
 
 #### 用css解决ios点击300毫秒延迟
-
-
 
 ```css
 *,
@@ -3258,16 +3194,6 @@ downloadImage(url,"")
 
 
 
-
-
-
-
-
-
-
-
-
-
 ### 获取屏幕滚动高度
 
 
@@ -3279,41 +3205,15 @@ var heightTop = document.documentElement.scrollTop || document.body.scrollTop;
 console.log(heightTop);
 ```
 
-
-
-
-
-
-
------
-
-
-
 `Window pageXOffset` 和 `pageYOffset` 属性
 
 其定义：pageXOffset 设置或返回当前页面相对于窗口显示区左上角的 X 位置。pageYOffset 设置或返回当前页面相对于窗口显示区左上角的 Y 位置。
 
 **所有主流浏览器都支持 pageXOffset 和 pageYOffset 属性。**
 
-
-
-
-
 ```js
 window.pageYOffset == window.scrollY; // 总是返回 true
 ```
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3329,27 +3229,11 @@ res.sort((a,b)=>{
 
 ```
 
-
-
-
-
-
-
 ### substr和substring
-
-
 
 **记住名字短的函数第二个参数是长度**
 
-
-
-
-
-
-
 substr(start,length)
-
-
 
 | 参数     | 描述                                                         |
 | :------- | :----------------------------------------------------------- |
@@ -3385,8 +3269,6 @@ substring(start,stop)
 
 ### 字符串可以使用slice
 
-
-
 * 字符串可以使用slice()
 * 字符串不可以使用splice()
 
@@ -3400,11 +3282,7 @@ substring(start,stop)
 
 ### 在map和set中get一个对象
 
-
-
 有一个很容易忽略的点，如果在map和set中get一个对象，因为对象是引用型数据，所以当我们修改这个对象时，对应map里面存储的这个对象也会变
-
-
 
 ```js
    let map = new Map()
@@ -3425,13 +3303,7 @@ substring(start,stop)
 
 ### map是有序的
 
-
-
-
-
  **Map 中的键值是有序的，因此，当对它进行遍历时，Map 对象是按插入的顺序返回键值** 
-
-
 
 >`Map` 在涉及频繁增删键值对的场景下会有些性能优势。
 
@@ -3442,10 +3314,6 @@ substring(start,stop)
 
 
 ### 获取map中第一个元素的值
-
-
-
-
 
 ```js
 let map = new Map()
@@ -3461,17 +3329,9 @@ for (let item of map.keys()) {
 }
 ```
 
-
-
-
-
 我们想获取map中第一个元素的值，又不想去循环map，该如何做？
 
-
-
 map.keys()[0] 这样是取不到值的
-
-
 
 正确的做法：
 
@@ -3479,16 +3339,6 @@ map.keys()[0] 这样是取不到值的
 console.log(map.keys().next().value) 
 //a
 ```
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3526,13 +3376,10 @@ const itemHeight = parseFloat(getComputedStyle(gridItems[0]).getPropertyValue('h
 
 举一个在react的例子
 
-
-
 ```jsx
 <div onClick={(e)=>console.log(e.target.localName)}>1313</div>
 
 // div
-
 ```
 
 
@@ -3541,13 +3388,7 @@ const itemHeight = parseFloat(getComputedStyle(gridItems[0]).getPropertyValue('h
 
 ###  **scrollIntoView** 
 
-
-
 `Element.scrollIntoView()` 方法让当前的元素滚动到浏览器窗口的可视区域内。
-
-
-
-
 
 
 
@@ -3559,18 +3400,12 @@ element.scrollIntoView(alignToTop); // Boolean型参数
 element.scrollIntoView(scrollIntoViewOptions); // Object型参数
 ```
 
-
-
 `alignToTop`可选
 
 一个[`Boolean`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Boolean)
 
 - 如果为`true`，元素的顶端将和其所在滚动区的可视区域的顶端对齐。相应的 `scrollIntoViewOptions: {block: "start", inline: "nearest"}`。这是这个参数的默认值。
 - 如果为`false`，元素的底端将和其所在滚动区的可视区域的底端对齐。相应的`scrollIntoViewOptions: {block: "end", inline: "nearest"}`。
-
-
-
-
 
 `scrollIntoViewOptions` 可选 
 
@@ -3588,33 +3423,13 @@ element.scrollIntoView(scrollIntoViewOptions); // Object型参数
 
   定义水平方向的对齐， `"start"`, `"center"`, `"end"`, 或 `"nearest"`之一。默认为 `"nearest"`。
 
-
-
-
-
 > 取决于其它元素的布局情况，此元素可能不会完全滚动到顶端或底端。
-
-
-
-
-
-
-
-
-
-
 
 
 
 ### 理解constructor、prototype、`__proto__`和原型链
 
-
-
 [ https://juejin.im/post/5cc99fdfe51d453b440236c3 ]( https://juejin.im/post/5cc99fdfe51d453b440236c3 )
-
-
-
-
 
 *  对象由函数创建，函数都是Function对象实例 
 *  constructor属性其实就是一个拿来保存自己构造函数引用的属性，没有其他特殊的地方 
@@ -3629,37 +3444,17 @@ element.scrollIntoView(scrollIntoViewOptions); // Object型参数
 
 
 
-
-
-
-
 -----
-
-
 
 
 
 **真正的constructor属性藏在哪?**
 
-
-
-
-
 constructor属性为什么我就没在console出来的对象数据中看到呢？
-
-
 
 > **思考个问题：**`new Person( )`出来的千千万万个实例中如果都有constructor属性，并且都指向创建自己的构造函数，那岂不它们都拥有一个效果相同但却都各自占用一部分内存的属性？
 
-
-
-
-
  **constructor是完全可以被当成一个共享属性存放在原型对象中，作用也依然是指向自己的构造函数，而实际上也是这么处理的。对象的constructor属性就是被当做共享属性放在它们的原型对象中** 
-
-
-
-
 
 ```js
 function Person() {}
@@ -3673,13 +3468,7 @@ console.log(person2.constructor) // [Function: Person] ！不是同步为[Functi
 
 ```
 
-
-
 这个是因为`person1.constructor = Function`改的并不是原型对象上的共享属性constructor，而是给实例person1加了一个constructor属性。如下：
-
-
-
-
 
 
 
@@ -3688,15 +3477,7 @@ console.log(person1)
 // 结果：Function { constructor: [Function: Function] }
 ```
 
-
-
-
-
  你可以看到person1实例中多了constructor属性。它原型对象上的constructor是没有改的。 
-
-
-
-
 
 > 所以说，实例对象.constructor 即等于去找 实例对象.`__proto__`.constructor 
 
@@ -3706,11 +3487,7 @@ console.log(person1)
 
 
 
-
-
  为什么Object函数不能像Function函数一样让__proto__属性指向自己的prototype？ 
-
-
 
  答案就是如果指向自己的prototype，那当找不到某一属性时沿着原型链寻找的时候就会进入死循环，所以必须指向null，这个null其实就是个跳出条件。 
 
@@ -3719,8 +3496,6 @@ console.log(person1)
 
 
 ### null >= 0 为 true
-
-
 
 ```js
   console.log(null > 0);   // false
@@ -3731,11 +3506,7 @@ console.log(person1)
   console.log(null === 0);    // false
 ```
 
-
-
  不要把 拿 a > b , a == b 的结果 想当然的去和 a >= b 建立联系 
-
-
 
 ```js
 null > 0  // null 尝试转型为number , 则为0 . 所以结果为 false, 
@@ -3743,11 +3514,7 @@ null >= 0 // null 尝试转为number ,则为0 , 结果为 true.
 null == 0 // null在设计上，在此处不尝试转型. 所以 结果为false. 
 ```
 
-
-
   **\>=的结果可以根据<的结果推出** 
-
-
 
 因为null<0为false，所以null>=0为true；
 
@@ -3767,23 +3534,11 @@ null == 0 // null在设计上，在此处不尝试转型. 所以 结果为false.
 
 **IntersectionObserver 常常被用作懒加载** 
 
-
-
 **IntersectionObserver的兼容性并不好，IE上无法使用** 
-
-
 
 `IntersectionObserver`**接口** (从属于[Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)) 提供了一种异步观察目标元素与其祖先元素或顶级文档视窗([viewport](https://developer.mozilla.org/zh-CN/docs/Glossary/Viewport))交叉状态的方法。祖先元素与视窗([viewport](https://developer.mozilla.org/zh-CN/docs/Glossary/Viewport))被称为**根(root)。**
 
-
-
-
-
 当一个`IntersectionObserver`对象被创建时，其被配置为监听根中一段给定比例的可见区域。一旦IntersectionObserver被创建，则无法更改其配置，所以一个给定的观察者对象只能用来监听可见区域的特定变化值；然而，你可以在同一个观察者对象中配置监听多个目标元素。
-
-
-
-
 
 ```js
 var intersectionObserver = new IntersectionObserver(function(entries) {
@@ -3801,15 +3556,9 @@ intersectionObserver.observe(document.querySelector('.scrollerFooter'));
 
 
 
-
-
 entries 参数，它是个`IntersectionObserverEntry`对象数组 
 
-
-
 `IntersectionObserverEntry`提供观察元素的信息，有七个属性。
-
-
 
 * boundingClientRect  目标元素的矩形信息
 * intersectionRatio   相交区域和目标元素的比例值   intersectionRect/boundingClientRect 不可见时小于等于0
@@ -3819,13 +3568,7 @@ entries 参数，它是个`IntersectionObserverEntry`对象数组
 *  target                      观察的目标元素
 *  time                返回一个记录从`IntersectionObserver`的时间到交叉被触发的时间的时间戳
 
-
-
 > **intersectionRatio**和**isIntersecting**是用来判断元素是否可见的 
-
-
-
-
 
 
 
@@ -4025,15 +3768,9 @@ button.onClick = aWarrior.ready.bind(aWarrior)
 button.onClick()
 ```
 
-
-
 我们通过 bind 的方法将我们方法绑定到指定的对象，这样我们的方法就有了 context 也就是上下文
 
-
-
 **当然我们也可以也使用 es6 的箭头函数作为 ready 属性，这个箭头好处就是我无需再写 bind 来讲方法绑定到指定对象，箭头方法中 this 对象。**
-
-
 
 ```js
 // 改写ready
@@ -4061,8 +3798,6 @@ ready = ()=>{
 
 
 **persisted**属性返回一个布尔值，指示是否直接从服务器加载网页，或者当发生**pageshow**或**pagehide**事件时页面是否被缓存。此属性是只读的。
-
-
 
 一个布尔值，指示网页是否从缓存加载。
 
@@ -4265,8 +4000,6 @@ console.log(Reflect.set(input, 'type', 'number'));
 **1.try-catch通常（注意在这里是“通常”）高级语言才有，由脚本解释器（或者运行时环境）层实现。**
 
 **2.在try block 内才跳转到对应的catch block 块。**
-
-
 
 js 的异步跟事件循环有莫大关系，事件循环伪代码如下
 
@@ -4887,8 +4620,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', eve
 });
 ```
 
-
-
 [https://cn.windicss.org/features/dark-mode.html](https://cn.windicss.org/features/dark-mode.html)
 
 像 Windi CSS 这种库
@@ -4922,6 +4653,8 @@ export class Mutex {
   async dispatch<T>(fn: (() => T) | (() => PromiseLike<T>)): Promise<T> {
     const unlock = await this.lock();
     try {
+      // 如果传入的参数已经是 Promise 对象，Promise.resolve 会直接返回这个 Promise，而不会创建一个新的 Promise。
+      // 这保证了在链式调用中，Promise 的状态不会被无意中改变。
       return await Promise.resolve(fn());
     } finally {
       unlock();
@@ -4978,11 +4711,10 @@ mutex.dispatch(sleep2)  // 才会执行
 beforeunload事件：
 
 - 触发时机：在页面即将卸载之前触发，也就是在用户关闭页面、刷新页面、导航到其他页面等操作之前触发。
+
 - 执行操作：可以在此事件中执行一些清理操作，例如关闭WebSocket、清除定时器、发送最后的请求等。
 
-----
-
-
+  ----
 
 * **beforeunload：在此事件中执行的操作可能会阻塞页面的关闭或离开，因此必须谨慎使用。**
 * **pagehide事件不会阻塞页面的关闭或离开，因此可用于执行一些较轻量级的操作。**
