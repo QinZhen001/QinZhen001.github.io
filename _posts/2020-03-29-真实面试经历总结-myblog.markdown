@@ -552,7 +552,7 @@ console.log(res)
 * ssr介绍一下？ssr的好处
 * webpack loader 和 plugin 的差别
 * **xss 在服务器可以怎么预防攻击？**
-* 协商缓存 和 强缓存？ 和他们相关的response header
+* 协商缓存 和 强缓存？ 和他们相关的 response header
 * 介绍一下前端模块化规范？es module 和 commonjs的区别？介绍一下umd？
 * 判断元素是否在可见区域?
 
@@ -567,8 +567,6 @@ console.log(res)
 * XHR 基于事件机制实现请求成功与失败的回调，Fetch 通过 Promise 来实现回调
 * XHR中断请求的方式 (abort api) 和 Fetch (AbortController)
 * XHR 监控请求进度（progress），fetch允许去跟踪下载进度，无法跟踪上传进度
-
-
 
 １）下载的progress事件属于XMLHttpRequest对象
 

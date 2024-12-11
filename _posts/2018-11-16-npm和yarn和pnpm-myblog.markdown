@@ -650,8 +650,6 @@ yarn 不支持 scripts 中 prepare 用 postinstall 代替
 
 yarn workspace并不需要安装什么其他的包，只需要简单的更改package.json便可以工作。 首先我们需要确定workspace root，一般来说workspace root都会是repo的根目录
 
-
-
 yarn workspace目录结构树:
 
 ![](https://upload-images.jianshu.io/upload_images/12564775-6eb7783e32e44b13.png?imageMogr2/auto-orient/strip|imageView2/2/w/921/format/webp)
@@ -1106,8 +1104,6 @@ package-lock.json (use shrinkwrap instead)
 
 [https://www.npmjs.cn/misc/scope/](https://www.npmjs.cn/misc/scope/)
 
-
-
 Publishing public scoped packages to the primary npm registry
 
 
@@ -1122,14 +1118,10 @@ To publish a public scoped package, you must specify --access public with the in
 
  [ https://runkit.com/qinzhen001/5eb232f5cf366c00149f7b33 ]( https://runkit.com/qinzhen001/5eb232f5cf366c00149f7b33 )
 
-
-
 ```js
 var test = require("qz-asdasd/ccc")
 test()
 ```
-
-
 
 有的时候，我们想访问npm包子路径下的文件，那该如何设计这种包的结构尼？
 
