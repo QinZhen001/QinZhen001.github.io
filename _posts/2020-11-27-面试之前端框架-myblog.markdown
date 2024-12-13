@@ -2444,7 +2444,14 @@ if ((effectTag & Passive) !== NoEffect) {
 
 
 
-#### useLayoutEffect`与`useEffect
+### useLayoutEffect`与`useEffect
+
+useEffect和useLayoutEffect的执行时机不一样
+
+* 前者被异步调度，当页面渲染完成后再去执行，不会阻塞页面渲染。
+*  后者是在commit阶段新的DOM准备完成，但还未渲染到屏幕之前，同步执行。
+
+----
 
 `mutation阶段`会执行`useLayoutEffect hook`的`销毁函数`。
 
@@ -2452,11 +2459,27 @@ if ((effectTag & Passive) !== NoEffect) {
 
 而`useEffect`则需要先调度，在`Layout阶段`完成后再异步执行。
 
-
-
 这就是`useLayoutEffect`与`useEffect`的区别。
 
  
+
+
+
+### Effect数据结构
+
+顾名思义，`React`底层在函数式组件的`Fiber`节点设计中带入了`hooks`链表的概念（`memorizedState`），在此变量上专门存储每一个函数式组件对应的链表。
+
+而对于副作用（`useEffect` or `useLayoutEffect`）来说，对应其`hook`类型就是`Effect`。
+
+单个的effect对象包括以下几个属性：
+
+- create: 传入`useEffect` or `useLayoutEffect`函数的第一个参数，即回调函数；
+- destroy: 回调函数return的函数，在该effect销毁的时候执行，渲染阶段为`undefined`；
+- deps: 依赖项，改变重新执行副作用；
+- next: 指向下一个`effect`；
+- tag: effect的类型，区分是`useEffect`还是`useLayoutEffect`；
+
+
 
 
 
@@ -2464,19 +2487,11 @@ if ((effectTag & Passive) !== NoEffect) {
 
 [https://zh-hans.reactjs.org/docs/hooks-reference.html#timing-of-effects](https://zh-hans.reactjs.org/docs/hooks-reference.html#timing-of-effects)
 
-
-
 与 `componentDidMount`、`componentDidUpdate` 不同的是，在浏览器完成布局与绘制**之后**，传给 `useEffect` 的函数会延迟调用。这使得它适用于许多常见的副作用场景，比如设置订阅和事件处理等情况，因此不应在函数中执行阻塞浏览器更新屏幕的操作。
-
-
 
 **可见，`useEffect`异步执行的原因主要是防止同步执行时阻塞浏览器渲染。**
 
-
-
 然而，并非所有 effect 都可以被延迟执行。例如，在浏览器执行下一次绘制前，用户可见的 DOM 变更就必须同步执行，这样用户才不会感觉到视觉上的不一致。（概念上类似于被动监听事件和主动监听事件的区别。）React 为此提供了一个额外的 [`useLayoutEffect`](https://zh-hans.reactjs.org/docs/hooks-reference.html#uselayouteffect) Hook 来处理这类 effect。它和 `useEffect` 的结构相同，区别只是调用时机不同。
-
-
 
 虽然 `useEffect` 会在浏览器绘制后延迟执行，但会保证在任何新的渲染前执行。React 将在组件更新前刷新上一轮渲染的 effect。
 

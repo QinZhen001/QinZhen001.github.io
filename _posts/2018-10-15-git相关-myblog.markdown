@@ -876,8 +876,6 @@ Git对象包含三种：数据对象、树对象、提交对象。
 
 [https://juejin.cn/post/6844903542084517896](https://juejin.cn/post/6844903542084517896)
 
-
-
 **主要分支**
 
 > master: 永远处在**`即将发布(production-ready)状态`**；
@@ -972,17 +970,86 @@ function ensureCleanWorkingDirectory() {
 
 
 
-## 补充
 
 
+# Github
+
+
+
+## workflow
+
+
+
+
+
+###  matrix strategy
+
+[https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow)
+
+矩阵策略允许您在单个作业定义中使用变量来自动创建基于变量组合的多个作业运行。
+
+例如，您可以使用矩阵策略在一种语言的多个版本或多个操作系统上测试代码。
+
+```yaml
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node: [lts/*]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup
+        run: npm i -g @antfu/ni
+
+      - name: Install
+        run: nci
+
+      - name: Build
+        run: nr build
+
+      - name: Test
+        run: nr test
+```
+
+
+
+
+
+### secrets
+
+* Environment secrets
+* Repository secrets
+
+* Orgnization secrets
+
+如果创建了一个production的环境 要使用里面的secrets
+
+```yaml
+runs-on: ubuntu-latest
+    environment: 
+      name: production
+    steps:
+```
+
+
+
+
+
+# 补充
 
 [Git基本操作](http://youngxhui.github.io/2016/08/13/Git%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/)
 
 [github小窍门](http://youngxhui.github.io/2016/08/28/GitHub-for-Windows%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E5%9B%9B%EF%BC%89/)
-
-
-
-
 
 ### 修改commit信息
 

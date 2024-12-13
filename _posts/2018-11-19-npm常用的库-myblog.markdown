@@ -1025,6 +1025,14 @@ Minimal and efficient cross-platform file watching library
 
 
 
+## tinyexec
+
+[https://www.npmjs.com/package/tinyexec](https://www.npmjs.com/package/tinyexec)
+
+> A minimal package for executing commands
+
+
+
 # package
 
 ## unbuild
@@ -1284,6 +1292,26 @@ A modern cli tool that keeps your deps fresh
 
 
 
+
+
+## unplugin
+
+[https://unplugin.unjs.io/guide/](https://unplugin.unjs.io/guide/)
+
+**Unplugin** is a library that offers an unified plugin system for various build tools. It extends the excellent [Rollup plugin API](https://rollupjs.org/plugin-development/#plugins-overview) to serve as the standard plugin interface, and provides a compatibility layer based on the build tools employed.
+
+**Unplugin** current supports:
+
+- [Vite](https://vitejs.dev/)
+- [Rollup](https://rollupjs.org/)
+- [Webpack](https://webpack.js.org/)
+- [esbuild](https://esbuild.github.io/)
+- [Rspack](https://www.rspack.dev/)
+- [Rolldown](https://rolldown.rs/) **(⚠️ experimental)**
+- [Farm](https://www.farmfe.org/)
+
+
+
 # react
 
 
@@ -1511,3 +1539,51 @@ prettyBytes(100);
 [https://www.npmjs.com/package/consola](https://www.npmjs.com/package/consola)
 
 > Elegant Console Wrapper
+
+
+
+
+
+## degit
+
+[https://www.npmjs.com/package/degit](https://www.npmjs.com/package/degit)
+
+**degit** makes copies of git repositories.
+
+下载git上的项目到本地
+
+举个例子：
+
+```bash
+npx degit unplugin/unplugin-starter my-unplugin
+```
+
+
+
+
+
+## changelogithub
+
+[https://www.npmjs.com/package/changelogithub](https://www.npmjs.com/package/changelogithub)
+
+Generate changelog for GitHub releases from [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), powered by [changelogen](https://github.com/unjs/changelogen)
+
+
+
+## install-pkg
+
+[https://www.npmjs.com/package/@antfu/install-pkg](https://www.npmjs.com/package/@antfu/install-pkg)
+
+Install package programmatically. Detect package managers automatically (`npm`, `yarn`, `bun` and `pnpm`).
+
+
+
+### package-manager-detector
+
+[https://github.com/antfu-collective/package-manager-detector](https://github.com/antfu-collective/package-manager-detector)
+
+**to know the current package manager**
+
+找到当前的包管理工具
+
+Package manager detector is based on lock files and the `packageManager` field in the current project's `package.json` file.
