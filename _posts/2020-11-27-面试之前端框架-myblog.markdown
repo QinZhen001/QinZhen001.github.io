@@ -25,8 +25,6 @@ tags:
 
 **虚拟 DOM本质上是 JavaScript 对象，这个对象就是更加轻量级的对 DOM 的描述。**
 
-
-
 对于 DOM 这么多属性，其实大部分属性对于做 Diff 是没有任何用处的，所以如果用更轻量级的 JS 对象来代替复杂的 DOM 节点，然后把对 DOM 的 diff 操作转移到 JS 对象，就可以避免大量对 DOM 的查询操作。这个更轻量级的 JS 对象就称为 Virtual DOM 。
 
 
@@ -34,8 +32,6 @@ tags:
 1. 维护一个使用 JS 对象表示的 Virtual DOM，与真实 DOM 一一对应
 2. 对前后两个 Virtual DOM 做 diff ，生成**变更**（Mutation）
 3. 把变更应用于真实 DOM，生成最新的真实 DOM
-
-
 
 传统前端的编程方式是命令式的，直接操纵 DOM，告诉浏览器该怎么干。这样的问题就是，大量的代码被用于操作 DOM 元素，且代码可读性差，可维护性低。
 
@@ -1567,34 +1563,22 @@ const update: Update<*> = {
 
 **fiber是链表结构**
 
-
-
 > `Fiber`并不是计算机术语中的新名词，他的中文翻译叫做`纤程`，与进程（Process）、线程（Thread）、协程（Coroutine）同为程序执行过程。
 
 在很多文章中将`纤程`理解为`协程`的一种实现。在`JS`中，`协程`的实现便是`Generator`。
 
 所以，我们可以将`纤程`(Fiber)、`协程`(Generator)理解为`代数效应`思想在`JS`中的体现。
 
-
-
 `React`内部实现的一套状态更新机制。支持任务不同`优先级`，可中断与恢复，并且恢复后可以复用之前的`中间状态`。其中每个任务更新单元为`React Element`对应的`Fiber节点`。
 
-
-
 **任务更新单元就是Fiber节点**
 
 **任务更新单元就是Fiber节点**
 
 **任务更新单元就是Fiber节点**
-
-
 
 * 作为静态的数据结构来说，每个`Fiber节点`对应一个`React element`，保存了该组件的类型（函数组件/类组件/原生组件...）、对应的DOM节点等信息。
 * 作为动态的工作单元来说，每个`Fiber节点`保存了本次更新中该组件改变的状态、要执行的工作（需要被删除/被插入页面中/被更新...）。
-
-
-
-
 
 
 
@@ -1603,8 +1587,6 @@ const update: Update<*> = {
 > 架构的演变-从递归到循环
 
 react15递归更新组件有明显的缺点，不能暂停更新，一旦开始必须从头到尾，这与 React 16 拆分时间片，给浏览器喘口气的理念明显不符，所以 React 必须要切换架构，**将虚拟 DOM 从树形结构修改为链表结构**。
-
-
 
 > 链表结构最大的优势就是可以通过循环的方式来遍历，只要记住当前遍历的位置，即使中断后也能快速还原，重新开始遍历。
 
@@ -1671,18 +1653,12 @@ Fiber 的遍历本质上就是一个循环，全局有一个 `workInProgress` �
 
 **在一次遍历过程中，每个节点都会经历 `beginWork`、`completeWork` ，直到返回到根节点，最后通过 `commitRoot` 将所有的更新提交**
 
-
-
 ---
 
 Fiber 架构下每个节点都会经历 `递（beginWork）` 和 `归（completeWork）` 两个过程：
 
 - beginWork：生成新的 state，调用 render 创建子节点，连接当前节点与子节点；
 - completeWork：依据 EffectTag 收集 Effect，构造 Effect List；
-
-
-
-
 
 
 
@@ -1732,11 +1708,7 @@ workInProgressFiber.alternate === currentFiber;
 
 `React`应用的根节点通过`current`指针在不同`Fiber树`的`rootFiber`间切换来实现`Fiber树`的切换。
 
-
-
 当`workInProgress Fiber树`构建完成交给`Renderer`渲染在页面上后，应用根节点的`current`指针指向`workInProgress Fiber树`，此时`workInProgress Fiber树`就变为`current Fiber树`。
-
-
 
 每次状态更新都会产生新的`workInProgress Fiber树`，通过`current`与`workInProgress`的替换，完成`DOM`更新。
 
@@ -1745,8 +1717,6 @@ workInProgressFiber.alternate === currentFiber;
 #### 什么是“双缓存”
 
 https://react.iamkasong.com/process/doubleBuffer.html#%E4%BB%80%E4%B9%88%E6%98%AF-%E5%8F%8C%E7%BC%93%E5%AD%98
-
-
 
 当我们用`canvas`绘制动画，每一帧绘制前都会调用`ctx.clearRect`清除上一帧的画面。
 
@@ -1777,19 +1747,13 @@ https://react.iamkasong.com/process/doubleBuffer.html#%E4%BB%80%E4%B9%88%E6%98%A
 
 `Diff算法`的本质是对比1和4，生成2。
 
-
-
 为了降低算法复杂度，`React`的`diff`会预设三个限制：
 
 1. 只对同级元素进行`Diff`。如果一个`DOM节点`在前后两次更新中跨越了层级，那么`React`不会尝试复用他。
 2. **两个不同类型的元素会产生出不同的树。如果元素由`div`变为`p`，React会销毁`div`及其子孙节点，并新建`p`及其子孙节点。**
 3. 开发者可以通过 `key prop`来暗示哪些子元素在不同的渲染下能保持稳定
 
-
-
 我们从`Diff`的入口函数`reconcileChildFibers`出发，该函数会根据`newChild`（即`JSX对象`）类型调用不同的处理函数。
-
-
 
 ```js
 // 根据newChild类型选择不同diff函数处理
@@ -1901,14 +1865,6 @@ function reconcileSingleElement(
 
 
 
-
-
-
-
-
-
-
-
 ### 多节点Diff
 
 `reconcileChildFibers`的`newChild`参数类型为`Array`，在`reconcileChildFibers`函数内部对应如下情况：
@@ -1928,15 +1884,9 @@ function reconcileSingleElement(
 >
 > 虽然本次更新的`JSX对象` `newChildren`为数组形式，但是和`newChildren`中每个组件进行比较的是`current fiber`，同级的`Fiber节点`是由`sibling`指针链接形成的单链表，即不支持双指针遍历。
 >
-> 
->
 > 即 `newChildren[0]`与`fiber`比较，`newChildren[1]`与`fiber.sibling`比较。
 >
-> 
->
 > 所以无法使用**双指针**优化。
-
-
 
 **react的diff，不像vue，无法使用双指针优化。**
 
@@ -1986,8 +1936,6 @@ function reconcileSingleElement(
 
 Renderer 有两个阶段： render阶段 和 commit阶段
 
-
-
 * `render阶段`开始于`performSyncWorkOnRoot`或`performConcurrentWorkOnRoot`方法的调用。这取决于本次更新是同步更新还是异步更新
 * `commit阶段`开始于`commitRoot`方法的调用。其中`rootFiber`会作为传参。
 
@@ -2001,8 +1949,6 @@ render阶段 ：
 
 * beginWork
 * completeWork
-
-
 
 `Renderer`工作的阶段被称为`commit`阶段，`commit`阶段可以分为三个子阶段：
 
@@ -2122,8 +2068,6 @@ useLayoutEffect(() => {
 
 这显然是很低效的。
 
-
-
 为了解决这个问题，在`completeWork`的上层函数`completeUnitOfWork`中，每个执行完`completeWork`且存在`effectTag`的`Fiber节点`会被保存在一条被称为`effectList`的单向链表中。
 
 `effectList`中第一个`Fiber节点`保存在`fiber.firstEffect`，最后一个元素保存在`fiber.lastEffect`。
@@ -2136,8 +2080,6 @@ rootFiber.firstEffect -----------> fiber -----------> fiber
 ```
 
 这样，在`commit阶段`只需要遍历`effectList`就能执行所有`effect`了。
-
-
 
 **`effectList`相较于`Fiber树`，就像圣诞树上挂的那一串彩灯。**
 
@@ -2165,21 +2107,13 @@ mountChildFibers的时候会不会打effectTag？
 
 > Concurrent 模式是 React 的新功能，可帮助应用保持响应，并根据用户的设备性能和网速进行适当的调整。
 
-
-
 Concurrent 模式说白就是让组件更新异步化，切分时间片，渲染之前的调度、diff、更新都只在指定时间片进行，如果超时就暂停放到下个时间片进行，中途给浏览器一个喘息的时间。
-
-
 
 浏览器的运作流程: `渲染 -> tasks -> 渲染 -> tasks -> 渲染 -> ....`
 
 这些 tasks 中有些我们可控，有些不可控，比如 setTimeout 什么时候执行不好说，它总是不准时；资源加载时间不可控。但一些 JS 我们可以控制，让它们分派执行，tasks 的时长不宜过长，这样浏览器就有时间优化 JS 代码与修正 reflow ！
 
 总结一句， **就是让浏览器休息好，浏览器就能跑得更快** 。
-
-
-
-![](https://file.shenfq.com/ipic/2020-09-23-020125.png)
 
 
 
@@ -2435,8 +2369,6 @@ if ((effectTag & Passive) !== NoEffect) {
 ```
 
 在这几行代码内，`scheduleCallback`方法由`Scheduler`模块提供，用于以某个优先级异步调度一个回调函数。
-
-
 
 在此处，被异步调度的回调函数就是触发`useEffect`的方法`flushPassiveEffects`。
 

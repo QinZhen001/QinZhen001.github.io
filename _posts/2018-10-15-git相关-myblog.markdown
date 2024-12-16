@@ -1043,6 +1043,35 @@ runs-on: ubuntu-latest
 
 
 
+### job依赖
+
+[示例：要求成功的依赖项作业](https://docs.github.com/zh/actions/writing-workflows/choosing-what-your-workflow-does/using-jobs-in-a-workflow#示例要求成功的依赖项作业)
+
+```yaml
+jobs:
+  job1:
+  job2:
+    needs: job1
+  job3:
+    needs: [job1, job2]
+```
+
+在此示例中，`job1` 必须在 `job2` 开始之前成功完成，并且 `job3` 等待 `job1` 和 `job2` 完成。
+
+[示例：不要求成功的依赖项作业](https://docs.github.com/zh/actions/writing-workflows/choosing-what-your-workflow-does/using-jobs-in-a-workflow#示例不要求成功的依赖项作业)
+
+```yaml
+jobs:
+  job1:
+  job2:
+    needs: job1
+  job3:
+    if: ${{ always() }}
+    needs: [job1, job2]
+```
+
+在此示例中，`job3` 使用 `always()` 条件表达式，确保始终在 `job1` 和 `job2` 完成（无论是否成功）后运行。 
+
 
 
 # 补充

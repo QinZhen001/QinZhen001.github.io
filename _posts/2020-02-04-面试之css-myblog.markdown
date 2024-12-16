@@ -768,27 +768,24 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 
 ### 显式合成
 
+
+
+#### 层叠上下文
+
 [层叠上下文相关](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
 
 我们假定用户正面向（浏览器）视窗或网页，而 HTML 元素沿着其相对于用户的一条虚构的 z 轴排开，**层叠上下文**就是对这些 HTML 元素的一个三维构想。众 HTML 元素基于其元素属性按照优先级顺序占据这个空间。
 
-拥有 **层叠上下文** 的节点。
+以下情况下，会创建一个新的层叠上下文：
 
-层叠上下文也基本上是由一些特定的 CSS 属性创建的，一般有以下的情况：
-
-1. HTML 根元素本身就具有层叠上下文属性
-2. 普通元素 position 不等于 static，并且设置了 z-index 属性，会产生层叠上下文
-3. 元素的 opacity 值不是1
-4. 元素的 transform 值不是 none
-5. 元素的 filter 值不是 none
-6. 元素的 isolation 值不是 isolate
-7. **will-change 指定的属性值为上面任意一个。**
-
-
-
-需要 **裁剪** 的地方
-
-比如一个 div，你只个他设置了 100 * 100 的大小，而你在里面放置了很多内容，那么超出的文字部分就会被裁剪。如果你设置了滚动条，那么滚动条也会被单独提升为一个图层。
+- **根元素**：浏览器的根元素 (`<html>`) 会创建一个层叠上下文。
+- 具有以下属性的元素
+  - `position` 属性为 `absolute`, `relative`, `fixed`, 或 `sticky` 且 `z-index` 不为 `auto`。
+  - `display` 属性为 `flex` 或 `grid`，且 `z-index` 不为 `auto`。
+  - `opacity` 属性小于 1。
+  - `transform` 、`filter` 、`perspective` 、`clip-path` 等 CSS 属性存在且它们的值不为 `none`。
+  - `will-change` 属性被设置为某些值（例如 `transform`、`opacity`、`scroll-position` 等）。
+  - `mix-blend-mode` 设置为不是 `normal` 的值。
 
 
 
@@ -955,8 +952,6 @@ CSS的最终表现分为如下四步：`Recalculate Style` -> `Layout` -> `Paint
 1. offsetTop < clientHeight + scrollTop
 2. element.getBoundingClientRect().top < clientHeight   **(这里的clientHeight 是指设置了overflow: scroll的那个父元素)**
 3. IntersectionObserver
-
-
 
 这里2的判断其实不够完善
 

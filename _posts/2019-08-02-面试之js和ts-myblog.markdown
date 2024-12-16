@@ -48,8 +48,6 @@ tags:
 
 执行上下文是当前 JavaScript 代码被解析和执行时所在环境的抽象概念。
 
-
-
 执行上下文的类型
 
 
@@ -116,8 +114,6 @@ https://blog.csdn.net/Ancecis/article/details/104382441
 **AO可以理解为VO的一个实例，也就是VO是一个构造函数，然后VO(Context) === AO**，所以VO提供的是一个函数中所有变量数据的模板。
 
 VO和AO其实是一个东西，只是处于不同的执行上下文生命周期。AO存在于执行上下文位于执行上下文堆栈顶部(就是上边说的’当控制进入函数代码的执行上下文时’)的时期。再粗暴点，就是**函数调用时，VO被激活成了AO**。
-
-
 
 ![](https://s1.ax1x.com/2020/11/04/Bc4V4x.png)
 
@@ -2357,8 +2353,6 @@ function cloneDeep1(source) {
 ```
 
 
-
-
 * 对于对象的判断逻辑不严谨，因为 typeof null === 'object'
 * 没有考虑数组的兼容
 
@@ -2379,8 +2373,6 @@ function isObject(obj) {
 #### 深拷贝如何解决循环引用
 
 需要解决拷贝对象内的循环引用问题（使用数组记录拷贝过的对象，记录一个拷贝对象的数据结构，{source:原拷贝对象，target:拷贝后的对象}）
-
-
 
 ```js
 //存放已拷贝的对象用于循环引用检测
@@ -2495,8 +2487,6 @@ function find(arr, item) {
 
  主要是将所有**可枚举属性**的值从一个或多个源对象复制到目标对象，同时返回目标对象。
 
-
-
 模拟实现：
 
 ```javascript
@@ -2562,11 +2552,7 @@ Object.propertyIsEnumerable("assign");
 
 上面代码说明 Object.assign 是不可枚举的。
 
-
-
 **所以要实现 Object.assign 必须使用 Object.defineProperty**，并设置 writable: true, enumerable: false, configurable: true，当然默认情况下不设置就是 false。
-
-
 
 #### Object.assign使用时原始类型被包装为对象
 

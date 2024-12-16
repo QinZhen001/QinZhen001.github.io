@@ -254,8 +254,6 @@ export const RouteContainer = () => {
 
 
 
-
-
 ### **简化路径**
 
 **React Router v6使用简化的路径格，仅支持2种占位符：动态:`id`样式参数和`\*`通配符**
@@ -279,8 +277,6 @@ export const RouteContainer = () => {
 /tweets/:id(\d+)
 /files/*/cat.jpg
 ```
-
-
 
 `v6`中的所有路径匹配都将忽略URL上的尾部"`/`"。实际上，`<Route strict>`已被删除并且在v6中无效。这并不意味着您不需要使用斜杠。
 
