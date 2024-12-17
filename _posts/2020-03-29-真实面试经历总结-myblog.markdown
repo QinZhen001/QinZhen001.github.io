@@ -266,8 +266,6 @@ maxRequest(fns,max)
 
 ---
 
-
-
 commonjs可以tree-shaking吗？
 
 CommonJS 本身并不支持树摇（tree-shaking），。
@@ -451,12 +449,7 @@ localStorage.theme = 'dark'
 
 // Whenever the user explicitly chooses to respect the OS preference
 localStorage.removeItem('theme')
-
 ```
-
-
-
-
 
 
 
@@ -477,7 +470,6 @@ localStorage.removeItem('theme')
 
 * 异步输出题？ process.nextTrick 怎么实现的
 
-  
 
 ```tsx
 function printf(node) {

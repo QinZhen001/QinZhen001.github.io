@@ -1102,9 +1102,7 @@ git commit --amend -m "重新提交注释"
 
 原因是新建的文件在git中会有缓存，如果某些文件已经被纳入了版本管理中，就算是在.gitignore中已经声明了忽略路径也是不起作用的，这时候我们就应该先把本地缓存删除，然后再进行git的push，这样就不会出现忽略的文件了
 
-
-
-```
+```bash
 git rm -r --cached .
 git add .
 git commit -m 'update .gitignore'
@@ -1120,8 +1118,6 @@ git commit -m 'update .gitignore'
 
 [https://www.jianshu.com/p/3bc863b48f69](https://www.jianshu.com/p/3bc863b48f69)
 
-
-
 **这个问题出现的原因是提交文件的电脑上的git的email地址不是github上的email地址。**
 
 
@@ -1129,8 +1125,6 @@ git commit -m 'update .gitignore'
 
 
 我的做法是 git config --global user.email "youremail@email.com"   这里使用的是公司提供的邮箱 用于公司项目 gitlab上面提交
-
-
 
 在自己的github项目中
 
@@ -1146,10 +1140,6 @@ git commit -m 'update .gitignore'
 
 
 
-
-
-
-
 -----------------
 
 
@@ -1157,8 +1147,6 @@ git commit -m 'update .gitignore'
 
 
 [https://help.github.com/en/articles/changing-author-info](https://help.github.com/en/articles/changing-author-info)
-
-
 
 
 

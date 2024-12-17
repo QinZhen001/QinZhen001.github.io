@@ -1364,7 +1364,12 @@ export default ComponentB;
 
 Tree shaking是一种通过清除多余代码方式来优化项目打包体积的技术，专业术语叫 Dead code elimination
 
-`tree shaking`只能在静态`modules`下工作。`ECMAScript 6` 模块加载是静态的,因此整个依赖树可以被静态地推导出解析语法树。所以在 `ES6` 中使用 `tree shaking` 是非常容易的。
+tree shaking 生效的条件：
+
+- 使用 ES6 的模块语法 (`import` 和 `export`)，因为 CommonJS 的模块导入方式并不支持静态分析。
+- **在生产环境中构建（使用 `mode: 'production'`），因为开发模式下没有启动优化。**
+
+
 
 ### tree shaking 的原理
 
@@ -1606,11 +1611,7 @@ cross-env模块下，它划分出前后两个环境，后一句的环境没有�
 
 上面vendors会打包出来chunk-vendors，这个chunk会在首屏加载的时候就去加载(**提取了node_modules公共部分**)
 
-
-
 为了让vendors更加的小，我们可以吧不是首屏需要的一些巨大的三方库提取出来
-
-
 
 提取前的vendors (2.41mb parsed)
 
@@ -1666,8 +1667,6 @@ This release focus on the following:
 
 [https://webpack.js.org/blog/2020-10-10-webpack-5-release/#major-changes-long-term-caching](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#major-changes-long-term-caching)
 
-
-
 New algorithms were added for long term caching. These are enabled by default in production mode.  (生产模式的默认配置)
 
 ```
@@ -1679,8 +1678,6 @@ chunkIds: "deterministic"`
 The algorithms assign short (3 or 5 digits) numeric IDs to modules and chunks and short (2 characters) names to exports in a deterministic way. This is a trade-off between bundle size and long term caching.
 
 算法以确定的方式将短(3或5位数字)的数字id分配给模块和块，将短(2个字符)的名称分配给导出。这是捆绑包大小和长期缓存之间的权衡。
-
-
 
 [https://juejin.cn/post/6844903967793627149](https://juejin.cn/post/6844903967793627149)
 
@@ -1701,10 +1698,6 @@ The algorithms assign short (3 or 5 digits) numeric IDs to modules and chunks an
 
 
 
-
-
-
-
 ### Real Content Hash
 
 Webpack 5 will use a real hash of the file content when using [contenthash] now. Before it "only" used a hash of the internal structure. This can be positive impact on long term caching when only comments are changed or variables are renamed. These changes are not visible after minimizing.
@@ -1719,8 +1712,6 @@ Webpack 5将会在使用[contenthash]的时候使用一个真正的文件内容�
 
 [基于 MF 的组件化共享工作流](https://mp.weixin.qq.com/s?__biz=MzIxMzExMjYwOQ==&mid=2651899353&idx=1&sn=2d2b300da8c4a0b0554dff4c2fb7d7da&chksm=8c5fa797bb282e81a9592ede083a0ea3d7d0fafe24744dcb69ad872a17166a6d4d265ad4578b#rd)
 
-
-
 Webpack 5 adds a new feature called "Module Federation", which allows multiple webpack builds to work together. From runtime perspective modules from multiple builds will behave like a huge connected module graph. From developer perspective modules can be imported from specified remote builds and used with minimal restrictions.
 
 Webpack 5增加了一个名为“模块联合”的新特性，它允许多个Webpack构建一起工作。从运行时的角度来看，来自多个构建的模块将表现为一个巨大的连接模块图。从开发人员的角度来看，可以从指定的远程构建中导入模块，并以最小的限制使用它们。
@@ -1731,13 +1722,11 @@ webpack 5引入联邦模式是为了**更好的共享代码**。 在此之前，
 
 联邦模块和微前端的关系：因为expose这个属性即可以暴露单个组件，也可以把整个应用暴露出去。同时由于share属性存在，技术栈必须一致。所以加上路由，可以用来实现single-spa这种模式的微前端。
 
-使用场景：新建专门的组件应用服务来管理所有组件和应用，其他业务层只需要根据自己业务所需载入对应的组件和功能模块即可。模块管理统一管理，代码质量高，搭建速度快。特别适用矩阵app，或者可视化页面搭建等场景。
+使用场景：新建专门的组件应用服务来管理所有组件和应用，其他业务层只需要根据自己业务所需载入对应的组件和功能模块即可。模块管理统一管理，代码质量高，搭建速度快。**特别适用矩阵app，或者可视化页面搭建等场景。**
 
 
 
 ![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f716494c298941e5bcb4874256d83dba~tplv-k3u1fbpfcp-zoom-in-crop-mark:1304:0:0:0.awebp)
-
-
 
 MF 相对于 NPM 共享方式，有哪些优势？
 
@@ -1772,8 +1761,6 @@ Webpack 5支持所谓的“异步模块”。它们是不同步计算的模块�
 Importing them via `import` is automatically handled and no additional syntax is needed and difference is hardly notice-able.
 
 Importing them via `require()` will return a Promise that resolves to the exports.
-
-
 
 In webpack there are multiple ways to have async modules:
 
@@ -1836,8 +1823,6 @@ In this example, the export `b` can be removed in production mode.
 [https://webpack.docschina.org/guides/asset-modules/](https://webpack.docschina.org/guides/asset-modules/)
 
 资源模块(asset module)是一种模块类型，它允许使用资源文件（字体，图标等）而无需配置额外 loader。
-
-
 
 在 webpack 5 之前，通常使用：
 
@@ -1951,18 +1936,12 @@ In this example, the export `b` can be removed in production mode.
 
 启动`websocket`服务，可以建立服务器和浏览器之间的双向通信。当监听到本地代码发生改变时，主动向浏览器发送新`hash`以及`ok`字段。
 
-
-
 客户端`websocket`注册和服务端一样注册了两个事件：
 
 - `hash` : `webpack`重新编辑打包后的新`hash`值 。
 - `ok` : 进行`reloadApp`热更新检查 。
 
-
-
 HMR 成功与否的关键步骤，HotModulePlugin 将会对新旧模块进行对比，决定是否更新模块，在决定更新模块后，检查模块之间的依赖关系，更新模块的同时更新模块间的依赖引用。
-
-
 
 热更新会修改webpack.config.js的entry配置
 
@@ -2032,8 +2011,6 @@ function reloadApp() {
 - 对不同文件类型的依赖模块文件使用对应的`Loader`进行编译
 - 整个过程中`webpack`会通过发布订阅模式，向外抛出一些`hooks`，而`webpack`的插件即可通过监听这些关键的事件节点，执行插件任务进而达到干预输出结果的目的。
 
-
-
 其中文件的解析与构建是一个比较复杂的过程，在`webpack`源码中主要依赖于`compiler`和`compilation`两个核心对象实现。
 
 `compiler`对象是一个全局单例，他负责把控整个`webpack`打包的构建流程。 `compilation`对象是每一次构建的上下文对象，它包含了当次构建所需要的所有信息，每次热更新和重新构建，`compiler`都会重新生成一个新的`compilation`对象，负责此次更新的构建过程。
@@ -2044,11 +2021,7 @@ function reloadApp() {
 
 [https://segmentfault.com/a/1190000008521430](https://segmentfault.com/a/1190000008521430)
 
-
-
 不同文件中多次import同一个文件，webpack并不会多次打包，只会在打包后的文件中会多次引用打包后的该文件对应的函数。
-
-
 
 **关键点installedModules**
 
@@ -2114,8 +2087,6 @@ function reloadApp() {
 
 采用JSONP的思路，首先，将动态引入模块单独打成一个js文件；其次，在import执行时创建script标签传入src为引入模块地址；从而实现动态加载的效果，注意，JSONP必然是异步的，所以必须要结合Promise；
 
-
-
 ```
 import被转化成了__webpack_require__.e(/*! import() */ 0)
 ```
@@ -2125,8 +2096,6 @@ import被转化成了__webpack_require__.e(/*! import() */ 0)
 1. 根据 `installedChunks` 检查是否加载过该 **chunk**
 2. 假如没加载过，则发起一个 **`JSONP`** 请求去加载 **chunk**
 3. 设置一些请求的错误处理，然后返回一个 **Promise**。
-
-
 
 当 Promise 返回之后，就会继续执行我们之前的异步请求回调
 
@@ -2142,15 +2111,11 @@ __webpack_require__.e(/*! import() */ 0)
 
 promise已经resolve，此时异步模块的代码已经在`modules`上了，所以可以直接加载。
 
-
-
 **这里就有两个问题？**
 
 1. **`__webpack_require__` 是根据我们之前传入的 `modules` 来获取 `module` 的，但是，在 `__webpack_require__.e` 中并没有看到有对 `modules` 执行操作的代码。那 `modules` 到底是什么时候被更新的呢？**
 
 2. `promise` 把 `resolve` 和 `reject` 全部存入了 `installedChunks` 中， 并没有在获取异步chunk成功的`onload` 回调中执行 `resolve`，那么，`resolve` 是什么时候被执行的呢?
-
-
 
 上面两个问题 我们可以从**webpackJsonpCallback**找到答案
 

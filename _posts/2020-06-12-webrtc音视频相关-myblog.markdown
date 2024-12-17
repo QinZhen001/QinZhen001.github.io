@@ -581,6 +581,21 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 
 
+## ICE
+
+在WebRTC中，ICE指的是“Interactive Connectivity Establishment”。它是一种用于在网络中建立P2P（点对点）连接的框架，确保媒体和数据可以可靠地流动。ICE的主要功能是穿越NAT（网络地址转换）和防火墙，以便两个终端可以找到彼此并建立直接连接。
+
+ICE的工作流程包括以下几个步骤：
+
+1. **候选收集**：每个端点收集可用的网络地址（候选），这些可以是本地地址、STUN（Session Traversal Utilities for NAT）服务器提供的公共地址，或通过TURN（Traversal Using Relays around NAT）服务器获得的地址。
+2. **候选配对**：一旦候选被收集，ICE会尝试配对各自的候选，以确定哪一个组合能成功建立连接。
+3. **连接测试**：通过选定的候选进行连接测试，以确保双方能够顺利通信。
+4. **最终连接**：一旦确定了可以成功的候选对，ICE会使用这些地址来建立和维持P2P连接。
+
+通过ICE，WebRTC能够克服网络中的各种障碍，确保音频、视频和数据的可靠传输。
+
+
+
 ## [信令服务器](https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling#信令服务器)
 
 两个设备之间建立 WebRTC 连接需要一个**信令服务器**来实现双方通过网络进行连接。信令服务器的作用是作为一个中间人帮助双方在尽可能少的暴露隐私的情况下建立连接。
