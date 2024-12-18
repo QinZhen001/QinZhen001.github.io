@@ -328,3 +328,25 @@ Sitemap: http://www.vi586.com/sitemap.html
  a technology that enables developers to create web pages that load faster on mobile devices – at the cost of building and maintaining them over time.
 
 该技术使开发人员能够创建在移动设备上加载速度更快的网页，但代价是随着时间的推移构建和维护它们。
+
+
+
+
+
+# 补充
+
+
+
+## Google Search Console
+
+[https://www.youtube.com/watch?v=Pe_-TkdbXN0](https://www.youtube.com/watch?v=Pe_-TkdbXN0)
+
+
+
+
+
+## 富媒体搜索
+
+富媒体搜索结果是指我们在各种 Google 平台（例如 Google 搜索）上提供的超越了普通蓝色链接的用户体验。这类搜索结果可能包括轮换展示内容、图片以及其他非文字元素。
+
+[https://search.google.com/test/rich-results](https://search.google.com/test/rich-results)

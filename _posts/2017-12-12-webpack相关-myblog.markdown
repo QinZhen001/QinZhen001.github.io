@@ -1934,7 +1934,7 @@ In this example, the export `b` can be removed in production mode.
 
 [https://juejin.cn/post/6844904008432222215#heading-0](https://juejin.cn/post/6844904008432222215#heading-0)
 
-启动`websocket`服务，可以建立服务器和浏览器之间的双向通信。当监听到本地代码发生改变时，主动向浏览器发送新`hash`以及`ok`字段。
+目前所有的打包工具实现热更新的思路都大同小异：主要是通过`WebSocket`创建浏览器和服务器的通信监听文件的改变，当文件被修改时，服务端发送消息通知客户端修改相应的代码，客户端对应不同的文件进行不同的操作的更新。
 
 客户端`websocket`注册和服务端一样注册了两个事件：
 

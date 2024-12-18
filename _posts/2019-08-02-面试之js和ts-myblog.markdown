@@ -3407,7 +3407,7 @@ function foo() {
 它们有两个重大差异。
 
 * CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
-* CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
+* **ES Module**：是静态加载的，意味着在编译阶段就能确定模块的依赖关系。这使得ES Module支持更好的优化（例如 tree-shaking）。**CommonJS**：是动态加载的，模块是在运行时加载的。这可能会导致性能问题，因为依赖关系是在执行时解析的。
 
  **esm 的 import read-only 特性**
 
