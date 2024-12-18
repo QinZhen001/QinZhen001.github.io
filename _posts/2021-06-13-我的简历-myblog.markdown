@@ -293,57 +293,19 @@ Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RA
 
 # 英语自我介绍
 
- Hello! My name is Qinzhen. 
-
-I am  twenty-eight years old and I come from GuangZhou.
-
-six years of experience in software engineering and development
-
-I am proficient in [Languages or Technical Skills], which I believe will be useful in this role. In my free time, I enjoy [Your Hobbies or Interests], which helps me stay creative and focused.
-
-I am really excited about the opportunity to work with [Company Name] and contribute to [specific goals or values of the company]. Thank you for giving me the chance to introduce myself!”
-
-
-
-of Core JavaScript, webdevelopment, rich experience using main JavaScri
-pt framework(s)such as React, Vue.is, 
-Experienced in implementing high-quality solutions utilizing OOP/FP principles and Agile Development
-
-Fulfilled key developer
-
-live broadcast/RTC
-
-Familiar with audio and video protocols such a
-S RTMP, RTP, H264
-
-
-
 你好！我叫qinzhen，我今年28岁，我有着6年前端相关开发经验。我掌握 html/css/js/ts 相关知识，掌握主要的前端框架，像是 React, Vue.is，了解 web rtc，了解音视频相关知识，了解后端开发相关知识:，例如go/nginx/docker等。在过去的三年半时间里，我在agora担任前端开发工程师的岗位，主要负责rtc相关的web场景的开发，如在线教育，在线会议，在线ktv等。Agora是一家美国上市的公司，是实时音视频云计算PaaS平台服务提供商，在agora之前，我在一家名为星火教育的教育机构主要负责B端相关业务的开发，呆了大概一年多，开发了一些如一些CRM/OP 管理后台等。这就是我的基本介绍，谢谢！
 
 
 
+Hello! My name is Qinzhen, and I'm 29 years old. I've been working in front-end development for six years now, and I’ve accumulated a solid(/ˈsɑː.lɪd/) skill set along the way. I’m well-versed in HTML, CSS, JavaScript, and TypeScript, and I have a good grasp( */ɡræsp*/) of major frameworks like React and Vue.js. I also have some understanding of WebRTC and audio/video technologies, which has been quite useful in my projects. On top of that, I have some knowledge of back-end development tools like Node.js, Go, Nginx, and Docker.
 
+For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke! It’s been an exciting journey(/ˈdʒɜː.ni/), and I’ve enjoyed the challenges and learning experiences that come with building applications that facilitate(/fəˈsɪlɪteɪt/) real-time interactions.
 
-**Introduction to Qinzhen: A Front-End Developer**
+Before joining Agora, I worked at a company called Xinghuo Education, where I was mainly involved in developing B2B solutions. My work there included creating CRM systems and operational management(ˈmanijmənt) dashboards. This experience gave me a solid(/ˈsɑː.lɪd/) foundation in understanding the needs of businesses.
 
-Hello! My name is Qinzhen, and I am 29 years old. I've been working in front-end development for six years now, and I’ve accumulated a solid(ˈsäləd) skill set along the way. I’m well-versed in HTML, CSS, JavaScript, and TypeScript, and I have a good grasp of major front-end frameworks like React and Vue.js. I also have some understanding of WebRTC and audio/video technologies, which has been quite useful in my projects. On top of that, I have some knowledge of back-end development tools like Node.js, Go, Nginx, and Docker.
+In summary,  I’m passionate(/ˈpæʃ.ən.ət) about what I do, and I’m always looking for new challenges and opportunities to grow. Thank you for taking the time to get to know me!
 
-For the past three and a half years, I’ve been working as a front-end developer at Agora, which is a publicly traded company in the United States. Agora specializes in real-time audio and video cloud computing services, and my main focus has been on developing web applications for various(ˈverēəs) RTC (Real-Time Communication) scenarios. This includes exciting projects like online education platforms, virtual meetings, and even online karaoke sessions! It’s been a blast working on projects that connect people in real-time.
-
-Before joining Agora, I spent a little over a year at a company called Xinghuo Education, where I was mainly involved in developing B2B solutions. My work there included creating CRM systems and operational management dashboards. This experience gave me a solid foundation in understanding the needs of businesses and how to build effective tools to meet those needs.
-
-So that’s a bit about me! I’m passionate about what I do and always eager to learn more. Thanks for taking the time to read my introduction!
-
+---
 
 
 
-
-
-
-Hello! My name is Qinzhen, and I'm 28 years old. I've been working in front-end development for six years now, and I’ve accumulated a solid skill set along the way. I’m well-versed in HTML, CSS, JavaScript, and TypeScript, and I have a good grasp of major front-end frameworks like React and Vue.js. I also have some understanding of WebRTC and audio/video technologies, which has been quite useful in my projects. On top of that, I have some knowledge of back-end development tools like Go, Nginx, and Docker.
-
-For the past three and a half years, I’ve been working as a front-end developer at Agora, where my primary focus has been on developing web applications for real-time communication (RTC). This includes a variety of online scenarios like online education, virtual meetings, and even online karaoke! It’s been an exciting journey, and I’ve enjoyed the challenges and learning experiences that come with building applications that facilitate real-time interactions.
-
-Before joining Agora, I worked at a company called Xinghuo Education, where I was mainly involved in developing B2B solutions. My work there included creating CRM systems and operational management dashboards. This experience gave me a solid foundation in understanding the needs of businesses and how to build effective tools to meet those needs.
-
-In summary, my background is a blend of front-end expertise and some knowledge of back-end technologies, all aimed at creating engaging and functional web applications. I’m passionate about what I do, and I’m always looking for new challenges and opportunities to grow. Thank you for taking the time to get to know me!

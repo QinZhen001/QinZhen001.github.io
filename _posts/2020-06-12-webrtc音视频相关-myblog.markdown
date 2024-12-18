@@ -61,10 +61,6 @@ new MediaStream([audioMediaStreamTrack]
 
 
 
-
-
-
-
 ## MediaRecorder
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaRecorder)
@@ -966,7 +962,14 @@ a free, open source, and cross-platform media player
 
 # ffmpeg
 
+FFmpeg 是一个开源的多媒体处理工具，可以用来录制、转换和流式传输音频和视频。它支持几乎所有的音视频格式，使得用户能够执行各种操作，比如：
 
+- **转换格式**：将视频或音频文件转换为不同的格式。
+- **剪辑和合并**：剪切视频片段或将多个视频合并成一个。
+- **处理音频**：调整音频的比特率、频道数、采样率等。
+- **提取音频**：从视频文件中提取音频轨道。
+
+FFmpeg 通常通过命令行接口使用，非常灵活，适合各种应用场景。它也为其他多媒体应用提供了库和工具，比如libavcodec、libavformat等。
 
 
 
@@ -1081,8 +1084,6 @@ const file = await fetchFile(mp4Src)
     audioRef2.current.load()
 ```
 
-
-
 验证完成：
 
 * 提取出来数据 ArrayBuffer  => Blob  =>  ObjectURL  =>  audio tag => 播放成功
@@ -1159,10 +1160,6 @@ RTMP协议包括两个部分：RTMP和RTMPT。
 - RTMPT（Real-Time Messaging Protocol over HTTP Tunneling）是通过HTTP隧道使用RTMP协议的版本。它将RTMP的数据包封装在HTTP请求中，可以通过HTTP端口进行传输，因此可以绕过防火墙和代理服务器的限制。
 
 RTMP协议广泛应用于流媒体领域，例如用于视频直播、音视频会议、在线游戏等。它具有低延迟、高可靠性和良好的扩展性等特点，适用于多种不同的网络环境。
-
-
-
-
 
 它有三种变种：
 
