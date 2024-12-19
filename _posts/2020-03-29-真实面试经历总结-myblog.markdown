@@ -3139,6 +3139,122 @@ WebSocket 是通过 HTTP 协议进行“升级”的。在建立连接时，客�
 
 * go(语言本身支持编译成 WebAssembly)  =>   GOARCH=wasm GOOS=js go build -o main.wasm main.go
 
+
+
+### TME 腾讯音乐三面
+
+基础：
+
+* http每一代的特点 （http3的特性）
+* 缓存机制 （协商缓存/强缓存）
+* 网页从url输入到渲染
+* 网站安全问题 （csrf/xss）
+* token 生成 （jwt）
+
+项目：
+
+* 如何评价一个网站性能 （performance/memory内存）
+* 做过哪些性能优化 （业务代码/开发性能/工作流/用户 视角）
+* 首帧出图 (300ms)
+
+算法
+
+在一个复杂数组中去重另外一个复杂数组：
+
+```ts
+// 思路：
+// 遍历数组1 如果是简单数据直接查找是否存在数组2中,如果是复杂数据逐一和数组2中的复杂数据进行深比较
+
+function deepEqual(item1, item2) {
+  if (item1 instanceof Array && item2 instanceof Array) {
+    // 数组
+    if (item1.length != item2.length) {
+      return false;
+    }
+    return item1.every((item, index) => {
+      return deepEqual(item, item2[index]);
+    });
+  } else if (item1 instanceof Object && item2 instanceof Object) {
+    // 对象
+    if (Object.keys(item1).length != Object.keys(item2).length) {
+      return false;
+    }
+    return Object.keys(item1).every((key) => {
+      return deepEqual(item1[key], item2[key]);
+    });
+  } else {
+    // 简单数据
+    return item1 == item2;
+  }
+}
+
+function removeDuplicate(arr1, arr2) {
+  let res = [];
+  for (let item1 of arr1) {
+    if (typeof item1 == 'object' && item1 != null) {
+      // 复杂数据
+      for (let item2 of arr2) {
+        if (typeof item2 == 'object' && item2 != null) {
+          if (deepEqual(item1, item2)) {
+            res.push(item1);
+            break;
+          }
+        }
+      }
+    } else {
+      // 简单数据
+      if (!arr2.includes(item1)) {
+        res.push(item1);
+      }
+    }
+  }
+
+  return res;
+}
+```
+
+测试：
+
+```ts
+const arr1 = [
+  1,
+  2,
+  {
+    aa: 'aaa',
+    bb: [2, 4, 5],
+    cc: {
+      dd: 'dd',
+    },
+  },
+  [4, 5, [6, 7]],
+  8,
+];
+
+const arr2 = [
+  3,
+  2,
+  {
+    aa: 'aaa',
+    bb: [2, 4, 5],
+    cc: {
+      dd: 'dd',
+    },
+  },
+  [4, 5, [8, 7]],
+  7,
+];
+
+const res = removeDuplicate(arr1, arr2);
+```
+
+
+
+
+
+
+
+
+
 # 中小厂 
 
 
