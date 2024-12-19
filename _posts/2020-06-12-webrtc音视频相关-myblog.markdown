@@ -335,8 +335,6 @@ BaseAudioContext 接口的 currentTime 只读属性返回一个双精度值，�
 
 
 
-
-
 ### createMediaStreamSource
 
 [https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource)
@@ -581,6 +579,8 @@ MediaStream允许浏览器捕获和处理音频和视频流，并将其发送到
 
 在WebRTC中，ICE指的是“Interactive Connectivity Establishment”。它是一种用于在网络中建立P2P（点对点）连接的框架，确保媒体和数据可以可靠地流动。ICE的主要功能是穿越NAT（网络地址转换）和防火墙，以便两个终端可以找到彼此并建立直接连接。
 
+**ICE (Interactive Connecctivity Establishment, 交互式连接建立)**，ICE 不是一种协议，而是整合了 STUN 和 TURN 两种协议的框架。其中**STUN(Sesssion Traversal Utilities for NAT, NAT 会话穿越应用程序)**，它允许位于 NAT（或多重 NAT）后的客户端找出自己对应的公网 IP 地址和端口，也就是俗称的“打洞”。
+
 ICE的工作流程包括以下几个步骤：
 
 1. **候选收集**：每个端点收集可用的网络地址（候选），这些可以是本地地址、STUN（Session Traversal Utilities for NAT）服务器提供的公共地址，或通过TURN（Traversal Using Relays around NAT）服务器获得的地址。
@@ -588,7 +588,19 @@ ICE的工作流程包括以下几个步骤：
 3. **连接测试**：通过选定的候选进行连接测试，以确保双方能够顺利通信。
 4. **最终连接**：一旦确定了可以成功的候选对，ICE会使用这些地址来建立和维持P2P连接。
 
-通过ICE，WebRTC能够克服网络中的各种障碍，确保音频、视频和数据的可靠传输。
+在 WebRTC 中有三种类型的 ICE 候选者，它们分别是：
+
+- 主机候选者
+- 反射候选者
+- 中继候选者
+
+**主机候选者**，表示的是本地局域网内的 IP 地址及端口。它是三个候选者中优先级最高的，也就是说在 WebRTC 底层，首先会尝试本地局域网内建立连接。
+
+**反射候选者**，表示的是获取 NAT 内主机的外网 IP 地址和端口。其优先级低于 主机候选者。也就是说当 WebRTC 尝试本地连接不通时，会尝试通过反射候选者获得的 IP 地址和端口进行连接。
+
+**中继候选者**，表示的是中继服务器的 IP 地址与端口，即通过服务器中转媒体数据。当 WebRTC 客户端通信双方无法穿越 P2P NAT 时，为了保证双方可以正常通讯，此时只能通过服务器中转来保证服务质量了。
+
+**通过 ICE，WebRTC 能够高效地处理 NAT 问题，确保可靠的 P2P 连接建立和音视频流传输。这一机制使得 WebRTC 在各种网络环境下具备了更强的适应能力。**
 
 
 
@@ -662,35 +674,7 @@ STUN 和 TURN 协议是 WebRTC 实现实时通信的基础，STUN 主要用于�
 
 
 
-## **ICE**
 
-**ICE (Interactive Connecctivity Establishment, 交互式连接建立)**，ICE 不是一种协议，而是整合了 STUN 和 TURN 两种协议的框架。其中**STUN(Sesssion Traversal Utilities for NAT, NAT 会话穿越应用程序)**，它允许位于 NAT（或多重 NAT）后的客户端找出自己对应的公网 IP 地址和端口，也就是俗称的“打洞”。但是，如果 NAT 类型是对称型的话，那么就无法打洞成功。这时候 TURN 就派上用场了，**TURN**(Traversal USing Replays around NAT)是 STUN/RFC5389 的一个拓展协议在其基础上添加了 Replay(中继)功能，简单来说其目的就是解决对称 NAT 无法穿越的问题，在 STUN 分配公网 IP 失败后，可以通过 TURN 服务器请求公网 IP 地址作为中继地址。
-
-在 WebRTC 中有三种类型的 ICE 候选者，它们分别是：
-
-- 主机候选者
-- 反射候选者
-- 中继候选者
-
-**主机候选者**，表示的是本地局域网内的 IP 地址及端口。它是三个候选者中优先级最高的，也就是说在 WebRTC 底层，首先会尝试本地局域网内建立连接。
-
-**反射候选者**，表示的是获取 NAT 内主机的外网 IP 地址和端口。其优先级低于 主机候选者。也就是说当 WebRTC 尝试本地连接不通时，会尝试通过反射候选者获得的 IP 地址和端口进行连接。
-
-**中继候选者**，表示的是中继服务器的 IP 地址与端口，即通过服务器中转媒体数据。当 WebRTC 客户端通信双方无法穿越 P2P NAT 时，为了保证双方可以正常通讯，此时只能通过服务器中转来保证服务质量了。
-
-ICE 组件
-
-ICE 由以下几个主要部分组成：
-
-- **候选地址（Candidate）**：候选地址是可以用于建立连接的网络地址，包括：
-  - **主机候选（Host candidates）**：直接来自终端设备的 IP 地址和端口。
-  - **反向代理候选（Server reflexive candidates）**：使用 STUN 服务器获取的公共 IP 地址和端口。
-  - **中继候选（Relay candidates）**：通过 TURN 服务器获取的地址，适用于 NAT 环境复杂的情况。
-- **ICE Agent**：ICE 的主要执行逻辑，负责收集候选地址、处理连接建立过程，并管理候选优先级。
-
-总结：
-
-**通过 ICE，WebRTC 能够高效地处理 NAT 问题，确保可靠的 P2P 连接建立和音视频流传输。这一机制使得 WebRTC 在各种网络环境下具备了更强的适应能力。**
 
 
 
@@ -1319,7 +1303,7 @@ clipAudio(audioBuffer,duration,startOffset = 0){
 
 ### WAV
 
-WAV可以在mac 和 网页上进行播放。
+WAV可以在mac和网页上进行播放。
 
 请注意，不是所有的浏览器都支持播放WAV文件。在某些情况下，您可能需要将WAV文件转换为其他格式（例如MP3或OGG），以确保在各种浏览器中的兼容性。
 
@@ -1723,8 +1707,6 @@ H.264 和 AAC，可以被封装成 MP4 或 FLV。但是 Chrome 只能播放前�
 #### 硬编解码
 
 通过硬件实现编解码，减轻CPU计算的负担，如GPU等
-
-
 
 #### 软编解码
 
