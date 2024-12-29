@@ -25,8 +25,6 @@ babel 6 存在的问题
 - 只能转成 es5，那目标环境支持一些 es6 特性了，那这些转换和 polyfill 岂不是无用功？ 而且还增加了产物的体积。
 - polyfill 手动引入，比较麻烦，有没有更好的方式
 
-
-
 babel 7 如何解决：
 
 babel 7 废弃了 preset-20xx 和 preset-stage-x 的 preset 包，而换成了 preset-env，preset-env 默认会支持所有 es 标准的特性，如果没进入标准的，不再封装成 preset，需要手动指定 plugin-proposal-xxx。
@@ -41,6 +39,8 @@ babel 7 废弃了 preset-20xx 和 preset-stage-x 的 preset 包，而换成了 p
 ## 正文
 
 [https://www.jianshu.com/p/cbd48919a0cc](https://www.jianshu.com/p/cbd48919a0cc)
+
+[一文搞懂 core-js@3、@babel/polyfill、@babel/runtime、@babel/runtime-corejs3 的作用与区别](https://juejin.cn/post/7062621128229355528)
 
 
 * @babel/cli
@@ -60,12 +60,10 @@ babel 7 废弃了 preset-20xx 和 preset-stage-x 的 preset 包，而换成了 p
 
 @babel/cli是babel提供的内建的命令行工具，主要是提供babel这个命令来对js文件进行编译，这里要注意它与另一个命令行工具@babel/node的区别，首先要知道他们二者都是命令行工具，但是官方文档明确对他们定义了他们各自的使用范围：
 
-
 **@babel/cli 是一个适合安装在本地项目里，而不是全局安装**
 
 
 >While you can install Babel CLI globally on your machine, it's much better to install it locally project by project.
-
 
 **@babel/node 跟node cli类似，不适用在产品中，意味着适合全局安装**
 
@@ -135,8 +133,6 @@ That is correct, the `preset-` piece is optional. Since you are doing
 - 宿主环境的粒度。根据不同宿主环境将该环境下所需的所有特性打包
 - 按使用情况的粒度。仅仅将使用了的特性打包
 
-
-
 那么我们在安装了@babel/preset-env，并且在.babelrc中配置了@babel/preset-env之后
 
 
@@ -154,8 +150,6 @@ That is correct, the `preset-` piece is optional. Since you are doing
   ]
 }
 ```
-
-
 
 当然这里的targets参数配置除了可以设置node环境外，还可以设置针对各个浏览器环境的配置，例如
 
@@ -179,8 +173,6 @@ findIndex方法和padStart方法，这两个方法作为es6提出的新方法，
 
 >引用别人的一段理解：解释的很好
 >babel 编译过程处理第一种情况 - 统一语法的形态，通常是高版本语法编译成低版本的，比如 ES6 语法编译成 ES5 或 ES3。而 babel-polyfill 处理第二种情况 - 让目标浏览器支持所有特性，不管它是全局的，还是原型的，或是其它。这样，通过 babel-polyfill，不同浏览器在特性支持上就站到同一起跑线。
->
->
 
 
 >我对polyfill的理解：polyfill我们又称垫片，见名知意，所谓垫片也就是垫平不同浏览器或者不同环境下的差异，因为有的环境支持这个函数，有的环境不支持这种函数，解决的是有与没有的问题，这个是靠单纯的@babel/preset-env不能解决的，因为@babel/preset-env解决的是将高版本写法转化成低版本写法的问题，因为不同环境下低版本的写法有可能不同而已。
@@ -195,9 +187,25 @@ findIndex方法和padStart方法，这两个方法作为es6提出的新方法，
 
 **useBuiltIns 就是使用 polyfill （corejs）的方式，是在入口处全部引入（entry），还是每个文件引入用到的（usage），或者不引入（false）。**
 
+entry:
+
+- **用法**: 当你将 `useBuiltIns` 设置为 `entry` 时，Babel 会要求你在应用程序的入口文件中显式地导入 `core-js` 库中的 polyfills，如 `import "core-js/stable";` 和 `import "regenerator-runtime/runtime";`。
+- 特点
+  - 可以提前加载所有需要的 polyfills。
+  - 较为适合于较大或较复杂的应用。
+  - 需要手动导入 polyfills。
+
+usage:
+
+- **用法**: 如果将 `useBuiltIns` 设置为 `usage`，Babel 会自动根据代码中使用的特性来包含所需的 polyfills。这意味着只会引入实际用到的部分。
+- 特点
+  - 更加自动化和简便，无需手动引入 polyfills。
+  - 可以减少最终生成代码的大小，因为只包含所需的 polyfills。
+  - 适合在代码量较小或不确定具体使用了哪些特性时使用。
+
+
+
 当值为 `entry` 时，Babel 会将 `import"@babel/polyfill"` 或者 `require("@babel/polyfill")` 语句根据我们指定的环境配置替换为单个的 polyfill require。
-
-
 
 如将
 
@@ -212,8 +220,6 @@ import "core-js/modules/es7.string.pad-start";
 import "core-js/modules/es7.string.pad-end";
 ```
 
-
-
 注意：
 
 **polyfill 机制是，对于例如 Array.from 等静态方法，直接在 global.Array 上添加 （添加在全局，造成全局变量污染）**
@@ -226,8 +232,6 @@ import "core-js/modules/es7.string.pad-end";
 ####  targets 
 
 `string | Array | { [string]: string }`，默认为`{}`。
-
-
 
 ```json
 {
@@ -297,6 +301,14 @@ execute all script tags with type `text/babel` or `text/jsx`:
 
 
 
+### @babel/plugin-transform-runtime
+
+[https://babeljs.io/docs/babel-plugin-transform-runtime#options](https://babeljs.io/docs/babel-plugin-transform-runtime#options)
+
+A plugin that enables the re-use of Babel's injected helper code to save on codesize.
+
+**避免全局污染**：通过使用这个插件，Babel 生成的代码不会将辅助函数添加到全局作用域中，减少了潜在的命名冲突。
+
 
 
 ### @babel/polyfill
@@ -306,8 +318,6 @@ execute all script tags with type `text/babel` or `text/jsx`:
 `@babel/polyfill`可以看作是：`core-js`加`regenerator-runtime`。
 
 regenerator-runtime是generator以及async/await的运行时依赖
-
-
 
 单独使用`@babel/polyfill`会将`core-js`全量导入，造成项目打包体积过大。
 
@@ -339,19 +349,15 @@ regenerator-runtime是generator以及async/await的运行时依赖
 
 2 号主版本的 `core-js` 只支持全局变量（如 `Promise` ）和静态属性（如 `Array.from` ），不支持实例属性（如 `Array.prototype.includes` ）。
 
-
-
 * **@babel/runtime-corejs3**
 
 它是 `@babel/runtime` 的升级版，它不仅仅包含 `@babel/runtime` 的所有内容，还包含 3 号主版本的 `core-js` 。
 
 3 号主版本的 `core-js` 不仅支持全局变量（如 `Promise` ）和静态属性（如 `Array.from` ），还支持实例属性（如 `Array.prototype.includes` ）。
 
-
-
 **和corejs的区别**
 
-使用 `core-js@3` 来 polyfill，会全局引入缺少的 API，例如 `require("core-js/modules/es.promise.js")`。有时候开发工具库，希望避免 polyfill 污染全局变量。这时候可以不使用  `core-js@3` 来 polyfill，转而使用 `@babel/runtime-corejs3`，`@babel/runtime-corejs3` 相当于 `@babel/runtime` + 不污染环境的 `core-js@3`。
+使用 `core-js@3` 来 polyfill，会全局引入缺少的 API，例如 `require("core-js/modules/es.promise.js")`。有时候开发工具库，希望避免 polyfill 污染全局变量。**这时候可以不使用  `core-js@3` 来 polyfill，转而使用 `@babel/runtime-corejs3`，`@babel/runtime-corejs3` 相当于 `@babel/runtime` + 不污染环境的 `core-js@3`。**
 
 
 

@@ -295,17 +295,17 @@ Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RA
 
 你好！我叫qinzhen，我今年28岁，我有着6年前端相关开发经验。我掌握 html/css/js/ts 相关知识，掌握主要的前端框架，像是 React, Vue.is，了解 web rtc，了解音视频相关知识，了解后端开发相关知识:，例如go/nginx/docker等。在过去的三年半时间里，我在agora担任前端开发工程师的岗位，主要负责rtc相关的web场景的开发，如在线教育，在线会议，在线ktv等。Agora是一家美国上市的公司，是实时音视频云计算PaaS平台服务提供商，在agora之前，我在一家名为星火教育的教育机构主要负责B端相关业务的开发，呆了大概一年多，开发了一些如一些CRM/OP 管理后台等。这就是我的基本介绍，谢谢！
 
-
+---
 
 Hello! My name is Qinzhen, and I'm 29 years old. I've been working in front-end development for six years now, and I’ve accumulated a solid(/ˈsɑː.lɪd/) skill set along the way. I’m well-versed in HTML, CSS, JavaScript, and TypeScript, and I have a good grasp( */ɡræsp*/) of major frameworks like React and Vue.js. I also have some understanding of WebRTC and audio/video technologies, which has been quite useful in my projects. On top of that, I have some knowledge of back-end development tools like Node.js, Go, Nginx, and Docker.
 
-For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke! It’s been an exciting journey(/ˈdʒɜː.ni/), and I’ve enjoyed the challenges and learning experiences that come with building applications that facilitate(/fəˈsɪlɪteɪt/) real-time interactions.
+For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke! 
 
 Before joining Agora, I worked at a company called Xinghuo Education, where I was mainly involved in developing B2B solutions. My work there included creating CRM systems and operational management(ˈmanijmənt) dashboards. This experience gave me a solid(/ˈsɑː.lɪd/) foundation in understanding the needs of businesses.
 
 In summary,  I’m passionate(/ˈpæʃ.ən.ət) about what I do, and I’m always looking for new challenges and opportunities to grow. Thank you for taking the time to get to know me!
 
----
+
 
 
 

@@ -459,8 +459,6 @@ svelte 把框架的抽象都从运行时前移到了编译期进行处理，提�
 
 
 
-
-
 ## getServerSideProps 和 getStaticProps
 
 - **`getServerSideProps`**：用于每次请求时都需要获取最新数据的页面，适合动态内容和需要实时数据的场景。

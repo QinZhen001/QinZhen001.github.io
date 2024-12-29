@@ -5199,6 +5199,85 @@ console.log(res);
 
 
 
+## EPAM 亿磐
+
+
+
+### 一面
+
+基础：
+
+* this指向有几种 （new/显式/隐式）
+* **Promise any vs race 区别**  =>   forEach可以串行执行Promise数组吗？(不行，使用for-of)   =>  Promise 实现原理 (@babel/polyfill里面实现了 core-js里面实现了)
+* error 捕获和处理
+* https 建立连接的过程 （对称加密和非对称加密）
+* 输入url到页面最终渲染的过程
+* 如何使元素垂直居中 =>  如果是flex实现的需要设置哪些值
+* 网站安全问题有哪些 =>  如何防范
+* 什么是闭包 =>  闭包的危害
+* Even Loop => js长任务如何打断
+* 什么是virtual dom =>  它的优势是？
+* html5 新增了什么  （新语义元素header/footer/article，表单控件的改进，多媒体支持audio/video）
+*  context 和 全局状态管理库的区别 => 什么时候用context 什么时候用全局状态管理库 => context的缺点
+
+其他：
+
+* 瀑布式开发(Waterfall) 和敏捷开发的区别
+* 函数式编程（FP）和面向对象编程（OOP）区别 =>  什么是纯函数
+* git rebase 和 merge 的区别
+* 当提交了5个记录中间三个记录是错误的怎么处理   （git cherry-pick）
+* 日常工作 （版本迭代/需求评审/工作安排）
+* 测试工作  项目中除了单元测试还有做了哪些测试（QA功能测试/实验室音视频质量测试/npm sdk集成测试）=>  单元测试的覆盖率 （80-85） 谁定的指标 什么依据
+
+算法：
+
+* 去重字符串中的重复子字符串
+* 写一个可以获取url中具体query值的函数
+
+---
+
+```tsx
+// 去重字符串中的重复子字符串
+function removeDuplicate(str) {
+  let result = '';
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] !== str[i + 1]) {
+      result += str[i];
+    }
+  }
+  return result;
+}
+```
+
+```tsx
+// "asdddvevfffxxxo" => "asdvevfxo"
+let str = 'asdddvevfffxxxo';
+const res = removeDuplicate(str);
+console.log('res', res);
+```
+
+---
+
+```tsx
+// 写一个可以获取url中具体query值的函数
+function getQuery(url, name) {
+  const search = url.split('?')[1];
+  if (search) {
+    const arr = search.split('&');
+    for (let i = 0; i < arr.length; i++) {
+      const item = arr[i].split('=');
+      if (item[0] === name) {
+        return item[1];
+      }
+    }
+  }
+}
+
+const url = 'http://www.baidu.com?name=123&age=456';
+const res = getQuery(url, 'name');
+console.log('res', res);
+```
+
 
 
 
@@ -5210,8 +5289,6 @@ console.log(res);
 # 补充
 
 **在面试过程中的手写题，只需要写出核心算法，也就是题目考点，其他无关紧要的东西（如：边界判断）可以暂时先不写，这样做可以节省很多时间，之后等面试官提示后在去完善答案。**
-
-
 
 **后端能力 和 英语能力 格外的重要**
 
@@ -5294,3 +5371,10 @@ hr会根据你的毕业年限来压你的薪资，这也是没有办法的事情
 
 ## 2023
 
+苟在声网的一年，业务平淡，公司动荡，未来迷茫，公司失去长期目标，转为拉客户打价格战。技术上居安思危，保持成长，不断研究一些东西。
+
+
+
+## 2024
+
+苟在声网，声网常年亏损，业务收缩，还是逃不过年底的裁员一刀，拿了大礼包休息一个月，12月开始面试，12月底拿到腾讯TME和一些小厂offer，整体大环境还是差，依旧寒冬。

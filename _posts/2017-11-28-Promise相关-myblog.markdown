@@ -167,7 +167,9 @@ runAsync1()
 异步任务3执行完成
 随便什么数据3
 
-### Promise.prototype.then() VS Promise.prototype.catch()
+
+
+### then vs catch
 
 [https://www.zhihu.com/question/48765053](https://www.zhihu.com/question/48765053)
 
@@ -190,15 +192,9 @@ promise.then(
 )
 ```
 
-
-
 Promise.prototype.catch()实际上等于 [`Promise.prototype.then(undefined, onRejected)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then)
 
-
-
 Promise.prototype.catch()返回的也是一个Promise
-
-
 
 举个例子：
 
@@ -224,6 +220,56 @@ function test(res) {
 
 test('hello');
 ```
+
+
+
+### any vs race
+
+Promise.any()
+
+**功能**：`Promise.any()` 返回一个 Promise，当其中至少有一个 Promise 变为 fulfilled（成功）时，它将该 Promise 的值作为 fulfilled 的结果。如果所有 Promise 都被 rejected（失败），则返回一个 rejected Promise，包含一个 `AggregateError`，这个错误对象包含所有失败 Promise 的错误信息。
+
+```tsx
+const promise1 = Promise.reject('Error 1');
+const promise2 = Promise.resolve('Success!');
+const promise3 = Promise.reject('Error 2');
+
+Promise.any([promise1, promise2, promise3])
+  .then((value) => {
+    console.log(value); // 输出: 'Success!'
+  })
+  .catch((error) => {
+    console.error(error); // 不会被执行，因为有成功的 Promise
+  });
+```
+
+Promise.race()   竞速
+
+**功能**：`Promise.race()` 返回一个 Promise，这个 Promise 只有在输入的 Promise 中任何一个 Promise 变为 fulfilled 或 rejected 时，它才会变为 fulfilled 或 rejected，返回的是第一个变化的 Promise 的结果。
+
+```tsx
+const promise1 = new Promise((resolve, reject) => {  
+  setTimeout(() => resolve('First'), 100);  
+});  
+const promise2 = new Promise((resolve, reject) => {  
+  setTimeout(() => reject('Second'), 50);  
+});  
+
+Promise.race([promise1, promise2])  
+  .then(value => {  
+    console.log(value); // 输出: 'First'，因为 promise1 是第一个 fulfilled  
+  })  
+  .catch(error => {  
+    console.error(error); // 输出: 'Second'，因为 promise2 是第一个 rejected  
+  });  
+```
+
+总结
+
+- `Promise.any()` 只关注 fulfilled 状态，如果有成功的 Promise，它会返回该成功的值。只有在所有 Promise 都失败时才会返回错误。
+- `Promise.race()` 会立即返回第一个完成的 Promise，无论是 fulfilled 还是 rejected。
+
+
 
 
 
@@ -282,19 +328,12 @@ Promise.resolve(theanable);
 
 ### 一个promise依赖另外一个
 
-
 [http://es6.ruanyifeng.com/#docs/promise](http://es6.ruanyifeng.com/#docs/promise)
-
-
 
 resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例，比如像下面这样。
 
 
-
-
 注意，这时p1的状态就会传递给p2，也就是说，p1的状态决定了p2的状态。如果p1的状态是pending，那么p2的回调函数就会等待p1的状态改变；如果p1的状态已经是resolved或者rejected，那么p2的回调函数将会立刻执行。
-
-
 
 ```javascript
 const p1 = new Promise(function (resolve, reject) {
