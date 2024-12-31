@@ -636,11 +636,7 @@ let unusable: void = undefined;
 >
 > 即是top也是bottom  =>   any
 
-
-
 `never` 类型表示的是那些永不存在的值的类型。 例如，`never` 类型是那些总是会抛出异常或根本就不会有返回值的函数表达式或箭头函数表达式的返回值类型。
-
-
 
 ```tsx
 // 返回never的函数必须存在无法达到的终点
@@ -926,8 +922,6 @@ console.log(Test.bbb) // ok
 unknown which is the type-safe counterpart of any
 
 unknown 类型要安全得多，因为它迫使我们执行额外的类型检查来对变量执行操作。 (类型安全版本的`any`)
-
-
 
 ```js
 let value: unknown;

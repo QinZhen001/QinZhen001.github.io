@@ -5217,6 +5217,9 @@ console.log(res);
 * 什么是闭包 =>  闭包的危害
 * Even Loop => js长任务如何打断
 * 什么是virtual dom =>  它的优势是？
+* ts中interface和type的区别
+* ts中any和unknow的区别
+* ts中什么时候回用到never
 * html5 新增了什么  （新语义元素header/footer/article，表单控件的改进，多媒体支持audio/video）
 *  context 和 全局状态管理库的区别 => 什么时候用context 什么时候用全局状态管理库 => context的缺点
 

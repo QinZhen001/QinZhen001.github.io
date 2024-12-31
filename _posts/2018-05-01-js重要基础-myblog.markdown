@@ -3903,13 +3903,15 @@ return chunkedTasks.reduce((prevPromise, curChunkedTask) => {
 
 ### Reflect
 
+[Reflect 大全](https://juejin.cn/post/7419978042246365221)
+
 [https://www.zhangxinxu.com/wordpress/2021/07/js-proxy-reflect/](https://www.zhangxinxu.com/wordpress/2021/07/js-proxy-reflect/)
 
-
+**Javascript中的一个内置对象，它提供了一组用于操作对象的方法，包括获取对象属性、设置对象属性、调用对象方法、定义新属性等**
 
 使用Reflect 的好处: 
 
-* Reflect.set可以知道设置是否成功
+Reflect.set可以知道设置是否成功
 
 ```tsx
 console.log(input.type = 'number');
@@ -3918,37 +3920,80 @@ console.log(input.type = 'number');
 console.log(Reflect.set(input, 'type', 'number'));
 ```
 
-* 不会因为报错而中断正常的代码逻辑执行
+不会因为报错而中断正常的代码逻辑执行
 
 ```tsx
-  'use strict';
-
-    var frozen = { 1: 81 };
-    Object.freeze(frozen);
-
-    frozen[1] = 'zhangxinxu';
-
-    console.log('no log');  // 不会执行
+'use strict';
+var frozen = { 1: 81 };
+Object.freeze(frozen);
+frozen[1] = 'zhangxinxu';
+console.log('no log'); // 不会执行
 ```
 
 上面的例子会出现TypeError
 
-
-
 如果使用Reflect
 
 ```tsx
-   'use strict';
+'use strict';
+var frozen = { 1: 81 };
+Object.freeze(frozen);
+Reflect.set(frozen, '1', 'zhangxinxu');
 
-    var frozen = { 1: 81 };
-    Object.freeze(frozen);
-
-    Reflect.set(frozen, '1', 'zhangxinxu');
-
-    console.log('no log');  // 会执行
+console.log('no log'); // 会执行
 ```
 
+####  为什么proxy里一定要使用reflect
 
+举个例子：
+
+```tsx
+const obj = {
+    _name: 'test',
+    get name(){
+        return this._name;
+    }
+};
+const proxyObj = new Proxy(obj,{
+    get(target, property, receiver){
+        return target[property];
+    },
+});
+
+const child = {
+    _name: 'child'
+};
+Reflect.setPrototypeOf(child, proxyObj);
+
+child.name // test
+proxyObj.name // test
+```
+
+因为代理对象的get拦截中固定返回的`target[property];` target永远指向obj 所以拿到的永远是obj的_name属性值。
+
+```tsx
+const obj = {
+    _name: 'test',
+    get name(){
+        return this._name;
+    }
+};
+const proxyObj = new Proxy(obj,{
+    get(target, property, receiver){
+        return Reflect.get(target, property, receiver)
+    },
+});
+
+const child = {
+    _name: 'child'
+};
+Reflect.setPrototypeOf(child, proxyObj);
+
+child.name // child 
+proxyObj.name // test
+```
+
+**当我们使用Reflect时可以正确转发运行时上下文; 其实主要就是`receiver`这个参数，receiver 代表的是代理对象本身或者继承自代理对象的对象，它表示触发陷阱时`正确的上下文`。**
 
 
 
