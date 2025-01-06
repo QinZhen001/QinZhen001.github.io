@@ -259,6 +259,49 @@ await PIXI.Assets.load(["down", "up", "left", "right"])
 const downTexture = PIXI.Texture.from('down');
 ```
 
+**add 方法已经被遗弃，请用load代替**
+
+
+
+
+
+### Assets.load 和 Texture.from 区别
+
+Texture.from
+
+- **用途**：`Texture.from` 用于直接从给定的 URL（图像路径）、HTML 图像元素或画布创建纹理。
+- **加载**：`Texture.from` 会立即尝试加载图像，如果图像已经存在于缓存中，则返回缓存中的纹理；否则，它会创建一个新的纹理对象。加载过程是异步的，因此在图像尚未加载时使用该纹理可能会导致问题。
+- **用法示例**：
+
+```ts
+const texture = PIXI.Texture.from('path/to/image.png'); // 创建纹理  
+const sprite = new PIXI.Sprite(texture); // 使用该纹理创建 Sprite  
+```
+
+Assets.load
+
+- **用途**：`Assets.load` 是新的资源管理方式，适用于批量加载多个资源，包括图像、音频和数据文件（如 JSON）。
+- **加载**：`Assets.load` 基于 Promises，可以等待所有资源加载完毕，并且在加载完成后返回一个结果。它也提供了一个更清晰的错误处理机制。
+- **用法示例**：
+
+```ts
+Assets.load('path/to/image.png').then(texture => {  
+    const sprite = new PIXI.Sprite(texture); // 加载完成后使用该纹理  
+    app.stage.addChild(sprite);  
+}).catch(error => {  
+    console.error('资源加载失败:', error);  
+});  
+```
+
+总结
+
+- **`Texture.from`**：适合一次性加载单个纹理，直接创建一个纹理对象。
+- **`Assets.load`**：适合批量加载多个资源，支持更复杂的资源管理和错误处理。
+
+根据实际需要选择适合的方法，例如，如果你要加载多个资源，推荐使用 `Assets.load`；如果你只需要快速加载一个图像来创建一个纹理，那么 `Texture.from` 可能是更方便的选择。
+
+
+
 
 
 ## **设置人物位置**

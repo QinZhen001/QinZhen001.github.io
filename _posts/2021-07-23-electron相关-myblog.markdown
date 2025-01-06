@@ -639,13 +639,9 @@ ASAR格式是为了在Windows系统读取大量的小文件时 (比如像从`nod
 
 这个是由于Electron依赖安装失败
 
-
-
 可以弄一个.yarnrc 或者 .npmrc
 
 [https://yarn.bootcss.com/docs/yarnrc/](https://yarn.bootcss.com/docs/yarnrc/)
-
-
 
 ```js
 ELECTRON_MIRROR=http://npm.taobao.org/mirrors/electron/
