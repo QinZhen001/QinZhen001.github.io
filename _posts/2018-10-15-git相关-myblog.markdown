@@ -856,6 +856,37 @@ git blame --porcelain
 
 
 
+### Pull Request
+
+[https://www.ruanyifeng.com/blog/2017/07/pull_request.html](https://www.ruanyifeng.com/blog/2017/07/pull_request.html)
+
+> "Pull Request 是一种通知机制。你修改了他人的代码，将你的修改通知原来的作者，希望他合并你的修改，这就是 Pull Request。"
+
+
+
+
+
+在GitHub上，“Squash and merge”和“Rebase and merge”是两种不同的合并策略，它们在合并pull requests时有不同的功能和结果。以下是它们之间的主要区别：
+
+- **Squash and Merge**：合并为一个提交，清理历史。
+- **Rebase and Merge**：保留每个提交的独立性，形成线性历史。
+
+
+
+#### Squash and Merge
+
+- **功能**：将所有提交压缩为一个提交，然后将其合并到目标分支。
+- **结果**：目标分支将只包含一个包含所有改动的新提交历史，提交历史更加整洁。
+- **适用场景**：当你希望保持主分支的干净和简洁时，适合使用这种方式。
+
+#### Rebase and Merge
+
+- **功能**：将源分支的修改应用到目标分支的最新提交之上，基本上是在目标分支的前面重新应用每个提交。
+- **结果**：这将保留提交历史中每个提交的独立性，并且不会生成额外的合并提交。如果有冲突，需要解决每个提交的冲突。
+- **适用场景**：适合于需要保留完整提交历史的情况，特别是在team协作中，追踪每个成员的工作细节。
+
+
+
 
 
 ## Git 原理
