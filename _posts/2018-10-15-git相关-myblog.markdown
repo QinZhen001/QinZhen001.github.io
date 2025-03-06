@@ -57,59 +57,6 @@ git checkout -b 本地分支名 origin/远程分支名
 这个将会自动创建一个新的本地分支，并与指定的远程分支关联起来。
 
 
-### 查看远程分支
-
-* git branch -a，就是查看远程的所有分支列表
-* git branch是查看本地的git分支
-
-
-### 查看本地分支与远程分支的映射关系
-[https://blog.csdn.net/tterminator/article/details/78108550](https://blog.csdn.net/tterminator/article/details/78108550)
-使用以下命令（注意是双v）：
-
-git branch -vv
-
-```
-$ git branch -vv
-  2.1.0  2ca33c8c 提交
-* master aeb60f00 [origin/master] 提交
-```
-
-可以看到分支2.1.0没有和远程分支建立任何映射，此时若执行如下拉取命令则不成功（因为git此时不知道拉取哪个远程分支和本地分支合并）
-
-
-### 建立当前分支与远程分支的映射关系
-
-git branch -u origin/addFile
-
-或者使用命令：
-
-git branch --set-upstream-to origin/addFile
-
-
-
-**此时git pull再次拉取，成功**
-
-
-### 撤销本地分支与远程分支的映射关系
-```
-git branch --unset-upstream
-```
-
-### 删除本地分支 
-```
-删除本地分支：git branch -d 分支名（remotes/origin/分支名）
-
-强制删本地：git branch -D 分支名
-```
-
-
-### 删除远程分支 
-```
-命令行 : $ git push origin --delete <BranchName>
-```
-
-
 
 
 
@@ -279,6 +226,74 @@ git clean -xfd
 ```
 
 
+
+
+
+### git branch
+
+查看远程分支
+
+* git branch -a，就是查看远程的所有分支列表
+* git branch是查看本地的git分支
+
+查看本地分支与远程分支的映射关系
+
+[https://blog.csdn.net/tterminator/article/details/78108550](https://blog.csdn.net/tterminator/article/details/78108550)
+使用以下命令（注意是双v）：
+
+git branch -vv
+
+```
+$ git branch -vv
+  2.1.0  2ca33c8c 提交
+* master aeb60f00 [origin/master] 提交
+```
+
+可以看到分支2.1.0没有和远程分支建立任何映射，此时若执行如下拉取命令则不成功（因为git此时不知道拉取哪个远程分支和本地分支合并）
+
+----
+
+撤销本地分支与远程分支的映射关系
+
+```
+git branch --unset-upstream
+```
+
+删除本地分支 
+
+```
+删除本地分支：git branch -d 分支名（remotes/origin/分支名）
+
+强制删本地：git branch -D 分支名
+```
+
+删除远程分支 
+
+```
+git push origin --delete <BranchName>
+```
+
+查看当前分支
+
+```
+git branch --show-current
+```
+
+建立当前分支与远程分支的映射关系
+
+```
+git branch -u origin/addFile
+```
+
+或者使用命令：
+
+```
+git branch --set-upstream-to origin/addFile
+```
+
+**此时git pull再次拉取，成功**
+
+----
 
 
 
