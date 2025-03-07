@@ -229,6 +229,22 @@ git clean -xfd
 
 
 
+### git show
+
+显示 commit 的简短信息，并按照指定的格式输出
+
+```
+git show -s --format='%h %s'
+```
+
+- **`git show`**: 这个命令通常用于显示一个或多个 Git 对象的详细信息，比如 commit、tag 或 blob。 如果不指定任何 commit，默认显示 HEAD 所指向的 commit 信息。
+- **`-s` 或 `--no-patch`**: 这个选项告诉 `git show` 不要显示 commit 的补丁 (diff)。 也就是说，它会省略 commit 引入的具体更改内容，只显示 commit 的元数据。
+- **`--format='%h %s'`**: 这个选项允许你自定义 `git show` 的输出格式。 `%h` 和 `%s` 是占位符，分别代表以下含义：
+  - `%h`: commit 的 abbreviated hash (简短的哈希值)。
+  - `%s`: commit 的 subject (提交信息的标题行)。
+
+
+
 ### git branch
 
 查看远程分支

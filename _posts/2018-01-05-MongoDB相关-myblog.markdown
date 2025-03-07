@@ -62,7 +62,50 @@ MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组
 * MongoDB支持各种编程语言:RUBY，PYTHON，JAVA，C++，PHP，C#等多种语言。
 * MongoDB安装简单。
 
+
+
+### 启动
+
+以后台服务形式启动 MongoDB
+
+```bash
+brew services start mongodb-community
+```
+
+访问 `http://localhost:27017`
+
+默认主机： 127.0.0.1
+
+默认端口：27017
+
+默认账号：admin
+
+默认密码：admin
+
+
+
+
+
+### 停止
+
+```bash
+brew services stop mongodb-community
+```
+
+
+
+### 检查服务状态
+
+```bash
+brew services list
+```
+
+
+
+
+
 ### MongoDB 工具
+
 有几种可用于MongoDB的管理工具。
 
 #### 监控
