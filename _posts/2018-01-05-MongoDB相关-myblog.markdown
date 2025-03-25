@@ -70,6 +70,8 @@ MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组
 
 ```bash
 brew services start mongodb-community
+
+# 注意：start 是会开机自启动服务，如果不想可以使用 run
 ```
 
 访问 `http://localhost:27017`
@@ -490,22 +492,6 @@ mongoose.connect("mongodb://u1:123456@localhost/db1", function(err) {
     }
 });
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

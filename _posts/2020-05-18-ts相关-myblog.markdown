@@ -3905,9 +3905,14 @@ This is a runtime library for [TypeScript](http://www.typescriptlang.org/) that 
 
 This library is primarily used by the `--importHelpers` flag in TypeScript.
 
+主要用于优化 TypeScript 编译生成的 JavaScript 代码，提升项目性能和可维护性
+
+* **代码精简与优化**
+* **提升开发效率**
 
 
 
+---
 
 使用tslib后
 
@@ -3919,8 +3924,6 @@ target/importHelpers
 - es2019/false: 289B
 - es5/true: 4.7K
 - es5/false: 6.9K
-
-
 
 ES2019没有效果。
 
