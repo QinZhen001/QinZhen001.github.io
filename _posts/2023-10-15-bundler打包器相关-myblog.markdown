@@ -250,6 +250,8 @@ export default defineBuildConfig({
   declaration: true, // generate .d.ts files
   rollup: {
     emitCJS: true,  // generate .cjs files
+    commonjs: true,
+    resolve: true,
     inlineDependencies: true,
   },
 })
@@ -257,7 +259,9 @@ export default defineBuildConfig({
 
 
 
+[ERROR] Could not resolve
 
+哪怕配置好了 resolve 相关配置 还是会有找不到相关模块的error ，在这种情况下放弃 unbuild
 
 
 
