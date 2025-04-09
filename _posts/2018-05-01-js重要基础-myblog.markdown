@@ -926,6 +926,23 @@ myObject 中包含的foo 属性会屏蔽原型链上层的所有foo 属性，因
 
 
 
+
+
+### globalThis
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/globalThis
+
+全局属性 `globalThis` 包含全局的 `this` 值，类似于全局对象（global object）。
+
+**跨环境统一性**
+
+* **浏览器**：`globalThis` 指向 `window` 对象
+* **Node.js**：指向 `global` 对象
+* **Web Workers**：指向 `self` 对象
+* **其他环境**：如 Deno、物联网设备等，均通过 `globalThis` 提供一致的全局对象访问方式
+
+
+
 ### Object的keys的顺序
 
 [JS中Object的keys是无序的吗](https://mp.weixin.qq.com/s/EpTOLCxNJlHO1kMBOS7NkA)

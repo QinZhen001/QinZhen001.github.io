@@ -123,9 +123,61 @@ import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals';
 
 
 
+## TTI 首次可交互时间
+
+文档首次可交互时间可以用来衡量页面可交互的性能。
+
+```ts
+const timeToInteractive = performance.timing.domInteractive - performance.timing.fetchStart, //首次可交互时间
+```
+
+
+
+## 白屏检测
+
+elementFromPoint
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
+
+**`elementFromPoint()`** 方法返回给定相对于视口的坐标点下最上层的 [`Element`](https://developer.mozilla.org/zh-CN/docs/Web/API/Element)。
+
+举个例子： 检测逻辑
+
+- 采样
+  - 先把页面宽高依次切分成 `10` 份，按照中心直线和对角线的方式获取 `10` 个采样点
+  - 然后用 `elementFromPoint` 获取对应坐标点上的顶层元素
+  - 接着每个点都判断一遍上面有没有如下元素 `['body', 'html', '#app', '#root']`
+  - 有的话这个点就是白屏点，因为没渲染出内容
+- 相同判断
+  - 取横竖和两对角线方向的点的前五个，判断是否为相同的元素
+  - 如果相同并且不是 `[svg, img, canvas, iframe]`，则判定为相同采样点
+- 白屏判断
+  - 如果采样点的白屏率大于 70% 则认为白屏
+  - 如果相同采样点判断率大于 70%，则认为白屏
+
+
+
 ## 接口错误
 
 [https://juejin.cn/post/6862559324632252430#heading-0](https://juejin.cn/post/6862559324632252430#heading-0)
+
+
+
+
+
+## Long Task
+
+`Long Task`：阻塞主线程达 50 毫秒或以上的任务，可以通过`PerformanceObserver`获取。
+
+```ts
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    console.log('longtask candidate: ', entry.startTime);
+  }
+});
+
+observer.observe({entryTypes: ['longtask']});
+```
 
 
 
@@ -287,10 +339,6 @@ overrideApp(app, ctx) => {
 FMP与英雄渲染时间非常相似，但它们不一样的地方在于FMP不区分内容是否有用，不区分渲染出的内容是否是用户关心的。
 
 
-那我们如何才能知道我们的产品什么时候“能用”呢？这就需要另一个性能指标“TTI”了。
-
-
-**TTI（全称“Time to Interactive”，翻译为“可交互时间”）** 表示网页第一次 完全达到可交互状态 的时间点。可交互状态指的是页面上的UI组件是可以交互的（可以响应按钮的点击或在文本框输入文字等），不仅如此，此时主线程已经达到“流畅”的程度，主线程的任务均不超过50毫秒。TTI很重要，因为TTI可以让我们了解我们的产品需要多久可以真正达到“可用”的状态。
 
 ### 设定目标
 
