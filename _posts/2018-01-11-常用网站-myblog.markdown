@@ -219,6 +219,12 @@ Create sprite sheets and optimize your game graphics.
 
 
 
+## mermaid
+
+[https://mermaid.live/edit](https://mermaid.live/edit)
+
+
+
 ## 开发工具
 
 
@@ -432,15 +438,21 @@ find the cost of adding a npm package to your bundle
 
 ## 其他 
 
-### 展示GitHub信息
+### 展示github信息
 
 [https://ghbtns.com/](https://ghbtns.com/)
 
 
 
-## 展示Github 贡献者头像
+### 展示github 贡献者头像
 
 [https://contrib.rocks/preview?repo=angular%2Fangular-ja](https://contrib.rocks/preview?repo=angular%2Fangular-ja)
+
+
+
+### 展示 github star history
+
+https://www.star-history.com/
 
 
 

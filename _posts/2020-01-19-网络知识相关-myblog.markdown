@@ -1123,6 +1123,60 @@ DNS系统负责将域名转换为IP地址，而污染攻击利用DNS协议的无
 
 
 
+### CNAME
+
+CNAME 转发是一种基于 DNS 记录的别名映射技术，通过将域名解析请求**间接转发到目标域名**，实现灵活的资源管理和服务优化。以下是其核心原理与应用场景的详细解析：
+
+**核心原理**
+
+**别名映射机制**
+CNAME 记录在 DNS 系统中创建别名关系，例如将 `shop.example.com` 指向 `cdn.provider.com`。当用户访问 `shop.example.com` 时，DNS 服务器会先解析该 CNAME 记录，获取目标域名 `cdn.provider.com`，再重新启动解析流程，最终获取目标 IP 地址
+
+**解析流程**：`用户请求 → 解析 CNAME 记录 → 获取目标域名 → 继续解析目标域名的 A 记录 → 返回 IP 地址`
+
+**链式解析特性**
+
+CNAME 支持多级转发（如 A→B→C），但需避免循环依赖（如 A→B→A），否则会导致解析失败
+
+---
+
+**典型应用场景**
+
+**CDN 加速**
+
+将用户域名通过 CNAME 指向 CDN 服务商提供的域名（如 `example.cdn.com`），CDN 根据用户地理位置返回就近节点的 IP 地址，提升访问速度
+
+```
+www.example.com  CNAME  example.cdn.com
+example.cdn.com  A      1.2.3.4 (CDN节点IP)
+```
+
+**网站重定向与服务迁移**
+
+* **旧域名跳转**：将旧域名（如 `old.com`）指向新域名（如 `new.com`），实现无缝跳转
+
+* **服务切换**：在不改变用户访问习惯的情况下，将服务迁移至新服务器或平台
+
+**负载均衡与故障转移**
+
+* 通过多个 CNAME 记录指向不同服务器，结合 DNS 轮询策略，实现流量分发
+
+* 当某台服务器宕机时，自动将请求转发至备用服务器，保障服务连续性
+
+**子域名统一管理**
+
+将多个子域名（如 `blog.example.com`、`api.example.com`）统一指向主域名或第三方服务，简化配置流程
+
+
+
+### TTL
+
+TTL（Time to live），是指各地 DNS 服务器缓存解析记录的时长。
+
+假设 TTL 设定为10分钟，当各地的 DNS 服务器接收到域名的解析请求时，会向权威服务器发出请求获取到解析记录，并在本地服务器保存10分钟，在10分钟内，解析请求将从本地缓存中读取，缓存失效后才会重新获取记录值。建议正常情况下设定10分钟即可，使用不同套餐版本的解析能设定的 TTL 最低值不同。
+
+
+
 ## SPDY 协议
 
 SPDY 是由 google 推行的改进版本的 HTTP1.1 （那时候还没有 HTTP2）。
@@ -1461,6 +1515,16 @@ Cache-Control: private, max-age=0, no-cache
 https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn#%E2%80%9Cno-cache%E2%80%9D%E5%92%8C%E2%80%9Cno-store%E2%80%9D
 
 
+
+
+
+
+
+* ad库保证旧版本兼容
+
+* 不同 adId  保证对应不同的事件回调
+* hippy/h5 中 广告回调 data 保持数据一致性
+* event 回调中对齐现有web业务，不直接采用native event 枚举
 
 
 
