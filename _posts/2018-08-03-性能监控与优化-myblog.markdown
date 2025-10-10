@@ -165,6 +165,8 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Document/elementFromPoint
 
 `Long Task`：阻塞主线程达 50 毫秒或以上的任务，可以通过`PerformanceObserver`获取。
 
+50这个数值来自来自于 Google 的 [RAIL 模型](https://web.dev/articles/rail)
+
 ```ts
 const observer = new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
@@ -174,6 +176,12 @@ const observer = new PerformanceObserver((list) => {
 
 observer.observe({entryTypes: ['longtask']});
 ```
+
+
+
+### RAIL 模型
+
+RAIL 表示 Web 应用生命周期的四个不同方面：**响应（Response）**、**动画（Animation）**、**空闲（Idel）**和**加载（Load）**。由于用户对每种情境有不同的性能预期，因此，系统会根据情境以及关于用户如何看待延迟的用户体验调研来确定效果目标。
 
 
 
@@ -243,6 +251,85 @@ Cannot access iframe content: SecurityError: Failed to set a named property 'one
 如果 ifame 内的内容不来自第三方，那么可以通过与 iframe 内进行通信的方式，将异常信息抛出来。iframe 通信试有很多，譬如 `postMessage`。这里不展开了。
 
 
+
+## 交互后同步卡顿
+
+对于同步阻塞的场景比较好解，我们可以在监听到用户交互时进行耗时计算：
+
+```tsx
+window.addEventListener("click", () => {
+  const startTime = new Date().getTime();
+  requestAnimationFrame(() => {
+    const duringTime = new Date().getTime() - startTime;
+    // 交互后超过 1s 才响应 (根据不同业务来定)
+    if (duringTime > 1000) {
+      // 则判断为卡顿
+    }
+  }, 0);
+});
+```
+
+我们可以对关注的用户事件进行监听和计算，比如`click/touchend/scroll`等。除此之外，我们还可以基于`PerformanceEventTiming`来实现:
+
+```ts
+new PerformanceObserver((list) => {
+  list.getEntries().forEach((entry) => {
+    // 完整耗时
+    const duration = entry.duration;
+
+    // 输入延迟（处理事件之前）
+    const delay = entry.processingStart - entry.startTime;
+
+    // 同步事件处理时间
+    const eventHandlerTime = entry.processingEnd - entry.processingStart;
+    console.log(`Total duration: ${duration}`);   // 从事件发生（如用户点击）到浏览器完全处理完毕的总耗时
+    console.log(`Event delay: ${delay}`);  // 事件触发后，浏览器主线程开始处理该事件前的等待时间。(此延迟可能由长任务或主线程被其他代码阻塞引起)
+    console.log(`Event handler duration: ${eventHandlerTime}`);   // 浏览器同步执行与该事件关联的所有处理函数（如 clickhandler）所花费的实际时间
+  });
+}).observe({ type: "event" });
+```
+
+
+
+
+
+## 异步逻辑卡顿
+
+对于异步逻辑导致的卡顿，由于卡顿发生在用户交互后，难以通过代码直接发现。
+
+我们可以从另外一个角度分析，即**当页面交互发生卡顿时，用户常常会在页面中进行操作，来确认页面是否无响应。**
+
+```ts
+let clickCount = 0;
+let hasClick = false;
+window.addEventListener("click", () => {
+  clickCount++;
+  if (hasClick) return;
+  hasClick = true;
+  requestAnimationFrame(() => {
+    // 卡顿过程中发生了连续点击操作
+    if (clickCount > 3) {
+      // 则判断为卡顿
+    }
+    // 清空数据
+    clickCount = 0;
+    hasClick = false;
+  }, 0);
+});
+```
+
+的浏览器渲染过程顺序为：
+
+1. 用户事件。
+2. 一个宏任务。
+3. 队列中全部微任务。
+4. `requestAnimationFrame`。
+5. 浏览器重排/重绘。
+6. `requestIdleCallback`。
+
+正常的页面使用过程，用户交互的每次事件都会在一次渲染流程中执行`requestAnimationFrame`，不会产生计数累计。
+
+而**当页面卡顿时（主线程繁忙），用户会下意识地多次操作页面，这些事件便会被堆积等到下一帧渲染过程，此时会先执行事件中的计数**，再到`requestAnimationFrame`时，该计数便会大于 1。
 
 
 
