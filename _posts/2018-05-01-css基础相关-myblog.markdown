@@ -1276,7 +1276,21 @@ background-origin: padding-box|border-box|content-box;
 
 
 
-### 
+## 背景字体渐变色
+
+```css
+/* 正确的顺序 */
+{
+  background: linear-gradient(180deg, var(---4, #FFF3DA) 0%, var(---5, #FFB860) 100%); /* 1. 先定义渐变 */
+  -webkit-background-clip: text; /* 2. 再应用裁剪 */
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+```
+
+这是一个非常关键但容易忽略的点。`background-clip: text`和 `-webkit-background-clip: text`必须**应用在已经定义了 `background`或 `background-image`之后**
+
+
 
 
 
@@ -2590,6 +2604,25 @@ afterEnter() {
    this.$refs.cdWrapper.style.animation = ''
 }
 ```
+
+
+
+
+
+
+
+### touch-action
+
+https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action#manipulation
+
+touch-action 属性可以被指定为：
+
+- 任何一个关键字 `auto`、`none`、`manipulation`，或
+- 零或任何一个关键字 `pan-x`、`pan-left`、`pan-right`，加 零或任何一个关键字 `pan-y`、`pan-up`、`pan-down`，加可选关键字 [`pinch-zoom`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action#pinch-zoom).
+
+---
+
+[`manipulation`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/touch-action#manipulation)   浏览器只允许进行滚动和持续缩放操作。任何其他被 auto 值支持的行为不被支持。启用平移和缩小缩放手势，但禁用其他非标准手势，例如双击以进行缩放。**禁用双击可缩放功能可减少浏览器在用户点击屏幕时延迟生成点击事件的需要。**
 
 
 

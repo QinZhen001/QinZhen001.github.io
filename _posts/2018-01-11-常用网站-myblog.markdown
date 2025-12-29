@@ -344,7 +344,15 @@ vue 单文件组件的编译结果
 
 ### image
 
+mock 随机图片
+
 https://picsum.photos/
+
+例子：
+
+https://picsum.photos/seed/{seed}/200/300
+
+seed 随机数种子
 
 
 

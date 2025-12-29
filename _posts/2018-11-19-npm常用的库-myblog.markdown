@@ -752,6 +752,30 @@ Url utils for umans   (url相关的工具)
 
 
 
+## zx
+
+https://juejin.cn/post/7326330936433983551?searchId=202510201720055219265B7F983E0B3A53
+
+Google 的 `zx` 工具是一个基于 Node.js 的命令行脚本运行器，旨在让 shell 脚本的编写更加简单和强大。它通过提供一系列的实用功能以及对现代 JavaScript 语言特性的支持，使得编写和执行复杂的脚本任务变得更加轻松。
+
+`zx` 使用了 JavaScript（ES Module）、顶层的 `await` 支持、模板字面量、以及其它 ES6+ 的特性，而不是传统的 Bash 或 Shell 脚本。这意味着你可以利用你现有的 JavaScript/Node.js 知识来编写命令行工具。
+
+下面是一些 `zx` 主要特性：
+
+1. **简单的命令执行**：通过 `$` 函数可以轻松地执行 shell 命令并获取输出。
+2. **管道支持**：可以使用 Node.js 的流来处理数据。
+3. **内置的 fetch**：内置了 Node-fetch，可以直接在脚本中发送 HTTP 请求。
+4. **内置的包管理器支持**：可以在脚本中使用 `npm`、`yarn` 命令。
+5. **Markdown 支持**：可以在 Markdown 文件中编写脚本，并以执行脚本的形式运行 Markdown。
+6. **顶层 await**：Node.js 可以直接在脚本的最顶层使用 await，无需封装在 async 函数中。
+7. **环境变量和路径处理**：zx 提供了一些辅助函数来处理环境变量和文件路径。
+8. **脚本参数解析**：zx 可以分析传递给脚本的参数，无需额外的解析库。
+9. **错误处理**：执行命令时如果有错误发生，zx 会默认抛出异常，简化错误处理逻辑。
+
+
+
+
+
 ## jiti
 
 [https://github.com/unjs/jiti](https://github.com/unjs/jiti)
