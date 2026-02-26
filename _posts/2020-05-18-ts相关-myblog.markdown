@@ -2136,6 +2136,31 @@ Point.prototype.toString = function (): string {
 
 
 
+#### protected
+
+当类的构造函数被声明为 `protected` 时，该类**无法通过 `new` 关键字在外部直接创建实例**，但允许子类继承并调用父类构造函数。
+
+```tsx
+class Base {
+  protected constructor(public id: string) {}
+}
+// 尝试直接实例化 → 报错
+const base = new Base("001"); // ❌ 错误：类“Base”的构造函数是受保护的，仅可在类声明中访问
+
+class Sub extends Base {
+  constructor(id: string) {
+    super(id); // ✅ 子类可调用 protected 构造函数
+  }
+}
+const sub = new Sub("002"); // ✅ 允许通过子类实例化
+```
+
+该设计常用于**定义抽象基类或框架扩展点**，要求用户必须通过继承并实现特定逻辑才能使用功能
+
+
+
+
+
 #### 私有构造函数
 
 在类的构造函数中设置为私有访问修饰符（private）的作用是禁止在外部直接实例化类的对象。这样做的目的通常是为了实现类的单例模式或者实现类的对象唯一性。

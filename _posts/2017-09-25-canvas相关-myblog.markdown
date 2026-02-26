@@ -473,15 +473,9 @@ html2canvas(infoCard.$el, {
 
 [https://segmentfault.com/a/1190000016819776?utm_source=tag-newest](https://segmentfault.com/a/1190000016819776?utm_source=tag-newest)
 
-
-
 canvas本身是一个画布，我们怎么理解画布，决定了我们是否能正确的理解canvas.width和canvas.style.width的区别。**canvas.width就是画布真实的大小**，这个画布不是我们能看到的画布，我们能看见的画布，已经是在浏览器处理canvas.style.width/canvas.style.height之后，加工处理后的画布。
 
-
-
 而cavnas.style.width/canvas.style.height决定了画布以怎样的形式进行缩放展示给页面
-
-
 
 - canvas.width / canvas.height 表示画布真实大小，其实我们并不可见
 - canvas.style.width / canvas.style.height 表示画布输出到浏览器我们可见的/最终的大小

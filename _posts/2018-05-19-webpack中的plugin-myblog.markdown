@@ -398,6 +398,38 @@ module.exports = {
 
 
 
+### node-polyfill-webpack-plugin
+
+https://www.npmjs.com/package/node-polyfill-webpack-plugin
+
+Polyfill Node.js core modules in Webpack.
+
+**This module is only needed for [Webpack 5+](https://github.com/webpack/changelog-v5#automatic-nodejs-polyfills-removed).**
+
+`node-polyfill-webpack-plugin` 通过 **自动化 Polyfill 注入** 和 **灵活配置**，成为 Webpack 5+ 项目兼容 Node.js 模块的首选工具。其价值体现在：
+
+---
+
+If you don't want a module to be polyfilled, you can specify aliases to be skipped here.
+
+```ts
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+
+module.exports = {
+	// Other rules...
+	plugins: [
+		new NodePolyfillPlugin({
+			excludeAliases: ['console'],
+		}),
+	],
+};
+
+```
+
+
+
+
+
 
 ### extract-text-webpack-plugin
 Extract text from a bundle, or bundles, into a separate file.(提取文本到单独的文件)
