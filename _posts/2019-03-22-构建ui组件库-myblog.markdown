@@ -11,12 +11,9 @@ tags:
 
 > “Yeah It's on. ”
 
-
 >今天是3月22号,闲得蛋疼，逛了逛掘金，发现有关vue组件库，猛然想起自己一直想要做个ui组件库，这就开始了折腾之旅
 
-
-
-# 正文
+## 正文
 
 [ue cli3 库模式搭建组件库并发布到 npm](https://juejin.im/post/5bbab9de5188255c8c0cb0e3)
 
@@ -28,9 +25,7 @@ tags:
 
 [https://github.com/rte-design/rte-design](https://github.com/rte-design/rte-design)
 
-
-
-## Icon 处理
+### Icon 处理
 
 如果我们将图标放进组件库中 （每个组件都是一个打包入口enery 这样会导致每个组件都包含很大Icon的组件）
 
@@ -44,25 +39,15 @@ tags:
 
 **tip：图标怎么按需加载 这个值得研究了**
 
+## 文档
 
-
-
-
-
-
-# 文档
-
-
-
-## typedoc
+### typedoc
 
 [https://www.npmjs.com/package/typedoc](https://www.npmjs.com/package/typedoc)
 
 Documentation generator for TypeScript projects.
 
-
-
-### 配置
+#### 配置
 
 typedoc.json
 
@@ -80,30 +65,17 @@ typedoc.json
 }
 ```
 
-
-
-
-
-## dumi
+### dumi
 
 [https://d.umijs.org/guide](https://d.umijs.org/guide)
 
 是一款为组件开发场景而生的静态站点框架，与 [father](https://github.com/umijs/father) 一起为开发者提供一站式的组件开发体验，**father 负责组件源码构建，而 dumi 负责组件开发及组件文档生成**。
 
+## 补充
 
-
-
-
-
-
-# 补充
-
-
-
-## vue-cli3.0 构建库
+### vue-cli3.0 构建库
 
 在库模式中，Vue 是外置的。这意味着包中不会有 Vue，即便你在代码中导入了 Vue。如果这个库会通过一个打包器使用，它将尝试通过打包器以依赖的方式加载 Vue；否则就会回退到一个全局的 Vue 变量。
-
 
 你可以通过下面的命令将一个单独的入口构建为一个库：
 
@@ -111,22 +83,15 @@ typedoc.json
 vue-cli-service build --target lib --name myLib [entry]
 ```
 
-
 在 Web Components 模式中，Vue 是外置的。这意味着包中不会有 Vue，即便你在代码中导入了 Vue。这里的包会假设在页面中已经有一个可用的全局变量 Vue。
 
-
-
-## vue.config.js
+### vue.config.js
 
 >cli3 提供一个可选的 vue.config.js 配置文件。如果这个文件存在则他会被自动加载，所有的对项目和webpack的配置，都在这个文件中。
 
-
 新版 Vue CLI 支持使用 vue.config.js 中的 pages 选项构建一个多页面的应用。
 
-
 这里使用 pages 修改入口到 examples
-
-
 
 ```javascript
 module.exports = {
@@ -142,12 +107,9 @@ module.exports = {
 
 ```
 
-
 支持对 packages 目录的处理，修改配置中的 chainWebpack 选项
 
-
 chainWebpack 是一个函数，会接收一个基于 webpack-chain 的 ChainableConfig 实例。允许对内部的 webpack 配置进行更细粒度的修改。
-
 
 ```javascript
 module.exports = {
@@ -176,27 +138,22 @@ module.exports = {
 }
 ```
 
-## webpack-chain
+### webpack-chain
 
 [https://segmentfault.com/a/1190000017547171?utm_source=tag-newest](https://segmentfault.com/a/1190000017547171?utm_source=tag-newest)
-
 
 webpack 的核心配置的创建和修改基于一个有潜在难于处理的 JavaScript 对象。虽然这对于配置单个项目来说还是 OK 的，但当你尝试跨项目共享这些对象并使其进行后续的修改就会变的混乱不堪，因为您需要深入了解底层对象的结构以进行这些更改。
 
 webpack-chain 尝试通过提供可链式或顺流式的 API 创建和修改webpack 配置。API的 Key 部分可以由用户指定的名称引用，这有助于 跨项目修改配置方式 的标准化。
 
->webpack-chain 需要 Node.js v6.9及更高版本. 
+>webpack-chain 需要 Node.js v6.9及更高版本.
 >webpack-chain 也只创建并被设计于使用webpack的2，3，4版本的配置对象。
 
-
-
-```
+```bash
 npm install --save-dev webpack-chain
 ```
 
-
 当你安装了 webpack-chain， 你就可以开始创建一个webpack的配置。 对于本指南，我们的示例基本配置 webpack.config.js 将位于我们项目的根目录。
-
 
 ```tsx
 // 导入 webpack-chain 模块，该模块导出了一个用于创建一个webpack配置API的单一构造函数。
@@ -259,9 +216,7 @@ config
 module.exports = config.toConfig();
 ```javascript
 
-
 共享配置也很简单。仅仅导出配置 和 在传递给webpack之前调用 .toConfig() 方法将配置导出给webpack使用。
-
 
 ```javascript
 // webpack.core.js
@@ -304,7 +259,6 @@ devServer.set('hot', true);
 
 一个速记方法是可链式的，因此调用它将返回 原实例，允许你继续链式使用
 
-
 配置速记方法
 
 ```javascript
@@ -328,9 +282,7 @@ config
   .watchOptions(watchOptions)
 ```
 
-
-
-## 支持 Tree Shaking
+### 支持 Tree Shaking
 
 [https://juejin.cn/post/7045172831272828936](https://juejin.cn/post/7045172831272828936)
 
@@ -355,7 +307,7 @@ package.json
 
 [webpack打包一个按需引入的vue组件库](https://juejin.cn/post/7061060609940406308)
 
-最关键是 在webpack.config.js中 entry   
+最关键是 在webpack.config.js中 entry
 
 ```tsx
 // 定义每个组件的入口 
@@ -389,6 +341,3 @@ const getEntry = () => {
 ```tsx
 entry: getEntry()
 ```
-
-
-

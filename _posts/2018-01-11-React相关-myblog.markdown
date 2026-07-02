@@ -11,23 +11,20 @@ tags:
 
 > “Yeah It's on. ”
 
-
-## 基础
+### 基础
 [https://doc.react-china.org/](https://doc.react-china.org/)
 
 这里只写一些比较重要的基础知识，查看更多知识请移步react官网
 
+#### 受控组件与非受控组件
 
-
-### 受控组件与非受控组件
-
-#### 受控组件
+##### 受控组件
 
 [https://zh-hans.legacy.reactjs.org/docs/forms.html#controlled-components](https://zh-hans.legacy.reactjs.org/docs/forms.html#controlled-components)
 
 受控组件是指表单元素的值由React组件的state来控制。当用户输入数据时，React组件的state会更新，然后通过props将新值传递给表单元素。这样，每次输入变化都会触发组件的重新渲染。受控组件提供了更精确的控制和验证，可以通过表单元素的值来实时更新其他组件状态。
 
-#### 非受控组件
+##### 非受控组件
 
 [https://zh-hans.legacy.reactjs.org/docs/uncontrolled-components.html](https://zh-hans.legacy.reactjs.org/docs/uncontrolled-components.html)
 
@@ -37,8 +34,6 @@ tags:
 
 ---
 
-
-
 **受控组件需要主动维护一个内部state状态的，而非受控组件是无需维护组件的state状态的，二者有冲突。**
 
 * 受控元素，一般用在需要动态设置其初始值的情况；例如某些form表单信息编辑时，input表单元素需要初始显示服务器返回的某个值然后进行编辑。
@@ -46,17 +41,13 @@ tags:
 
 **在大多数情况下，我们推荐使用 受控组件 来实现表单。**
 
-
-
-### React.ReactNode vs React.ReactNode
+#### React.ReactNode vs React.ReactNode
 
 React.ReactNode => 这是可以在 JSX 中作为子元素传递的所有可能类型的并集
 
 React.ReactElement => 它只包括 JSX 元素，而不包括 JavaScript 原始类型，如 string 或 number
 
-
-
-### defaultValue vs value
+#### defaultValue vs value
 
 Controlled vs. Uncontrolled
 
@@ -78,8 +69,6 @@ However, since you're not using state, you can use defaultValue. This means the 
 />
 ```
 
-
-
 在非受控组件中，你经常希望 React 能赋予组件一个初始值，但是不去控制后续的更新。 在这种情况下, 你可以指定一个 `defaultValue` 属性，而不是 `value`。在一个组件已经挂载之后去更新 `defaultValue` 属性的值，不会造成 DOM 上值的任何更新。
 
 ```html
@@ -91,9 +80,7 @@ However, since you're not using state, you can use defaultValue. This means the 
 
 同样，`<input type="checkbox">` 和 `<input type="radio">` 支持 `defaultChecked`，`<select>` 和 `<textarea>` 支持 `defaultValue`。
 
-
-
-### PureComponent
+#### PureComponent
 
 默认渲染行为的问题
 
@@ -124,11 +111,7 @@ class Cell extends React.Component {
 
 这样每个Cell只有在关联option发生变化时进行重绘。
 
-
-
 ----
-
-
 
 使用PureComponent与immutable.js
 
@@ -150,19 +133,11 @@ options[i].name = "Hello"
 
 **immutable.js会在每次对原对象进行添加，删除，修改时返回新的对象实例。任何对数据的修改都会导致数据指针的变化。**
 
-
-
-
-
-### displayName
+#### displayName
 
 HOC 创建的容器组件会与任何其他组件一样，会显示在 [React Developer Tools](https://github.com/facebook/react-devtools) 中。为了方便调试，请选择一个显示名称，以表明它是 HOC 的产物。
 
-
-
 最常见的方式是用 HOC 包住被包装组件的显示名称。比如高阶组件名为 `withSubscription`，并且被包装组件的显示名称为 `CommentList`，显示名称应该为 `WithSubscription(CommentList)`：
-
-
 
 ```tsx
 function withSubscription(WrappedComponent) {
@@ -176,9 +151,7 @@ function getDisplayName(WrappedComponent) {
 }
 ```
 
-
-
-### style
+#### style
 
 [https://zh-hans.reactjs.org/docs/dom-elements.html#style](https://zh-hans.reactjs.org/docs/dom-elements.html#style)
 
@@ -191,8 +164,6 @@ function getDisplayName(WrappedComponent) {
 **`style` 接受一个采用小驼峰命名属性的 JavaScript 对象，而不是 CSS 字符串**
 
 这与 DOM 中 `style` 的 JavaScript 属性是一致的，同时会更高效的，且能预防跨站脚本（XSS）的安全漏洞。
-
-
 
 例子：
 
@@ -207,11 +178,7 @@ function HelloWorldComponent() {
 }
 ```
 
-
-
-
-
-### unmountComponentAtNode
+#### unmountComponentAtNode
 
 ```tsx
 import { unmountComponentAtNode } from 'react-dom'
@@ -236,11 +203,7 @@ if (unmountResult && a.parentNode) {
 }
 ```
 
-
-
-
-
-### findDomNode
+#### findDomNode
 
 react中获取真实dom有两种方法，一种是 react 的ref，一种是 ReactDOM 的 findDomNode
 
@@ -249,15 +212,11 @@ let  Btn = document.getElementById('btn')
 ReactDOM.findDOMNode(Btn).style.color = 'red'
 ```
 
-
-
-
-
-### createPortal
+#### createPortal
 
 [https://zh-hans.reactjs.org/docs/react-dom.html#createportal](https://zh-hans.reactjs.org/docs/react-dom.html#createportal)
 
-```
+```js
 createPortal(child, container)
 ```
 
@@ -265,9 +224,7 @@ createPortal(child, container)
 
 用处：我们渲染dialog到指定的container中
 
-
-
-###  [ReactNode vs ReactElement](https://stackoverflow.com/questions/58123398/when-to-use-jsx-element-vs-reactnode-vs-reactelement)
+####  [ReactNode vs ReactElement](https://stackoverflow.com/questions/58123398/when-to-use-jsx-element-vs-reactnode-vs-reactelement)
 
 ```tsx
 type ReactText = string | number;
@@ -282,31 +239,19 @@ interface ReactElement<P = any, T extends string | JSXElementConstructor<any> = 
     }
 ```
 
-
-
 ReactNode 是包括ReactElement 同时可以为null
 
-
-
-
-
-### ReactDOMServer
+#### ReactDOMServer
 
 [https://reactjs.org/docs/react-dom-server.html](https://reactjs.org/docs/react-dom-server.html)
 
+### 动画
 
-
-## 动画
-
-
-
-### rc-queue-anim
+#### rc-queue-anim
 
 [网页链接](https://www.npmjs.com/package/rc-queue-anim)
 
-
 Animate React Component in queue, thanks to rc-animate and enter-animation.
-
 
 Usage
 
@@ -324,18 +269,18 @@ ReactDom.render(
 , mountNode);
 ```
 
-### react-transition-group
+#### react-transition-group
 
 [http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit](http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit)
 
-#### [`unmountOnExit`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit)
+##### [`unmountOnExit`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-unmountOnExit)
 
 By default the child component stays mounted after it reaches the `'exited'` state. Set `unmountOnExit` if you'd prefer to unmount the component after it finishes exiting.
 
 * type: `boolean`
 * default: `false`
 
-#### [`appear`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-appear)
+##### [`appear`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-appear)
 
 By default the child component does not perform the enter transition when it first mounts, regardless of the value of `in`. If you want this behavior, set both `appear` and `in` to `true`.
 
@@ -344,17 +289,13 @@ By default the child component does not perform the enter transition when it fir
 * type: `boolean`
 * default: `false`
 
-#### 测试
+##### 测试
 
 [https://reactcommunity.org/react-transition-group/testing](https://reactcommunity.org/react-transition-group/testing)
-
-
 
 > 当我们使用测试框架事关闭react-transition-group的动画过渡效果
 
 In some situations, like visual snapshot testing, it's helpful to disable transitions so they don't complicate the test, or introduce abitrary waits. To make this easier `react-transition-group` exposes a way to globally toggle transitions. When set, **all** transitions, when toggled, will immediately switch to their entered or exited states as appropriate.
-
-
 
 ```js
 import { config } from 'react-transition-group
@@ -362,15 +303,7 @@ import { config } from 'react-transition-group
 config.disabled = true
 ```
 
-
-
-
-
-
-
-
-
-### Refs
+#### Refs
 
 [https://zh-hans.reactjs.org/docs/refs-and-the-dom.html](https://zh-hans.reactjs.org/docs/refs-and-the-dom.html)
 
@@ -384,13 +317,7 @@ config.disabled = true
 
 避免使用 refs 来做任何可以通过声明式实现来完成的事情。
 
-
-
-
-
-
-
-#### with ts
+##### with ts
 
 [https://www.designcise.com/web/tutorial/how-to-fix-useref-react-hook-cannot-assign-to-read-only-property-typescript-error](https://www.designcise.com/web/tutorial/how-to-fix-useref-react-hook-cannot-assign-to-read-only-property-typescript-error)
 
@@ -414,9 +341,7 @@ interface MutableRefObject<T> {
 
 所以我们在ts中使用ref 可以使用MutableRefObject
 
-
-
-#### LegacyRef 和 RefObject
+##### LegacyRef 和 RefObject
 
 在 React 中，`LegacyRef` 和 `RefObject` 是两种不同的类型，用于处理引用（ref）。它们在使用场景和定义上有一些区别。以下是它们的详细区别和使用方法。
 
@@ -500,9 +425,7 @@ const MyComponent: React.FC = () => {
 
 在现代 React 中，推荐使用 `RefObject` 和 `useRef` 来处理 refs，因为它们更直观且类型安全。`LegacyRef` 主要用于兼容旧版 React 的代码，通常不建议在新的代码中使用。
 
-
-
-#### ElementRef 和 ComponentPropsWithoutRef
+##### ElementRef 和 ComponentPropsWithoutRef
 
 在 React 中，`React.ElementRef` 和 `React.ComponentPropsWithoutRef` 是 TypeScript 类型工具，用于处理组件的引用和属性类型。它们有助于提高代码的类型安全性和可读性。以下是它们的详细作用和使用方法。
 
@@ -593,28 +516,18 @@ export default ParentComponent;
 
 在这个例子中，`React.ComponentPropsWithoutRef<'input'>` 用于获取 `input` 元素的属性类型，而不包括 `ref`。然后，我们使用这个类型来定义 `Input` 组件的属性类型，并创建一个高阶组件 `withLogging` 来增强 `Input` 组件。
 
-### 总结
+#### 总结
 
 - **`React.ElementRef`**：用于获取一个 React 元素或组件实例的引用类型，适用于需要直接操作 DOM 元素或类组件实例的场景。
 - **`React.ComponentPropsWithoutRef`**：用于获取一个组件的属性类型而不包括 `ref`，适用于需要复用组件属性类型的场景。
 
 这两个工具在 TypeScript 中非常有用，可以帮助你编写类型安全且可维护的 React 代码。
 
-
-
-### context
+#### context
 
 [https://dmitripavlutin.com/react-context-and-usecontext/](https://dmitripavlutin.com/react-context-and-usecontext/)
 
-
-
-
-
-
-
-
-
-### render prop 惰性初始化
+#### render prop 惰性初始化
 
 `someExpensiveComputation` 是一个相对耗时的操作。如果我们直接采用
 
@@ -635,17 +548,13 @@ const [state, setState] = useState(() => {
 
 因 `someExpensiveComputation` 运行在一个匿名函数下，该函数当且仅当初始化时被调用，从而优化性能。
 
+#### css 样式隔离
 
-
-### css 样式隔离 
-
-
-
-#### css module
+##### css module
 
 [https://github.com/css-modules/css-modules](https://github.com/css-modules/css-modules)
 
-探究了一些方式，最终采用 css module 的方式 
+探究了一些方式，最终采用 css module 的方式
 
 ```tsx
 import style from './index.module.scss'
@@ -672,9 +581,7 @@ export default defineConfig({
 })
 ```
 
-
-
-##### Multiple Classes
+###### Multiple Classes
 
 [Using Multiple Classes With React CSS Modules](https://www.codeconcisely.com/posts/react-css-modules-multiple-classes/)
 
@@ -686,9 +593,7 @@ export default defineConfig({
 </button>
 ```
 
-
-
-##### 全局作用域
+###### 全局作用域
 
 凡是使用global声明的class，都不会按照我们定义的格式进行转换，简单点说就是css module 不去处理
 
@@ -720,9 +625,7 @@ export default defineConfig({
 }
 ```
 
-
-
-##### hot reload
+###### hot reload
 
 [Configure CSS module class ](https://stackoverflow.com/questions/77072008/configure-css-module-class-name-in-vue-project-with-vite-js)
 
@@ -739,11 +642,7 @@ export default defineConfig({
   },
 ```
 
-
-
-
-
-### Hooks
+#### Hooks
 
 1. 更简洁的代码：使用Hooks可以使代码更加简洁，不再需要编写class组件，可以直接在函数组件中定义state和effect，减少了冗余的代码。
 2. 更好的代码复用：Hooks可以将逻辑相关的代码封装成自定义的Hook函数，以便在不同的组件中复用。
@@ -754,9 +653,7 @@ export default defineConfig({
 
 总之，使用React Hooks可以提高开发效率、改善代码质量和提供更好的用户体验。
 
-
-
-#### useEffect
+##### useEffect
 
 ```tsx
 const countRef = useRef(0);
@@ -773,11 +670,7 @@ const handleIncrement = () => {
 
 不需要吧Ref相关的东西放到useEffect依赖之中
 
-
-
-
-
-#### useRef
+##### useRef
 
 `useRef` 的初始值通常设置为 `null`：
 
@@ -790,17 +683,13 @@ const handleIncrement = () => {
 - 在初次渲染时，引用的 DOM 元素还没有被挂载到 DOM 中，`useRef` 的初始值为 `null` 是一个合理的初始状态。
 - `null` 是一个常用的初始值，表示引用对象还没有被赋值。
 
-
-
-#### useMemo
+##### useMemo
 
 **你可以把 `useMemo` 作为一种性能优化的手段，但不要把它当做一种语义上的保证。**
 
 记住，传给 `useMemo` 的函数是在渲染期间运行的。不要在其中做任何你通常不会在渲染期间做的事。举个例子，副作用属于 `useEffect`，而不是 `useMemo`。
 
-
-
-#### React.memo 和 useMemo
+##### React.memo 和 useMemo
 
 [http://www.ptbird.cn/react-hook-useMemo-purerender.html](http://www.ptbird.cn/react-hook-useMemo-purerender.html)
 
@@ -812,19 +701,11 @@ const MyComponent = React.memo(function MyComponent(props) {
 
 `React.memo` 为[高阶组件](https://zh-hans.reactjs.org/docs/higher-order-components.html)。
 
-
-
 如果你的组件在相同 props 的情况下渲染相同的结果，那么你可以通过将其包装在 `React.memo` 中调用，以此通过记忆组件渲染结果的方式来提高组件的性能表现。这意味着在这种情况下，React 将跳过渲染组件的操作并直接复用最近一次渲染的结果。
-
-
 
 `React.memo` 仅检查 props 变更。如果函数组件被 `React.memo` 包裹，且其实现中拥有 [`useState`](https://zh-hans.reactjs.org/docs/hooks-state.html) 或 [`useContext`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usecontext) 的 Hook，当 context 发生变化时，它仍会重新渲染。
 
-
-
 默认情况下其只会对复杂对象做浅层对比，如果你想要控制对比过程，那么请将自定义的比较函数通过第二个参数传入来实现。
-
-
 
 ```js
 function MyComponent(props) {
@@ -840,7 +721,7 @@ function areEqual(prevProps, nextProps) {
 export default React.memo(MyComponent, areEqual);
 ```
 
-#### useMemo 和 useEffect 的区别
+##### useMemo 和 useEffect 的区别
 
 > 不能在useMemo中操作DOM之类的副作用操作，不要在这个函数内部执行与渲染无关的操作，诸如副作用这类的操作属于 useEffect 的适用范畴，而不是 useMemo
 
@@ -856,21 +737,15 @@ export default React.memo(MyComponent, areEqual);
 
 [useEffect的陷阱](https://zhuanlan.zhihu.com/p/84697185)
 
-
-
 * **当你调用 useEffect 时，就是在告诉 React 在完成对 DOM 的更改后运行你的“副作用”函数**。**effect只能在DOM更新后再触发**.
 * useMemo 的函数会在渲染期间执行，所以使用`useMemo`就能解决怎么在`DOM`改变的时候，控制某些函数不被触发。
 
 * **
 * useEffect 可以看成 componentDidMount / componentDidUpdate / componentWillUnmount 这 3 个生命周期函数的替代。
 
+>
 
-
-> 
-
-
-
-#### useLayoutEffect
+##### useLayoutEffect
 
 [https://zhuanlan.zhihu.com/p/348701319](https://zhuanlan.zhihu.com/p/348701319)
 
@@ -878,31 +753,19 @@ export default React.memo(MyComponent, areEqual);
 
 在ssr中不要使用useLayoutEffect  （`useLayoutEffect` 是不会在服务端执行的，所以就有可能导致 ssr 渲染出来的内容和实际的首屏内容并不一致。）
 
-
-
-#### useContext
+##### useContext
 
 https://zhuanlan.zhihu.com/p/260789887
 
 **`useContext`可以帮助我们跨越组件层级直接传递变量，实现共享。**
 
-
-
-
-
-
-
-#### useCallback
+##### useCallback
 
 [https://zhuanlan.zhihu.com/p/56975681](https://zhuanlan.zhihu.com/p/56975681)
 
 乍一看使用了 Hooks 的 React 代码，可能会疑惑创建了这么多的 inline 函数会不会很影响性能？React 之前不是一直建议避免在 callback 里新建函数吗？首先可以看一下[官方的解释](https://link.zhihu.com/?target=https%3A//reactjs.org/docs/hooks-faq.html%23are-hooks-slow-because-of-creating-functions-in-render)，里面提到在 JavaScript 中闭包函数的性能是非常快的，并且得益于相对于 class 更轻量的函数组件，以及避免了 HOC，renderProps 等等额外层级，性能差不到那里去。
 
-
-
 **有些人可能会误以为 `useCallback` 可以用来解决创建函数造成的性能问题，其实恰恰相反，单从这个组件看的话 `useCallback` 只会更慢，因为 inline 函数是无论如何都会创建的，还增加了 `useCallback` 内部对 inputs 变化的检测。**
-
-
 
 ```js
 function A() {
@@ -918,15 +781,9 @@ function B() {
 
 `useCallback` 的真正目的还是在于缓存了每次渲染时 inline callback 的实例，这样方便配合上子组件的 `shouldComponentUpdate` 或者 `React.memo` 起到减少不必要的渲染的作用。需要不断提醒自己注意的是，在大部分 `callback` 都会是 `inline callback` 的未来，`React.memo` 和 `React.useCallback` 一定记得需要配对使用，缺了一个都可能导致性能不升反“降”，毕竟无意义的浅比较也是要消耗那么一点点点的性能。
 
-
-
 回到 Hooks 总结一下，**`useCallback` 的作用在于利用 `memoize` 减少无效的 `re-render`，来达到性能优化的作用。**还是那句老生常谈的话，“不要过早的性能优化”。从实际开发的经验来看，在做这类性能优化时，一定得观察比较优化的结果，因为某个小角落的 `callback` 就可能导致优化前功尽弃，甚至是适得其反。
 
-
-
 ----
-
-
 
 看完上面的疑问，你可能觉得 `useCallback` 也挺清晰的，那其实是你忘了第二个参数 `inputs` 而产生的错觉。有一个比较复杂的问题是，在当前的实现下，如果一个 `callback` 依赖于一个经常变化的 `state`，这个 `callback` 的引用是无法缓存的。React 文档的 FAQ 里也提到了这个[问题](https://link.zhihu.com/?target=https%3A//reactjs.org/docs/hooks-faq.html%23how-to-read-an-often-changing-value-from-usecallback)，还原一下问题的场景：
 
@@ -980,9 +837,7 @@ function Form() {
 1. 能充分利用一个函数式组件多次 `render` 时产生的相同功能的 `callback`
 2. `callback` 能不受闭包限制，访问到这个函数式组件内部最新的状态
 
-
-
-##### 在自定义 hooks 中
+###### 在自定义 hooks 中
 
 useCallback 在自定义 hooks 中的作用是用来缓存一个回调函数。在 React 组件中，每次渲染时，函数组件的所有代码都会重新执行一遍，因此如果每次渲染时都创建新的函数，可能会导致性能问题。
 
@@ -1004,11 +859,7 @@ function useCustomHook() {
 
 **在上述的示例中，无论组件何时重新渲染，handleClick 回调函数都会保持相同的引用。这样，当传递给子组件时，子组件就不会因为父组件的重新渲染而重新触发渲染逻辑。**
 
-
-
-
-
-#### useHistory
+##### useHistory
 
 > 从React Router v5.1.0开始，新增了useHistory钩子（hook），如果是使用React >16.8.0，使用useHistory即可实现编程时页面跳转导航。
 >
@@ -1019,23 +870,13 @@ const history = useHistory();
 history.push("/home")
 ```
 
-
-
-
-
-
-
-#### useReducer
+##### useReducer
 
 [https://zh-hans.reactjs.org/docs/hooks-reference.html#usereducer](https://zh-hans.reactjs.org/docs/hooks-reference.html#usereducer)
 
 [`useState`](https://zh-hans.reactjs.org/docs/hooks-reference.html#usestate) 的替代方案。它接收一个形如 `(state, action) => newState` 的 reducer，并返回当前的 state 以及与其配套的 `dispatch` 方法。（如果你熟悉 Redux 的话，就已经知道它如何工作了。）
 
-
-
 在某些场景下，`useReducer` 会比 `useState` 更适用，例如 state 逻辑较复杂且包含多个子值，或者下一个 state 依赖于之前的 state 等。并且，使用 `useReducer` 还能给那些会触发深更新的组件做性能优化，因为[你可以向子组件传递 `dispatch` 而不是回调函数](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-to-avoid-passing-callbacks-down) 。
-
-
 
 ```jsx
 const initialState = {count: 0};
@@ -1069,11 +910,7 @@ function Counter() {
 
 > `useReducer` 返回的 `dispatch` 函数是自带了 `memoize` 的，不会在多次渲染时改变。所以如果你想同时把 `state` 作为 context 传递下去，请分成两个 context 来声明。
 
-
-
-
-
-#### useInsertionEffect
+##### useInsertionEffect
 
 [https://react.dev/reference/react/useInsertionEffect](https://react.dev/reference/react/useInsertionEffect)
 
@@ -1081,9 +918,7 @@ function Counter() {
 
 useInsertionEffect是为CSS-in-JS库作者准备的。除非你正在做一个CSS-in-JS库，并且需要一个地方来注入样式，否则你可能会想要useEffect或uselayouteeffect。
 
-
-
-#### forwardRef
+##### forwardRef
 
 React.forwardRef:
 
@@ -1110,11 +945,7 @@ const ref = React.createRef();
 
 因此，当 React 附加了 ref 属性之后，`ref.current` 将直接指向 `<button>` DOM 元素实例。
 
-
-
-
-
-#### createRef和useRef
+##### createRef和useRef
 
 [精读《useRef 与 createRef 的区别》](https://juejin.cn/post/6844904079164964878)
 
@@ -1140,8 +971,6 @@ class MyComponent extends React.Component {
 
 ```
 
-
-
 useRef:
 
 `useRef` 返回一个可变的 ref 对象，其 `.current` 属性被初始化为传入的参数（`initialValue`）。返回的 ref 对象在组件的整个生命周期内保持不变。
@@ -1164,8 +993,6 @@ function TextInputWithFocusButton() {
 }
 ```
 
-
-
 两者的区别：
 
 **createRef 每次渲染都会返回一个新的引用，而 useRef 每次都会返回相同的引用。**
@@ -1174,9 +1001,7 @@ function TextInputWithFocusButton() {
 
 > createRef  并没有 Hooks 的效果，其值会随着 FunctionComponent 重复执行而不断被初始化：
 
-
-
-#### useImperativeHandle
+##### useImperativeHandle
 
 [https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
 
@@ -1186,9 +1011,7 @@ useImperativeHandle(ref, createHandle, [deps])
 
 `useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值。在大多数情况下，应当避免使用 ref 这样的命令式代码。`useImperativeHandle` 应当与 [`forwardRef`](https://zh-hans.reactjs.org/docs/react-api.html#reactforwardref) 一起
 
-
-
-#### useTransition
+##### useTransition
 
 > react 18
 
@@ -1210,27 +1033,15 @@ startTransition 的作用是告诉 React 在下一个渲染周期中，有一些
 
 通过使用 startTransition，React 可以根据需求进行优化，比如将多个状态更新批量执行，减少不必要的渲染，并与浏览器的空闲时间协作，以提升用户体验。
 
-
-
-#### useDeferredValue
+##### useDeferredValue
 
 > react 18
 
 延迟值
 
+#### 自定义hook
 
-
-
-
-
-
-### 自定义hook
-
-
-
-
-
-#### useCatchError
+##### useCatchError
 
 监听全局错误信息
 
@@ -1270,9 +1081,7 @@ export const useCatchError = () => {
 }
 ```
 
-
-
-#### useScreen 
+##### useScreen
 
 监听屏幕大小信息
 
@@ -1300,11 +1109,7 @@ export const useScreen = () => {
 }
 ```
 
-
-
-
-
-#### useRouteNavigation
+##### useRouteNavigation
 
 ```ts
 export const useRouteNavigation = () => {
@@ -1359,13 +1164,7 @@ export const useRouteNavigation = () => {
 }
 ```
 
-
-
-
-
-
-
-#### usePrevious 
+##### usePrevious
 
 [uidotdev/usehooks 是怎么实现 usePrevious 的？](https://blog.shadowfish0.top/2023-06-10-useprevious.html)
 
@@ -1401,11 +1200,7 @@ function Counter() {
 
 由于`useRef`的值不会触发重新渲染，所以页面上渲染的previous的值和它现在实际存的值是**不一样**的。
 
-
-
-
-
-#### useClassroomStyle
+##### useClassroomStyle
 
 > 自定义hook
 
@@ -1457,7 +1252,7 @@ export const useClassroomStyle = ({
 
 ```
 
-使用： 
+使用：
 
 ```tsx
 const FixedAspectRatioContainer: React.FC<FixedAspectRatioProps> = observer(
@@ -1477,15 +1272,7 @@ const FixedAspectRatioContainer: React.FC<FixedAspectRatioProps> = observer(
 );
 ```
 
-
-
-
-
-
-
-
-
-#### useMap
+##### useMap
 
 中央区域保持恒定的宽高比
 
@@ -1497,8 +1284,6 @@ export const PAGE_MIN_HEIGHT = Math.floor(PAGE_MIN_WIDTH / PAGE_RATIO) // page m
 export const PAGE_MAX_WIDTH = PAGE_MIN_WIDTH * 2 // page max width
 export const PAGE_MAX_HEIGHT = Math.floor(PAGE_MAX_WIDTH / PAGE_RATIO) // page max height
 ```
-
-
 
 ```ts
 export const useMap = () => {
@@ -1585,21 +1370,9 @@ export const useMap = () => {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-### React.lazy
+#### React.lazy
 
 `React.lazy()` 允许你定义一个动态加载的组件。这有助于缩减 bundle 的体积，并延迟加载在初次渲染时未用到的组件。
-
-
 
 ```jsx
 // 这个组件是动态加载的
@@ -1608,9 +1381,7 @@ const SomeComponent = React.lazy(() => import('./SomeComponent'));
 
 > 请注意，渲染 `lazy` 组件依赖该组件渲染树上层的 `<React.Suspense>` 组件。这是指定加载指示器（loading indicator）的方式。
 
-
-
-### React.Suspense
+#### React.Suspense
 
 `React.Suspense` 可以指定加载指示器（loading indicator），以防其组件树中的某些子组件尚未具备渲染条件。目前，懒加载组件是 `<React.Suspense>` 支持的**唯一**用例：
 
@@ -1630,15 +1401,9 @@ function MyComponent() {
 }
 ```
 
-
-
-
-
-### React.cloneElement
+#### React.cloneElement
 
 [https://zh-hans.reactjs.org/docs/react-api.html#cloneelement](https://zh-hans.reactjs.org/docs/react-api.html#cloneelement)
-
-
 
 ```tsx
 React.cloneElement(
@@ -1648,35 +1413,21 @@ React.cloneElement(
 )
 ```
 
-
-
 以 `element` 元素为样板克隆并返回新的 React 元素。**返回元素的 props 是将新的 props 与原始元素的 props 浅层合并后的结果**。新的子元素将取代现有的子元素，而来自原始元素的 `key` 和 `ref` 将被保留。
-
-
 
 `React.cloneElement()` 几乎等同于：
 
-```
+```js
 <element.type {...element.props} {...props}>{children}</element.type>
 ```
 
-
-
-
-
-
-
-### 陷阱Literal Array与Literal Object
-
-
+#### 陷阱Literal Array与Literal Object
 
 ```jsx
 {this.props.items.map(i =>
     <Cell data={i} options={this.props.options || []} />
 )}
 ```
-
-
 
 若options为空，则会使用[]。[]每次会生成新的Array，因此导致Cell每次的props都不一样，导致需要重绘。解决方法如下:
 
@@ -1687,15 +1438,7 @@ const default = [];
 )}
 ```
 
-
-
-
-
-### 内联函数
-
-
-
-
+#### 内联函数
 
 函数也经常作为props传递，由于每次需要为内联函数创建一个新的实例，所以每次function都会指向不同的内存地址。比如：
 
@@ -1735,9 +1478,7 @@ constructor(props) {
 
 >这也是性能优化中要做到的，因为render()可能会调用多次，所以要把把绑定this操作移到render()外面
 
-
-
-### `useState` 不会自动合并更新对象
+#### `useState` 不会自动合并更新对象
 
 与 class 组件中的 `setState` 方法不同，`useState` 不会自动合并更新对象。你可以用函数式的 `setState` 结合展开运算符来达到合并更新对象的效果。
 
@@ -1748,13 +1489,9 @@ setState(prevState => {
 });
 ```
 
+### React 18
 
-
-
-
-## React 18
-
-### **useTransition**
+#### **useTransition**
 
 [https://juejin.cn/post/7038402899860258847](https://juejin.cn/post/7038402899860258847)
 
@@ -1767,9 +1504,7 @@ setState(prevState => {
 - 更新协调过程是**可中断**的，**渲染引擎**不会长时间被**阻塞**，用户可以及时得到响应；
 - 不需要开发人员去做额外的考虑，整个优化过程交给 **react** 和**浏览器**即可；
 
-
-
-###  SSR
+####  SSR
 
 [Next.js 14 Tutorial - 48 - Suspense for SSR](https://www.youtube.com/watch?v=NdSthd1Ek8Q&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=48)
 Use the `<Suspense>` component to unlock two major SSR features:
@@ -1781,7 +1516,7 @@ Use the `<Suspense>` component to unlock two major SSR features:
 
 HTML streaming on the Server
 
-You don't have to fetch everything befor you can show anything 
+You don't have to fetch everything befor you can show anything
 
 If a particular section delays the initial HIML, it can be seamlessly integrated into the stream later
 
@@ -1797,9 +1532,7 @@ React begins hydrating as soon as possible, enabling interactions with elements 
 
 In scenarios where multiple components are awaiting hydration, React prioritizeshydration based on user interactions (React 根据用户交互优先考虑水合作用)
 
-
-
-### React Server Components(RSC)
+#### React Server Components(RSC)
 
 > CSR => SSR => Suspense for SSR
 
@@ -1823,7 +1556,7 @@ The architecture introduces a dual-component model
 
 This distinction is not based on the functionality of the components but rather onwhere they execute and the specific environments they are designed to interact with (这种区别不是基于组件的功能，而是基于它们执行的位置以及它们设计用于交互的特定环境)
 
-#### Benefits 优点
+##### Benefits 优点
 
 **Reduced Bundle Sizes** (减少打包体积)
 
@@ -1846,13 +1579,7 @@ This distinction is not based on the functionality of the components but rather 
 
 **Efficient Streaming** (高效流媒体)
 
-
-
-
-
-
-
-# Performance Tools
+## Performance Tools
 
 [https://legacy.reactjs.org/docs/perf.html](https://legacy.reactjs.org/docs/perf.html)
 
@@ -1860,23 +1587,13 @@ This distinction is not based on the functionality of the components but rather 
 import Perf from 'react-addons-perf'; // ES6
 ```
 
+### 遇到的问题
 
-
-
-
-
-
-## 遇到的问题
-
-
-
-### state初始化问题
+#### state初始化问题
 
 [ https://blog.csdn.net/LiuChengYu520/article/details/82867513 ]( https://blog.csdn.net/LiuChengYu520/article/details/82867513 )
 
-
-
-```
+```js
 Warning: Can't call setState on a component that is not yet mounted.
 
 This is a no-op, but it might indicate a bug in your application.
@@ -1884,17 +1601,9 @@ This is a no-op, but it might indicate a bug in your application.
 Instead, assign to `this.state` directly or define a `state = {};` 
 ```
 
-
-
-
-
 不能再一个组件尚未mounted时调用 setState() 方法，这是一个空操作，但是可能会导致bug，所以， 直接给`this.state` 赋值，或者定义成`state = {};`
 
-
-
 **问题出现在直接给this.state赋值了**
-
-
 
 ```js
   constructor(props){
@@ -1903,27 +1612,13 @@ Instead, assign to `this.state` directly or define a `state = {};`
   }
 ```
 
-
-
-
-
 要注意这一点
 
-
-
-
-
-
-
-### Warning: Legacy context API
+#### Warning: Legacy context API
 
 [ https://github.com/JedWatson/react-select/issues/3703 ]( https://github.com/JedWatson/react-select/issues/3703 )
 
-
-
 发现一个warning
-
-
 
 ```js
 Warning: Legacy context API has been detected within a strict-mode tree: 
@@ -1939,27 +1634,17 @@ Learn more about this warning here:
 https://fb.me/react-strict-mode-warnings
 ```
 
-
-
 ----
-
-
 
 原因：
 
-
-
 From React 16.3 the old Context API was deprecated and
-it's rising warnings when runng in strict-mode. 
+it's rising warnings when runng in strict-mode.
 
-
-
- 在React 16.3中，旧的上下文API被弃用了，当以严格模式运行时，它发出了不断上升的警告。 
+ 在React 16.3中，旧的上下文API被弃用了，当以严格模式运行时，它发出了不断上升的警告。
 
 <details class="details-overlay details-reset dropdown hx_dropdown-fullscreen position-relative float-left d-inline-block reaction-popover-container reactions-menu js-reaction-popover-container" style="box-sizing: border-box; display: inline-block !important; position: relative; float: left !important;"><summary class="btn-link reaction-summary-item add-reaction-btn" aria-label="Add your reaction" aria-haspopup="menu" role="button" style="box-sizing: border-box; display: inline-block; cursor: pointer; padding: 9px 15px 7px; font-size: inherit; color: rgb(3, 102, 214); text-decoration: none; white-space: nowrap; user-select: none; background-color: initial; border: 0px; -webkit-appearance: none; opacity: 0; transition: opacity 0.1s ease-in-out 0s; float: left; line-height: 18px; list-style: none;"><svg class="octicon octicon-smiley" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.81 12.81a6.72 6.72 0 01-2.17 1.45c-.83.36-1.72.53-2.64.53-.92 0-1.81-.17-2.64-.53-.81-.34-1.55-.83-2.17-1.45a6.773 6.773 0 01-1.45-2.17A6.59 6.59 0 011.21 8c0-.92.17-1.81.53-2.64.34-.81.83-1.55 1.45-2.17.62-.62 1.36-1.11 2.17-1.45A6.59 6.59 0 018 1.21c.92 0 1.81.17 2.64.53.81.34 1.55.83 2.17 1.45.62.62 1.11 1.36 1.45 2.17.36.83.53 1.72.53 2.64 0 .92-.17 1.81-.53 2.64-.34.81-.83 1.55-1.45 2.17zM4 6.8v-.59c0-.66.53-1.19 1.2-1.19h.59c.66 0 1.19.53 1.19 1.19v.59c0 .67-.53 1.2-1.19 1.2H5.2C4.53 8 4 7.47 4 6.8zm5 0v-.59c0-.66.53-1.19 1.2-1.19h.59c.66 0 1.19.53 1.19 1.19v.59c0 .67-.53 1.2-1.19 1.2h-.59C9.53 8 9 7.47 9 6.8zm4 3.2c-.72 1.88-2.91 3-5 3s-4.28-1.13-5-3c-.14-.39.23-1 .66-1h8.59c.41 0 .89.61.75 1z"></path></svg></summary></details>
 Please update the following components: LocaleReceiver
-
-
 
 一开始以为要更新组件，结果这个组件在anti组件库里面，后面发现React 16.3默认添加
 
@@ -1972,29 +1657,13 @@ ReactDOM.render(
 );
 ```
 
-
-
-
-
- 
-
 解决：
 
 [ https://github.com/ant-design/ant-design/issues/22604 ]( https://github.com/ant-design/ant-design/issues/22604 )
 
-
-
 删除了React.StrictMode就好了，没有warning了
 
-
-
-
-
-
-
-
-
-### ComponentType and ReactType and ElementType
+#### ComponentType and ReactType and ElementType
 
 [React.ComponentType<Props> ](https://flow.org/en/docs/react/types/#toc-react-componenttype)
 
@@ -2032,13 +1701,7 @@ type ElementType =
 
 ```
 
-
-
-
-
-
-
-### StrictMode导致组件渲染两次
+#### StrictMode导致组件渲染两次
 
 [https://juejin.cn/post/6858508463274885134](https://juejin.cn/post/6858508463274885134)
 
@@ -2055,23 +1718,17 @@ ReactDOM.render(
 
 `React.StrictMode` 不能马上检测到副作用，但是它可以通过故意调用一些关键函数两次，来帮助我们发现副作用。
 
-这个行为肯定对性能有一些影响，但我们不应该担心，因为它只在开发而不是生产环境中发生。 
+这个行为肯定对性能有一些影响，但我们不应该担心，因为它只在开发而不是生产环境中发生。
 
 **(可以关掉)**
 
-
-
-### useEffect 陷阱
+#### useEffect 陷阱
 
 [https://zhuanlan.zhihu.com/p/84697185](https://zhuanlan.zhihu.com/p/84697185)
 
 **使用useEffect，不要调用函数层次太多，代码应该一眼看清楚哪些函数和变量会被useEffect调用（被使用到的变量一定要加到deps依赖中）**。
 
-
-
-
-
-### DetailedHTMLProps
+#### DetailedHTMLProps
 
 [https://stackoverflow.com/questions/58418950/whats-the-difference-between-detailedhtmlprops-and-htmlattributes](https://stackoverflow.com/questions/58418950/whats-the-difference-between-detailedhtmlprops-and-htmlattributes)
 
@@ -2081,15 +1738,9 @@ ReactDOM.render(
  type DetailedHTMLProps<E extends HTMLAttributes<T>, T> = ClassAttributes<T> & E;
 ```
 
-
-
-
-
-### custom HTML attributes
+#### custom HTML attributes
 
 [https://stackoverflow.com/questions/40093655/how-do-i-add-attributes-to-existing-html-elements-in-typescript-jsx/56109822#56109822](https://stackoverflow.com/questions/40093655/how-do-i-add-attributes-to-existing-html-elements-in-typescript-jsx/56109822#56109822)
-
-
 
 React type definition file (by default - `index.d.ts` when staring with `create-react-app`) contain list of all the standard HTML elements, as well as known attributes.
 
@@ -2103,11 +1754,7 @@ declare module 'react' {
   }
 ```
 
-
-
-
-
-### 非必要渲染
+#### 非必要渲染
 
 [https://ant-design.antgroup.com/docs/blog/render-times-cn](https://ant-design.antgroup.com/docs/blog/render-times-cn)
 
@@ -2123,13 +1770,7 @@ return (
 );
 ```
 
-
-
-
-
-
-
-### useRef不能作为依赖项
+#### useRef不能作为依赖项
 
 [useRef不能作为依赖项](https://juejin.cn/s/useref%20%E8%83%BD%E4%BD%9C%E4%B8%BA%E4%BE%9D%E8%B5%96%E9%A1%B9%E5%90%97)
 
@@ -2137,52 +1778,30 @@ React 中的 `useRef` 不能作为依赖项。
 
 `useRef` 返回的是一个稳定的对象引用，不会在组件重新渲染时发生变化。因此，在函数组件中使用 `useRef` 创建的引用不会触发组件重新渲染。与此相反，依赖项应该是组件中可能会导致重新渲染的状态变量、props、函数等等。**如果使用 `useRef` 作为依赖项，React 将无法检测到变化并触发重新渲染，这会导致问题。**
 
+### react-scripts
 
-
-
-
-## react-scripts
-
-
-
-### test nowatch
+#### test nowatch
 
 [https://github.com/facebook/create-react-app/issues/1137](https://github.com/facebook/create-react-app/issues/1137)
 
 Allow `npm test` to not run in watch mode for better cross-platform / tooling CI.
 
-
-
 最后解决方案：
 
 在package.json中的scripts增加
 
-```
+```js
 
   "scripts": {
     "test:nowatch": "cross-env CI=true react-scripts test",
   },
 ```
 
-
-
-
-
-## **rc-util**
+### **rc-util**
 
 [https://util.vercel.app/](https://util.vercel.app/)
 
 Common Utils For React Component
 
-
-
-
-
-
-
-
-
-
 [1]: http://www.ruanyifeng.com/blogimg/asset/2015/bg2015033110.png
 [2]: https://pic1.zhimg.com/80/v2-a32cb02859ea4ac0f8f50f1ec885d85c_hd.jpg
-

@@ -12,25 +12,19 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-# 可视化
+## 可视化
 
 [前端可视化入门](https://juejin.cn/book/7269673629964173331)
 
 **可视化是通过图形、图像、图表等`视觉元素`来呈现`数据`、`信息`或`概念`的过程**。它将抽象的、复杂的或大量的数据转化为可视化形式，以便人们能够更直观、更容易地理解和分析。
 
-
-
-# WebGL 
+## WebGL
 
 **`WebGL`（Web Graphics Library） 的诞生是为了在 Web 浏览器中实现高性能的 3D 图形渲染**。它是基于 OpenGL ES（OpenGL for Embedded Systems）标准的一个 JavaScript API。
 
 WebGL是一种用于在web浏览器中渲染交互式3D图形的Web标准。它是在HTML5和JavaScript技术的基础上开发的，允许开发者在浏览器中使用硬件加速的图形渲染，实现高性能的3D和2D图形效果。WebGL通过在浏览器中运行OpenGL ES API，将3D图形渲染功能带到了Web平台，使用者可以在任何支持WebGL的浏览器中无需安装插件的情况下访问和运行WebGL应用程序。WebGL应用程序通常用于游戏开发、数据可视化、虚拟现实、建筑和工程模拟等领域。
 
-
-
-## Shader着色器
+### Shader着色器
 
 **操作 WebGL 的三维图形 API 本质上其实就是处理着色器 Shader。**
 
@@ -41,21 +35,13 @@ Shader 着色器通常由两个主要部分组成：顶点着色器（Vertex Sha
 - **顶点着色器**是在图形渲染管线的顶点处理阶段执行的程序。它接收输入的顶点数据，并对每个顶点进行一系列的计算和变换，如位置变换、法线变换、纹理坐标变换等并输出。
 - **片段着色器**是在图形渲染管线的片段处理阶段执行的程序。它接收顶点着色器传递过来的数据，并对每个片段（像素）进行计算。片段着色器通常用于计算光照、纹理采样、颜色插值等操作，并最终确定片段的最终颜色。也就是屏幕的显示效果是它来决定的。
 
-
-
-
-
-## 可以使用canvas标签
+### 可以使用canvas标签
 
 WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（RenderingContext）会被绑定到canvas元素上。当使用WebGL时，可以通过获取canvas的上下文并进行一系列的WebGL操作，如创建图形对象、定义顶点和片元着色器、设置顶点缓冲区等。
 
 在使用WebGL时，可以通过canvas的上下文调用WebGL API来绘制和渲染复杂的图形，包括3D模型、纹理映射、光照效果等。在canvas标签上进行绘制，可以通过CSS样式对其进行定位、大小和样式的调整，以实现所需的页面布局和美观效果。
 
-
-
-
-
-## WebGL和Canvas的区别
+### WebGL和Canvas的区别
 
 1. 渲染方式：Canvas使用2D渲染引擎，而WebGL使用3D渲染引擎。Canvas通过绘制2D图形，如矩形、圆形和线条来渲染图像。而WebGL使用OpenGL ES的API来进行3D图形渲染。
 2. 功能和复杂性：WebGL相对于Canvas提供更强大的图形渲染功能。WebGL可以进行复杂的3D图形渲染、纹理映射、光照效果等。而Canvas则主要适用于简单的2D图形渲染，对于复杂的3D渲染需要使用其他库或框架。
@@ -68,13 +54,9 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 
 **Canvas它的绘制过程其实都是在CPU里面完成的，消耗的都是CPU的计算时间，最后产出一帧图像，copy到了显存，让GPU显示就完了。**
 
+## canvas
 
-
-# canvas
-
-
-
-## 绘制
+### 绘制
 
 ```ts
     ctx.fillStyle = "black";
@@ -88,11 +70,7 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
     ctx.closePath()
 ```
 
-
-
-
-
-## width/height
+### width/height
 
 `canvas` 元素有两个属性 `width` 和 `height`，用于定义画布的尺寸。`width` 定义画布的宽度，`height` 定义画布的高度。这两个属性需要使用具体的数值来设置，例如 `width="500"` 和 `height="300"`。
 
@@ -106,11 +84,7 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 
 综上所述，`width` 和 `height` 是用于定义 `canvas` 元素的实际大小的属性，`style` 是用于定义元素的样式，其中包括宽度和高度。在设置 `canvas` 元素的尺寸时，`width` 和 `height` 的优先级更高，会覆盖 `style` 属性中的宽度和高度设置。
 
-
-
-
-
-## 多次fill覆盖
+### 多次fill覆盖
 
 [https://juejin.cn/post/7007691485160144904](https://juejin.cn/post/7007691485160144904)
 
@@ -118,13 +92,7 @@ WebGL可以在canvas标签上进行渲染是因为WebGL的渲染上下文（Rend
 
 **每次画新线段的路径前，都要用ctx.beginPath()**
 
-
-
-
-
-
-
-## restore/save
+### restore/save
 
 [https://juejin.cn/post/6844903879599996942](https://juejin.cn/post/6844903879599996942)
 
@@ -160,11 +128,7 @@ function draw() {
 
 我们发现最后绘制的圆形的填充色和阴影和第一个矩形的保持了一致，这是因为restore之后，使用了初始绘制状态。
 
-
-
-
-
-## 离屏渲染
+### 离屏渲染
 
 [https://developer.mozilla.org/zh-CN/docs/Web/API/OffscreenCanvas](https://developer.mozilla.org/zh-CN/docs/Web/API/OffscreenCanvas)
 
@@ -181,9 +145,7 @@ let bitmap = offscreenCanvas.transferToImageBitmap()
 ctx.drawImage(bitmap, 0, 0); // 在别的 canvas 的 context 上绘制
 ```
 
-
-
-### convertToBlob
+#### convertToBlob
 
 ```ts
 let blob = await offscreenCanvas.convertToBlob()
@@ -200,19 +162,11 @@ img.src = url;
 document.body.appendChild(img);
 ```
 
-
-
-
-
-
-
-# pixi
+## pixi
 
 [https://pixijs.com/](https://pixijs.com/)
 
-
-
-## 自适应屏幕宽高
+### 自适应屏幕宽高
 
 ```tsx
   useEffect(()=>{
@@ -226,23 +180,11 @@ document.body.appendChild(img);
   },[])
 ```
 
-
-
-
-
-
-
-## 雪碧图
+### 雪碧图
 
 [http://pixijs.huashengweilai.com/guide/start/8.make-sprite-from-a-tileset-sub-image.html#%E9%9B%AA%E7%A2%A7%E5%9B%BE](http://pixijs.huashengweilai.com/guide/start/8.make-sprite-from-a-tileset-sub-image.html#%E9%9B%AA%E7%A2%A7%E5%9B%BE)
 
-
-
-
-
-
-
-## 资源预加载
+### 资源预加载
 
 ```ts
 import * as PIXI from 'pixi.js';
@@ -261,11 +203,7 @@ const downTexture = PIXI.Texture.from('down');
 
 **add 方法已经被遗弃，请用load代替**
 
-
-
-
-
-### Assets.load 和 Texture.from 区别
+#### Assets.load 和 Texture.from 区别
 
 Texture.from
 
@@ -300,11 +238,7 @@ Assets.load('path/to/image.png').then(texture => {
 
 根据实际需要选择适合的方法，例如，如果你要加载多个资源，推荐使用 `Assets.load`；如果你只需要快速加载一个图像来创建一个纹理，那么 `Texture.from` 可能是更方便的选择。
 
-
-
-
-
-## **设置人物位置**
+### **设置人物位置**
 
 [https://cloud.tencent.com/developer/article/1900019](https://cloud.tencent.com/developer/article/1900019)
 
@@ -336,9 +270,7 @@ class Person{
 
 ```
 
-
-
-## anchor 和 pivot
+### anchor 和 pivot
 
 在 PixiJS 中，`anchor` 和 `pivot` 是两个与对象定位和旋转相关但有所不同的概念。以下是它们之间的主要区别：
 
@@ -363,25 +295,15 @@ sprite.pivot.set(sprite.width / 2, sprite.height / 2); // 设置为中心
 - **`anchor`** 影响对象的放置位置。
 - **`pivot`** 影响对象的旋转和缩放中心。
 
-
-
-
-
-# **D3.js**
+## **D3.js**
 
 基于 JavaScript 的可视化编程库，可以帮助开发人员创建交互式数据可视化。D3.js 提供了强大的 SVG 和 CSS 支持，使得用户能够轻松创建高品质的可视化图表。
 
-
-
-# Three.js
+## Three.js
 
 **`Three.js` 是一个基于 JavaScript 的开源 3D 图形库，用于在网页上创建和展示交互式的 3D 图形和动画**。它是构建在 WebGL 技术之上的高级抽象层，使得使用 WebGL 更加简单和方便。
 
-
-
-
-
-# WebGPU
+## WebGPU
 
 **`WebGPU` 是一种新的 Web 标准，用于在 Web 浏览器中进行高性能图形渲染和计算**。它旨在提供比 WebGL 更底层、更直接的硬件访问，并且更好地与现代图形 API（如 Vulkan、Metal 和 Direct3D 12）对接。
 

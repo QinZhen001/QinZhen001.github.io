@@ -11,10 +11,9 @@ tags:
 
 > “Yeah It's on. ”
 
+## 正文
 
-# 正文
-
-## 框架设计
+### 框架设计
 整体思路是用gulp复制src文件夹中的文件到dist文件夹，在个过程中完成编译，处理相关文件。如处理js文件，用babel将es6语法转成es5；处理less文件，将less文件转wxss；处理图片文件进行压缩等。
 
 核心的三条命令
@@ -25,28 +24,19 @@ tags:
 在development环境中js会加上sourcemaps
 在production环境中会压缩wxss，压缩js，压缩图片，去除js的sourcemaps
 
-
-
-## diff
+### diff
 
 [https://github.com/mattphillips/deep-object-diff/blob/master/src/diff/index.js](https://github.com/mattphillips/deep-object-diff/blob/master/src/diff/index.js)
 
 小程序框架中由于小程序原生setData所做的diff并不够高效，所以打算自己来搞diff
 
-
-### deep-object-diff
-
+#### deep-object-diff
 
 找到了一个diff库
 
 ```javascript
 export const properObject = o => isObject(o) && !o.hasOwnProperty ? { ...o } : o;
 ```
-
-
-
-
-
 
 ```javascript
 import { isDate, isEmpty, isObject, properObject } from '../utils';
@@ -87,73 +77,43 @@ import { isDate, isEmpty, isObject, properObject } from '../utils';
 
 ```
 
-
 wxa框架中的diff就是采用这个diff
-
 
 [https://github.com/wxajs/wxa/blob/dev/packages/wxa-core/src/diff/diff.js](https://github.com/wxajs/wxa/blob/dev/packages/wxa-core/src/diff/diff.js)
 
-
-
-
-### flat
+#### flat
 
 [https://github.com/hughsk/flat](https://github.com/hughsk/flat)
 
-
-
 Take a nested Javascript object and flatten it, or unflatten an object with delimited keys.
-
-
-
 
 取一个嵌套的Javascript对象并将其展平，或使用分隔键取消展平一个对象。
 
-
-
-
-### is-buffer
+#### is-buffer
 
 [https://www.npmjs.com/package/is-buffer](https://www.npmjs.com/package/is-buffer)
 
-
 Determine if an object is a Buffer (including the browserify Buffer)
-
 
 -----
 
 Why not use Buffer.isBuffer?
 
-
 This module lets you check if an object is a Buffer without using Buffer.isBuffer (which includes the whole buffer module in browserify). It's future-proof and works in node too
 
+### 爬坑
 
-
-
-
-
-
-
-
-## 爬坑
-
-
-### 对node_modules的处理
+#### 对node_modules的处理
 
 **不应该对src中node_modules进行处理**
 
-
 复制src中package.json到dist，利用gulp-install安装依赖，生成dist下的node_modules。
-
 
 >不监听src中node_modules文件的修改
 
-
-
-### async/await
+#### async/await
 
 > 新版本官方已支持
-
 
 [参考项目](https://github.com/zarknight/owx)
 
@@ -169,15 +129,11 @@ This module lets you check if an object is a Buffer without using Buffer.isBuffe
 
 -------
 
-
 **第二种需要自己引入regeneratorRuntime这个模块**
-
 
 如果 勾选微信开发者工具中的ES6转ES5或者自己用babel等工具把小程序的js文件转成了es5那么会报错
 
-
 ![enter description here][1]
-
 
 ```javascript
  thirdScriptError 
@@ -186,9 +142,7 @@ This module lets you check if an object is a Buffer without using Buffer.isBuffe
  ReferenceError: regeneratorRuntime is not defined
 ```
 
-
 解决方案：
-
 
 ```javascript
 // 在app.js头部增加
@@ -200,8 +154,7 @@ global.regeneratorRuntime = require('./lib/regenerator/runtime-module')
 const {regeneratorRuntime} = global
 ```
 
-
-### 使用ES6特性Class后出现编译异常
+#### 使用ES6特性Class后出现编译异常
 
 [https://segmentfault.com/a/1190000009739674](https://segmentfault.com/a/1190000009739674)
 
@@ -211,9 +164,7 @@ Uncaught SyntaxError: Unexpected token export
 
 **这里也是因为es6语法的问题，将js转成es5就行了**
 
-
-
-### require的坑
+#### require的坑
 
 **微信小程序中require是不支持对象解构**
 
@@ -221,8 +172,6 @@ Uncaught SyntaxError: Unexpected token export
 // 下面这种情况是错误的
 const {setTagId} = require('./utils/util')
 ```
-
-
 
 ```javascript
 //下面这种写法也是错误的 在其他文件中无法require进来
@@ -237,7 +186,6 @@ module.exports = {
 
 >但是在web开发中是可以。。。
 
-
 只能改成
 
 ```javascript
@@ -248,13 +196,11 @@ exports.singletonForLogin = singletonForLogin
 exports.getVersion = getVersion
 ```
 
-
-### 框架的打包的坑
+#### 框架的打包的坑
 
 由于我们使用es6转es5和增强编译，所以要把框架的npm包打成es5的形式
 
-
-```
+```json
 {
   "presets": [
     [
@@ -278,27 +224,19 @@ exports.getVersion = getVersion
 }
 ```
 
-
 这样纸这个npm包会带上@babel/runtime的东西
 
 而小程序增强编译后自带@babel/runtime里面有helpers和generator.js
 
 由于小程序npm的特殊性，和小程序自带的处理，这样的做法其实并不好
 
-
 **更好的做法应该是将npm与工作流结合起来，更好的使用npm，更好的开发体验。**
-
-
-
 
 解决方法一：
 
-
 像beautywejs一样
 
-
 利用 webpack-stream 和 npm/index
-
 
 ```javascript
 // 在src的npm/index.js中
@@ -324,25 +262,15 @@ export { default as beautywe } from '@beautywe/core';
 
 必要的情况下可以通过一些ast手段，改变引入npm的路径。
 
-
-
-
 总结起来：
 
 **Npm直接在项目引入node_modules的内容，无需借助小程序的那套npm流程，无需手工复制依赖库。**
 
-
 --------
-
-
-
 
 解决方法二：
 
-
-
 重新设计一些module机制
-
 
 像wepy，我们去查看它的dist
 
@@ -364,27 +292,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 ---------
 
-
 **最好的解决办法**
 
 其实，我们完全可以直接使用小程序的npm流程
 
 **我之所以不使用是因为我遇到一个坑，这个坑拖累了我一个星期。**
 
-
 **真的真的非常的坑**
-
 
 下面来详细说一说
 
-
 首先，我们使用webpack打包框架，不指定filename，默认会是main.js
-
 
 接着，我们吧打包好的文件上传npm
 
 接入小程序的npm使用流程
-
 
 我们发现
 
@@ -394,30 +316,21 @@ const xhw = require("@xhw/core")
 ```
 但是之前sdk是可以的，经过长时间的对比和探究，发现：
 
-
 ![enter description here][2]
-
 
 ![enter description here][3]
 
-
-
 这里居然是main.js....
-
-
 
 难怪require不进来，使用require("@xhw/core/main.js")应该就行了
 
-
 -------
-
 
 更好的办法
 
 之后，使用webpack打包框架，指定filename为index.js
 
 ![enter description here][4]
-
 
 ```javascript
 const xhw = require("@xhw/core")
@@ -429,19 +342,15 @@ const xhw = require("@xhw/core")
 **这个教训告诉我，如果要打包一个第三方库最好命名index.js**
 **这个教训告诉我，如果要打包一个第三方库最好命名index.js**
 
-
 over
 
 慢着，还有一个问题，增强编译自带@babel/runtime，那我们打包的库就没必要带上runtime
 
-
 ![enter description here][5]
-
 
 所以我们打包框架所用的babel配置为
 
-
-```
+```json
 {
   "presets": [
     "@babel/preset-env"
@@ -463,13 +372,9 @@ over
 
 进一步减少包体积
 
-
-
-
-### 去掉 use strict
+#### 去掉 use strict
 
 默认babel转义后的js文件头会带上'use strict'
-
 
 第一次尝试：在babel7中使用@babel/plugin-transform-strict-mode，失败
 
@@ -481,7 +386,7 @@ over
 
 [https://www.babeljs.cn/docs/options#misc-options](https://www.babeljs.cn/docs/options#misc-options)
 
-```
+```yaml
 sourceType  
 
 Type: "script" | "module" | "unambiguous"
@@ -493,10 +398,7 @@ Default: "module"
 * "module" - Parse the file using the ECMAScript Module grammar. Files are automatically strict, and import/export statements are allowed.
 * "unambiguous" - Consider the file a "module" if import/export statements are present, or else consider it a "script".
 
-
-
 **最终解决办法：**
-
 
 **使用babel6，增加了配置"modules": false**
 
@@ -510,20 +412,13 @@ Default: "module"
 }
 ```
 
+#### gulp相关
 
-
-### gulp相关
-
-
-
-
-
-#### gulp-clean-css报错
+##### gulp-clean-css报错
 
 [https://segmentfault.com/q/1010000009464383/a-1020000009474922](https://segmentfault.com/q/1010000009464383/a-1020000009474922)
 
-
-```
+```js
 Error [ERR_UNHANDLED_ERROR]: Unhandled error. (Ignoring local @import of "../../common/common" as resource is missing.)
     at Domain.emit (events.js:178:17)
     at Domain.EventEmitter.emit (domain.js:441:20)
@@ -534,9 +429,7 @@ Error [ERR_UNHANDLED_ERROR]: Unhandled error. (Ignoring local @import of "../../
     at onwriteError 
 ```
 
-
 可以非常快的定位到是css中@import导致路径的问题
-
 
 尝试解决：
 
@@ -545,7 +438,6 @@ Error [ERR_UNHANDLED_ERROR]: Unhandled error. (Ignoring local @import of "../../
 gulp-clean-css 只是一个 gulp 的插件，内部使用了clean-css，因此可以去 clean-css 项目找解决方案：
 
 [https://github.com/jakubpawlowicz/clean-css#how-to-process-remote-imports-correctly](https://github.com/jakubpawlowicz/clean-css#how-to-process-remote-imports-correctly)
-
 
 How to process remote @imports correctly?
 
@@ -566,26 +458,15 @@ f you don't provide a callback, then remote @imports will be left as is.
 
 **但是，解决失败。。。。。**
 
-
 **经过n次解决后，决定，放弃使用gulp-clean-css压缩css**
 
-
-
-
-
-#### gulp-htmlmin报错
+##### gulp-htmlmin报错
 
 gulp-htmlmin压缩小程序wxml会有奇奇怪怪的问题
 
 如：样式错乱 页面白屏 单标签闭合 等
 
-
-
-
 ![enter description here][6]
-
-
-
 
 ```javascript
 .pipe(gulpif(!config.isDev, htmlmin({
@@ -595,28 +476,19 @@ gulp-htmlmin压缩小程序wxml会有奇奇怪怪的问题
  })))
 ```
 
-
-
 **经过多次的尝试也没有找到解决办法，最终放弃了**
 
-
-
-
-#### 压缩wxml和wxss
+##### 压缩wxml和wxss
 
 经过前面的gulp-htmlmin和gulp-clean-css都未能正确压缩
 
 那该如何压缩wxml和wxss呢？
 
-
 经过查看wepy源码发现它用到了一个库 **pretty-data**
-
 
 [https://github.com/Tencent/wepy/blob/2.0.x/packages/wepy-plugin-filemin/src/index.js](https://github.com/Tencent/wepy/blob/2.0.x/packages/wepy-plugin-filemin/src/index.js)
 
-
 --------
-
 
 [https://www.npmjs.com/package/pretty-data](https://www.npmjs.com/package/pretty-data)
 
@@ -624,11 +496,9 @@ nodejs plugin to pretty-print or minify text in XML, JSON, CSS and SQL formats.
 
 nodejs插件，美化打印或缩小文本在XML, JSON, CSS和SQL格式。
 
-
 所以，我找到了它的对应gulp包gulp-pretty-data
 
 [https://www.npmjs.com/package/gulp-pretty-data](https://www.npmjs.com/package/gulp-pretty-data)
-
 
 ```javascript
         .pipe(gulpif(!config.isDev, prettyData(
@@ -642,8 +512,6 @@ nodejs插件，美化打印或缩小文本在XML, JSON, CSS和SQL格式。
         )))
 ```
 
-
-
 ```javascript
         .pipe(gulpif(!config.isDev, prettyData(
           {
@@ -655,56 +523,40 @@ nodejs插件，美化打印或缩小文本在XML, JSON, CSS和SQL格式。
         )))
 ```
 
-
 最终完美解决了问题，所以有空看看一些优秀框架源码还是有用的。
 
+### 对比
 
-
-## 对比
-
-迁移原生框架之前，采用wepy框架，sdk采用git submodule管理内联进了项目（这种方式其实不好，sdk很容易被人修改） 
+迁移原生框架之前，采用wepy框架，sdk采用git submodule管理内联进了项目（这种方式其实不好，sdk很容易被人修改）
 
 **sdk体积320 kb，内含protobuf相关88kb**
 
-
 ----------
-
 
 迁移原生框架之后，sdk采用webpack打包，发布至npm私服管理
 
 **sdk体积64kb，内除去了protobuf相关**
 
-
 >这里整个小程序体积前后对比其实并没有什么意义，原生小程序框架会含有node_modules和miniprogram_npm等原因，体积会有很多冗余。
 
 ----------------
 
-
 前面打包进行了压缩wxml和wxss，分析下原生框架打包前后体积对比
 
-
-* npm run dev情况下，体积1.34m （包含node_modules和miniprogram_npm）   
+* npm run dev情况下，体积1.34m （包含node_modules和miniprogram_npm）
 * npm run build情況下，体积1.21m （包含node_modules和miniprogram_npm）
-
 
 感觉优化并不是很大。。。还是有点用。。。。
 
 再加上微信开发者工具对js的压缩和混淆体积会进一步减少
 
+### 补充
 
-
-## 补充
-
-
-### 对store的优化
+#### 对store的优化
 
 但我们同一时间多次调用store.get的时候，有时候会多次触发getter函数，getter里面存在耗时操作
 
-
 **按道理，同时多次调用get我们只需要走一次get流程，后面的采用第一次的结果即可**
-
-
-
 
 下面进行优化
 
@@ -757,7 +609,6 @@ function _afterGet({name, result}) {
 }
 ```
 
-
 ```javascript
   /**
    * 获取当前store中的state中的具体数据
@@ -795,13 +646,9 @@ function _afterGet({name, result}) {
 
 通过beforeGet和afterGet控制流程实现
 
-
-
-
-### 无法对Component实例封装
+#### 无法对Component实例封装
 
 先看一个例子
-
 
 ```javascript
 class P {
@@ -839,14 +686,11 @@ Page(p)
 
 这是一个非常严重的问题，意味着框架无法统一处理Component，Page和App
 
-
 **但是，框架封装Page和App进行扩展其实已经够用，我们可以不去封装Component**
 
+#### gulp无法与cli脚手架结合起来
 
-
-### gulp无法与cli脚手架结合起来
-
-```
+```js
 [14:07:29] Local gulp not found in /path/to/project
 [14:07:29] Try running: npm install gulp
 ```
@@ -856,17 +700,6 @@ gulpfile.js必须存在在项目的根目录，不能放到cli脚手架中，这
 从这个issue中可以看出
 
 [https://github.com/gulpjs/gulp/issues/2126](https://github.com/gulpjs/gulp/issues/2126)
-
-
-
-
-
-
-
-
-
-
-
 
 [1]: https://s2.ax1x.com/2019/05/07/EsnB5j.png
 [2]: https://s2.ax1x.com/2019/12/25/liXiE6.png

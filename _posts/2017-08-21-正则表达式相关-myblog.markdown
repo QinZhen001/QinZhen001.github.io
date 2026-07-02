@@ -11,7 +11,6 @@ tags:
 
 > “Yeah It's on. ”
 
-
 ## 正文
 [网页链接](http://www.cnblogs.com/moqing/archive/2016/07/13/5665126.html)
 
@@ -31,8 +30,6 @@ var result = patt1.test(str);
 document.write("Result: " + result);
 ```
 
-
-
 ### replace
 
 [replace#指定一个函数作为参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#指定一个函数作为参数)
@@ -48,7 +45,6 @@ alert(str2)  //我爱**，*上太阳升
 //这种只是把找到的变成了一个*，并不能几个字就对应几个*。
 ```
 要想实现几个字对应几个*，我们可以用回调函数实现：
-
 
 ```javascript
 var str = "我爱北京天安门，天安门上太阳升。";
@@ -71,7 +67,7 @@ alert(str2)  //我爱*****，***上太阳升
 
 语法
 
-```
+```js
 str.replace(regexp|substr, newSubStr|function)
 ```
 
@@ -93,13 +89,9 @@ str.replace(regexp|substr, newSubStr|function)
 
   一个用来创建新子字符串的函数，该函数的返回值将替换掉第一个参数匹配到的结果。参考下面的[指定一个函数作为参数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace#指定一个函数作为参数)。
 
-
-
 使用字符串作为参数
 
 替换字符串可以插入下面的特殊变量名：
-
-
 
 | 变量名 | 代表的值                                                     |
 | ------ | ------------------------------------------------------------ |
@@ -112,8 +104,6 @@ str.replace(regexp|substr, newSubStr|function)
 #### 指定一个函数作为参数
 
 你可以指定一个函数作为第二个参数。在这种情况下，当匹配执行后，该函数就会执行。 函数的返回值作为替换字符串。 (注意：上面提到的特殊替换参数在这里不能被使用。) 另外要注意的是，如果第一个参数是正则表达式，并且其为全局匹配模式，那么这个方法将被多次调用，每次匹配都会被调用。
-
-
 
 下面是该函数的参数：
 
@@ -147,13 +137,6 @@ const res = str.replace(reg, (match, p1, offset, string, groups) => {
 console.log(111, res);
 ```
 
-
-
-
-
-
-
-
 ### match
  match()  在字符串中搜索复合规则的内容，搜索成功就返回内容，格式为数组，失败就返回null。
 
@@ -174,12 +157,10 @@ alert( str.match(re) );   // [123，54，33，879]
 - 如果找到了匹配项，返回一个数组，数组的第一个元素是匹配的完整字符串，后面的元素是所有捕获的分组（如果有的话）。
 - 如果使用的是带有 `g`（全局）标志的正则表达式，`match()` 会返回一个数组，包含所有的匹配字符串，而不会包含分组信息。
 
-
 ### exec
 与match方法不同exec属于正则表达式的方法。
 语法:var result1 = regexp.exec(str);
 regexp:正则表达式（可以直接定义也可以利用RegExp的方式定义） str:要匹配的字串
-
 
 当exec和match中具有相同的子表达式且为非全局匹配时两者的输出也是相同的
 ```javascript
@@ -193,7 +174,6 @@ console.log(str.match(/W3c(school)/));
 
 ----------
 
-
 当为全局匹配时
 ```javascript
 var str="visit W3cschool  a W3cschool bull";
@@ -203,7 +183,6 @@ console.log(b);
 console.log(str.match(/W3cschool/g));
 ```
 Exec中没有子表达式其输出为W3cschool，其输出只一个，match全局匹配时其输出元素中将包含所有的匹配项，其输出为W3cshcool,W3cschool
-
 
 ### match和exec总结
 **全局标志（`g`）的影响**
@@ -241,16 +220,7 @@ while ((match = regex.exec(str)) != null) {
 }
 ```
 
-
-
-
-
-
-
-
 ## 其他
-
-
 
 ### 命名分组
 
@@ -264,10 +234,6 @@ console.log(match.groups); // { content: '(example)' }
 console.log(match.groups.content); // '(example)'
 console.log(match[0]); // '(example)'
 ```
-
-
-
-
 
 ### 正则中的字符
 
@@ -295,8 +261,6 @@ alert( str );   //2013.6.7
 //整个过程就是利用子项把2013- 6- 分别替换成了2013. 6.  最终弹出2013.6.7
 ```
 
-
-
 ```javascript
 match方法也会返回自己的子项，如下：
 var str = 'abc';
@@ -305,7 +269,7 @@ alert( str.match(re) );  //[abc,a,b,c]( 返回的是匹配结果 以及每个子
 ```
 补充：exec()方法：和match方法一样，搜索符合规则的内容，并返回内容，格式为数组。
 用法：正则.exec(字符串)；
-```
+```js
  var testStr = "now test001 test002";   
  var re = /test(\d+)/; //只匹配一次     
  var r = "";   
@@ -328,7 +292,6 @@ var re = /<[\w\W]+>/g; //匹配左括号 中间至少一个字符或者非字符
 // 其实就是找到左括号，然后中间可以有至少一个内容，一直到找到右括号就代表是一个标签。
 ```
 
-
 ### 转义字符
 \s : 空格
 \S : 非空格
@@ -341,7 +304,7 @@ var re = /<[\w\W]+>/g; //匹配左括号 中间至少一个字符或者非字符
 \b : 独立的部分 （ 起始，结束，空格 ）
 \B : 非独立的部分
 
-```
+```js
 var str = 'onetwo';
 var str2 ="one two";
 
@@ -394,8 +357,6 @@ alert('最多的字符:'+value+',重复的次数:'+index);  // s   17
 [\\u4e00-\\u9fa5]
 ```
 
-
-
 ### .字符
 
 ```javascript
@@ -408,22 +369,15 @@ var patt1 = /[.]/;
 document.write(str.match(patt1));  //输出 .
 ```
 
-
-
 ### ^ 和 ^指定字符串
 
 * ^ 指的是匹配字符串开始的位置
 * [^指定字符串] 指的是除指定字符串以外的其他字符串
 
-
-```
+```text
 (^[0-9])+     // 匹配有一至多个数字的字符串组合
 [^[0-9]]+     // 匹配有一至多个不含数字的字符串组合
 ```
-
-
-
-
 
 ###  (?:)
 [https://segmentfault.com/q/1010000010302799](https://segmentfault.com/q/1010000010302799)
@@ -447,28 +401,19 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 
 就可以用一下表达式  `(?=中国)人`
 
-```
+```text
 (?=.*[a-z])\d+
 
 这个就表示 匹配以“任意字符连着一个小写字母”开头的数字，只匹配数字。
 ```
 
-
 而 (?<=exp)这个是放后面的。
 
 ----------
 
-
-
-
-
-
-
 **(?:pattern)**
 
 非获取匹配，匹配pattern但不获取匹配结果，不进行存储供以后使用。这在**使用或字符“(|)”来组合一个模式的各个部分是很有用**。例如“industr(?:y|ies)”就是一个比“industry|industries”更简略的表达式。
-
-
 
 举个例子：
 
@@ -476,51 +421,29 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 /\W|^(?:value|checked|selected|muted)$/
 ```
 
-
 ![enter description here][1]
-
-
-
-
 
 ```javascript
 /\W|^value|checked|selected|muted$/
 ```
 
-
-
 ![enter description here][2]
-
-
-
-
-
 
 **(?=pattern)**
 
 非获取匹配，正向肯定预查，在任何匹配pattern的字符串开始处匹配查找字符串，该匹配不需要获取供以后使用。例如，“Windows(?=95|98|NT|2000)”能匹配“Windows2000”中的“Windows”，但不能匹配“Windows3.1”中的“Windows”。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。
 
-
-
 **(?!pattern)**
 
 非获取匹配，正向否定预查，在任何不匹配pattern的字符串开始处匹配查找字符串，该匹配不需要获取供以后使用。例如“Windows(?!95|98|NT|2000)”能匹配“Windows3.1”中的“Windows”，但不能匹配“Windows2000”中的“Windows”。
-
 
 **(?<=pattern)**
 
 非获取匹配，反向肯定预查，与正向肯定预查类似，只是方向相反。例如，“(?<=95|98|NT|2000)Windows”能匹配“2000Windows”中的“Windows”，但不能匹配“3.1Windows”中的“Windows”。
 
-
-
 **(?<!pattern)**
 
-
-非获取匹配，反向否定预查，与正向否定预查类似，只是方向相反。例如“(?<!95|98|NT|2000)Windows”能匹配“3.1Windows”中的“Windows”，但不能匹配“2000Windows”中的“Windows”。这个地方不正确，有问题 
-
-
-
-
+非获取匹配，反向否定预查，与正向否定预查类似，只是方向相反。例如“(?<!95|98|NT|2000)Windows”能匹配“3.1Windows”中的“Windows”，但不能匹配“2000Windows”中的“Windows”。这个地方不正确，有问题
 
 ### 懒惰限定符
 
@@ -532,17 +455,13 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 | {n,m}?    | 重复n到m次，但尽可能少重复      |
 | {n,}?     | 重复n次以上，但尽可能少重复     |
 
-
-
-
-
 ### `\b`和`\B`的区别
 
 [ https://segmentfault.com/a/1190000013084624 ]( https://segmentfault.com/a/1190000013084624 )
 
 `\b` - 一个词的边界
 
- **匹配必须出现在 `\w`（字母数字）和 `\W`（非字母数字）字符之间的边界上。** 
+ **匹配必须出现在 `\w`（字母数字）和 `\W`（非字母数字）字符之间的边界上。**
 
 `\B` - 一个非单词边界
 
@@ -551,11 +470,6 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 原字符串: `end sends endure lender`
 匹配结果: `ends`和`ender`
 ```
-
-
-
-
-
 
 ## 常用的正则
 ```javascript
@@ -581,10 +495,7 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
     useStrict: /(\/\/.*\r?\n)*['"]use strict['"];?/g
 ```
 
-
 ## 题目
-
-
 
 ### 获取on后面的字符串
 
@@ -596,8 +507,6 @@ var m = "abcabc".match(/(?:a)(b)(c)/)
 ```
 
 **有一个很重要的知识点是RegExp.$1**
-
-
 
 ### 一道很好的题目
 
@@ -621,13 +530,7 @@ const s = '3[a2[c]]' 返回accaccacc
 
 ```
 
-
-
 ## 原理
-
-
-
-
 
 ### 正则表达式原理
 
@@ -643,14 +546,5 @@ const s = '3[a2[c]]' 返回accaccacc
 
 简言之，正则表达式通过不断地扫描输入的字符，并根据字符和当前状态的规则进行状态转移。如果扫描完输入字符串后，状态机最终停留在一个接受状态，则表示输入字符串符合正则表达式的模式。
 
-
-
-
-
-
-
-
-
 [1]: https://s2.ax1x.com/2019/08/16/mZyck9.png
 [2]: https://s2.ax1x.com/2019/08/16/mZyo0e.png
-

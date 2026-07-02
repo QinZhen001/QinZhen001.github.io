@@ -11,8 +11,6 @@ tags:
 
 > “Yeah It's on. ”
 
-
-
 [https://github.com/yacan8/blog/issues/30](https://github.com/yacan8/blog/issues/30)
 
 与传统 SPA (单页应用程序 (Single-Page Application)) 相比，服务器端渲染 (SSR) 的优势主要在于：
@@ -20,11 +18,7 @@ tags:
 - 更好的 SEO，由于搜索引擎爬虫抓取工具可以直接查看完全渲染的页面。请注意，截至目前，Google 和 Bing 可以很好对同步 JavaScript 应用程序进行索引。在这里，同步是关键。如果你的应用程序初始展示 loading 菊花图，然后通过 Ajax 获取内容，抓取工具并不会等待异步完成后再行抓取页面内容。也就是说，如果 SEO 对你的站点至关重要，而你的页面又是异步获取内容，则你可能需要服务器端渲染(SSR)解决此问题。
 - 更快的内容到达时间 (time-to-content)，特别是对于缓慢的网络情况或运行缓慢的设备。无需等待所有的 JavaScript 都完成下载并执行，才显示服务器渲染的标记，所以你的用户将会更快速地看到完整渲染的页面。通常可以产生更好的用户体验，并且对于那些「内容到达时间(time-to-content) 与转化率直接相关」的应用程序而言，服务器端渲染 (SSR) 至关重要。
 
-
-
-##  React 
-
-
+##  React
 
 ### Suspense in ssr
 
@@ -32,26 +26,14 @@ tags:
 
 支持在ssr下的组件的懒加载
 
-
-
 ### next.js
-
-
-
-
-
-
 
 ### React.lazy
 
 - `React.lazy`：官方、简洁，但 **早期不支持 SSR**（React 18 才通过 Streaming SSR 支持）
 - `react-loadable`：**SSR 友好**，有 `preload`、`Map`、超时处理等更丰富的 API，但作者已在 README 中标注推荐用 `React.lazy`，项目更新不活跃
 
-
-
 React.lazy 为什么在 React 18 之后支持 SSR？
-
-
 
 React 17 及之前：为什么不支持？
 
@@ -97,7 +79,7 @@ Streaming 的工作流程（关键）
 
 当 SSR 渲染过程中遇到 `React.lazy` 或任何 Suspense 边界：
 
-```
+```jsx
 时间轴：
 
 T0   Server 开始渲染
@@ -135,8 +117,6 @@ T3   Client 收到流，原生 HTML 解析 → 占位替换 → Hydration
 - **优先级调度**：用户交互的那一块 Suspense 会被优先水合（基于 Concurrent Rendering）
 - 于是 `React.lazy` 分出来的 chunk 可以在客户端按需加载 + 独立水合，不阻塞其他部分
 
-
-
 #### Concurrent Rendering
 
 React 18 底层把渲染改成 **可中断、可恢复** 的 Concurrent Rendering：
@@ -146,8 +126,6 @@ React 18 底层把渲染改成 **可中断、可恢复** 的 Concurrent Renderin
 - 等 Promise resolve，再 resume 这棵子树，flush 到流里
 
 没有 Concurrent Rendering 就没有"挂起/恢复"能力，也就没法实现 Streaming SSR 里的 Suspense。
-
-
 
 #### 完整demo
 
@@ -182,8 +160,6 @@ hydrateRoot(document, <Page />);
 2. Server 端 `import()` resolve → 渲染真实内容 → flush `<template>` + `$RC` 脚本替换占位
 3. Client 同时在下载 `Comp` 的 chunk → 选择性水合这块 Suspense
 
-
-
 ### react-loadable
 
 核心一句话：**`react-loadable` 把"异步加载"限定在进程启动或客户端下载阶段，渲染阶段永远是同步的**。这与 `renderToString` 的同步模型完美契合。而 `React.lazy` 则把异步性下沉到了渲染阶段，必须要有一个支持异步/暂停恢复的 renderer（Streaming SSR）才能在服务端工作。
@@ -196,8 +172,6 @@ hydrateRoot(document, <Page />);
 | 水合粒度     | 整页一次性                                             | **Selective Hydration**，按 Suspense 粒度 |
 | 维护状态     | 官方停滞，README 自荐用 lazy                           | React 官方持续演进                        |
 | Next.js 对应 | `next/dynamic`（底层也在迁移到 lazy）                  | App Router 原生用 lazy/Suspense           |
-
-
 
 `react-loadable` 是不是强依赖 webpack？
 
@@ -242,23 +216,13 @@ plugins: [
 - Plugin API 是 webpack 专属（Rollup/Vite 有自己的 plugin 体系，API 完全不同）
 - 这个插件只在 webpack 生态里能用
 
-
-
 ## Vue
-
-
 
 ### 组件生命周期钩子函数
 
 由于没有动态更新，所有的生命周期钩子函数中，只有 `beforeCreate` 和 `created` 会在服务器端渲染 (SSR) 过程中被调用。这就是说任何其他生命周期钩子函数中的代码（例如 `beforeMount` 或 `mounted`），只会在客户端执行。
 
-
-
 此外还需要注意的是，你应该避免在 `beforeCreate` 和 `created` 生命周期时产生全局副作用的代码，例如在其中使用 `setInterval` 设置 timer。在纯客户端 (client-side only) 的代码中，我们可以设置一个 timer，然后在 `beforeDestroy` 或 `destroyed` 生命周期时将其销毁。但是，由于在 SSR 期间并不会调用销毁钩子函数，所以 timer 将永远保留下来。为了避免这种情况，请将副作用代码移动到 `beforeMount` 或 `mounted` 生命周期中。
-
-
-
-
 
 ### 避免状态单例
 
@@ -282,57 +246,35 @@ module.exports = function createApp (context) {
 }
 ```
 
-
-
 >同样的规则也适用于 router、store 和 event bus 实例。你不应该直接从模块导出并将其导入到应用程序中，而是需要在 `createApp` 中创建一个新的实例，并从根 Vue 实例注入。
 
 ### 数据预取存储容器 (Data Store)
 
 [数据预取存储容器](https://ssr.vuejs.org/zh/guide/data.html#数据预取存储容器-data-store)
 
-
-
-
-
-
-
-
-
 ## 补充
 
-
-
-
 ### asset-require-hook
-
-
 
 [网页链接](https://www.npmjs.com/package/asset-require-hook)
 
 解决SSR中图片路径的问题
 
-
-
 ### css-modules-require-hook
-
-
 
 [css-modules-require-hook](https://www.npmjs.com/package/css-modules-require-hook)
 
 [react中SSR](https://www.jianshu.com/p/47c8e364d0bc?appinstall=1&mType=Group)
 
-
 解决后端不支持CSS的问题
-
 
 The require hook compiles CSS Modules in runtime. This is similar to Babel's babel/register.
 
 [See the example](https://github.com/css-modules/css-modules-require-hook/tree/a432b76e1eb46a7bf9ef729c16a96b6ef2295410/demo)
 
-
 The second one allows you to move options to the separate file cmrh.conf.js. Config file should be located in the same directory where executor is or in its ancestor directories. In that case hook will be attached right after the css-modules-require-hook/preset module will be required. Example:
 
-```
+```js
 // cmrh.conf.js
 module.exports = {
   generateScopedName: '[name]__[local]___[hash:base64:5]',
@@ -342,8 +284,6 @@ require('css-modules-require-hook/preset');
  
 // const styles = require('./icon.css');
 ```
-
-
 
 ### Using with babel-node / ES6 Imports
 
@@ -363,8 +303,6 @@ module.exports = {
 }
 ```
 
-
-
 **需要注意的此处有一小坑，csshook必须放所有组件引入之前**
 
 ```js
@@ -373,10 +311,6 @@ import csshook from 'css-modules-require-hook/preset';
 
 const express = require("express"); const bodyParser = require("body-parser"); const cookieParser = require("cookie-parser"); const userRoute = require("./userRoute"); const app = express(); const path = require('path'); app.use(cookieParser()); app.use(bodyParser.json());
 ```
-
-
-
-
 
 ### SSR 要用 Node.js
 
@@ -392,13 +326,10 @@ const express = require("express"); const bodyParser = require("body-parser"); c
 
 Node.js 做 SSR 的劣势
 
-```
+```text
 JS 单线程 + renderToString 同步执行
     ↓
 单个 Pod 同时只能渲染 1 个页面
     ↓
 CPU 密集场景下 QPS 上限低
 ```
-
-
-

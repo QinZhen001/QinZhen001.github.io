@@ -6,14 +6,12 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - ES6
+    - JavaScript
 ---
 
 > “Yeah It's on. ”
 
-
 ## 正文
-
 
 [网页链接](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
@@ -27,10 +25,9 @@ new Promise( function(resolve, reject) {...} /* executor */  );
 #### 参数 executor
 executor是一个带有 resolve 和 reject 两个参数的函数 。executor 函数在Promise构造函数执行时同步执行，被传递 resolve 和 reject 函数（executor 函数在Promise构造函数返回新建对象前被调用）。resolve 和 reject 函数被调用时，分别将promise的状态改为fulfilled（完成）或rejected（失败）。
 
-
 executor 内部通常会执行一些异步操作，一旦完成，可以调用resolve函数来将promise状态改成fulfilled，或者在发生错误时将它的状态改为rejected。
 
-如果在executor函数中抛出一个错误，那么该promise状态为rejected。executor函数的返回值被忽略。 
+如果在executor函数中抛出一个错误，那么该promise状态为rejected。executor函数的返回值被忽略。
 
 ### 描述
 Promise 对象是一个代理对象（代理一个值），被代理的值在Promise对象创建时可能是未知的。它允许你为异步操作的成功和失败分别绑定相应的处理方法（handlers）。 这让异步方法可以像同步方法那样返回值，但并不是立即返回最终执行结果，而是一个能代表未来出现的结果的promise对象
@@ -40,14 +37,11 @@ Promise 对象是一个代理对象（代理一个值），被代理的值在Pro
 * fulfilled: 意味着操作成功完成。
 * rejected: 意味着操作失败。
 
-
 pending 状态的 Promise 对象可能触发fulfilled 状态并传递一个值给相应的状态处理方法，也可能触发失败状态（rejected）并传递失败信息。当其中任一种情况出现时，Promise 对象的 then 方法绑定的处理方法（handlers ）就会被调用（then方法包含两个参数：onfulfilled 和 onrejected，它们都是 Function 类型。当Promise状态为fulfilled时，调用 then 的 onfulfilled 方法，当Promise状态为rejected时，调用 then 的 onrejected 方法， 所以在异步操作的完成和绑定处理方法之间不存在竞争）。
-
 
 因为 Promise.prototype.then 和  Promise.prototype.catch 方法返回promise 对象， 所以它们可以被链式调用。
 
 ![enter description here][1]
-
 
 ### 创建Promise
 
@@ -167,15 +161,13 @@ runAsync1()
 异步任务3执行完成
 随便什么数据3
 
-
-
 ### then vs catch
 
 [https://www.zhihu.com/question/48765053](https://www.zhihu.com/question/48765053)
 
 .then()方法使Promise原型链上的方法，它包含两个参数方法，分别是已成功resolved的回调和已失败rejected的回调
 
-```
+```js
 promise.then(
     () => { console.log('this is success callback') },
     () => { console.log('this is fail callback') }
@@ -184,7 +176,7 @@ promise.then(
 
 .catch()的作用是捕获Promise的错误，与then()的rejected回调作用几乎一致。但是由于Promise的抛错具有冒泡性质，能够不断传递，这样就能够在下一个catch()中统一处理这些错误。同时catch()也能够捕获then()中抛出的错误，**所以建议不要使用then()的rejected回调，而是统一使用catch()来处理错误**
 
-```
+```js
 promise.then(
     () => { console.log('this is success callback') }
 ).catch(
@@ -220,8 +212,6 @@ function test(res) {
 
 test('hello');
 ```
-
-
 
 ### any vs race
 
@@ -269,13 +259,7 @@ Promise.race([promise1, promise2])
 - `Promise.any()` 只关注 fulfilled 状态，如果有成功的 Promise，它会返回该成功的值。只有在所有 Promise 都失败时才会返回错误。
 - `Promise.race()` 会立即返回第一个完成的 Promise，无论是 fulfilled 还是 rejected。
 
-
-
-
-
-
-
-### Promise.resolve()  
+### Promise.resolve()
 
 >Promise这里是大写的P
 
@@ -296,7 +280,6 @@ resolved.then((str) =>
 )
 ```
 
-
 ----------
 
 ```javascript
@@ -306,8 +289,6 @@ const promise = new Promise(resolve => {
    resolve('hello');
 });
 ```
-
-
 
 Promise.resolve方法有下面三种形式：
 
@@ -324,14 +305,11 @@ Promise.resolve(theanable);
 
 实际上第二种形式可以归在第三种形式中。
 
-
-
 ### 一个promise依赖另外一个
 
 [http://es6.ruanyifeng.com/#docs/promise](http://es6.ruanyifeng.com/#docs/promise)
 
 resolve函数的参数除了正常的值以外，还可能是另一个 Promise 实例，比如像下面这样。
-
 
 注意，这时p1的状态就会传递给p2，也就是说，p1的状态决定了p2的状态。如果p1的状态是pending，那么p2的回调函数就会等待p1的状态改变；如果p1的状态已经是resolved或者rejected，那么p2的回调函数将会立刻执行。
 
@@ -352,13 +330,7 @@ p2
 // Error: fail
 ```
 
-
-
 上面代码中，p1是一个 Promise，3 秒之后变为rejected。p2的状态在 1 秒之后改变，resolve方法返回的是p1。由于p2返回的是另一个 Promise，导致p2自己的状态无效了，由p1的状态决定p2的状态。所以，后面的then语句都变成针对后者（p1）。又过了 2 秒，p1变为rejected，导致触发catch方法指定的回调函数。
-
-
-
-
 
 ## 补充
 
@@ -367,7 +339,6 @@ p2
 > try/catch 只能捕获同步的错误
 
 [https://segmentfault.com/q/1010000014905440](https://segmentfault.com/q/1010000014905440)
-
 
 ```javascript
 function f2() {
@@ -379,9 +350,7 @@ function f2() {
 }
 ```
 
-
 执行f2()，无法通过try/catch捕获promise.reject，控制台抛出Uncaught (in promise)
-
 
 ```javascript
 async function f() {
@@ -393,16 +362,11 @@ async function f() {
 }
 ```
 
-
 为什么改成await/async后，执行f()就能在catch中捕获到错误了，并不会抛出Uncaught (in promise)
-
 
 ------------
 
-
 **这是一个非常好的问题**
-
-
 
 ```javascript
 function f2() {
@@ -419,18 +383,13 @@ function f2() {
 
 **这样应该就理解了吧，拒绝reject发生在未来。**
 
-
 **try..catch 结构，它只能是同步的，无法用于异步代码模式**
-
-
 
 ### Promise含有隐式 try…catch
 
 [https://zh.javascript.info/promise-error-handling#yin-shi-trycatch](https://zh.javascript.info/promise-error-handling#yin-shi-trycatch)
 
 Promise 的执行者（executor）和 promise 的处理程序（handler）周围有一个“隐式的 `try..catch`”。如果发生异常，它（译注：指异常）就会被捕获，并被视为 rejection 进行处理。
-
-
 
 例如，下面这段代码：
 
@@ -447,8 +406,6 @@ new Promise((resolve, reject) => {
   reject(new Error("Whoops!"));
 }).catch(alert); // Error: Whoops!
 ```
-
-
 
 ### catch 的好处
 
@@ -475,13 +432,6 @@ test().then(res => {
 })
 
 ```
-
-
-
-
-
-
-
 
 ### catch返回的还是Promise
 
@@ -510,16 +460,9 @@ someAsyncThing()
 // carry on
 ```
 
-
-
-
-
-
-
 ### promise中如何取到[[PromiseValue]]
 
 [https://segmentfault.com/q/1010000010670739](https://segmentfault.com/q/1010000010670739)
-
 
 ```javascript
 var a = Promise.resolve('xx')
@@ -528,7 +471,6 @@ a.then(function (result) { console.log(result) })
 ```
 
 ### Promise的执行时机
-
 
 Promise 新建后就会立即执行。
 
@@ -551,11 +493,7 @@ console.log('Hi!');
 
 上面代码中，Promise 新建后立即执行，所以首先输出的是Promise。然后，then方法指定的回调函数，将在当前脚本所有同步任务执行完才会执行，所以resolved最后输出。
 
-
-
-
 ### resolve或reject不会终止Promise的执行
-
 
 注意，调用resolve或reject并不会终结 Promise 的参数函数的执行。
 
@@ -572,17 +510,11 @@ new Promise((resolve, reject) => {
 // 1
 ```
 
-
 上面代码中，调用resolve(1)以后，后面的console.log(2)还是会执行，**并且会首先打印出来**。
-
 
 **这是因为立即 resolved 的 Promise 是在本轮事件循环的末尾执行，总是晚于本轮循环的同步任务。**
 
-
-
 这一点非常的重要
-
-
 
 ### promise.all使用问题
 ```javascript
@@ -607,15 +539,11 @@ Promise.all([asyncTask(1),asyncTask(2),asyncTask(3)])
 
 由此可见，Promise.all里的任务列表[asyncTask(1),asyncTask(2),asyncTask(3)]，是按顺序发起的，**由于它们都是异步的，互相之间并不阻塞，每个任务完成时机是不确定的。尽管如此，所有任务结束之后，它们的结果仍然是按顺序地映射到resultList里**，这样就能和Promise.all里的任务列表[asyncTask(1),asyncTask(2),asyncTask(3)]一一对应起来。
 
-
 ### return的问题
 
 **return resolve() 或 return reject()之后的代码不会执行**
 
-
-
 例子：
-
 
 resolve前面不加return情况
 
@@ -641,7 +569,6 @@ function test1() {
 test()
 ```
 
-
 ```javascript
 //输出
 resolve 前面
@@ -649,12 +576,7 @@ resolve 后面
 aaa
 ```
 
-
 ----------
-
-
-
-
 
 resolve前面加return情况
 
@@ -680,18 +602,13 @@ function test1() {
 test()
 ```
 
-
 ```javascript
 //输出
 resolve 前面
 aaa
 ```
 
-
-
 ### promise中存在try-catch
-
-
 
 ```javascript
   function _templateListReport() {
@@ -723,9 +640,7 @@ aaa
   })
 ```
 
-
 这个会输出什么？
-
 
 答案：
 
@@ -734,10 +649,6 @@ await _templateListReport()
 
 返回的是reject状态，catch会捕获reject
 ```
-
-
-
-
 
 ### Promise中的resolve,reject没有执行
 
@@ -759,17 +670,13 @@ tAsync();
 
 根据Promise定义[MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise):
 
-```
+```js
 new Promise( function(resolve, reject) {...} /* executor */  );
 ```
 
 executor是带有 resolve 和 reject 两个参数的函数。 Promise构造函数执行时立即调用executor 函数，resolve和reject 两个函数作为参数传递给executor（executor 函数在Promise构造函数返回所建promise实例对象前被调用）。resolve 和 reject 函数被调用时，分别将promise的状态改为fulfilled（完成）或rejected（失败）。如果在executor函数中抛出一个错误，那么该promise 状态为rejected。executor函数的返回值被忽略。
 
-
-
 看来由于await使异步功能的执行被暂停，直到Promise被解决（resolve或reject），并在实现后恢复执行异步功能。由于该Promise一直没有调用resolve 和 reject导致下面的程序无法执行
-
-
 
 ### resolve在Promise外面执行
 
@@ -792,20 +699,7 @@ waitf()
 //<-----
 ```
 
-
-
-
-
-
-
-
-
-
-
 ## 其他
-
-
-
 
 ### Promise 代码实现
 ```javascript
@@ -1105,25 +999,14 @@ try {
 }
 ```
 
-
-
-
 作者：君未来我已老
 链接：https://www.jianshu.com/p/c98eb98bd00c
 來源：简书
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-
-
 -------------------------
 
-
-
-
-
-
 [网页链接](https://github.com/forthealllight/blog/issues/4)
-
 
 ### Promise/A+规范 实现Promise
 
@@ -1138,9 +1021,7 @@ try {
 
 promise英文译为承诺，也就是说promise的状态一旦发生改变，就永远是不可逆的。
 
-
 ----------
-
 
 一个promise必须有一个then方法，then方法接受两个参数：
 
@@ -1148,19 +1029,13 @@ promise英文译为承诺，也就是说promise的状态一旦发生改变，就
 
 其中onFulfilled方法表示状态从pending——>fulfilled(resolved)时所执行的方法，而onRejected表示状态从pending——>rejected所执行的方法。
 
-
 ----------
-
 
 为了实现链式调用，then方法必须返回一个promise
 
-
 `promise2=promise1.then(onFulfilled,onRejected)`
 
-
 #### v1.0 初始版本myPromise
-
-
 
 ```javascript
 function myPromise(constructor){
@@ -1193,7 +1068,6 @@ function myPromise(constructor){
 
 同时，需要在myPromise的原型上定义链式调用的then方法：
 
-
 ```javascript
 myPromise.prototype.then=function(onFullfilled,onRejected){
    let self=this;
@@ -1211,21 +1085,15 @@ myPromise.prototype.then=function(onFullfilled,onRejected){
 
 上述就是一个初始版本的myPromise，在myPromise里发生状态改变，然后在相应的then方法里面根据不同的状态可以执行不同的操作。
 
-
 ```javascript
 var p=new myPromise(function(resolve,reject){resolve(1)});
 p.then(function(x){console.log(x)})
 //输出1
 ```
 
-
-
 **问题:这里myPromise无法处理异步的resolve**
 
-
-
 #### v2.0基于观察模式实现
-
 
 为了处理异步resolve，我们修改myPromise的定义，用2个数组onFullfilledArray和onRejectedArray来保存异步的方法。在状态发生改变时，一次遍历执行数组中的方法。
 
@@ -1271,7 +1139,6 @@ function myPromise(constructor){
 
 对于then方法，状态为pending时，往数组里面添加方法：
 
-
 ```javascript
 myPromise.prototype.then=function(onFullfilled,onRejected){
    let self=this;
@@ -1293,7 +1160,6 @@ myPromise.prototype.then=function(onFullfilled,onRejected){
    }
 }
 ```
-
 
 这样，通过两个数组，在状态发生改变之后再开始执行，这样可以处理异步resolve无法调用的问题。这个版本的myPromise就能处理所有的异步，那么这样做就完整了吗？
 
@@ -1356,7 +1222,7 @@ myPromise.prototype.then=function(onFullfilled,onRejected){
 
 这样通过then方法返回一个promise就可以实现链式的调用：
 
-```
+```js
 p.then(function(x){console.log(x)}).then(function(){console.log("链式调用1")}).then(function(){console.log("链式调用2")})
 //输出
 1
@@ -1364,27 +1230,10 @@ p.then(function(x){console.log(x)}).then(function(){console.log("链式调用1")
 链式调用2
 ```
 
-
 这样我们虽然实现了then函数的链式调用，但是还有一个问题，就是在Promise/A+规范中then函数里面的onFullfilled方法和onRejected方法的返回值可以是对象，函数，甚至是另一个promise。
-
-
 
 #### v4.0 then函数中的onFullfilled和onRejected方法的返回值问题
 
-
 特别的为了解决onFullfilled和onRejected方法的返回值可能是一个promise的问题。
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 [1]: https://mdn.mozillademos.org/files/8633/promises.png

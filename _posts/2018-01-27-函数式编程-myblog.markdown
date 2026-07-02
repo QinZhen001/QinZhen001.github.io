@@ -19,44 +19,27 @@ tags:
 
 这里的映射就是数学上「函数」的概念——一种东西和另一种东西之间的对应关系。
 
-
-
 [https://juejin.im/post/6844903936378273799](https://juejin.im/post/6844903936378273799)
 
 [网页链接](http://www.ruanyifeng.com/blog/2017/02/fp-tutorial.html)
 
-
 ![enter description here][1]
-
-
 
 * 与面向对象编程（Object-oriented programming）和过程式编程（Procedural programming）并列的编程范式。
 * 最主要的特征是，函数是第一等公民。
 * 强调将计算过程分解成可复用的函数，典型例子就是map方法和reduce方法组合而成 MapReduce 算法。
 * 只有纯的、没有副作用的函数，才是合格的函数。
 
-
-
-
-
 函数式编程它其实就是强调在编程过程中把更多的关注点放在如何去**构建关系**。通过构建一条高效的建流水线，一次解决所有问题。而不是把精力分散在不同的加工厂中来回奔波传递数据。
-
-
-
-
 
 ### 无状态和数据不可变
 
 > Statelessness and Immutable data
 
-
-
 这是函数式编程的核心概念：
 
 * **数据不可变：** 它要求你所有的数据都是不可变的，这意味着如果你想修改一个对象，那你应该创建一个新的对象用来修改，而不是修改已有的对象。
 * **无状态：** 主要是强调对于一个函数，不管你何时运行，它都应该像第一次运行一样，给定相同的输入，给出相同的输出，完全不依赖外部状态的变化。
-
-
 
 ### 没有副作用
 
@@ -82,11 +65,6 @@ const list = [...];
 const newList = list.map(item => ({...item, type: 1, age:item.age + 1}));
 ```
 
-
-
-
-
-
 ### 范畴论
 函数式编程的起源，是一门叫做范畴论（Category Theory）的数学分支。
 
@@ -104,14 +82,12 @@ const newList = list.map(item => ({...item, type: 1, age:item.age + 1}));
 
 箭头表示范畴成员之间的关系，正式的名称叫做"态射"（morphism）。范畴论认为，同一个范畴的所有成员，就是不同状态的"变形"（transformation）。通过"态射"，一个成员可以变形成另一个成员。
 
-
 既然"范畴"是满足某种变形关系的所有对象，就可以总结出它的数学模型。
 * 所有成员是一个集合
 * 变形关系是函数
 
 也就是说，范畴论是集合论更上层的抽象，简单的理解就是"集合 + 函数"。
 理论上通过函数，就可以从范畴的一个成员，算出其他所有成员。
-
 
 我们可以把"范畴"想象成是一个容器，里面包含两样东西。
 * 值（value）
@@ -133,17 +109,12 @@ class Category {
 
 **本质上，函数式编程只是范畴论的运算方法，跟数理逻辑、微积分、行列式是同一类东西，都是数学方法，只是碰巧它能用来写程序。**
 
-
 所以，为什么函数式编程要求函数必须是纯的，不能有副作用？因为它是一种数学运算，原始目的就是求值，不做其他事情，否则就无法满足函数运算法则了。
 
 总之，在函数式编程中，函数就是一个管道（pipe）。这头进去一个值，那头就会出来一个新的值，没有其他作用。
 
-
-
-
 ### 函数的合成与柯里化
 函数式编程有两个最基本的运算：合成和柯里化。
-
 
 #### 函数的合成
 如果一个值要经过多个函数，才能变成另外一个值，就可以把所有中间步骤合并成一个函数，这叫做"函数的合成"（compose）。
@@ -153,7 +124,7 @@ class Category {
 上图中，X和Y之间的变形关系是函数f，Y和Z之间的变形关系是函数g，那么X和Z之间的关系，就是g和f的合成函数g·f。
 
 合成两个函数的简单代码如下。
-```
+```js
 const compose = function (f, g) {
   return function (x) {
     return f(g(x));
@@ -161,7 +132,7 @@ const compose = function (f, g) {
 }
 ```
 函数的合成还必须满足结合律。
-```
+```js
 compose(f, compose(g, h))
 // 等同于
 compose(compose(f, g), h)
@@ -173,7 +144,7 @@ compose(f, g, h)
 f(x)和g(x)合成为f(g(x))，有一个隐藏的前提，就是f和g都只能接受一个参数。如果可以接受多个参数，比如f(x, y)和g(a, b, c)，函数合成就非常麻烦。
 
 这时就需要函数柯里化了。所谓"柯里化"，就是把一个多参数的函数，转化为单参数函数。
-```
+```js
 // 柯里化之前
 function add(x, y) {
   return x + y;
@@ -190,12 +161,6 @@ function addX(y) {
 
 addX(2)(1) // 3
 ```
-
-
-
-
-
-
 
 ### 函子
 
@@ -214,13 +179,11 @@ addX(2)(1) // 3
 
 ![enter description here][6]
 
-
 上图中，函数f完成值的转换（a到b），将它传入函子，就可以实现范畴的转换（Fa到Fb）。
-
 
 #### 函子的代码实现
 任何具有map方法的数据结构，都可以当作函子的实现。
-```
+```js
 class Functor {
   constructor(val) { 
     this.val = val; 
@@ -235,9 +198,7 @@ class Functor {
 
 **一般约定，函子的标志就是容器具有map方法。该方法将容器里面的每一个值，映射到另一个容器。**
 
-
 因此，**学习函数式编程，实际上就是学习函子的各种运算**。由于可以把运算方法封装在函子里面，所以又衍生出各种不同类型的函子，有多少种运算，就有多少种函子。函数式编程就变成了运用不同的函子，解决实际问题。
-
 
 ### of 方法
 你可能注意到了，上面生成新的函子的时候，用了new命令。这实在太不像函数式编程了，因为new命令是面向对象编程的标志。
@@ -245,13 +206,13 @@ class Functor {
 **函数式编程一般约定，函子有一个of方法，用来生成新的容器。**
 
 下面就用of方法替换掉new。
-```
+```js
 Functor.of = function(val) {
   return new Functor(val);
 };
 ```
 然后，前面的例子就可以改成下面这样。
-```
+```js
 Functor.of(2).map(function (two) {
   return two + 2;
 });
@@ -261,7 +222,7 @@ Functor.of(2).map(function (two) {
 
 ### Maybe 函子
 函子接受各种函数，处理容器内部的值。这里就有一个问题，容器内部的值可能是一个空值（比如null），而外部函数未必有处理空值的机制，如果传入空值，很可能就会出错。
-```
+```js
 Functor.of(null).map(function (s) {
   return s.toUpperCase();
 });
@@ -270,7 +231,7 @@ Functor.of(null).map(function (s) {
 
 上面代码中，函子里面的值是null，结果小写变成大写的时候就出错了。
 Maybe 函子就是为了解决这一类问题而设计的。简单说，它的map方法里面设置了空值检查。
-```
+```js
 class Maybe extends Functor {
   map(f) {
     return this.val ? Maybe.of(f(this.val)) : Maybe.of(null);
@@ -278,7 +239,7 @@ class Maybe extends Functor {
 }
 ```
 有了 Maybe 函子，处理空值就不会出错了。
-```
+```js
 Maybe.of(null).map(function (s) {
   return s.toUpperCase();
 });
@@ -291,7 +252,7 @@ Maybe.of(null).map(function (s) {
 
 Either 函子内部有两个值：左值（Left）和右值（Right）。右值是正常情况下使用的值，左值是右值不存在时使用的默认值。
 
-```
+```js
 class Either extends Functor {
   constructor(left, right) {
     this.left = left;
@@ -310,7 +271,7 @@ Either.of = function (left, right) {
 };
 ```
 下面是用法。
-```
+```js
 var addOne = function (x) {
   return x + 1;
 };
@@ -326,7 +287,7 @@ Either.of(1, null).map(addOne);
 
 Either 函子的常见用途是提供默认值。下面是一个例子。
 
-```
+```js
 Either
 .of({address: 'xxx'}, currentUser.address)
 .map(updateField);
@@ -335,7 +296,7 @@ Either
 上面代码中，如果用户没有提供地址，Either 函子就会使用左值的默认地址。
 Either 函子的另一个用途是代替try...catch，使用左值表示错误。
 
-```
+```js
 function parseJSON(json) {
   try {
     return Either.of(null, JSON.parse(json));
@@ -350,7 +311,7 @@ function parseJSON(json) {
 ### ap 函子
 函子里面包含的值，完全可能是函数。我们可以想象这样一种情况，一个函子的值是数值，另一个函子的值是函数。
 
-```
+```js
 function addTwo(x) {
   return x + 2;
 }
@@ -362,7 +323,7 @@ const B = Functor.of(addTwo)
 有时，我们想让函子B内部的函数，可以使用函子A内部的值进行运算。这时就需要用到 ap 函子。
 ap 是 applicative（应用）的缩写。凡是部署了ap方法的函子，就是 ap 函子。
 
-```
+```js
 class Ap extends Functor {
   ap(F) {
     return Ap.of(this.val(F.val));
@@ -373,17 +334,15 @@ class Ap extends Functor {
 注意，ap方法的参数不是函数，而是另一个函子。
 
 因此，前面例子可以写成下面的形式。
-```
+```js
 Ap.of(addTwo).ap(Functor.of(2))
 // Ap(4)
 ```
 
 ap 函子的意义在于，对于那些多参数的函数，就可以从多个容器之中取值，实现函子的链式操作。
 
-
-
 ### React中高阶组件
-```
+```js
 function hello(){
     console.log("hello I love React")
 }
@@ -399,7 +358,6 @@ function wrapperHello(fn){
 hello = wrapperHello(hello)
 hello()
 ```
-
 
 [1]: http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022201.jpg
 [2]: http://www.ruanyifeng.com/blogimg/asset/2017/bg2017022205.jpg

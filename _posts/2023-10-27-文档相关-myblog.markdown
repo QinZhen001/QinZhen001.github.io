@@ -11,17 +11,13 @@ tags:
 
 > “Yeah It's on. ”
 
-
-
-# typedoc 
+## typedoc
 
 [https://typedoc.org/guides/overview/](https://typedoc.org/guides/overview/)
 
 TypeDoc 是 TypeScript 的文档生成器，是一个读取 TypeScript 源文件的工具
 
-
-
-## 使用
+### 使用
 
 ```json
  // pacakage.json
@@ -30,8 +26,6 @@ TypeDoc 是 TypeScript 的文档生成器，是一个读取 TypeScript 源文件
     "doc": "typedoc"
   },
 ```
-
-
 
 ```json
 // typedoc.json
@@ -57,15 +51,9 @@ TypeDoc 的 output 默认带上了每个api的Defined来自的地方，看起来
 
 [Disable "Defined in:"](https://github.com/TypeStrong/typedoc/issues/808)
 
+### 问题
 
-
-
-
-## 问题 
-
-
-
-### not supported in watch mode
+#### not supported in watch mode
 
 ```bash
 "doc:watch": "typedoc --watch"
@@ -93,4 +81,3 @@ TypeScript 的项目引用:
   ]
 }
 ```
-

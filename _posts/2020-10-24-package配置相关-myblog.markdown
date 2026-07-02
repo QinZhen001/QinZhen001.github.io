@@ -13,38 +13,23 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-
-# 正文
+## 正文
 
 [package.json 指南](http://nodejs.cn/learn/the-package-json-guide)
 
 [https://docs.npmjs.com/cli/v10/configuring-npm/package-json](https://docs.npmjs.com/cli/v10/configuring-npm/package-json)
 
-
-
-## module
+### module
 
 定义 `npm` 包的 ESM 规范的入口文件，browser 环境和 node 环境均可使用
 
-
-
-
-
-## browser
+### browser
 
 定义 `npm` 包在 browser 浏览器环境下的入口文件
 
+### scripts
 
-
-
-
-## scripts
-
-
-
-### preinstall
+#### preinstall
 
 在运行npm install命令时，preinstall脚本会在安装依赖包之前触发。这意味着，在安装依赖包之前，你可以在preinstall脚本中执行任何必要的操作，例如检查环境变量、创建目录、运行编译脚本等。
 
@@ -56,11 +41,7 @@ tags:
 
 [https://pnpm.io/only-allow-pnpm](https://pnpm.io/only-allow-pnpm)
 
-
-
-
-
-###  prepare
+####  prepare
 
 "prepare" script in package.json is triggered when the package is prepared for publishing
 
@@ -68,9 +49,7 @@ It is executed automatically after the package is installed or updated
 
 在安装依赖 or 更新依赖之后执行
 
-
-
-## [main](https://docs.npmjs.com/files/package.json#main)
+### [main](https://docs.npmjs.com/files/package.json#main)
 
 定义了 `npm` 包的入口文件，browser 环境和 node 环境均可使用
 
@@ -80,31 +59,23 @@ This should be a module ID relative to the root of your package folder.
 
 For most modules, it makes the most sense to have a main script and often not much else.
 
-
-
-## [bin](https://docs.npmjs.com/files/package.json#bin)
+### [bin](https://docs.npmjs.com/files/package.json#bin)
 
 A lot of packages have one or more executable files that they’d like to install into the PATH. npm makes this pretty easy (in fact, it uses this feature to install the “npm” executable.)
-
-
 
 To use this, supply a `bin` field in your package.json which is a map of command name to local file name. On install, npm will symlink that file into `prefix/bin` for global installs, or `./node_modules/.bin/` for local installs.
 
 For example, myapp could have this:
 
-```
+```json
 { "bin" : { "myapp" : "./cli.js" } }
 ```
 
-## [files](https://docs.npmjs.com/files/package.json#files)
+### [files](https://docs.npmjs.com/files/package.json#files)
 
 The optional `files` field is an array of file patterns that describes the entries to be included when your package is installed as a dependency. File patterns follow a similar syntax to `.gitignore`, but reversed: including a file, directory, or glob pattern (`*`, `**/*`, and such) will make it so that file is included in the tarball when it’s packed. Omitting the field will make it default to `["*"]`, which means it will include all files.
 
-
-
 可选文件字段是文件模式的数组，描述了将软件包作为依赖项安装时要包括的条目。 文件格式遵循与.gitignore类似的语法，但是相反：包括文件，目录或全局格式（*，** / *等）将使文件格式成为可能，以便在打包时将其包含在压缩包中。 省略该字段将使其默认为[“ *”]，这意味着它将包括所有文件。
-
-
 
 Certain files are always included, regardless of settings:
 
@@ -114,8 +85,6 @@ Certain files are always included, regardless of settings:
 - `LICENSE` / `LICENCE`
 - `NOTICE`
 - **The file in the “main” field**
-
-
 
 Conversely, some files are always ignored:
 
@@ -135,9 +104,7 @@ Conversely, some files are always ignored:
 - `*.orig`
 - `package-lock.json` (use shrinkwrap instead)
 
-
-
-## type
+### type
 
 在package.json文件中，type字段用于指定模块的类型。它有以下几种取值：
 
@@ -147,15 +114,13 @@ Conversely, some files are always ignored:
 
 默认值为"commonjs"，大多数情况下不需要显式地指定type字段，因为Node.js环境默认支持CommonJS规范。但是，在使用一些前端构建工具如Rollup、Babel构建项目时，可能需要将type字段设置为"module"，以指定模块类型为ES模块规范
 
-
-
-## **types**
+### **types**
 
 [https://www.tslang.cn/docs/handbook/declaration-files/publishing.html](https://www.tslang.cn/docs/handbook/declaration-files/publishing.html)
 
 如果你的包有一个主`.js`文件，你还是需要在`package.json`里指定主声明文件。 设置 `types`属性指向捆绑在一起的声明文件。 比如：
 
-```
+```json
 {
     "name": "awesome",
     "author": "Vandelay Industries",
@@ -167,9 +132,7 @@ Conversely, some files are always ignored:
 
 注意`"typings"`与`"types"`具有相同的意义，也可以使用它。
 
-
-
-### 发布声明文件
+#### 发布声明文件
 
 有两种主要方式用来发布typescript声明文件到npm
 
@@ -178,13 +141,11 @@ Conversely, some files are always ignored:
 
 如果你能控制要使用你发布的声明文件的那个npm包的话，推荐第一种方式。 这样的话，你的声明文件与JavaScript总是在一起传递。
 
-
-
 举个依赖的例子：
 
 所有的依赖是由npm管理的。 确保所依赖的声明包都在 `package.json`的`"dependencies"`里指明了 比如，假设我们写了一个包它依赖于Browserify和TypeScript。
 
-```
+```json
 {
     "name": "browserify-typescript-extension",
     "author": "Vandelay Industries",
@@ -201,24 +162,18 @@ Conversely, some files are always ignored:
 
 这里，我们的包依赖于`browserify`和`typescript`包。 `browserify`没有把它的声明文件捆绑在它的npm包里，所以我们需要依赖于`@types/browserify`得到它的声明文件。 `typescript`相反，它把声明文件放在了npm包里，因此我们不需要依赖额外的包。
 
-### 注意
+#### 注意
 
 *不要*在声明文件里使用`/// <reference path="..." />`。
 
 *应该*使用`/// <reference types="..." />`代替
 
-
-
-
-
-## resolution
+### resolution
 
 开发过程中经常会遇到下面两个场景：
 
 1. 项目依赖一个不常更新的包，但这个包又依赖另一个包，而这个包由于各种原因需要立即升级，例如紧急安全更新等。
 2. 项目的直接依赖定义了过于宽泛的子依赖版本范围，恰巧这其中的某个版本有问题，需要把子依赖限制在某些正常工作的版本范围里。
-
-
 
 这个时候就很头疼，因为项目 package.json 不能指定依赖的依赖的版本，它是在依赖的 package.json 中指定的，要么坐等作者升级，要么手动编辑 package-lock.json。如果用 yarn 作为包管理工具的话，就好办了，只需要在 package.json 文件里添加 resolutions 字段，就能覆盖版本定义，例如：
 
@@ -238,11 +193,7 @@ Conversely, some files are always ignored:
 }
 ```
 
-
-
-
-
-## engines
+### engines
 
 设置此软件包/应用程序要运行的 Node.js 或其他命令的版本。
 
@@ -256,9 +207,7 @@ Conversely, some files are always ignored:
 }
 ```
 
-
-
-## unpkg
+### unpkg
 
 [https://segmentfault.com/a/1190000016365409](https://segmentfault.com/a/1190000016365409)
 
@@ -271,7 +220,7 @@ Conversely, some files are always ignored:
 
 正常情况下，访问 `jquery` 的发布文件通过 `https://unpkg.com/jquery@3.3.1/dist/jquery.js`，当你使用省略的 url `https://unpkg.com/jquery` 时，便会按照如下的方式获取文件：
 
-```
+```js
 # [latestVersion] 指最新版本号，pkg 指 package.json
 
 # 定义了 unpkg 属性时
@@ -282,11 +231,7 @@ https://unpkg.com/jquery@[latestVersion]/[pkg.main]
 
 ```
 
-
-
-
-
-### unpkgFiles
+#### unpkgFiles
 
 unpkg 和 unpkgFiles 都是用于指定在 unpkg（一个可靠的、快速的 CDN）上托管的 npm 包的文件。
 
@@ -311,13 +256,7 @@ unpkg 和 unpkgFiles 都是用于指定在 unpkg（一个可靠的、快速的 C
 
 ```
 
-
-
-
-
-
-
-## style
+### style
 
 声明当前模块包含 `style` 部分，并指定入口文件。
 
@@ -332,11 +271,7 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 详细参考 [Package.json "style" Attribute](https://link.segmentfault.com/?enc=%2FIfDOKxRCWfKW1YmFKsljg%3D%3D.lfNf7g6nQm88xvMHJ2vKkxUVqPUZAIvU71f80JT%2Bv7M%2FDg4yFMDEpZiQwbK9f4xvhr2YHw%2FZ61ruZcsngoFL8A%3D%3D), [istf-spec](https://link.segmentfault.com/?enc=Ii0IZ%2FDCODRN%2FYep5reDiQ%3D%3D.nw0k4UxJrKyg74oORMBk1IlkmW%2B1myf1pL91CBoSPw5%2B9JYTnwm0LeLVn3uuIMuQ).
 
-
-
-
-
-## workspaces
+### workspaces
 
 [https://docs.npmjs.com/cli/v10/using-npm/workspaces](https://docs.npmjs.com/cli/v10/using-npm/workspaces)
 
@@ -344,15 +279,13 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 工作区是一个通用术语，指的是npm cli中的一组特性，这些特性支持从一个顶级根包中管理本地文件系统中的多个包。
 
-
-
-## exports
+### exports
 
 [https://www.cnblogs.com/taohuaya/p/15573719.html](https://www.cnblogs.com/taohuaya/p/15573719.html)
 
 提供了一种方法来为不同的环境和 `JavaScript` 风格公开您的包模块，同时限制对其内部部分的访问。
 
-```
+```js
 // package.json
 {
   "name": "my-lib",
@@ -369,11 +302,7 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 }
 ```
 
-
-
-
-
-## version
+### version
 
 以当前版本为1.0.0为例子，遵循以下规范：
 
@@ -387,7 +316,7 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 例如
 
-```
+```js
 "eslint": "^3.19.0",
 "css-loader": "~3.19.0",
 ```
@@ -397,17 +326,12 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 - ^代表固定主版本号的，其余号浮动，如`^1.3.0`，高于等于1.3.0，1.x.x都符合，但是要低于2.0.0
 - ~代表固定次版本号的，修订号浮动，如`~1.3.0`，高于等于1.3.0，1.3.x都符合，但是要低于1.4.0
 
-
-
-不同版本的npm 
+不同版本的npm
 
 * npm 2 在安装依赖包时，采用简单的递归安装方法。
 * npm 3  扁平结构
 * npm 5 package-lock 文件
 
-
-
 这只是最简单的例子，实际的工程项目中，依赖树不可避免地会有很多层级，很多依赖包，其中会有很多同名但版本不同的包存在于不同的依赖层级，对这些复杂的情况, npm 3 都会在安装时遍历整个依赖树，计算出最合理的文件夹安装方式，使得所有被重复依赖的包都可以去重安装。
 
 package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 json 的结构，会发现与 node_modules 目录的文件层级结构是一一对应的。
-

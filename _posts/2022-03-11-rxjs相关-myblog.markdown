@@ -12,9 +12,7 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-# 正文
+## 正文
 
 [探索 RxJS - Observable](https://github.com/ecmadao/Coding-Guide/blob/master/Notes/RxJS/%E6%8E%A2%E7%B4%A2RxJS-Observable.md)
 
@@ -36,11 +34,7 @@ RxJS 是一个响应式的库，它接收从事件源发出的一个个事件，
 
 因为一个个事件是动态产生和传递的，这种数据的动态产生和传递就可以叫做流。
 
-
-
-
-
-## 使用 RxJS
+### 使用 RxJS
 
 ```tsx
 const source = new Observable((observer) => {
@@ -67,9 +61,7 @@ setTimeout(() => {
 
 ```
 
-
-
-## 监听对象set
+### 监听对象set
 
 ```ts
 import { Subject } from 'rxjs';
@@ -95,25 +87,16 @@ proxy.aaa = "asdads"
 proxy.ccc = "ccc"
 ```
 
+## 补充
 
-
-# 补充
-
-
-
-## rxjs-etc
+### rxjs-etc
 
 [https://www.npmjs.com/package/rxjs-etc](https://www.npmjs.com/package/rxjs-etc)
 
 A bunch of observables and operators for RxJS.
 
-
-
-
-
-## rxjs-websockets
+### rxjs-websockets
 
 [https://www.npmjs.com/package/rxjs-websockets](https://www.npmjs.com/package/rxjs-websockets)
 
 An rxjs websocket library with a simple and flexible implementation. Supports the browser and node.js.
-

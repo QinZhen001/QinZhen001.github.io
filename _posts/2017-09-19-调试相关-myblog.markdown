@@ -11,24 +11,17 @@ tags:
 
 > “Yeah It's on. ”
 
-
-
-
-
-# web调试
+## web调试
 
 [调试技巧](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/11.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%89%8D%E7%AB%AF%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7%E3%80%8B.md)
 
-
-
-## 手机调试模式下鼠标小圆点消失
+### 手机调试模式下鼠标小圆点消失
 
 [网页链接](https://segmentfault.com/q/1010000006084696)
 
 ctrl+shift+c会toggle选择dom的状态， 此时光标会变为非模拟touch
 
-
-### 最终解决方案
+#### 最终解决方案
 
 HDMI线下部分显卡驱动的造成的,更改设置
 
@@ -40,20 +33,11 @@ HDMI线下部分显卡驱动的造成的,更改设置
 
 勾上「全范围」，保存看chrome里那个小圆点就出来了
 
-
-
-
 > Tip：
 
 **其实选 有限范围 也可以**
 
-
-
-
-
-
-
-## 显示需要鼠标focus才出现元素
+### 显示需要鼠标focus才出现元素
 
 一开始我在触发元素上设置Force state，发现气泡弹窗并未弹出
 
@@ -61,9 +45,7 @@ HDMI线下部分显卡驱动的造成的,更改设置
 
 最终解决：
 
-使用这个 Break on => 
-
-
+使用这个 Break on =>
 
 或者:
 
@@ -83,35 +65,19 @@ HDMI线下部分显卡驱动的造成的,更改设置
 </div>
 ```
 
-
-
-
-
-## 打印最近 focus 过的元素
+### 打印最近 focus 过的元素
 
 `document.activeElement` 可以打印最近 focus 过的元素，因为打开控制台导致失去焦点，但我们可以通过此 api 获取它。
 
-
-
-
-
-## 打印对象瞬时状态
+### 打印对象瞬时状态
 
 `JSON.stringify(obj, null, 2)` 可以结构化打印出对象，因为是字符串，不用担心引用问题。
 
-
-
-
-
-## Chrome 快速查找元素
+### Chrome 快速查找元素
 
 Chrome 会记录最后插入的 5 个元素，分别以 `$0` ~ `$4` 的方式在控制台直接输出。
 
-
-
-
-
-## 打印window上带“-” 的对象
+### 打印window上带“-” 的对象
 
 我们假设window上有一个 xxx-yyy 对象
 
@@ -121,21 +87,15 @@ Chrome 会记录最后插入的 5 个元素，分别以 `$0` ~ `$4` 的方式在
 
 [![Xipy36.md.jpg](https://s1.ax1x.com/2022/05/24/Xipy36.md.jpg)](https://imgtu.com/i/Xipy36)
 
-
-
-## 查看所有元素位置和大小
+### 查看所有元素位置和大小
 
 [https://juejin.im/post/5d74b29d6fb9a06aea61b8b9?utm_source=gold_browser_extension](https://juejin.im/post/5d74b29d6fb9a06aea61b8b9?utm_source=gold_browser_extension)
 
 在业务开发过程中，想必大家经常会需要查看一个元素的位置及大小并修改它的 CSS，因此就会频繁使用到 DevTools 中的选择元素功能。
 
-
-
 其实我们可以使用一个 CSS 技巧给所有元素加上 outline，这样就能迅速了解自己所需的元素位置信息，无须再选择元素查看了。
 
-
 我们只需要添加以下 CSS 就能为任何网站添加这样的效果
-
 
 ```css
 html * {
@@ -143,39 +103,23 @@ html * {
 }
 ```
 
-
-
-
 >需要注意的是这里我没有使用 border 的原因是 border 会增加元素的大小但是 outline 不会。
-
-
 
 **用这个技巧来查看元素是否对齐。**
 
-
-
-# react调试
+## react调试
 
 [React调试利器：React DevTools](https://juejin.cn/post/6877546408925200391)
 
+## node调试
 
-
-
-
-# node调试
-
-
-
-
-
-## nodemon
+### nodemon
 
 [网页链接](http://blog.csdn.net/sinat_36871349/article/details/53433324)
 
+#### Installation
 
-### Installation
-
-```
+```bash
 npm install -g nodemon
 ```
 
@@ -183,15 +127,13 @@ And nodemon will be installed globally to your system path.
 
 You can also install nodemon as a developement dependency:
 
-```
+```bash
 npm install --save-dev nodemon
 ```
 
 With a local installation, nodemon will not be available in your system path. Instead, the local installation of nodemon can be run by calling it from within an npm script (such as npm start) or using npx nodemon.
 
-
-
-### Usage
+#### Usage
 
 nodemon wraps your application, so you can pass all the arguments you would normally pass to your app:
 
@@ -205,12 +147,10 @@ Using nodemon is simple, if my application accepted a host and port as the argum
 nodemon ./server.js localhost 8080
 ```
 
-
-#### Running non-node scripts
+##### Running non-node scripts
 
 nodemon can also be used to execute and monitor other programs. nodemon will read the file extension of the script being run and monitor that extension instead of .js if there's no nodemon.json:
 
 ```js
 nodemon --exec "python -v" ./app.py
 ```
-

@@ -12,26 +12,19 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
 >storybook目前没有比较好的中文文档，只能啃英文文档，omg
 
-
-
-
-# 正文
+## 正文
 
 [手把手教你快速搭建专属的storybook]( https://juejin.im/post/5c307916e51d4551e418baa0#heading-7 )
 
- https://storybook.js.org/ 
+ https://storybook.js.org/
 
- Storybook is an open source tool for developing UI components in isolation for React, Vue, and Angular. It makes building stunning UIs organized and efficient. 
+ Storybook is an open source tool for developing UI components in isolation for React, Vue, and Angular. It makes building stunning UIs organized and efficient.
 
 Storybook是一个开源工具，用于为React，Vue和Angular隔离开发UI组件。 它使构建令人惊叹的UI井井有条且高效。
 
-
-
-###  preview.js 
+####  preview.js
 
 > preview.js 在.storybook文件夹
 
@@ -61,24 +54,17 @@ This example registered your custom `Button.vue` component, installed the Vuex p
 
 All custom components and Vue plugins should be registered before calling `configure()`.
 
-
-
-### Storybook for Vue
+#### Storybook for Vue
 
 Storybook for Vue is a UI development environment for your Vue components. With it, you can visualize different states of your UI components and develop them interactively.
 
 Vue的Storybook是Vue组件的UI开发环境。有了它，您可以可视化UI组件的不同状态，并交互式地开发它们。
 
-
  Storybook runs outside of your app. So you can develop UI components in isolation without worrying about app specific dependencies and requirements.
 
 Storybook在你的应用程序之外运行，所以你可以独立开发UI组件，而不用担心应用程序特定的依赖和需求。
 
-
-
-
-
-### **Webpack 5 support**
+#### **Webpack 5 support**
 
 [https://storybook.js.org/blog/storybook-for-webpack-5/](https://storybook.js.org/blog/storybook-for-webpack-5/)
 
@@ -92,25 +78,11 @@ npx sb init --builder webpack5
 
 For an existing Storybook, upgrade to the latest version, add `@storybook/builder-webpack5`, and set the `core.builder` configuration in `.storybook/main.js` ([full instructions](https://gist.github.com/shilman/8856ea1786dcd247139b47b270912324#upgrade)).
 
+### 问题
 
+#### addon-info
 
-
-
-
-
-
-
-## 问题
-
-
-
-### addon-info
-
-
-
-####  vue中使用addon-info 
-
-
+#####  vue中使用addon-info
 
 [ https://github.com/storybookjs/storybook/issues/4770 ]( https://github.com/storybookjs/storybook/issues/4770 )
 
@@ -124,9 +96,7 @@ Installed `@storybook/addon-info` to work with a Vue app, but I've been unable t
 
 [ https://github.com/storybooks/storybook/blob/next/ADDONS_SUPPORT.md ]( https://github.com/storybooks/storybook/blob/next/ADDONS_SUPPORT.md )
 
-
-
-#### Warning: Failed prop type
+##### Warning: Failed prop type
 
 出现Warning
 
@@ -164,10 +134,6 @@ const sizeInput = () => (
 
 **No propTypes defined!**  (sizeInput 并不是返回一个组件)
 
-
-
-
-
 解决:
 
 ```tsx
@@ -182,19 +148,11 @@ const sizeInput = () => (
 
 这样就可以推到出类型。
 
-
-
-
-
-### load twice
+#### load twice
 
 [ https://github.com/storybookjs/storybook/issues/7636 ]( https://github.com/storybookjs/storybook/issues/7636 )
 
-
-
 出现load twice的问题
-
-
 
 ```js
 Unexpected loaded state. Did you call `load` twice?
@@ -209,25 +167,13 @@ Perhaps you added the same story twice, or you have a name collision?
 Story ids need to be unique -- ensure you aren't using the same names modulo url-sanitization.
 ```
 
-
-
-
-
 Calling `configure` from `@storybook/react` more than once in your `.storybook/config.js` file works just fine in dev mode. All stories for each call to `configure` are present in the storybook.
-
-
 
 翻译成白话文就是configure被调用了两次，检查一下
 
+#### addon-actions
 
-
-
-
-### addon-actions
-
-
-
-#### action无法触发
+##### action无法触发
 
 错误的写法：
 
@@ -257,15 +203,11 @@ import { action } from "@storybook/addon-actions";
   </Menu>
 ```
 
-
-
-
-
-###  Unexpected character '@'   （scss）
+####  Unexpected character '@'   （scss）
 
 遇到一个问题:
 
-```
+```js
 ERROR in ./src/styles/index.scss 2:0
 Module parse failed: Unexpected character '@' (2:0)
 You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
@@ -280,8 +222,6 @@ You may need an appropriate loader to handle this file type, currently no loader
 用了非常多的时间，定位到scss文件中@import问题
 
 那怎么解决呢？
-
-
 
 **在.storybook文件夹下的webpack.config.js增加**
 
@@ -302,6 +242,3 @@ module.exports = ({ config }) => {
 ```
 
 最后完美解决问题，其实也就是配置了处理scss文件
-
-
-

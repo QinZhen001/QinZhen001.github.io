@@ -12,15 +12,11 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-# i18n
+## i18n
 
 [https://www.npmjs.com/package/i18n](https://www.npmjs.com/package/i18n)
 
-
-
-# i18next
+## i18next
 
 [https://www.i18next.com/overview/getting-started](https://www.i18next.com/overview/getting-started)
 
@@ -32,9 +28,7 @@ I18next是一个非常流行的国际化框架，适用于浏览器或任何其�
 
 [i18next](https://www.i18next.com/) is an i18n framework written in and for JavaScript. It provides the standard i18n features of interpolation, formatting, and handling plurals and context.
 
-
-
-# react-i18next
+## react-i18next
 
 ```ts
 import i18n from "i18next"
@@ -81,19 +75,9 @@ export default i18n
 
 ```
 
+## 问题
 
-
-
-
-
-
-# 问题
-
-
-
-
-
-## need to pass in an i18next instance
+### need to pass in an i18next instance
 
 > react-i18next
 
@@ -113,11 +97,7 @@ import i18n from "./i18n"
 </I18nextProvider>
 ```
 
-
-
-
-
-## changeLanguage is not a function
+### changeLanguage is not a function
 
 >  react-i18next
 

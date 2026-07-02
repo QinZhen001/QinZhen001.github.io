@@ -11,15 +11,12 @@ tags:
 
 > “Yeah It's on. ”
 
-
-## 正文
+### 正文
 
 Vue2.1.7源码学习
 [http://hcysun.me/2017/03/03/Vue%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/](http://hcysun.me/2017/03/03/Vue%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/)
 
-
-
-### 需要框架的根本原因
+#### 需要框架的根本原因
 
 [现代 js 框架存在的根本原因](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/57.%E7%B2%BE%E8%AF%BB%E3%80%8A%E7%8E%B0%E4%BB%A3%20js%20%E6%A1%86%E6%9E%B6%E5%AD%98%E5%9C%A8%E7%9A%84%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0%E3%80%8B.md)
 
@@ -27,69 +24,52 @@ Vue2.1.7源码学习
 
 **解决 UI 与状态同步的难题。**
 
-
-
-### 框架挑选
+#### 框架挑选
 
 不谈场景论好坏都是耍流氓。
 你要做的应该是该用 Vue 的时候用 Vue，该用 React 的时候用 React，该用 jQuery 的时候用 jQuery。
 
 至于如何挑选框架，只有老司机会选，你首先要变成一个老司机。
 
-
-### 组件
+#### 组件
 组件已经是各种框架的共识，你必须知道什么是组件。组件的定义就是……一个很抽象的东西。我的理解是变形金刚合体的时候，有人组成头部，有人组成裆部，这些人就是组件了。
 
 每个组件可以由其他小组件组成。比如裆部可以分成柱状组件和两球状组件。
 
 至于组件的严格定义，并没有。
 
-
-### 组件的状态（state）
+#### 组件的状态（state）
 一个组件可以有多种形态，比如上面的柱状组件可以是硬直状态，也可以是疲软状态。(=.= Orz)
 
-### JSX V.S. 模板
+#### JSX V.S. 模板
 JSX 适合逻辑多的场景，模板适合逻辑少的场景。
 
 * [Tutorial: JSX](http://buildwithreact.com/tutorial/jsx)
 * [JavaScript Templating](https://en.wikipedia.org/wiki/JavaScript_templating)
 
-
-### Colocation
+#### Colocation
 把该放在一起的东西放在一起。
 
 跟几年前的 HTML、CSS、JS 分离对应。
 
-
-### Separation of Concerns
+#### Separation of Concerns
 [关注点分离](https://zh.wikipedia.org/wiki/%E5%85%B3%E6%B3%A8%E7%82%B9%E5%88%86%E7%A6%BB)
 
 前端的关注点分离就是 HTML、CSS、JS 分离。
 
-
-
-### jQuery和其他MVVM框架
+#### jQuery和其他MVVM框架
 
 **Vue和jQuery之间的区别只有一点，声明式与命令式**
 
-
 我们可以想一下，我们用jQuery去操作DOM的目的是什么？**是为了局部更新视图，换句话说是为了局部重新渲染。**
 
-
 jQuery是命令式的操作DOM，命令式的局部更新视图，而现代主流框架Vue，React，Angular等都是声明式的，声明式的局部更新视图。
-
 
 为什么声明式的操作DOM就可以让应用变得好维护了呢？
 
 弄明白这个问题首先我们先简单介绍下什么是命令式，什么是声明式。
 
-
-
-
-
-
-
-#### 命令式
+##### 命令式
 
 命令式，像jQuery，我们都是想干什么然后就去干就完了，例如下面的代码：
 
@@ -102,47 +82,32 @@ $('.box')
   ...
 ```
 
-
 命令式就是想干什么就直接去调用方法直接干就完了，简单直接粗暴。
-
-
 
 试想一个很简单的场景，比如一个toggle效果，点击一个按钮，切换颜色。
 用命令式写，我们肯定是这样写，如果当前是什么颜色就让它变成另外一个颜色。
 
-
 如果你仔细思考，其实这里面可以细分成两个行为，一个是对状态判断，另一个是操作DOM。
 
-
-
-#### 声明式
+##### 声明式
 
 **声明式是通过描述状态与视图之间的映射关系**，然后通过这样的一个映射关系来操作DOM，或者说具体点是用这样的映射关系来生成一个DOM节点插入到页面去。比如Vue中的模板。模板的作用就用是来描述状态与DOM的映射关系。
 
 同样的场景，我们用Vue中的模板来实现，当我们用模板描述了映射关系之后，我们在点击按钮时，我们只需要对颜色这个变量进行修改就可以完成需求。
 
-
-
 看到区别了么？
-
 
 仔细思考下，用Vue来实现同样的需求，如果细分来看，我们在逻辑上只有一个行为，只有状态。而jQuery是两个行为，状态+DOM操作。
 
-
 所以声明式为什么可以简化维护应用代码的复杂度？
-
 
 因为它让我们可以把关注点只放在状态的维护上。这样一来当应用复杂后，其实我们的思维，我们管理代码的方式只在状态上，所有的DOM操作都不用关心了，可以说大大降低代码维护的复杂度。
 
 但是如果应用特别特别复杂，我们会发现即便是我们只关注状态的维护，依然很难，即便只维护状态也很难，所以才出现了Vuex，Redux等技术解决方案。
 
+#### React 和 Vue 对比
 
-
-### React 和 Vue 对比
-
-
-
-#### 组件状态变化
+##### 组件状态变化
 
 在 React 应用中，当某个组件的状态发生变化时，它会以该组件为根，重新渲染整个组件子树。
 
@@ -154,29 +119,21 @@ $('.box')
 
 Vue 的这个特点使得开发者不再需要考虑此类优化，从而能够更好地专注于应用本身。
 
-
-
 为什么 React 不精确监听数据变化呢？这是因为 Vue 和 React 设计理念上的区别，**Vue 使用的是可变数据，而React更强调数据的不可变**。所以应该说没有好坏之分，Vue更加简单，而React构建大型应用的时候更加鲁棒。
 
-
-
-#### HoC 和 mixins
+##### HoC 和 mixins
 
 Vue 中我们组合不同功能的方式是通过 mixin，而在React中我们通过 HoC (高阶组件）。
 
 React 最早也是使用 mixins 的，不过后来他们觉得这种方式对组件侵入太强会导致很多问题，就弃用了 mixinx 转而使用 HoC
 
-
 为什么 Vue 不采用 HoC 的方式来实现呢？
 
 高阶组件本质就是高阶函数，React 的组件是一个纯粹的函数，所以高阶函数对React来说非常简单。
 
-
-
 但是Vue就不行了，Vue中组件是一个被包装的函数，并不简单的就是我们定义组件的时候传入的对象或者函数。比如我们定义的模板怎么被编译的？比如声明的props怎么接收到的？这些都是vue创建组件实例的时候隐式干的事。由于vue默默帮我们做了这么多事，所以我们自己如果直接把组件的声明包装一下，返回一个高阶组件，那么这个被包装的组件就无法正常工作了。
 
-#### HTML & CSS
-
+##### HTML & CSS
 
 * React 是通过JSX渲染模板
 * 而Vue是通过一种拓展的HTML语法进行渲染
@@ -190,23 +147,16 @@ Vue 的整体思想是拥抱经典的 Web 技术，并在其上进行扩展。
 
 react中render函数是支持闭包特性的，所以我们import的组件在render中可以直接调用。但是在Vue中，由于模板中使用的数据都必须挂在 this 上进行一次中转，所以我们import 一个组件完了之后，还需要在 components 中再声明下，这样显然是很奇怪但又不得不这样的做法。
 
-#### 组件作用域内的 CSS
-
+##### 组件作用域内的 CSS
 
 CSS 作用域在 React 中是通过 CSS-in-JS 的方案实现的 (比如 styled-components、glamorous 和 emotion)。这引入了一个新的面向组件的样式范例，它和普通的 CSS 撰写过程是有区别的。另外，虽然在构建时将 CSS 提取到一个单独的样式表是支持的，但 bundle 里通常还是需要一个运行时程序来让这些样式生效。当你能够利用 JavaScript 灵活处理样式的同时，也需要权衡 bundle 的尺寸和运行时的开销。
 
-
 Vue 的单文件组件里的样式设置是非常灵活的。通过 vue-loader，你可以使用任意预处理器、后处理器，甚至深度集成 CSS Modules——全部都在 `<style>` 标签内。
 
-
-
-
-### view = render(state)
+#### view = render(state)
 给我一个 state（数据），我就造出一个 view（DOM）。
 
-
-
-### Virtual DOM
+#### Virtual DOM
 > 计算机科学领域的任何问题，都可以通过添加一个中间层来解决。
 
 Virtual DOM 就是应用与 DOM API 之间的中间层。
@@ -217,37 +167,23 @@ Virtual DOM 就是应用与 DOM API 之间的中间层。
 
 自己写一个 Virtual DOM 库并不难。
 
-
-
-
-
-
-
-
-
-### 状态管理
+#### 状态管理
 总得来说前端对状态管理还没有达成共识，但又没有特别大的分歧。
 
 可以了解一下 Flux、Redux、MobX、Vuex 和 Rx.js（反正名字里都有一个 x）。
 
 状态管理主要涉及 event、state 和 view 的变化的管理，主要分歧在于 event 与 state 变化的管理方式，各种方案皆有优劣。
 
-
-
-
-
-#### Vuex 和 Redux 的区别
+##### Vuex 和 Redux 的区别
 
 从表面上来说，store 注入和使用方式有一些区别。
 
 在 Vuex 中，$store 被直接注入到了组件实例中，因此可以比较灵活的使用：
 
-
 * 使用 dispatch 和 commit 提交更新
 * 通过 mapState 或者直接通过 this.$store 来读取数据
 
 在 Redux 中，我们每一个组件都需要显示的用 connect 把需要的 props 和 dispatch 连接起来。
-
 
 从实现原理上来说，最大的区别是两点：
 
@@ -263,53 +199,35 @@ Virtual DOM 就是应用与 DOM API 之间的中间层。
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
+### 补充
 
-
-## 补充
-
-
-
-### 什么是渲染
+#### 什么是渲染
 
 经过前面的介绍，你会发现其实**现代主流框架要解决的最本质的问题依然是渲染**，只是不同框架之间的解决方案有差异，那么什么是渲染？
-
 
 现在开发前端，我们的应用在**运行时**需要不断的进行各种交互，现代主流框架让我们把关注点放在了状态的维护上，也就是说应用在运行时，应用内部的状态会不断的发生变化。
 
 而将状态生成DOM插入到页面展示在用户界面上，这一套流程叫做渲染。
 
-
-#### 现代前端框架对渲染的处理
+##### 现代前端框架对渲染的处理
 
 当应用在运行时，内部状态会不断的发生变化，这时用户页面的某个局部区域需要不停的重新渲染。
 
-
 如何重新渲染？
 
-
 最简单粗暴的解决方式，也是我平时在没有使用任何框架的项目里写的一些简单的功能时最常用的方式是用状态生成一份新的DOM，然后用innerHTML把旧DOM替换了。
-
 
 我写的小功能块用这种方式没问题，因为功能涉及到的DOM标签少，状态变的时候，几乎就是我这个功能块的所有标签都需要变，所以即便是用innerHTML也不会有太大的性能浪费，是在可接受范围内的。
 
 但是框架不行，框架如果用innerHTML这样去替换，那就不是局部重新渲染了，而是整个页面整体刷新，这性质就变了，那么框架如何做到局部重新渲染？
 
-
 解决这个问题，需要一些技术方案来解决，可以是VirtualDOM，但并不一定必须是VirtualDOM，也可以是Angular中的脏检测的流程，也可以是细粒度的绑定，像Vue1.0就是使用细粒度的绑定来实现的。
-
-
-
 
 而Vue这种细粒度的绑定其实在状态发生变化的那一个瞬间，立刻就知道哪个状态变了，而且还知道有哪些具体的标签使用了这个状态，那么事情就变的简单的多了，直接把与这个状态所绑定的这些具体的标签进行更新就能达到局部更新的目的。
 
-
-
 但是这样做其实也有一定的代价，因为粒度太细，会有一定的依赖追踪的开销。所以Vue2.0开始采取了一个折中的方案，就是把绑定调整为中等粒度。
 
-
 一个状态对应某个组件，而不再是具体标签，这样做有一个好处是可以大大降低依赖的数量，毕竟组件的数量与DOM中的具体标签比，数量要少的多。但是这样就需要多一个操作，当状态发生变化只通知到组件，那么组件内部如何知道具体更新哪个DOM标签？？
-
-
 
 答案是VirtualDOM。
 
@@ -317,49 +235,30 @@ Virtual DOM 就是应用与 DOM API 之间的中间层。
 
 Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框架运行的性能问题。
 
-
 所以说，Vue2.0引入VirtualDOM并不是因为VirtualDOM有多好，而是恰好VirtualDOM结合变化侦测可以将绑定调整成中等粒度来解决依赖追踪的开销问题。
 
 还有一个是模板编译，其实前面对于模板编译这个问题并没有说太多，模板的作用是描述状态与DOM之间的映射关系，通过模板可以编译出一个渲染函数，执行这个渲染函数可以得到VirtualDOM中所提供的VNode，事实上你看过我前面介绍VirtualDOM原理的PPT你就会知道VirtualDOM对节点进行diff其实是对VNode进行diff。
-
-
-
-
 
 作者：奇舞周刊
 链接：https://juejin.im/post/5b96170a5188255c68156383
 来源：掘金
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 
-
-
-
-
-
-
-### 什么是框架
+#### 什么是框架
 
 [https://juejin.im/post/5decf88f51882512327a510a](https://juejin.im/post/5decf88f51882512327a510a)
 
 如果说后端框架围绕着‘数据存储’建立起来，那么前端框架的基础就是视图库，毕竟前端的本质工作就是视图。这是为什么前端生态圈一般是围绕着视图库展开的
 
-
 **所以说，前端框架的基础是‘视图’库。**
 
 ----
 
-
-
 什么是企业级，我自己也说不清楚。我只知道 React 没有说自己是企业级，Koa、Express 也没有，然而 Eggjs 和 Umijs 都说它们是企业级框架；Angular 通常也常常跟企业级这个概念联系在一起；语言层面有 Java。
-
 
 对比一下他们就知道了，**我觉得企业级表示它是 面向企业生产，目的是提高企业的生产力**
 
-
 总结一下有以下特点：
-
-
-
 
 * 是高效 + 成熟方案的整合
 * 关注生产的整个链路，而不是某个环节
@@ -368,32 +267,19 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 标准化
 * 经过生产环境验证, 有较多用例保证
 
-
-
 **归根到底还是成本问题，框架最本质的目的就是要减低各类成本。让更少的人可以做更多的事情、且能保证质量、降低维护成本，且能保证不断优化和演进。**
-
-
 
 给个定义吧。
 
-
 **前端框架体系的建立离不开前端工程化成熟和‘最佳实践‘的沉淀’。你可以认为框架就是一个整合的方案，提供一个前端‘最佳‘的组合配置。开发者需要做的就是在这个框架约束下填充自己业务代码。**
 
-
-
-### 前端框架整合期
-
+#### 前端框架整合期
 
 几乎每个团队都会重复走这样的路子：稳定技术栈、工程化建设、基础库/组件库建设、沉淀自己的最佳实践。
 
-
-
 团队没有一定的工程能力和资源其实是很难将这些零散的实践体系化、有机地粘合起来, 长期有效的维护更新更是一件难事, 半途而废的居多。
 
-
-
-### 现有的框架都有什么
-
+#### 现有的框架都有什么
 
 **一个前端开发框架应该涵盖前端开发链路的各个环节。为约束和简化业务开发、提供有用的指导。**
 
@@ -401,23 +287,14 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 
 为了应对这些需求，不同的框架也有不同的应对策略:
 
-
-
-
 * 更开放。框架只提供核心功能，附加几乎什么事情都能干的插件机制。插件可以干预框架的整个生命周期，不满足的需求可以自己定制自己的插件
 * 更决断。我给你提供的就是最好的，能满足你的尽量满足你，其他的你不要管太多，也没有必要管, 专注你的业务。
 
-
-
-
 **我一直坚信专业的人做专业的事。要善于将事情外包出去，腾空自己去做重要的事情**。大厂有专门的团队在做工具、建设基础设施，社区上开源的框架也由一大帮牛人在维护，而且通常开发迭代很活跃。所以说社区已经有的方案，可以直接拿来用，不要自己去造轮子，因为你一般没那么多精力。
 
-
-### 寻找框架设计的平衡点
-
+#### 寻找框架设计的平衡点
 
 [寻找框架设计的平衡点](https://github.com/dt-fe/weekly/blob/v2/133.%E7%B2%BE%E8%AF%BB%E3%80%8A%E5%AF%BB%E6%89%BE%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%B9%B3%E8%A1%A1%E7%82%B9%E3%80%8B.md)
-
 
 * 小服务范围 React
 * 大服务范围 Angular
@@ -427,9 +304,7 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 
 刚起步的小团队可能更需要保姆式的框架，因为这样最节省人力成本。对于规模较大的团队，希望对框架拥有较大定制能力时，小服务范围的框架可能更受青睐。当然框架作者可以像 Vue 一样做出渐进式官方能力增强方案，以此满足不同需求的用户，但毕竟也不能将生态完全交给社区，还是要做取舍。
 
-
-
-# svelte
+## svelte
 
 [https://juejin.cn/post/7185433911437033531](https://juejin.cn/post/7185433911437033531)
 
@@ -441,25 +316,17 @@ Vue很聪明地通过变化侦测+VirtualDOM这两种技术方案，提升了框
 
 svelte 把框架的抽象都从运行时前移到了编译期进行处理，提前分析依赖，生成脏检查语句，生成 dom 的 patch 代码等，去除了运行时的依赖分析，虚拟 dom 等计算耗时，减少了运行时的负担，又在底层实现充分考虑了性能，例如用位运算做数据变更的标记，让整个框架变得很高效。
 
-
-
-
-
-# next.js
+## next.js
 
 [https://nextjs.org/learn-pages-router/basics/create-nextjs-app](https://nextjs.org/learn-pages-router/basics/create-nextjs-app)
 
-
-
-## Pages Router 和 App Router
+### Pages Router 和 App Router
 
 [https://www.cnblogs.com/silva/p/17948723](https://www.cnblogs.com/silva/p/17948723)
 
 > Next.js 从 v13 起就使用了新的路由模式 —— App Router。之前的路由模式我们称之为“Pages Router”
 
-
-
-## getServerSideProps 和 getStaticProps
+### getServerSideProps 和 getStaticProps
 
 - **`getServerSideProps`**：用于每次请求时都需要获取最新数据的页面，适合动态内容和需要实时数据的场景。
 - **`getStaticProps`**：用于在构建时生成静态页面，适合不频繁变化的数据，可以通过 ISR 实现定期更新。
@@ -478,24 +345,20 @@ export async function getStaticProps() {
 }
 ```
 
-Development vs Production 
+Development vs Production
 
 - In **development** (`npm run dev` or `yarn dev`), [`getStaticProps`](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation) runs on *every request*.
   在开发中（或），根据每个请求运行。
 - In **production**, [`getStaticProps`](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation) runs at *build time*. However, this behavior can be enhanced using the [`fallback` key](https://nextjs.org/docs/api-reference/data-fetching/get-static-paths#fallback-false) returned by [`getStaticPaths`](https://nextjs.org/docs/basic-features/data-fetching#getstaticpaths-static-generation)
   在生产中，在构建时运行。但是，可以使用返回的密钥来增强此行为
 
-
-
-## Hydration
+### Hydration
 
 Hydration is the process that bridges the gap between a server-rendered page and its transformation into an interactive client-side application. Think of it as the transition from a static webpage to a dynamic one.
 
 水合作用是弥合服务器渲染页面与其转换为交互式客户端应用程序之间差距的过程。将其视为从静态网页到动态网页的过渡。
 
-
-
-## SSR
+### SSR
 
 Drawbacks of SSR -  All or Nothing Waterfall  （缺点）
 
@@ -505,9 +368,7 @@ Drawbacks of SSR -  All or Nothing Waterfall  （缺点）
 
 create an "all or nothing" waterfall problem that spans from the server to the client where each issue must be resolved before moving to the next one This is inefficient if some parts of your app are slower than others, as is often the case in real-world apps
 
-
-
-## Static Rendering
+### Static Rendering
 
 [https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering)
 
@@ -518,16 +379,14 @@ With static rendering, data fetching and rendering happens on the server at buil
 好处：
 
 - **Faster Websites** -
-- **Reduced Server Load** 
-- **SEO** 
+- **Reduced Server Load**
+- **SEO**
 
 Static rendering is useful for UI with **no data** or **data that is shared across users**, such as a static blog post or a product page. It might not be a good fit for a dashboard that has personalized data that is regularly updated.
 
 静态渲染对于没有数据或数据在用户之间共享的 UI 非常有用，比如静态博客文章或产品页面。但对于包含个性化数据且经常更新的仪表盘可能不太合适。
 
-
-
-## Dynamic Rendering
+### Dynamic Rendering
 
 [https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-dynamic-rendering](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-dynamic-rendering)
 
@@ -539,15 +398,13 @@ With dynamic rendering, content is rendered on the server for each user at reque
 
 好处：
 
-- **Real-Time Data** 
-- **User-Specific Content** 
-- **Request Time Information** 
+- **Real-Time Data**
+- **User-Specific Content**
+- **Request Time Information**
 
 With dynamic rendering, **your application is only as fast as your slowest data fetch.**
 
 使用动态呈现，应用程序的速度取决于最慢的数据获取速度。
-
-
 
 ```ts
 import dynamic from 'next/dynamic';
@@ -556,25 +413,19 @@ import dynamic from 'next/dynamic';
 const DynamicComponent = dynamic(() => import('../components/HeavyComponent'), { ssr: false });
 ```
 
-
-
-
-
-## component-hierarchy
+### component-hierarchy
 
 组件等级结构
 
 [https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy](https://nextjs.org/docs/app/building-your-application/routing#component-hierarchy)
 
-
-
-## Server Rendering Strategies
+### Server Rendering Strategies
 
 > As a developer, you do not need to choose between static and dynamic rendering Next,js will automatically choose the best rendering strategy for each route basedon the features and APls used
 
 渲染策略
 
-* Static rendering 静态渲染  (default)  (HTML is generated at build time) 
+* Static rendering 静态渲染  (default)  (HTML is generated at build time)
 * Dynamic rendering 动态渲染  (HTML is generated at request time 每次请求)
 * Streaming 流式传输  (allows for progressive Ul rendering from the server 允许从服务器进行渐进U渲染)
 
@@ -595,9 +446,7 @@ In Next.js, these dynamic functions are: cookies(), headers(), and searchParams
 
 ---
 
-
-
-## Runtimes
+### Runtimes
 
 [https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes](https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes)
 
@@ -611,9 +460,7 @@ Next.js has two server runtimes you can use in your application:
 - The Node.js runtime is used for rendering your application.
 - The Edge runtime is used for Middleware (routing rules like redirects, rewrites, and setting headers).
 
-
-
-## Streaming
+### Streaming
 
 Streaming is a data transfer technique that allows you to break down a route into smaller "chunks" and progressively stream them from the server to the client as they become ready.
 
@@ -628,11 +475,7 @@ There are two ways you implement streaming in Next.js:
 1. At the page level, with the `loading.tsx` file.
 2. For specific components, with `<Suspense>`.
 
-
-
-
-
-## Suspense
+### Suspense
 
 [https://nextjs.org/learn/dashboard-app/streaming#practice-streaming-latestinvoices](https://nextjs.org/learn/dashboard-app/streaming#practice-streaming-latestinvoices)
 
@@ -658,11 +501,7 @@ You could stream **every component** individually... but that may lead to UI *po
 
 最好的做法是将数据获取移到需要它的组件中，然后将这些组件封装在悬念中
 
-
-
-
-
-## font
+### font
 
 [Why optimize fonts?](https://nextjs.org/learn/dashboard-app/optimizing-fonts-images#why-optimize-fonts)
 
@@ -670,9 +509,7 @@ Next.js automatically optimizes fonts in the application when you use the `next/
 
 next/font模块时自动优化应用程序中的字体。在构建时下载字体文件，并将它们与其他静态资产一起托管。这意味着当用户访问您的应用程序时，不存在会影响性能的字体的额外网络请求。
 
-
-
-## Script
+### Script
 
 [https://nextjs.org/learn-pages-router/basics/assets-metadata-css/third-party-javascript](https://nextjs.org/learn-pages-router/basics/assets-metadata-css/third-party-javascript)
 
@@ -699,31 +536,19 @@ export default function FirstPost() {
 }
 ```
 
-
-
-## Global Styles
+### Global Styles
 
 [https://nextjs.org/learn-pages-router/basics/assets-metadata-css/global-styles](https://nextjs.org/learn-pages-router/basics/assets-metadata-css/global-styles)
 
-
-
-## Server Actions
+### Server Actions
 
 [https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
 
-
-
-
-
-## next-redux-wrapper
+### next-redux-wrapper
 
 [https://github.com/kirill-konshin/next-redux-wrapper](https://github.com/kirill-konshin/next-redux-wrapper)
 
-
-
-
-
-## `next/dynamic`  和 `use client`
+### `next/dynamic`  和 `use client`
 
 1. **用途不同**：
    - `next/dynamic` 主要用于代码拆分和按需加载组件，减少初始页面加载的大小和时间。
@@ -735,19 +560,13 @@ export default function FirstPost() {
    - `next/dynamic` 可以通过选项禁用服务器端渲染（SSR），使组件仅在客户端渲染。
    - `use client` 通过指示文件中的组件在客户端执行，确保客户端特定的逻辑在服务器端渲染时不会执行。
 
+### Error
 
-
-## Error
-
-
-
-### **Using localStorage**
+#### **Using localStorage**
 
 [A Simple Solution for Redux State Hydration Issues When Using localStorage with Next.js](https://medium.com/@ionikdev/a-simple-solution-for-redux-state-hydration-issues-when-using-localstorage-with-next-js-890d0e0343df)
 
-
-
-### window is not defined
+#### window is not defined
 
 You can still use:
 
@@ -757,9 +576,7 @@ if (typeof window !== "undefined") {
 }
 ```
 
-
-
-### viewport
+#### viewport
 
 > 已经不在 metadata 中了 （踩了个坑 1个小时）
 
@@ -786,6 +603,3 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 }
 ```
-
-
-

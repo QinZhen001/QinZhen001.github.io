@@ -11,7 +11,6 @@ tags:
 
 > “Yeah It's on. ”
 
-
 ## 正文
 [网页链接](https://segmentfault.com/a/1190000011595620#articleHeader5)
 
@@ -23,7 +22,6 @@ tags:
 
 [https://segmentfault.com/a/1190000003909268](https://segmentfault.com/a/1190000003909268)
 
-
 postcss处理css的方式，主要区分三部分：
 
 * parser过程：将css字符串解析成可供我们操作的JavaScript对象
@@ -32,8 +30,6 @@ postcss处理css的方式，主要区分三部分：
 
 [https://segmentfault.com/a/1190000015155639](https://segmentfault.com/a/1190000015155639)
 
-
-
 ### postcss-loader
 [https://www.npmjs.com/package/postcss-loader](https://www.npmjs.com/package/postcss-loader)
 
@@ -41,7 +37,7 @@ Loader for webpack to process CSS with PostCSS
 
 **Use it after css-loader and style-loader, but before other preprocessor loaders like e.g sass|less|stylus-loader, if you use any.**
 
-```
+```css
 webpack.config.js
 
 module.exports = {
@@ -56,17 +52,11 @@ module.exports = {
 }
 ```
 
-
 >When postcss-loader is used standalone (without css-loader) don't use @import in your CSS, since this can lead to quite bloated bundles
 
-
-
-
-
-
-### .postcssrc.js 
+### .postcssrc.js
 在vue项目中.postcssrc.js 的默认配置
-```
+```js
 // https://github.com/michael-ciniawsky/postcss-load-config
 
 module.exports = {
@@ -79,19 +69,11 @@ module.exports = {
 }
 ```
 
-
-
-
-
 ## 配置
-
-
 
 ### extract
 
 [https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#extract-css](https://github.com/egoist/rollup-plugin-postcss?tab=readme-ov-file#extract-css)
-
-
 
 ### inject
 
@@ -99,11 +81,7 @@ module.exports = {
 
 Inject CSS into `<head>`, it's always `false` when `extract: true`.
 
-
-
 ## 插件
-
-
 
 ### postcss-preset-env
 
@@ -117,26 +95,18 @@ The `browsers` option determines which polyfills are required based upon the bro
 
 [PostCSS Preset Env](https://github.com/csstools/postcss-preset-env) supports any standard [browserslist](https://github.com/browserslist/browserslist#readme) configuration, which can be a `.browserslistrc` file, a `browserslist` key in `package.json`, or `browserslist` environment variables.
 
-
-
 ### postcss-import
 [https://www.npmjs.com/package/postcss-import](https://www.npmjs.com/package/postcss-import)
 
 PostCSS plugin to transform @import rules by inlining content.
-
 
 postcss-import主要功有是解决@import引入路径问题。使用这个插件，可以让你很轻易的使用本地文件、node_modules或者web_modules的文件。这个插件配合postcss-url让你引入文件变得更轻松。
 
 Notes:
 **This plugin should probably be used as the first plugin of your list. This way, other plugins will work on the AST as if there were only a single file to process, and will probably work as you can expect.**
 
-
-
-
 ### postcss-url
 **PostCSS plugin** to rebase, inline or copy on url().
-
-
 
 ### autoprefixer
 
@@ -154,8 +124,6 @@ autoprefixer在IE和旧版Edge中有复杂的逻辑来修复CSS Grid。
 
 Because Autoprefixer is a postprocessor for CSS(后处理器), you can also use it with preprocessors such as Sass, Stylus or LESS.
 
-
-
 #### Browsers
 Autoprefixer uses Browserslist, so you can specify the browsers you want to target in your project by queries like last 2 versions or > 5%.
 
@@ -163,30 +131,18 @@ Autoprefixer uses Browserslist, so you can specify the browsers you want to targ
 
 We recommend to avoid Autoprefixer option and use .browserslistrc config or package.json. In this case browsers will be shared with other tools like babel-preset-env or Stylelint.
 
-
-
-
 ### postcss-cssnext
 postcss-cssnext其实就是cssnext。该插件可以让我们使用CSS未来的特性，其会对这些特性做相关的兼容性处理。其包含的特性主要有：
 
 ![enter description here][1]
 
-
-
-
-
-
-
-
 ### cssnano
 [https://www.npmjs.com/package/cssnano](https://www.npmjs.com/package/cssnano)
 A modular minifier, built on top of the PostCSS ecosystem.
 
-
 cssnano主要用来压缩和清理CSS代码。在Webpack中，cssnano和css-loader捆绑在一起，所以不需要自己加载它。不过你也可以使用postcss-loader显式的使用cssnano
 
-
-```
+```js
 @svg square {
 	@rect {
 		fill: var(--color, black);
@@ -200,12 +156,11 @@ cssnano主要用来压缩和清理CSS代码。在Webpack中，cssnano和css-load
 }
 ```
 转为
-```
+```css
 #example {
 	background: white url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect fill='%2300b1ff' width='100%25' height='100%25'/%3E%3C/svg%3E");
 }
 ```
-
 
 ### postcss-mpvue-wxss
 专门为 wxss 格式化处理的的一个 postcss 插件，特别是在做 css 转 wxss 的时候好用到爆。
@@ -217,24 +172,16 @@ cssnano主要用来压缩和清理CSS代码。在Webpack中，cssnano和css-load
 * 转换 Web 的标签选择器到小程序的 class 选择器。
 * style scoped（postcss插件部分）。
 
-
-
 ### postcss-px2rem
 This is a postcss plugin of px2rem.
 
-
-
  **"autoprefixer": {remUnit: 75}**
-
-
 
 #### postcss-pxtorem-exclude
 
 [https://www.npmjs.com/package/postcss-pxtorem-exclude](https://www.npmjs.com/package/postcss-pxtorem-exclude)
 
 A plugin for [PostCSS](https://github.com/ai/postcss) that generates rem units from pixel units.
-
-
 
 A message about ignoring properties
 
@@ -253,14 +200,7 @@ Currently, the easiest way to have a single property ignored is to use a capital
 }
 ```
 
-
-
-
-
-
-
 ### postcss-custom-properties
-
 
 [https://github.com/postcss/postcss-custom-properties](https://github.com/postcss/postcss-custom-properties)
 
@@ -273,7 +213,7 @@ postcss([
 ]).process(YOUR_CSS /*, processOptions */);
 ```
 
-```
+```css
 postcssCustomProperties({
   preserve: false
 });
@@ -281,14 +221,11 @@ postcssCustomProperties({
 
 The preserve option determines whether Custom Properties and properties using custom properties should be preserved in their original form. By default, both of these are preserved.
 
-
-
 该preserve选项确定是否应以原始形式保留使用自定义属性的自定义属性和属性。默认情况下，这两个都被保留。
-
 
 [举个例子](https://postcss.github.io/postcss-custom-properties/)
 
-```
+```js
 :root {
   --color: red;
 }
@@ -304,20 +241,15 @@ h1 {
 }
 ```
 
-
-
-
-
 ### postcss-sprite
 
 [https://www.npmjs.com/package/postcss-sprites](https://www.npmjs.com/package/postcss-sprites)
 
 [https://github.com/2createStudio/postcss-sprites](https://github.com/2createStudio/postcss-sprites)
 
-
 PostCSS plugin that generates spritesheets from your stylesheets.
 
-```
+```css
 /* Input */
 .comment { background: url(images/sprite/ico-comment.png) no-repeat 0 0; }
 .bubble { background: url(images/sprite/ico-bubble.png) no-repeat 0 0; }
@@ -334,7 +266,7 @@ postcss-spritespublic
 
 PostCSS plugin that generates spritesheets from your stylesheets.
 
-```
+```css
 /* Input */
 .comment { background: url(images/sprite/ico-comment.png) no-repeat 0 0; }
 .bubble { background: url(images/sprite/ico-bubble.png) no-repeat 0 0; }
@@ -346,7 +278,7 @@ PostCSS plugin that generates spritesheets from your stylesheets.
 .bubble { background-image: url(images/sprite.png); background-position: 0 -50px; }
 ```
 
-```
+```css
          {
                                 loader: 'postcss-loader',
                                 options: {
@@ -363,29 +295,9 @@ PostCSS plugin that generates spritesheets from your stylesheets.
                             }
 ```
 
-
 适配retina屏幕(2倍大小图片等)
 retina: true
 
-
-
-
-### 
-
 ### postcss-assets
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 [1]: https://www.w3cplus.com/sites/default/files/blogs/2018/1801/vw-layout-4.png

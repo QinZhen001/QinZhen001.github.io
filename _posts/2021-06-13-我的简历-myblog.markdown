@@ -12,17 +12,11 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-
-
-# 基础信息
+## 基础信息
 
 名字，性别，电话，邮箱，求职岗位，教育经历（略）
 
-
-
-# 个人技能
+## 个人技能
 
 - 扎实掌握 HTML / CSS / JavaScript / TypeScript，熟练运用常见页面布局方案
 - 熟练使用 Less / Sass / Tailwind CSS 等现代化样式工具
@@ -37,9 +31,7 @@ tags:
 - 了解后端开发相关技术：Go / Nginx / Docker / MySQL / Kubernetes
 - 关注 AI 前沿技术发展，有 AI 能力在业务场景中的落地实践经验，善于利用 AI 辅助开发工具提升研发效能与交付质量
 
-
-
-# **工作经历**
+## **工作经历**
 
 **2025.01 - 至今　腾讯音乐 TME · QQ音乐业务线 · 社区产品部　　Web 前端开发高级工程师**
 
@@ -70,15 +62,11 @@ tags:
 - 负责 Node.js 数据爬虫的开发与维护
 - 指导实习生完成日常需求开发
 
+## 项目经历
 
+### 玩法中台解决方案
 
-# 项目经历
-
-
-
-## 玩法中台解决方案
-
-时间：2025.4 - 2025.11 
+时间：2025.4 - 2025.11
 
 **项目背景：** 玩法是网赚、直播等业务的关键增长引擎，但以往玩法开发仅针对单一平台，跨平台适配成本高且存在大量重复开发。玩法中台提供统一的跨平台方案，使玩法能在全民K歌、QQ音乐、酷狗音乐、WeSing、JOOX等多个 App 间快速复用。玩法中台解决方案包含玩法大仓和玩法sdk。
 
@@ -114,11 +102,9 @@ tags:
 
 **项目成果：**SDK 已在 7 个 App 落地运行，实现一套玩法代码多平台复用，迁移跨平台项目成本降低 60% 以上，并提供轻量 Core 版，使得产物体积更小加载更快
 
+### 统一广告 SDK
 
-
-## 统一广告 SDK
-
-时间：2025.6 - 2025.4 
+时间：2025.6 - 2025.4
 
 **技术栈：** TypeScript + Rollup + JSBridge + Hippy + JCE 协议
 
@@ -134,9 +120,7 @@ tags:
 
 **项目成果：**统一了 2 款 App、2 个平台的广告接入方案，覆盖 35+ 广告场景，业务接入成本从 ~3 天降至 1 天；对外 API 仅 loadAd/ showAd等核心方法，大幅降低使用门槛。
 
-
-
-## 教育场景/会议场景 aPaaS
+### 教育场景/会议场景 aPaaS
 
 时间：**2021.4 - 2024.11**
 
@@ -152,9 +136,7 @@ tags:
 4. **组件与插件体系** — 基于 rc-component 封装基础 UI 库，配合 Storybook 调试展示；设计 Widget 插件机制，支持业务方自定义扩展或直接使用官方 Widget。
 5. **工程化优化** — Webpack 4 → 5 升级，移除 cra 脚手架相关(create react app)， 实现完全自定义构建；Lerna 子包公共依赖提升、sideEffects 配置、静态资源分级压缩策略、Babel 按需 polyfill；通过 TypeDoc 输出 API 文档，TSC + Rollup Plugin 生成类型声明。
 
-
-
-## Create Agora App
+### Create Agora App
 
 时间：**2024.7 - 2024.8**
 
@@ -168,9 +150,7 @@ tags:
 - 内置 Vanilla / Vue / React / Svelte 四大框架的 JS/TS 项目模板
 - 基于 GitHub Workflows 实现 npm 自动化发包流程
 
-
-
-## AI Agent Playground 
+### AI Agent Playground
 
 时间：**2024.3 - 2024.7**
 
@@ -187,9 +167,7 @@ https://github.com/TEN-framework/ASTRA.ai
 - 使用 XYFlow 实现 Graph Designer 可视化工作流编排，支持自定义 Nodes / Edges 拖拽组装
 - 基于 Vitest 编写单元测试，保障数据处理与转换逻辑的正确性
 
-
-
-## 播放器
+### 播放器
 
 2022.1 - 2022.6  m3u8前端播放器
 
@@ -200,15 +178,13 @@ https://github.com/TEN-framework/ASTRA.ai
 1. 基于videojs二次封装，支持m3u8自动更新，支持自动加载策略，切片平滑过渡，可根据事件seek到指定进度。
 2. ui调整（进度条 控制栏 首帧海报 样式覆盖），基于videojs事件封装自己的事件，对外暴露控制播放器的api。
 
-
-
-## 音视频小程序sdk
+### 音视频小程序sdk
 
 2021.4 - 至今    音视频小程序sdk
 
  项目概述:  利用微信小程序 [live-player](https://developers.weixin.qq.com/miniprogram/dev/component/live-player.html) 和 [live-pusher](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html) 组件实现音视频通话
 
- 项目成果: 
+ 项目成果:
 
 * 分层架构设计(wx socket => worker => client)，解耦重构日志模块 (日志规范化，切片上传，支持客户自己收集保存日志或通过sdk api上传日志)
 * 支持以小程序原生npm方式集成sdk
@@ -216,9 +192,7 @@ https://github.com/TEN-framework/ASTRA.ai
 * 协助文档组更新迭代官网api文档，迭代更新集成sdk的demo小程序。
 *  工作流优化: 依赖整理，支持开发环境和生产环境打包，将webpack改为rollup打包，体积优化190kb => 150+kb
 
-
-
-## web ktv 场景解决方案
+### web ktv 场景解决方案
 
 时间：**2023.1 - 2023.6**
 
@@ -232,24 +206,20 @@ https://github.com/TEN-framework/ASTRA.ai
 - **逻辑层 Engine** — 设计歌词解析器（Parser）、任务调度器（Scheduler）、分数计算器（Calculator）、声调转换器（PitchChanger）。封装 MessageHandler 实现主播端与观众端的歌词同步与进度校准
 - **性能优化与多端对齐** — Canvas 分层渲染优化绘制性能，与移动端对齐 API 设计与数据结构，基于 Vitest 编写单元测试保障打分逻辑及边界处理的多端一致性
 
-
-
-## RangeEngine
+### RangeEngine
 
 2024.1 - 至今  RangeEngine
 
 项目概述: RangeEngine是一个基于位置信息和组队信息的音视频流管理模块，它可以让用户在元宇宙虚拟世界时不同的模式下订阅和取消订阅彼此的音视频流，实现更灵活和高效的音视频通信。
 
- 项目成果： 
+ 项目成果：
 
 * 完成RangeEngine SDK 的相关开发工作，实现地图/人物信息配置，实现有效半径可配置，用户位置采用高频/低频更新两种方式，定时更新当前人物的大/小地图信息。
 * 集成公司内部wasm模块SpatialAudioExtension 3D空间音频 和 AIDenoiserExtension ai降噪。
 * UI层实现地图动态渲染，人物移动渲染，自适应屏幕大小缩放，支持原生dom渲染和WebGL渲染(pixi.js)， 实现三种不同layout展示用户音视频列表
 * 工程化相关基于pnpm的monorepo架构，UI app可直接link workspace sdk开发测试，RangeEngine SDK采用rollup打包，对外支持 umd/commonjs/esmodule规范，利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts，配置external和peerDependencies减少包体积。
 
-
-
-## OP 运营管理系统
+### OP 运营管理系统
 
 时间：**2020.3 - 2021.3**
 
@@ -264,11 +234,9 @@ https://github.com/TEN-framework/ASTRA.ai
 - 参与权限控制、自定义指令、数据上报封装及系统组织架构模块调整开发
 - Webpack 构建优化：@antv 库拆包、配置缓存、移除 Moment 冗余语言包、整理依赖，编译时间从 90s 降至 70s，包体积减少约 15%
 
+### 家长公众号以及移动端 h5
 
-
-## 家长公众号以及移动端 h5
-
-时间：2020.3 - 2021.3  
+时间：2020.3 - 2021.3
 
 家长公众号以及移动端 h5
 
@@ -280,13 +248,11 @@ https://github.com/TEN-framework/ASTRA.ai
 2. 对复杂组件进行懒加载，基于vant组件库二次封装，同时适配部分h5⻚面在pc端的展示效果 。
 3. 基于webView jsBridge封装与app通信的相关函数。
 
-
-
-## 公司内部微信小程序框架
+### 公司内部微信小程序框架
 
 时间：**2018.9 - 2020.2**
 
-**技术栈：** 微信小程序api + Gulp + Node.js 
+**技术栈：** 微信小程序api + Gulp + Node.js
 
 **项目概述：** 因原生小程序 API 迭代频繁、主流框架难以满足公司业务快速迭代需求，从零设计开发内部小程序框架，集成团队沉淀的优化方案，支撑百万 DAU 级别小程序稳定运行。
 
@@ -300,9 +266,7 @@ https://github.com/TEN-framework/ASTRA.ai
 
 **项目成果：** 常规业务迭代从 4 人 4 天降至 4 人 2 天，支撑百万 DAU 小程序稳定运行。
 
-
-
-## 数据爬虫
+### 数据爬虫
 
 **时间：**2018.9 - 2020.2
 
@@ -315,31 +279,21 @@ https://github.com/TEN-framework/ASTRA.ai
 - 通过 Fiddler 抓包分析接口，设计并实现自动化采集流程（数据抓取 → 服务器存储 → JSON 信息生成 → COS 上传 → 水印处理 → 数据库入库），结合 node-schedule 实现定时任务调度，PM2 保障进程稳定运行
 - 开发后台素材管理页面，支持采集素材的可视化展示与二次编辑
 
-
-
-# 个人评价
+## 个人评价
 
 积极乐观，保持良好的代码⻛格和编程习惯，对前端技术保持热情，希望加入技术氛围比较好的团队。
 
+## **个人作品**
 
-
-# **个人作品**
-
-* 我的博客: https://qinzhen001.github.io/ 
-* 算法系列: https://github.com/QinZhen001/leetcode 
+* 我的博客: https://qinzhen001.github.io/
+* 算法系列: https://github.com/QinZhen001/leetcode
 * 手写源码: https://github.com/QinZhen001/front-end-demo
 
-
-
-
-
-# 针对简历问问题
+## 针对简历问问题
 
 * 介绍一下叫你做过比较难的项目？难点在哪？你是怎么解决的？
 
-
-
-# 英语自我介绍
+## 英语自我介绍
 
 你好！我叫qinzhen，我今年28岁，我有着6年前端相关开发经验。我掌握 html/css/js/ts 相关知识，掌握主要的前端框架，像是 React, Vue.is，了解 web rtc，了解音视频相关知识，了解后端开发相关知识:，例如go/nginx/docker等。在过去的三年半时间里，我在agora担任前端开发工程师的岗位，主要负责rtc相关的web场景的开发，如在线教育，在线会议，在线ktv等。Agora是一家美国上市的公司，是实时音视频云计算PaaS平台服务提供商，在agora之前，我在一家名为星火教育的教育机构主要负责B端相关业务的开发，呆了大概一年多，开发了一些如一些CRM/OP 管理后台等。这就是我的基本介绍，谢谢！
 
@@ -347,13 +301,8 @@ https://github.com/TEN-framework/ASTRA.ai
 
 Hello! My name is Qinzhen, and I'm 29 years old. I've been working in front-end development for six years now, and I’ve accumulated a solid(/ˈsɑː.lɪd/) skill set along the way. I’m well-versed in HTML, CSS, JavaScript, and TypeScript, and I have a good grasp( */ɡræsp*/) of major frameworks like React and Vue.js. I also have some understanding of WebRTC and audio/video technologies, which has been quite useful in my projects. On top of that, I have some knowledge of back-end development tools like Node.js, Go, Nginx, and Docker.
 
-For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke! 
+For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke!
 
 Before joining Agora, I worked at a company called Xinghuo Education, where I was mainly involved in developing B2B solutions. My work there included creating CRM systems and operational management(ˈmanijmənt) dashboards. This experience gave me a solid(/ˈsɑː.lɪd/) foundation in understanding the needs of businesses.
 
 In summary,  I’m passionate(/ˈpæʃ.ən.ət) about what I do, and I’m always looking for new challenges and opportunities to grow. Thank you for taking the time to get to know me!
-
-
-
-
-

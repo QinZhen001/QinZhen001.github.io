@@ -11,25 +11,13 @@ tags:
 
 > “Yeah It's on. ”
 
-
-
-
-
-
-
 https://oxc.rs/docs/guide/usage/linter
 
 Oxlint (`/oʊ-ɛks-lɪnt/`) is a high-performance linter for JavaScript and TypeScript built on the Oxc compiler stack.
 
 Oxlint 是用 **Rust** 写的。它属于 Oxc 工具链，Oxc 官方描述是“一组用 Rust 写的高性能 JavaScript/TypeScript 工具”。
 
-
-
-
-
-
-
-# 优势
+## 优势
 
 1. **Rust 原生性能**
    - Oxlint 的解析器、AST、规则执行核心都在 Rust 里。
@@ -48,9 +36,7 @@ Oxlint 是用 **Rust** 写的。它属于 Oxc 工具链，Oxc 官方描述是“
    - Rust 可以更精细控制数据结构和内存访问。
    - 对 linter 这种“大量遍历 AST 节点”的工作，内存访问效率影响很大。
 
-
-
-# 对比
+## 对比
 
 | 工具       | 核心定位                                                 | 主要优势                                                     | 主要短板                                                     |
 | ---------- | -------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -62,7 +48,7 @@ Oxlint 是用 **Rust** 写的。它属于 Oxc 工具链，Oxc 官方描述是“
 
 1. **生态成熟度**
 
-   - ESLint 最成熟。官方文档明确强调它是完全 pluggable，可以加社区插件、配置、parser。  
+   - ESLint 最成熟。官方文档明确强调它是完全 pluggable，可以加社区插件、配置、parser。
    - Oxlint 和 Rslint 都在追求“更快 + 尽量兼容 ESLint”，但生态还在追赶。
 
 2. **性能**
@@ -77,25 +63,19 @@ Oxlint 是用 **Rust** 写的。它属于 Oxc 工具链，Oxc 官方描述是“
    - Oxlint 现在也支持 type-aware lint 和多文件分析。
    - Rslint 更强调 TypeScript-first，文档里甚至给了 `rslint --type-check`，说可以在 lint 同一轮里做类型检查。
 
-
-
-# Benchmark
+## Benchmark
 
 https://github.com/oxc-project/bench-linter
 
 Oxlint is 50 to 100 times faster than ESLint.
 
-
-
-
-
-# type-aware lint
+## type-aware lint
 
 lint 规则不只看代码语法结构，还会读取 TypeScript 类型信息来判断问题。
 
  lint 只知道代码“长什么样”：
 
-```
+```js
 const user = getUser()
 user.name()
 ```
@@ -104,7 +84,7 @@ user.name()
 
 type-aware lint 会结合 TypeScript 类型系统，知道：
 
-```
+```js
 type User = {
   name: string
 }
@@ -123,9 +103,3 @@ type User = {
 - React hooks 或组件 props 里的一些类型相关错误
 
 代价是：**更慢，也更依赖 TypeScript 配置**，因为 lint 工具需要加载 `tsconfig.json`、构建类型信息。
-
-
-
-
-
-1. - 
