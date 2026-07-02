@@ -1,12 +1,12 @@
 ---
 layout:     post
 title:      "常用网站"
-date:       2018-01-07 17:05:00
+date:       2018-01-11 17:05:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - 工具
 ---
 
 > “Yeah It's on. ”
@@ -457,7 +457,19 @@ find the cost of adding a npm package to your bundle
 
 
 
-## 其他 
+## 其他
+
+
+
+### eruda
+
+Console for mobile browsers
+
+移动端 console 工具  （用于代替vconsole）
+
+https://github.com/liriliri/eruda
+
+
 
 ### 展示github信息
 

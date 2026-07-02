@@ -1,13 +1,12 @@
 ---
 layout:     post
 title:      "js重要基础"
-date:       2018-03-27 16:14:00
+date:       2018-05-01 16:14:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
     - JavaScript
-
 ---
 
 > “Yeah It's on. ”

@@ -1,12 +1,12 @@
 ---
 layout:     post
 title:      "electron相关"
-date:       2021-04-05 14:57:00
+date:       2021-07-23 14:57:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Electron 
+    - Electron
 ---
 
 > “Yeah It's on. ”

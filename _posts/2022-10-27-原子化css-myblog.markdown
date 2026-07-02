@@ -1,12 +1,12 @@
 ---
 layout:     post
 title:      "原子化css"
-date:       2022-10-13 18:06:00
+date:       2022-10-27 18:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

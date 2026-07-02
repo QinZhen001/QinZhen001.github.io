@@ -1,12 +1,12 @@
 ---
 layout:     post
 title:      "padding-top(percentage)实现响应式背景图片"
-date:       2017-11-29 23:12:00
+date:       2017-12-17 23:12:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

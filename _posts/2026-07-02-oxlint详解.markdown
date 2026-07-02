@@ -1,0 +1,131 @@
+---
+layout:     post
+title:      "Oxlint详解"
+date:       2026-07-02 11:46:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - ESLint
+---
+
+> “Yeah It's on. ”
+
+
+
+
+
+
+
+https://oxc.rs/docs/guide/usage/linter
+
+Oxlint (`/oʊ-ɛks-lɪnt/`) is a high-performance linter for JavaScript and TypeScript built on the Oxc compiler stack.
+
+Oxlint 是用 **Rust** 写的。它属于 Oxc 工具链，Oxc 官方描述是“一组用 Rust 写的高性能 JavaScript/TypeScript 工具”。
+
+
+
+
+
+
+
+# 优势
+
+1. **Rust 原生性能**
+   - Oxlint 的解析器、AST、规则执行核心都在 Rust 里。
+   - ESLint 本身是 JavaScript 写的，运行在 Node.js 上，规则、插件、AST 遍历也大多是 JS 层执行。
+2. **解析器和 linter 是一体化设计**
+   - Oxlint 用 Oxc 自己的高性能 parser。
+   - parser、AST、diagnostics、规则执行都围绕性能一起设计，少了很多跨库、跨抽象层的开销。
+3. **并行能力更强**
+   - Oxlint 更容易利用多线程同时 lint 多个文件。
+   - ESLint 传统架构主要是 Node.js 单进程/单线程模型，虽然也可以通过额外方式并行，但不是核心架构天然如此。
+4. **少了 ESLint 的通用插件兼容成本**
+   - ESLint 非常灵活：parser 可换、plugin 可插、规则 API 很开放。
+   - 这种灵活性有代价：每条规则通常都要走通用 visitor/API 机制。
+   - Oxlint 更像“内置高性能规则引擎”，牺牲一部分生态兼容，换速度。
+5. **内存布局和 AST 访问更高效**
+   - Rust 可以更精细控制数据结构和内存访问。
+   - 对 linter 这种“大量遍历 AST 节点”的工作，内存访问效率影响很大。
+
+
+
+# 对比
+
+| 工具       | 核心定位                                                 | 主要优势                                                     | 主要短板                                                     |
+| ---------- | -------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **ESLint** | 最成熟、插件生态最全的 JS/TS lint 标准                   | 插件、规则、社区配置最丰富；可写自定义规则；React、Vue、a11y、安全、测试等生态最完整 | 慢；TypeScript type-aware lint 配置和性能成本更高            |
+| **Oxlint** | 高性能 JS/TS linter，基于 Oxc 编译器栈                   | 极快，官方称比 ESLint 快 50-100 倍；开箱即用；适合 CI 和大仓库；已有 React、Jest、Vitest、Import、Unicorn、jsx-a11y 等常见规则覆盖 | ESLint 插件兼容仍不是 100%；如果项目依赖冷门/复杂 ESLint 插件，可能不够 |
+| **Rslint** | 高性能、ESLint-compatible、偏 TypeScript-first 的 linter | 基于 `typescript-go`；主打 ESLint 配置兼容、type-aware rules、可同一次运行做 type checking | 更年轻，生态、社区验证、规则覆盖和编辑器集成成熟度通常不如 ESLint/Oxlint |
+
+关键区别：
+
+1. **生态成熟度**
+
+   - ESLint 最成熟。官方文档明确强调它是完全 pluggable，可以加社区插件、配置、parser。  
+   - Oxlint 和 Rslint 都在追求“更快 + 尽量兼容 ESLint”，但生态还在追赶。
+
+2. **性能**
+
+   - Oxlint 官方文档称 benchmark 下比 ESLint 快 **50-100 倍**。
+   - Rslint 官方/仓库说明主打高性能和 ESLint-compatible，基于 `typescript-go`，目标是更快的 drop-in 体验。
+   - ESLint 最慢，但最稳、最全。
+
+   **TypeScript 支持**
+
+   - ESLint 依赖 `typescript-eslint` 做 TS 和 type-aware lint。
+   - Oxlint 现在也支持 type-aware lint 和多文件分析。
+   - Rslint 更强调 TypeScript-first，文档里甚至给了 `rslint --type-check`，说可以在 lint 同一轮里做类型检查。
+
+
+
+# Benchmark
+
+https://github.com/oxc-project/bench-linter
+
+Oxlint is 50 to 100 times faster than ESLint.
+
+
+
+
+
+# type-aware lint
+
+lint 规则不只看代码语法结构，还会读取 TypeScript 类型信息来判断问题。
+
+ lint 只知道代码“长什么样”：
+
+```
+const user = getUser()
+user.name()
+```
+
+它能看到 `user.name()` 是一次函数调用，但不知道 `name` 到底是不是函数。
+
+type-aware lint 会结合 TypeScript 类型系统，知道：
+
+```
+type User = {
+  name: string
+}
+```
+
+所以它能判断 `user.name()` 错了，因为 `name` 是 `string`，不能当函数调用。
+
+常见能查的问题包括：
+
+- 调用了不存在或类型不匹配的方法
+- `Promise` 忘了 `await`
+- 把 `any`、`unknown`、`null`、`undefined` 用错
+- 条件判断永远为真/假
+- 不安全的类型断言
+- 函数参数、返回值类型不符合预期
+- React hooks 或组件 props 里的一些类型相关错误
+
+代价是：**更慢，也更依赖 TypeScript 配置**，因为 lint 工具需要加载 `tsconfig.json`、构建类型信息。
+
+
+
+
+
+1. - 

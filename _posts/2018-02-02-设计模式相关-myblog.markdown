@@ -520,7 +520,9 @@ var dataHub = new DataHub();
 ```
 
 创建一个下载事件管理器
-```var downloadManager = new DownloadManager();```
+
+`var downloadManager = new DownloadManager();`
+
 创建一个下载器
 
 ```

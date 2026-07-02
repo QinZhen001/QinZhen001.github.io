@@ -1,12 +1,12 @@
 ---
 layout:     post
 title:      "css基础相关"
-date:       2017-07-28 23:14:00
+date:       2018-05-01 23:14:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

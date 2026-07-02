@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "网络知识相关"
-date:       2019-01-19 19:29:00
+date:       2020-01-19 19:29:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
@@ -163,6 +163,46 @@ http.post('example.com', formData)
 如果我们手动设置了Content-type,会覆盖掉浏览器自己的设置，而因为我们不知道formData对象里面的boundary分隔符是什么，所以就会导致后端接受到数据以后在Content-type中找不到boundary或者boundary的值与formData中的boundary不一致，导致无法获取正确的数据。
 
 
+
+
+
+#### referer 和 origin
+
+- **Referer**：告诉服务端"这次请求是从哪个**页面**过来的"，值是**完整 URL**（含路径）。
+- **Origin**：告诉服务端"这次请求来自哪个**源**"，值是 `scheme://host:port`，**不带路径**。
+
+举个具体例子，用户在 `https://example.com/page/a?id=1`点击触发一个请求：
+
+- `Referer: https://example.com/page/a?id=1`← 完整
+- `Origin: https://example.com`← 只要源
+
+Referer 的典型用途
+
+1. **防盗链**：图片/视频站检查 `Referer`是不是自己域名，不是就 403（比如某图床不让外站嵌）。
+2. **流量来源统计**：分析"用户从百度 / 微信 / 站内哪页跳过来"。
+3. **CSRF 弱校验**：早期用来判断请求是不是站内的，但**只靠 Referer 防 CSRF 不靠谱**（可伪造、可被 meta 关掉）。
+4. **服务端日志**：排查"哪个页引发了一连串请求"。
+
+Origin 的典型用途
+
+1. **CORS 跨域校验**（最核心）： 浏览器发跨域请求时，**自动带 `Origin`** 服务端回 `Access-Control-Allow-Origin`做匹配
+2. **CSRF 强校验**（比 Referer 更可靠）： 表单/接口可以要求 `Origin`必须同源 因为 **Origin 是浏览器自动加的，JS 改不了**（某些旧 XHR 能改但有限制）
+3. **WebSocket 握手**：`Origin`用来判断能不能升级协议。
+
+## 什么时候会带上？关键差异表
+
+
+
+| 场景                                             | Referer                                    | Origin                              |
+| ------------------------------------------------ | ------------------------------------------ | ----------------------------------- |
+| **同源普通请求**（点链接、发表单、加载资源）     | ✅ 通常带（除非 referrer policy 限制）      | ❌ 一般不带                          |
+| **跨域 fetch / XMLHttpRequest**（CORS）          | ✅ 带                                       | ✅ **必带**（浏览器自动）            |
+| **跨域 `<img>`/ `<script>`/ `<link>`**           | ✅ 带（policy 默认）                        | ❌ 不带                              |
+| **POST 表单跨域**（`method=POST`, `action`外站） | ✅ 带                                       | ✅ 带（特殊：表单跨域也会发 Origin） |
+| **302 重定向**                                   | 从目标页的 Referer 变来，规则复杂          | 跟随请求走                          |
+| **HTTPS → HTTP**（降级）                         | ❌ **默认不带**（隐私保护）                 | ❌ 不带                              |
+| **`Referrer-Policy: no-referrer`**               | ❌ 全禁                                     | 不影响 Origin                       |
+| **`Referrer-Policy: origin`**                    | 变成只发 `scheme://host`（像 Origin 一样） | 不影响                              |
 
 
 
