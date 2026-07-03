@@ -16,12 +16,28 @@ tags:
 
 [深入理解Vite核心原理](https://juejin.cn/post/7064853960636989454)
 
-Vite是一种新型前端构建工具，能够显著提升前端开发体验。它主要由两部分组成：
+Vite 是一种现代前端构建工具，目标是为现代 Web 项目提供更快、更轻量的开发体验。它主要由两部分组成：
 
-- 一个开发服务器，它基于 [原生 ES 模块](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) 提供了 [丰富的内建功能](https://vitejs.cn/guide/features.html)，如速度快到惊人的 [模块热更新（HMR）](https://vitejs.cn/guide/features.html#hot-module-replacement)。
-- 一套构建指令，它使用 [Rollup](https://rollupjs.org/) 打包你的代码，并且它是预配置的，可输出用于生产环境的高度优化过的静态资源。
+- 一个开发服务器：基于浏览器原生 [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) 提供快速启动、按需转换和模块热更新（HMR）。
+- 一套生产构建命令：根据当前官方文档，生产构建由 [Rolldown](https://rolldown.rs/) 驱动，预配置输出高度优化的静态资源。（早期 Vite 版本主要基于 Rollup，很多配置仍然沿用 Rollup/Rolldown 兼容的插件模型。）
 
-`Vite`其核心原理是利用浏览器现在已经支持`ES6`的`import`,碰见`import`就会发送一个`HTTP`请求去加载文件，`Vite`启动一个 `express` 服务器拦截这些请求，并在后端进行相应的处理将项目中使用的文件通过简单的分解与整合，然后再以`ESM`格式返回返回给浏览器。`Vite`整个过程中没有对文件进行打包编译，做到了真正的按需加载，所以其运行速度比原始的`webpack`开发编译速度快出许多！
+`Vite` 的核心原理是利用浏览器原生支持 `import` 的能力。开发阶段不再像传统打包器一样先把整个应用 bundle 完再启动，而是启动一个基于 `connect` 中间件体系的 dev server，浏览器请求哪个模块，Vite 就按需对该模块做解析、转换、依赖重写，然后以 ESM 形式返回给浏览器。
+
+所以开发阶段可以理解为：
+
+```text
+浏览器请求 /src/main.ts
+  ↓
+Vite dev server 拦截请求
+  ↓
+resolveId / load / transform
+  ↓
+重写 bare import、注入 HMR、生成 sourcemap
+  ↓
+返回浏览器可执行的 ESM
+```
+
+这就是 Vite 冷启动和 HMR 快的核心原因：**源码按需转换，依赖预构建，更新时只处理受影响模块，而不是全量重新打包。**
 
 ### alias
 
@@ -272,6 +288,683 @@ export default {
   ]
 }
 ```
+
+## Vite 官方核心概念补充
+
+官方 Guide 里有几个很重要的设计点。
+
+### index.html 是入口
+
+在 Vite 项目中，`index.html` 不是放在 `public` 里的静态模板，而是项目的一等入口文件。
+
+原因是：开发阶段 Vite 本质上是一个 dev server，`index.html` 是浏览器访问应用的入口。Vite 会解析其中的：
+
+```html
+<script type="module" src="/src/main.ts"></script>
+<link rel="stylesheet" href="/src/style.css" />
+```
+
+并把这些资源纳入模块图处理。
+
+这意味着：
+
+- `index.html` 会被 Vite 插件处理；
+- `<script type="module">` 会进入模块转换管线；
+- HTML 中引用的 CSS、图片等资源会被自动处理；
+- 多页面应用可以有多个 `.html` 入口。
+
+### 开发阶段为什么不打包
+
+传统 bundle-based dev server：
+
+```text
+启动 dev server
+  ↓
+先打包整个应用
+  ↓
+浏览器才能访问页面
+```
+
+应用越大，启动越慢。
+
+Vite dev server：
+
+```text
+启动 dev server
+  ↓
+立即返回 index.html
+  ↓
+浏览器按 import 请求模块
+  ↓
+Vite 按需转换模块
+```
+
+开发启动时间不再和整个应用体积强绑定。
+
+### 生产环境为什么仍然需要打包
+
+开发阶段不打包很好，因为可以按需请求模块。但生产环境如果也直接发送大量未打包 ESM，会有很多网络请求和嵌套 import round trips。
+
+所以 Vite 的策略是：
+
+```text
+开发阶段：原生 ESM + 按需转换 + 快速 HMR
+生产阶段：Rolldown/Rollup 风格打包 + chunk 优化 + 静态资源优化
+```
+
+### 浏览器兼容
+
+根据当前官方文档：
+
+- 开发阶段默认面向现代浏览器，尽量少做语法降级；
+- 生产构建默认面向 Baseline Widely Available 浏览器；
+- 旧浏览器可以使用 `@vitejs/plugin-legacy` 支持；
+- Vite 默认主要做语法转换，不自动覆盖所有 polyfill。
+
+### TypeScript：只转译，不类型检查
+
+Vite 支持直接导入 `.ts` 文件，但默认只做 transpile，不做 type checking。
+
+原因是：
+
+- 转译可以按文件处理，适合 Vite 的按需编译模型；
+- 类型检查需要理解完整模块图，会拖慢 dev server；
+- 静态检查应该交给 IDE、`tsc --noEmit` 或 `vite-plugin-checker`。
+
+推荐：
+
+```bash
+tsc --noEmit
+```
+
+开发时也可以单独开 watch：
+
+```bash
+tsc --noEmit --watch
+```
+
+### import.meta.glob
+
+Vite 支持 `import.meta.glob` 批量导入文件：
+
+```js
+const modules = import.meta.glob('./dir/*.js')
+```
+
+会被转换成：
+
+```js
+const modules = {
+  './dir/bar.js': () => import('./dir/bar.js'),
+  './dir/foo.js': () => import('./dir/foo.js'),
+}
+```
+
+默认是懒加载。如果想立即加载：
+
+```js
+const modules = import.meta.glob('./dir/*.js', { eager: true })
+```
+
+注意：
+
+- 这是 Vite 专属能力，不是 ECMAScript 标准；
+- glob 参数必须是字面量，不能是变量；
+- 路径必须是相对路径、绝对路径或 alias 路径。
+
+### 静态资源
+
+Vite 支持直接导入静态资源：
+
+```js
+import imgUrl from './img.png'
+```
+
+也支持 query：
+
+```js
+import rawText from './shader.glsl?raw'
+import assetUrl from './asset.svg?url'
+import Worker from './worker.ts?worker'
+```
+
+### CSS 能力
+
+Vite 默认支持：
+
+- CSS import；
+- CSS HMR；
+- CSS Modules；
+- PostCSS 自动加载；
+- Sass / Less / Stylus 预处理器；
+- `url()` 自动 rebasing；
+- 生产构建 CSS code splitting。
+
+预处理器需要安装对应依赖：
+
+```bash
+npm add -D sass-embedded less stylus
+```
+
+## 源码分析
+
+下面以当前 Vite 主线源码结构为参考。
+
+### createServer：dev server 入口
+
+关键文件：
+
+```text
+packages/vite/src/node/server/index.ts
+```
+
+核心入口：
+
+```ts
+export function createServer(inlineConfig = {}) {
+  return _createServer(inlineConfig, { listen: true })
+}
+```
+
+`_createServer` 内部主要做这些事：
+
+1. `resolveConfig(inlineConfig, 'serve')` 解析配置；
+2. 创建 `connect()` 中间件容器；
+3. 创建 HTTP server；
+4. 创建 WebSocket server，用于 HMR；
+5. 创建 `chokidar` watcher，监听文件变更；
+6. 创建 client / ssr environments；
+7. 创建 `moduleGraph`；
+8. 创建 `pluginContainer`；
+9. 注册内部中间件；
+10. 调用用户插件的 `configureServer`。
+
+简化结构：
+
+```ts
+const middlewares = connect()
+const httpServer = await resolveHttpServer(middlewares, httpsOptions)
+const ws = createWebSocketServer(httpServer, config, httpsOptions)
+const watcher = chokidar.watch([...], resolvedWatchOptions)
+
+const moduleGraph = new ModuleGraph(...)
+const pluginContainer = createPluginContainer(environments)
+
+middlewares.use(transformMiddleware(server))
+middlewares.use(serveStaticMiddleware(server))
+middlewares.use(indexHtmlMiddleware(root, server))
+```
+
+可以看出 Vite dev server 的核心对象是：
+
+| 对象 | 作用 |
+| --- | --- |
+| `middlewares` | Connect 中间件栈 |
+| `httpServer` | Node HTTP server |
+| `ws` | HMR WebSocket 通道 |
+| `watcher` | 文件监听器 |
+| `moduleGraph` | 模块依赖图和 HMR 状态 |
+| `pluginContainer` | 插件钩子执行容器 |
+
+### transformRequest：请求到转换
+
+关键文件：
+
+```text
+packages/vite/src/node/server/transformRequest.ts
+```
+
+当浏览器请求一个模块时，大致流程是：
+
+```text
+HTTP request
+  ↓
+transformMiddleware
+  ↓
+server.transformRequest(url)
+  ↓
+pluginContainer.resolveId
+  ↓
+pluginContainer.load
+  ↓
+pluginContainer.transform
+  ↓
+缓存 transformResult
+  ↓
+返回 ESM code
+```
+
+源码中的关键函数：
+
+```ts
+export function transformRequest(environment, url, options) {
+  const pending = environment._pendingRequests.get(url)
+  if (pending) return pending.request
+
+  const request = doTransform(environment, url, options, timestamp)
+  environment._pendingRequests.set(url, { request, timestamp, abort })
+  return request.finally(clearCache)
+}
+```
+
+这里有两个重要优化：
+
+1. **pending request 复用**
+   - 同一个模块同时被多个请求命中时，不重复转换。
+
+2. **transformResult 缓存**
+   - 如果模块没有失效，直接复用上次转换结果。
+
+`loadAndTransform` 的核心逻辑：
+
+```ts
+const loadResult = await pluginContainer.load(id)
+
+if (loadResult == null) {
+  code = await fs.readFile(file, 'utf-8')
+}
+
+const transformResult = await pluginContainer.transform(code, id)
+moduleGraph.updateModuleTransformResult(mod, result)
+```
+
+也就是：先让插件 `load`，插件没处理再读文件，然后进入 `transform` 管线。
+
+### pluginContainer：插件执行容器
+
+关键文件：
+
+```text
+packages/vite/src/node/server/pluginContainer.ts
+```
+
+Vite 在 dev 阶段并不会真正执行完整打包，但它仍然模拟了 Rollup/Rolldown 的插件钩子：
+
+- `options`；
+- `buildStart`；
+- `resolveId`；
+- `load`；
+- `transform`；
+- `watchChange`；
+- `buildEnd`；
+- `closeBundle`。
+
+开发阶段每个模块请求会触发：
+
+```text
+resolveId → load → transform
+```
+
+`resolveId` 是 hook-first：
+
+```ts
+for (const plugin of this.getSortedPlugins('resolveId')) {
+  const result = await plugin.resolveId?.(rawId, importer, options)
+  if (result) return result
+}
+```
+
+`load` 也是找到第一个非空结果就返回：
+
+```ts
+for (const plugin of this.getSortedPlugins('load')) {
+  const result = await plugin.load?.(id)
+  if (result != null) return result
+}
+```
+
+`transform` 是流水线：
+
+```ts
+for (const plugin of this.getSortedPlugins('transform')) {
+  const result = await plugin.transform?.(code, id)
+  if (result) code = result.code || result
+}
+```
+
+所以插件机制可以理解为：
+
+```text
+resolveId：确定模块 id
+load：获取模块内容
+transform：依次转换代码
+```
+
+### HMR 源码流程
+
+关键文件：
+
+```text
+packages/vite/src/node/server/hmr.ts
+```
+
+文件变化后，server 中的 watcher 会触发：
+
+```ts
+watcher.on('change', file => {
+  onFileChange(file)
+})
+```
+
+然后进入：
+
+```ts
+handleHMRUpdate(type, file, server)
+```
+
+核心流程：
+
+```text
+文件变化
+  ↓
+moduleGraph.getModulesByFile(file)
+  ↓
+执行插件 hotUpdate / handleHotUpdate
+  ↓
+updateModules
+  ↓
+propagateUpdate 找 HMR 边界
+  ↓
+能热更新：ws.send({ type: 'update' })
+  ↓
+不能热更新：ws.send({ type: 'full-reload' })
+```
+
+`updateModules` 中会递归向 importer 传播更新：
+
+```text
+changed module
+  ↓
+如果 self accepting，作为 HMR boundary
+  ↓
+否则向 importers 继续传播
+  ↓
+找到边界则局部更新
+  ↓
+找不到边界则 full reload
+```
+
+所以 Vite HMR 快的原因不是“魔法”，而是：
+
+- dev 阶段模块天然是 ESM；
+- Vite 维护了 `moduleGraph`；
+- 文件变更后只让相关模块失效；
+- 能找到 HMR 边界就只推送局部更新。
+
+### 依赖扫描和预构建
+
+关键文件：
+
+```text
+packages/vite/src/node/optimizer/scan.ts
+```
+
+官方文档说，浏览器原生 ESM 不支持这种 bare import：
+
+```js
+import { debounce } from 'lodash-es'
+```
+
+浏览器不知道 `lodash-es` 应该从哪里加载。
+
+Vite 会做两件事：
+
+1. 扫描源码里的 bare imports；
+2. 把依赖预构建到 `node_modules/.vite/deps`，并重写 import URL。
+
+当前源码中，依赖扫描大致流程：
+
+```ts
+export function scanImports(environment) {
+  const entries = await computeEntries(environment)
+  const deps = {}
+  const missing = {}
+  const context = await prepareRolldownScanner(environment, entries, deps, missing)
+  await context.build()
+  return { deps, missing }
+}
+```
+
+`computeEntries` 会优先使用：
+
+1. `optimizeDeps.entries`；
+2. `build.rolldownOptions.input`；
+3. 默认扫描 `**/*.html`。
+
+扫描插件中会识别 bare import：
+
+```ts
+if (/^[\w@][^:]/.test(id)) {
+  const resolved = await resolve(id, importer)
+  if (isInNodeModules(resolved) || include?.includes(id)) {
+    depImports[id] = resolved
+  }
+}
+```
+
+因此预构建的本质是：
+
+```text
+HTML / JS / TS 入口
+  ↓
+扫描 import
+  ↓
+发现 bare imports
+  ↓
+解析到 node_modules
+  ↓
+记录 deps
+  ↓
+预构建为浏览器可直接 import 的 ESM 文件
+```
+
+## Vite+ 介绍
+
+官网：https://viteplus.dev/
+
+Vite+ 的定位是：
+
+> The Unified Toolchain for the Web.
+
+也就是一个统一的 Web 开发工具链入口。它不是简单的 Vite 新名字，而是在 Vite 之上，把运行时、包管理器、开发、检查、测试、构建、打包、任务执行等流程整合到一个 `vp` 命令里。
+
+官方 Guide 中说，Vite+ 由两部分组成：
+
+| 部分 | 说明 |
+| --- | --- |
+| `vp` | 全局命令行工具 |
+| `vite-plus` | 安装在项目本地的包 |
+
+它整合的工具包括：
+
+- `Vite`：dev server 和应用构建；
+- `Vitest`：测试；
+- `Oxlint`：lint；
+- `Oxfmt`：format；
+- `Rolldown`：打包；
+- `tsdown`：库构建；
+- `Vite Task`：monorepo 任务执行和缓存；
+- `tsgo`：TypeScript 类型检查相关能力。
+
+### 安装
+
+macOS / Linux：
+
+```bash
+curl -fsSL https://vite.plus | bash
+```
+
+Windows PowerShell：
+
+```powershell
+irm https://vite.plus/ps1 | iex
+```
+
+安装后：
+
+```bash
+vp help
+```
+
+官方提示：Vite+ 会管理全局 Node.js runtime 和 package manager。如果不想让它管理，可以：
+
+```bash
+vp env off
+```
+
+### 常用命令
+
+```bash
+vp create   # 创建项目
+vp install  # 安装依赖
+vp dev      # 启动开发服务器
+vp check    # format + lint + type-check
+vp test     # 运行测试
+vp build    # 生产构建
+vp preview  # 本地预览生产构建
+vp run      # 执行 workspace/package scripts，带缓存能力
+vp pack     # 构建库或 standalone artifacts
+```
+
+### vp check
+
+`vp check` 是 Vite+ 很重要的能力。
+
+它把这些事情合到一个命令：
+
+```text
+format + lint + type-check
+```
+
+背后主要由：
+
+- `Oxfmt`；
+- `Oxlint`；
+- `tsgo`；
+
+提供能力。
+
+可以自动修复的场景：
+
+```bash
+vp check --fix
+```
+
+### vp run
+
+`vp run` 面向 monorepo 和脚本任务：
+
+- 自动输入追踪；
+- 可缓存任务；
+- 按 workspace 依赖关系执行；
+- 执行 `package.json` scripts。
+
+这类能力类似把包管理器脚本、任务编排和缓存系统统一起来。
+
+### vp pack
+
+`vp pack` 面向库构建：
+
+- DTS 生成和打包；
+- 自动 package exports；
+- standalone app binaries；
+- transform-only unbundled mode。
+
+底层主要由 `Rolldown` / `tsdown` 提供能力。
+
+### Vite 与 Vite+ 的关系
+
+可以这样理解：
+
+```text
+Vite = dev server + build tool
+Vite+ = 统一工具链入口
+```
+
+对比：
+
+| 能力 | Vite | Vite+ |
+| --- | --- | --- |
+| dev server | 支持 | 支持，`vp dev` |
+| build | 支持 | 支持，`vp build` |
+| test | 需要单独配置 Vitest | 内置 `vp test` 流程 |
+| lint | 需要 ESLint/Oxlint 配置 | `vp check` 集成 Oxlint |
+| format | 需要 Prettier/Oxfmt 配置 | `vp check` 集成 Oxfmt |
+| type check | 需要 `tsc` 或插件 | `vp check` 集成 type-check |
+| package manager | 不管理 | `vp install/add/remove` |
+| Node runtime | 不管理 | `vp env` 管理 |
+| monorepo task | 需要 Turborepo/Nx 等 | `vp run` 提供任务缓存 |
+| library pack | Vite library mode 或 tsup/tsdown | `vp pack` |
+
+Vite+ 更像是把现代前端常用工具链标准化，减少每个项目重复拼装工具的成本。
+
+## 框架对比
+
+### Vite vs Webpack
+
+| 维度 | Vite | Webpack |
+| --- | --- | --- |
+| 开发启动 | 原生 ESM，按需转换 | 通常先构建依赖图并打包 |
+| HMR | 基于 ESM 和 moduleGraph，更新粒度更小 | 依赖 bundle runtime 和重新编译 |
+| 生产构建 | Rolldown/Rollup 风格 | Webpack 自身打包体系 |
+| 配置复杂度 | 默认配置友好 | 高度灵活但复杂 |
+| 生态 | 现代框架默认支持 | 老牌生态极丰富 |
+| 适合场景 | 现代 Web App、库、SSR 框架 | 复杂遗留项目、高度定制历史工程 |
+
+简单说：
+
+- 新项目优先 Vite；
+- 旧项目大量 webpack loader/plugin 深度绑定时，迁移要评估；
+- Webpack 仍然适合特别复杂的历史工程和高度定制场景。
+
+### Vite vs Rspack
+
+`Rspack` 是 Rust 写的高性能 Webpack 兼容构建工具。
+
+| 维度 | Vite | Rspack |
+| --- | --- | --- |
+| 核心思路 | 开发期 ESM 按需服务 | Webpack-compatible bundler |
+| 兼容目标 | Vite 插件生态 | Webpack 生态兼容 |
+| 开发体验 | 冷启动和 HMR 强 | 大型 Webpack 项目迁移友好 |
+| 生产构建 | Rolldown/Rollup 风格 | Rust bundler |
+| 适合场景 | 新项目、现代框架 | Webpack 项目提速、渐进迁移 |
+
+如果项目已经深度依赖 Webpack 配置，`Rspack` 迁移成本可能低于 Vite。
+
+### Vite vs Turbopack
+
+`Turbopack` 是 Vercel 推出的 Rust 增量打包器，主要服务 Next.js 生态。
+
+| 维度 | Vite | Turbopack |
+| --- | --- | --- |
+| 生态 | 多框架通用 | Next.js 强绑定 |
+| 开发方式 | 原生 ESM + 插件生态 | 增量 bundling |
+| 适合框架 | Vue、React、Svelte、Solid 等 | Next.js |
+| 成熟度 | 前端通用构建事实标准之一 | 在 Next.js 场景持续演进 |
+
+如果你做的是 Next.js，优先跟随 Next 官方工具链；如果是通用 SPA / SSR / 库项目，Vite 更通用。
+
+### Vite vs Parcel
+
+`Parcel` 主打零配置和自动化。
+
+| 维度 | Vite | Parcel |
+| --- | --- | --- |
+| 配置 | 简洁但可配置 | 更强调零配置 |
+| 插件生态 | Vite/Rollup/Rolldown 插件生态 | Parcel 插件生态 |
+| 框架集成 | 很强 | 支持广泛 |
+| 社区主流度 | 当前现代前端主流选择 | 相对小众 |
+
+### Vite vs Esbuild
+
+`esbuild` 是 Go 写的极速 bundler/transpiler。
+
+Vite 和 esbuild 不是完全同类：
+
+- esbuild 更像底层构建和转译工具；
+- Vite 是完整前端开发工具，包含 dev server、HMR、插件、HTML 处理、静态资源、生产构建等。
+
+早期 Vite 大量使用 esbuild 做依赖预构建和 TS/JS 转译；当前官方文档中，Vite 越来越多能力转向 Oxc / Rolldown 体系。
 
 ## 补充
 

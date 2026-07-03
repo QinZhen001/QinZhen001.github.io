@@ -353,6 +353,18 @@ find the cost of adding a npm package to your bundle
 
 ## 其他
 
+## npmx
+
+一个更现代的 **npm 包浏览器**。
+
+https://npmx.dev/
+
+- 搜索 npm 包，比 npmjs.com 体验更现代。
+- 查看包信息：版本、依赖、下载量、README、源码、类型、模块格式等。
+- 比较多个包，例如 `tsup` vs `tsdown` vs `unbuild`。
+- 看包体积、依赖风险、过期依赖、安全相关信息。
+- URL 兼容 npmjs.com，很多 npm 包页面可以把域名换成 `npmx.dev` 或 `xnpmjs.com` 查看。
+
 ### eruda
 
 Console for mobile browsers
