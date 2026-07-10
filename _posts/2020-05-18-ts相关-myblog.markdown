@@ -22,6 +22,71 @@ tags:
 
 [https://mkosir.github.io/typescript-style-guide/#introduction](https://mkosir.github.io/typescript-style-guide/#introduction)
 
+### 文档结构建议
+
+这篇文档已经覆盖了 TypeScript 的大部分常用知识点，但原结构更像零散笔记。建议按“基础语法 → 类型系统 → 类型编程 → 工程化配置 → 框架实践 → 常见错误”来阅读和维护：
+
+1. **基础语法**：`interface`、`type`、`enum`、`class`、`readonly`、`namespace`、`declare`。
+2. **类型运算与收窄**：`keyof`、`typeof`、`extends`、`infer`、`in`、`as`、`is`、`asserts`、联合/交叉类型。
+3. **泛型与类型编程**：泛型约束、条件类型、分发、协变/逆变、模板字符串类型、工具类型。
+4. **工程化配置**：`tsc`、`tsconfig`、声明文件、模块解析、Babel/Webpack 集成。
+5. **React 与业务实践**：React 类型、请求返回值类型、字典类型、类实例类型等。
+6. **常见错误排查**：按 `ts(xxxx)` 错误码归档，保留“原因 → 示例 → 解决方案”的结构。
+
+> 维护建议：后续新增内容优先放入上述分类，不要继续追加到“补充”末尾；错误类内容统一放到“常见错误与排查”。
+
+### TypeScript 5.x / 6.x / 7.x 对比与发布时间
+
+> 日期主要参考 Microsoft TypeScript 官方博客公告；npm / GitHub tag 的发布时间可能因为时区、补丁版本或发布流程存在 1 天左右差异。
+
+#### 大版本定位对比
+
+| 大版本 | 发布时间范围 | 当前定位 | 核心变化 | 升级关注点 |
+| --- | --- | --- | --- | --- |
+| TypeScript 5.x | 2023-03 ~ 2025-08 | 现有 JS/TS 编译器实现的成熟演进版本 | 标准装饰器、`const` 类型参数、`satisfies` 生态完善、`moduleResolution: bundler`、`verbatimModuleSyntax`、`NoInfer`、`isolatedDeclarations`、`noCheck`、`import defer`、`node20` 等 | 主要是类型检查更严格、模块解析更现代、声明文件生成能力增强 |
+| TypeScript 6.x | 2026-02 ~ 2026-04 | JS/TS 编译器实现的最后一个大版本，面向 TypeScript 7 的过渡版本 | 新默认值、`es2025`、Temporal 类型、`stableTypeOrdering`、`#/` subpath imports、清理旧配置 | 旧配置大量弃用，建议先用 6.x 清理项目，为 7.x 迁移做准备 |
+| TypeScript 7.x | 2026-04 起 | Go 原生实现的新编译器 / 语言服务版本 | 8x~12x 构建加速、LSP 语言服务、多线程 `--checkers` / `--builders`、重写 watch 模式 | 7.0 暂无稳定 programmatic API，依赖 `typescript` API 的工具链可能需要继续并行保留 6.x |
+
+#### 5.x 发布时间线
+
+| 版本 | 官方公告日期 | 重点内容 |
+| --- | --- | --- |
+| 5.0 | 2023-03-16 | 标准 Decorators、`const` 类型参数、`extends` 支持多个配置、所有 enum 成为 union enum、`moduleResolution: bundler`、`verbatimModuleSyntax` |
+| 5.1 | 2023-06-01 | 返回类型推断改进、JSX 类型检查优化、命名空间 JSX 属性支持、编辑器体验优化 |
+| 5.2 | 2023-08-24 | Explicit Resource Management、Decorator Metadata、元组标签改进、数组联合方法调用优化 |
+| 5.3 | 2023-11-20 | Import Attributes、`resolution-mode`、`switch(true)` 收窄、布尔比较收窄、实例字段 `super` 检查 |
+| 5.4 | 2024-03-06 | 闭包中保留类型收窄、`NoInfer<T>`、`Object.groupBy` / `Map.groupBy`、模块解析改进 |
+| 5.5 | 2024-06-20 | 推断类型谓词、JSDoc `@import`、正则语法检查、Set 新方法、`isolatedDeclarations` |
+| 5.6 | 2024-09-09 | Iterator Helper、总是真值/空值表达式检查、`--noCheck`、`--noUncheckedSideEffectImports`、`--build` 行为变化 |
+| 5.7 | 2024-11-22 | 未初始化变量检查、`--rewriteRelativeImportExtensions`、`target/lib es2024`、Node V8 compile cache |
+| 5.8 | 2025-02-28 | return 表达式分支细粒度检查、`module node18`、`module nodenext` 支持 CJS `require()` ESM、`--erasableSyntaxOnly`、`--libReplacement` |
+| 5.9 | 2025-08-01 | 更精简的 `tsc --init`、`import defer`、`--module node20`、DOM API 摘要、可展开 hover、类型实例化缓存 |
+
+#### 6.x 发布时间线
+
+| 版本 | 发布时间 | 状态 | 重点内容 |
+| --- | --- | --- | --- |
+| 6.0 Beta | 2026-02-11 | Beta | 作为 5.9 到 7.0 的迁移桥梁，提前暴露默认值变化和弃用项 |
+| 6.0 RC | 2026-03-06 | RC | 迁移验证版本，继续对齐 7.0 行为 |
+| 6.0 | 2026-03-23 | Stable | 最后一个基于 JS/TS 代码库的大版本，默认值更现代，清理旧模块系统和旧编译目标 |
+| 6.0.3 | 2026-04-16 | Patch | 6.0 稳定补丁版本 |
+
+#### 7.x 发布时间线
+
+| 版本 | 发布时间 | 状态 | 重点内容 |
+| --- | --- | --- | --- |
+| 7.0 Beta | 2026-04-21 | Beta | Go 原生编译器公开测试，验证性能和兼容性 |
+| 7.0 RC | 2026-06-18 | RC | 发布候选版本，面向生产迁移前验证 |
+| 7.0 | 2026-07-08 | Stable | Go 原生实现正式发布，进入 native TypeScript 工具链时代 |
+
+#### 5.x / 6.x / 7.x 迁移建议
+
+1. **普通业务项目**：可以先升级到 5.9，再评估 6.0 的默认值和弃用项，最后再尝试 7.0。
+2. **库项目**：重点关注 `moduleResolution`、`exports/imports`、声明文件输出、`verbatimModuleSyntax` 和 `isolatedDeclarations`。
+3. **老项目**：如果仍依赖 `target: es5`、`moduleResolution: node/classic`、`module: amd/umd/systemjs/none`、`baseUrl` 等旧配置，应先在 6.x 阶段清理。
+4. **依赖 TypeScript API 的工具链**：TypeScript 7.0 暂不提供稳定 programmatic API，`typescript-eslint`、Volar、Vue/Svelte/Astro/Angular 相关工具需要关注兼容状态。
+5. **大型 monorepo**：7.x 可以重点评估 `--checkers` 和 `--builders`，但要注意 CPU 与内存占用。
+
 ### interface
 
 在面向对象语言中，接口是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类去实现。
@@ -205,7 +270,7 @@ type Test = ValueOf<RtmMessageData>
 
 import type 是TypeScript 和Flow 中特有的语法，它**允许你导入类型而不导入运行时的值**。 这通常用于导入类型定义，例如接口、类型别名或类类型。 这种导入方式不会影响生成的JavaScript 代码，因为类型信息在编译时会被移除。与此相似，`export type` 仅仅提供一个用于类型的导出，在 JavaScript 输出文件中，它也将会被删除。
 
-### 运算符
+### 常用运算符
 
 #### ! 运算符
 
@@ -298,7 +363,7 @@ type AddPrefix<Prefix, Keys> = `${Prefix & string}/${Keys & string}`
 联合类型（Union Types）表示取值可以为多种类型中的⼀种，联合类型使⽤ | 分隔每个类型。联合类型通常与 null 或 undefined ⼀起使⽤
 
 ```typescript
-const fn = (info: strong | null | undefined) => {}
+const fn = (info: string | null | undefined) => {}
 ```
 
 #### ?. 运算符
@@ -325,7 +390,7 @@ let b = a !== null && a !== void 0 ? a : 10;
 
 而 || 表达式，大家知道的，则对 false、''、NaN、0 等逻辑空值也会生效，不适于我们做对参数的合并。
 
-### 操作符
+### 类型操作符
 
 #### asserts
 
@@ -503,7 +568,7 @@ let lie = 0;
 - 内联枚举的任何用法（`0` 而不是 `Tristate.False`）；
 - 不会为枚举类型编译成任何 JavaScript（在这个例子中，运行时没有 `Tristate` 变量），因为它使用内联语法。
 
-###  void
+### void
 
 ####  声明一个 void 类型的变量
 
@@ -519,7 +584,7 @@ let unusable: void = undefined;
 
 当一个函数返回空值时，它的返回值为 void 类型，但是，当一个函数永不返回时（或者总是抛出错误），它的返回值为 never 类型。void 类型可以被赋值（在 strictNullChecking 为 false 时），但是除了 never 本身以外，其他任何类型不能赋值给 never。
 
-### enum
+### enum 与声明文件
 
 #### enums compile on *.d.ts
 
@@ -529,7 +594,7 @@ let unusable: void = undefined;
 
  **结论：.d.ts 中定义的东西不会进入到运行时，你应该只在 .ts 中定义一遍**
 
-### Never
+### never
 
 [https://www.zhihu.com/question/354601204/answer/888668879](https://www.zhihu.com/question/354601204/answer/888668879)
 
@@ -1014,7 +1079,7 @@ interface TSingleState extends Pick<TState, "name" | "age"> {};
 
 ```tsx
 type Pick<T, K extends keyof T> = {
-	[key in k]: T[key]
+  [P in K]: T[P]
 }
 ```
 
@@ -1391,6 +1456,16 @@ logAnswer(() => 42);
 logAnswer(() => Promise.resolve(42));
 ```
 
+#### Awaited
+
+`Awaited<T>` 用来递归提取 `Promise` 或类 `Promise` 类型最终 resolve 出来的值类型，适合描述 `await` 或 `.then()` 后的结果。
+
+```ts
+type A = Awaited<Promise<string>> // string
+type B = Awaited<Promise<Promise<number>>> // number
+type C = Awaited<boolean | Promise<number>> // boolean | number
+```
+
 #### NonNullable
 
 [https://javascript.plainenglish.io/how-the-typescript-nonnullable-type-works-ccfd68972f02](https://javascript.plainenglish.io/how-the-typescript-nonnullable-type-works-ccfd68972f02)
@@ -1408,7 +1483,7 @@ type noNulls = NonNullable<myType>   // string | number
 
 在 CallableFunction 类型中，函数签名包含了函数的参数类型和返回类型。
 
-### 泛型
+### 泛型进阶
 
 #### 反向推导
 
@@ -2700,7 +2775,7 @@ import { bar } from './component.tsx';
 import { types } from './types.d.ts';
 ```
 
-### ts结合react
+### TypeScript 结合 React
 
 #### style
 
@@ -2714,7 +2789,7 @@ style: React.CSSProperties;
 
 Convert JSON into gorgeous, typesafe code in any language.
 
-## 补充
+## 实践补充
 
 ### 高级用法
 
@@ -3139,6 +3214,22 @@ const foo: Foo = ['1', '2', '3']; // OK
 ### ts 4.1 新特性：字符串模板类型
 
 [https://mp.weixin.qq.com/s/MeGj7bD8m3VvXDMrMXNUHw](https://mp.weixin.qq.com/s/MeGj7bD8m3VvXDMrMXNUHw)
+
+模板字符串类型可以在类型层面对字符串字面量进行拼接、组合和约束。它通常会和联合类型、`keyof`、条件类型一起使用。
+
+```ts
+type EventName<T extends string> = `${T}Changed`
+type UserEvent = EventName<'name' | 'age'> // 'nameChanged' | 'ageChanged'
+```
+
+常见应用：
+
+```ts
+type Getter<T extends string> = `get${Capitalize<T>}`
+type UserGetter = Getter<'name' | 'age'> // 'getName' | 'getAge'
+```
+
+内置字符串工具类型包括：`Uppercase<T>`、`Lowercase<T>`、`Capitalize<T>`、`Uncapitalize<T>`。
 
 ### Babel 7 处理 ts
 

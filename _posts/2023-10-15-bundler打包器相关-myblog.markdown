@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "esbuild相关"
+title:      "Bundler 打包器相关"
 date:       2023-10-15 16:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -11,203 +11,638 @@ tags:
 
 > “Yeah It's on. ”
 
-## rollup
+## 前言
 
-[https://rollupjs.org/guide/en/](https://rollupjs.org/guide/en/)
+本文整理常见 JavaScript / TypeScript 构建与打包工具，包括 Rollup、tsdown、tsup、esbuild、SWC、Rolldown、Turbopack、unbuild、father、Gulp 等。
 
-[中文文档](https://www.rollupjs.com/)
+不同工具的定位不完全相同：
 
-### 基础
+| 工具 | 主要定位 | 底层实现 / 生态 | 适合场景 |
+| --- | --- | --- | --- |
+| Rollup | 库打包器 | JavaScript / 插件生态成熟 | 组件库、工具库、需要精细控制产物 |
+| tsdown | TypeScript 库打包器 | Rolldown + Oxc | 现代 TS 库、从 tsup 迁移、追求构建速度 |
+| tsup | TypeScript 库打包器 | esbuild + Rollup dts | 快速打包 TS 库、配置简单 |
+| esbuild | 编译器 / 打包器 | Go | 极速转译、压缩、简单打包 |
+| SWC | 编译器平台 | Rust | 替代 Babel、快速转译 |
+| Rolldown | 新一代打包器 | Rust / Rollup 兼容方向 | Vite 未来底层、Rollup 生态迁移 |
+| Turbopack | 应用构建工具 | Rust | Next.js 等大型应用开发构建 |
+| unbuild | 库构建工具 | Rollup / mkdist | Nuxt / unjs 生态库打包 |
+| father | NPM 包研发工具 | Umi 生态 | 组件库、工具库、React 相关包 |
+| Gulp | 任务流工具 | Node Stream | 文件处理流水线、自动化任务 |
 
-#### -- configPlugin
+## Rollup
 
-**Allows specifying Rollup plugins to transpile or otherwise control the parsing of your configuration file.** The main benefit is that it allows you to use non-JavaScript configuration files. For instance the following will allow you to write your configuration in TypeScript, provided you have `@rollup/plugin-typescript` installed:
+- 官网：[https://rollupjs.org/guide/en/](https://rollupjs.org/guide/en/)
+- 中文文档：[https://www.rollupjs.com/](https://www.rollupjs.com/)
+- REPL：[https://rollupjs.org/repl](https://rollupjs.org/repl)
 
-使用Rollup plugin 处理 配置文件
+Rollup 是一个以 ES Module 为核心的 JavaScript 打包器，尤其适合库打包。它的优势是产物干净、Tree Shaking 能力强、插件生态成熟。
 
-例子：
+### 基础能力
+
+#### 使用 TypeScript 配置文件
+
+`--configPlugin` 允许使用 Rollup 插件处理配置文件。例如使用 `@rollup/plugin-typescript` 解析 `rollup.config.ts`：
 
 ```bash
 rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript
 ```
 
-### repl
+#### 多入口 / 多配置打包
 
-[https://rollupjs.org/repl](https://rollupjs.org/repl)
+Rollup 支持导出配置数组，适合同时构建多个入口或多个产物：
 
-> REPL 是一种编程环境，全称为"Read-Eval-Print Loop"，意为"读取-求值-输出循环"。它是一种交互式的编程环境，可以逐行读取代码，对代码进行求值或执行，并将结果输出到屏幕上。
-
-### multiple input
-
-多入口打包
-
-```tsx
+```ts
 // rollup.config.ts
 import { defineConfig } from 'rollup'
 
 const config1 = defineConfig({})
-// ...
+const config2 = defineConfig({})
+const config3 = defineConfig({})
 
-export default (commandLineArgs: any): RollupOptions[] => {
+export default (commandLineArgs: any) => {
   const isDev = commandLineArgs.watch
 
   return defineConfig([
     config1,
     config2,
-    config3
+    config3,
   ])
 }
 ```
 
-### support *CommonJS*
+#### 支持 CommonJS
 
-Rollup supports *ES modules* out of the box. However, to support *CommonJS*, the following plugins are required:
+Rollup 默认支持 ES Module。如果需要处理 CommonJS 包，一般需要配合：
 
-- [@rollup/plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs)
-- [@rollup/plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
+- [`@rollup/plugin-commonjs`](https://github.com/rollup/plugins/tree/master/packages/commonjs)
+- [`@rollup/plugin-node-resolve`](https://github.com/rollup/plugins/tree/master/packages/node-resolve)
 
-`@rollup/plugin-commonjs` 应该在其他插件 *之前* 使用——这是为了防止其他插件进行的更改破坏了 CommonJS 检测。
+`@rollup/plugin-commonjs` 通常应该放在其他会转换代码的插件之前，避免 CommonJS 检测被破坏。
 
-### 集成三方库
+#### 处理第三方依赖
 
-[https://www.rollupjs.com/guide/tools](https://www.rollupjs.com/guide/tools)
+Rollup 不会像 Webpack 那样默认处理所有 `node_modules` 依赖。如果遇到 `Unresolved dependencies`，通常需要添加 `@rollup/plugin-node-resolve`：
 
-有时候，您的项目可能需要依赖于一些 NPM 包。与 webpack 和 Browserify 等其他打包器不同，Rollup 并不能“开箱即用”地处理 NPM 包的依赖关系——我们需要添加一些配置。
+```ts
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 
-当出现 Unresolved dependencies
+export default {
+  plugins: [
+    nodeResolve({
+      browser: true,
+      mainFields: ['browser', 'module', 'main'],
+      preferBuiltins: false,
+      extensions: ['.mjs', '.js', '.json', '.ts'],
+    }),
+  ],
+}
+```
 
-因为 `import` 声明被转换成为 CommonJS 规范的 `require` 语句，但是三方库**并未** 被打包在 bundle 中。为此，我们需要一个插件@rollup/plugin-node-resolve,可以让 Rollup 查找到外部模块
+如果依赖是 CommonJS，还需要配合 `@rollup/plugin-commonjs`。
 
-### plugin
+### 常用插件
 
 #### rollup-plugin-esbuild
 
-[https://www.npmjs.com/package/rollup-plugin-esbuild](https://www.npmjs.com/package/rollup-plugin-esbuild)
+- [https://www.npmjs.com/package/rollup-plugin-esbuild](https://www.npmjs.com/package/rollup-plugin-esbuild)
 
-[esbuild](https://github.com/evanw/esbuild) is by far one of the fastest TS/ESNext to ES6 compilers and minifier, this plugin replaces `rollup-plugin-typescript2`, `@rollup/plugin-typescript` and `rollup-plugin-terser` for you.
+用于在 Rollup 中接入 esbuild，可替代部分 TypeScript 转译、ESNext 降级和压缩能力。
 
 #### rollup-plugin-visualizer
 
-[https://www.npmjs.com/package/rollup-plugin-visualizer](https://www.npmjs.com/package/rollup-plugin-visualizer)
+- [https://www.npmjs.com/package/rollup-plugin-visualizer](https://www.npmjs.com/package/rollup-plugin-visualizer)
 
-分析打包体积
+用于分析打包体积，排查大依赖和重复依赖。
 
 #### @rollup/plugin-commonjs
 
-[https://www.npmjs.com/package/@rollup/plugin-commonjs](https://www.npmjs.com/package/@rollup/plugin-commonjs)
+- [https://www.npmjs.com/package/@rollup/plugin-commonjs](https://www.npmjs.com/package/@rollup/plugin-commonjs)
 
-🍣 A Rollup plugin to convert CommonJS modules to ES6, so they can be included in a Rollup bundle
+将 CommonJS 模块转换为 ES Module，便于 Rollup 纳入打包流程。
 
 #### @rollup/plugin-node-resolve
 
-🍣 A Rollup plugin which locates modules using the [Node resolution algorithm](https://nodejs.org/api/modules.html#modules_all_together), for using third party modules in `node_modules`
-
-可以让 Rollup 找到外部模块
-
-加载node_modules里面的三方库
-
-```ts
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-
- nodeResolve({
-    browser: true,  // browser module resolutions 解析浏览器的包
-    mainFields: ['browser', 'module', 'main'],
-    preferBuiltins: false,
-    extensions: [".mjs", ".js", ".json", ".ts"]
- }),
-```
+用于按照 Node.js 解析规则查找外部模块，让 Rollup 能解析 `node_modules` 中的第三方包。
 
 #### @rollup/pluginutils
 
-[https://www.npmjs.com/package/@rollup/pluginutils](https://www.npmjs.com/package/@rollup/pluginutils)
+- [https://www.npmjs.com/package/@rollup/pluginutils](https://www.npmjs.com/package/@rollup/pluginutils)
 
-A set of utility functions commonly used by 🍣 Rollup plugins.
+Rollup 插件开发工具集，常用能力包括：
 
-为写 rollup plugin 提供的 utils 工具函数
-
-```tsx
+```ts
 export {
-  addExtension,   // 增加后缀
-  attachScopes,   // 依附作用域 （ast处理）
-  createFilter, // 处理 include 和 exclude  (用于 transform 钩子)
-  dataToEsm,  // data =>  esmodule
-  extractAssignedNames,  // 获取ast的node的names
-  makeLegalIdentifier, // 变成下滑线命名
-  normalizePath  // 规范化路径
-};
+  addExtension,        // 增加扩展名
+  attachScopes,        // AST 作用域处理
+  createFilter,        // 处理 include / exclude
+  dataToEsm,           // 将 data 转成 ES Module
+  extractAssignedNames, // 获取 AST 节点名称
+  makeLegalIdentifier, // 转成合法变量名
+  normalizePath,       // 规范化路径
+}
 ```
 
-#### Inter-plugin communication
+### 插件间通信
 
-[https://rollupjs.org/guide/en/#inter-plugin-communication](https://rollupjs.org/guide/en/#inter-plugin-communication)
+Rollup 插件可以通过暴露 `api` 给其他插件调用：
 
-```tsx
+```ts
 function parentPlugin() {
   return {
     name: 'parent',
     api: {
-      //...methods and properties exposed for other plugins
       doSomething(...args) {
-        // do something interesting
-      }
-    }
-    // ...plugin hooks
-  };
+        // do something
+      },
+    },
+  }
 }
 
 function dependentPlugin() {
-  let parentApi;
+  let parentApi
+
   return {
     name: 'dependent',
     buildStart({ plugins }) {
-      const parentName = 'parent';
-      const parentPlugin = plugins.find(plugin => plugin.name === parentName);
+      const parentPlugin = plugins.find(plugin => plugin.name === 'parent')
+
       if (!parentPlugin) {
-        // or handle this silently if it is optional
-        throw new Error(`This plugin depends on the "${parentName}" plugin.`);
+        throw new Error('This plugin depends on the "parent" plugin.')
       }
-      // now you can access the API methods in subsequent hooks
-      parentApi = parentPlugin.api;
+
+      parentApi = parentPlugin.api
     },
     transform(code, id) {
-      if (thereIsAReasonToDoSomething(id)) {
-        parentApi.doSomething(id);
-      }
-    }
-  };
+      parentApi.doSomething(id)
+    },
+  }
 }
 ```
 
-通过提供api 一个插件可以调用另外一个插件提供的方法。
+### 常见问题
 
-### 问题
+#### 如何把依赖全部打入一个 bundle？
 
-#### embed all dependencies into one fat target bundle
+参考：[How to embed all dependencies into one fat target bundle with Rollup.js](https://stackoverflow.com/questions/52125190/how-to-embed-all-dependencies-into-one-fat-target-bundle-with-rollup-js)
 
-[embed all dependencies into one fat target bundle](https://stackoverflow.com/questions/52125190/how-to-embed-all-dependencies-into-one-fat-target-bundle-with-rollup-js)
+一般需要：
 
-Use [rollup-plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve) (and [rollup-plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs) if you have CommonJS dependencies).
+- 不把依赖配置为 `external`
+- 使用 `@rollup/plugin-node-resolve` 解析依赖
+- 如有 CommonJS 依赖，使用 `@rollup/plugin-commonjs`
+
+## tsdown
+
+- 官网：[https://tsdown.dev/zh-CN/](https://tsdown.dev/zh-CN/)
+- GitHub：[https://github.com/rolldown/tsdown](https://github.com/rolldown/tsdown)
+
+`tsdown` 是一个由 Rolldown 驱动的现代 TypeScript / JavaScript 库打包器。它强调开箱即用、构建速度快、类型声明生成快，并兼容 tsup 的主要选项和功能，适合从 tsup 平滑迁移。
+
+### 核心特点
+
+1. **速度快**：基于 Oxc 和 Rolldown 构建，并支持快速生成 `.d.ts`。
+2. **适合库打包**：默认入口、输出目录、类型声明等都围绕 NPM 包研发设计。
+3. **生态兼容**：支持 Rollup 插件、Rolldown 插件、unplugin 插件，以及部分 Vite 插件。
+4. **迁移友好**：兼容 tsup 的主要配置选项和功能。
+5. **产物格式丰富**：支持 `esm`、`cjs`、`iife`、`umd`。
+
+> 注意：运行 `tsdown` 的构建环境要求 Node.js `22.18.0` 或更高版本，但构建产物可以通过 `target` 指定更低运行环境。
+
+### 安装
+
+```bash
+npm install -D tsdown
+# or
+pnpm add -D tsdown
+# or
+yarn add -D tsdown
+# or
+bun add -D tsdown
+```
+
+如果项目需要生成声明文件，且没有启用 `isolatedDeclarations`，建议安装 TypeScript：
+
+```bash
+npm install -D typescript
+```
+
+也可以使用官方模板创建项目：
+
+```bash
+npm create tsdown@latest
+```
+
+### package.json
+
+```json
+{
+  "name": "my-lib",
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "tsdown": "^0.9.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+### 基础配置
+
+```ts
+// tsdown.config.ts
+import { defineConfig } from 'tsdown'
+
+export default defineConfig({
+  entry: ['./src/index.ts'],
+  format: ['esm', 'cjs'],
+  dts: true,
+  clean: true,
+  sourcemap: true,
+  minify: false,
+})
+```
+
+常用命令：
+
+```bash
+# 构建
+npx tsdown
+
+# 监听模式
+npx tsdown --watch
+# or
+npx tsdown -w
+
+# 查看帮助
+npx tsdown --help
+```
+
+### 常用配置项
+
+#### entry
+
+入口文件。默认会尝试使用 `src/index.ts`。
+
+```ts
+export default defineConfig({
+  entry: ['./src/index.ts'],
+})
+```
+
+也支持多入口和 glob：
+
+```ts
+export default defineConfig({
+  entry: {
+    index: './src/index.ts',
+    'hooks/use-count': './src/hooks/use-count.ts',
+  },
+})
+```
+
+```ts
+export default defineConfig({
+  entry: {
+    'hooks/*': ['./src/hooks/*.ts', '!./src/hooks/index.ts'],
+  },
+})
+```
+
+#### format
+
+输出格式，默认是 `esm`。
+
+```ts
+export default defineConfig({
+  format: ['esm', 'cjs'],
+})
+```
+
+可选值：
+
+- `esm` / `es` / `module`
+- `cjs` / `commonjs`
+- `iife`
+- `umd`
+
+如果需要 `iife` / `umd`，通常还需要配置 `globalName`。
+
+#### dts
+
+控制是否生成 TypeScript 声明文件：
+
+```ts
+export default defineConfig({
+  dts: true,
+})
+```
+
+`dts` 默认会根据 `package.json` 自动判断：
+
+- `package.json` 有 `types` 字段时，默认启用；
+- `exports` 中包含 `types` 时，默认启用；
+- 开启 `exe` 时默认关闭；
+- 其他情况默认关闭。
+
+#### target
+
+指定编译目标：
+
+```ts
+export default defineConfig({
+  target: 'node18',
+})
+```
+
+也可以指定多个目标：
+
+```ts
+export default defineConfig({
+  target: ['node18', 'es2020'],
+})
+```
+
+如果没有配置 `target`，tsdown 会优先读取 `package.json` 中的 `engines.node`；如果没有该字段，则不做语法降级。
+
+#### platform
+
+指定目标平台，默认是 `node`：
+
+```ts
+export default defineConfig({
+  platform: 'browser',
+})
+```
+
+可选值：
+
+- `node`：Node.js、Bun、Deno 等服务端运行时；
+- `browser`：浏览器环境；
+- `neutral`：不假设具体运行环境。
+
+#### clean / outDir
+
+```ts
+export default defineConfig({
+  outDir: 'dist',
+  clean: true,
+})
+```
+
+`clean` 默认会在构建前清理输出目录。
+
+#### minify / sourcemap / treeshake
+
+```ts
+export default defineConfig({
+  minify: true,
+  sourcemap: true,
+  treeshake: true,
+})
+```
+
+- `minify`：是否压缩产物，默认 `false`；
+- `sourcemap`：是否生成 Source Map，默认 `false`；
+- `treeshake`：Tree Shaking 配置，默认 `true`。
+
+#### plugins
+
+tsdown 支持 Rollup / Rolldown / unplugin 插件，以及部分 Vite 插件：
+
+```ts
+import SomePlugin from 'some-plugin'
+import { defineConfig } from 'tsdown'
+
+export default defineConfig({
+  plugins: [SomePlugin()],
+})
+```
+
+#### deps
+
+新版 tsdown 推荐使用 `deps` 管理依赖是否打包。旧的 `external`、`noExternal`、`inlineOnly` 等配置仍可见，但已逐步被 `deps` 取代。
+
+常见思路：
+
+- 库开发一般把 `dependencies` / `peerDependencies` 外置，避免重复打包；
+- 如果某些小依赖必须内联，可配置为总是打包；
+- 如果某些依赖绝不能打包，可配置为永远外置。
+
+#### publint / attw
+
+tsdown 可以在打包后运行包检查：
+
+```ts
+export default defineConfig({
+  publint: true,
+  attw: true,
+})
+```
+
+- `publint`：检查 NPM 包发布配置，需要安装 `publint`；
+- `attw`：运行 `arethetypeswrong` 检查类型导出，需要安装 `@arethetypeswrong/core`。
+
+### 与 tsup 的关系
+
+`tsdown` 可以理解为面向库开发的新一代 tsup 替代方案：
+
+- `tsup` 基于 esbuild，生态成熟，配置简单；
+- `tsdown` 基于 Rolldown / Oxc，速度更快，并尽量兼容 tsup 的主要选项；
+- 如果已有 tsup 项目，可以优先尝试直接迁移配置，再逐步替换不兼容项。
+
+适合优先选择 tsdown 的场景：
+
+- 新建 TypeScript 工具库 / 组件库；
+- 希望同时输出 ESM + CJS + d.ts；
+- 需要更快的构建和类型声明生成；
+- 想跟进 Rolldown / Oxc 生态。
+
+## tsup
+
+- 官网：[https://tsup.egoist.dev/](https://tsup.egoist.dev/)
+- 文章：[必知必会 tsup 打包库原理分析](https://juejin.cn/post/7148442413420265485)
+
+`tsup` 是一个用于打包 TypeScript 库的工具，开箱即用，底层主要基于 esbuild。它可以快速生成 ESM / CJS 产物，也支持生成类型声明。
+
+### 基础特点
+
+- 基于 esbuild，构建速度快；
+- 零配置或少配置即可打包 TS 库；
+- 支持 CLI 和配置文件；
+- 支持生成 `.d.ts`；
+- 可输出多种模块格式。
+
+### ES5 支持
+
+- [https://tsup.egoist.dev/#es5-support](https://tsup.egoist.dev/#es5-support)
+
+当需要输出 ES5 时，tsup 会先通过 esbuild 转成 ES2020，再通过 SWC 转成 ES5。
+
+### Tree Shaking
+
+- [https://tsup.egoist.dev/#tree-shaking](https://tsup.egoist.dev/#tree-shaking)
+
+esbuild 默认开启 Tree Shaking，但部分场景效果不如 Rollup。tsup 提供了额外选项，可使用 Rollup 做 Tree Shaking。
+
+## esbuild
+
+- 官网：[https://esbuild.github.io/](https://esbuild.github.io/)
+
+`esbuild` 是一个用 Go 编写的 JavaScript / TypeScript 构建工具，核心优势是速度极快。它可以完成转译、打包、压缩、格式转换等工作。
+
+### 核心特点
+
+1. **构建速度极快**：Go 实现，并发能力强。
+2. **支持现代语法**：支持 ES6+、TypeScript、JSX。
+3. **配置简单**：命令行和 JS API 都很直接。
+4. **支持 Tree Shaking**：默认对 ESM 进行 Tree Shaking。
+5. **支持开发和生产构建**：可用于快速开发构建和生产压缩。
+
+### CLI 示例
+
+```bash
+esbuild src/main.js --bundle --minify --format=esm --target=es6 --outfile=build/agora-miniapp-sdk.js
+```
+
+参数说明：
+
+- `--bundle`：打包依赖；
+- `--minify`：压缩代码；
+- `--format`：输出模块格式，支持 `iife`、`cjs`、`esm`；
+- `--target`：目标运行环境；
+- `--outfile`：输出文件。
+
+### 常用能力
+
+#### serve
+
+- [https://esbuild.github.io/api/#serve](https://esbuild.github.io/api/#serve)
+
+用于启动简单开发服务。
+
+#### inject
+
+- [https://esbuild.github.io/api/#inject](https://esbuild.github.io/api/#inject)
+
+用于注入变量，效果类似 Webpack 的 `ProvidePlugin`。
+
+#### tree-shaking
+
+- [https://esbuild.github.io/api/#tree-shaking](https://esbuild.github.io/api/#tree-shaking)
+
+默认支持 Tree Shaking，但主要依赖 ESM 静态结构。
+
+#### analyze
+
+- [https://esbuild.github.io/api/#analyze](https://esbuild.github.io/api/#analyze)
+
+用于分析打包结果。
+
+#### target
+
+- [https://esbuild.github.io/api/#target](https://esbuild.github.io/api/#target)
+
+用于指定语法降级目标。
+
+### 局限
+
+#### Tree Shaking 不如 Rollup 精细
+
+参考：`esbuild doesn't remove unused imports from external modules`
+
+esbuild 的 Tree Shaking 速度很快，但在复杂库打包场景中不一定能达到 Rollup 的精细程度。
+
+#### 不支持完整降级到 ES5
+
+- [Lowering for ES5?](https://github.com/evanw/esbuild/issues/297)
+
+esbuild 不支持将所有现代语法完整转换为 ES5。例如当 `target` 设置为 `es5` 且代码中存在 `async function` 时，会报错：
+
+```text
+Transforming async functions to the configured target environment ("es5") is not supported yet
+```
+
+如果必须支持 ES5，可以考虑 tsup + SWC、Babel 或其他降级方案。
+
+## SWC
+
+- 官网：[https://swc.rs/](https://swc.rs/)
+- 中文文档：[https://swc.nodejs.cn/](https://swc.nodejs.cn/)
+
+SWC 是一个基于 Rust 的快速编译器平台，常用于替代 Babel。它被 Next.js、Parcel、Deno 等工具采用，也被多家公司用于大型项目构建。
+
+### 优点
+
+- 转译速度快；
+- 支持 TypeScript、JSX、现代 JavaScript 语法；
+- 适合作为 Babel 替代方案；
+- 可集成到构建工具中。
+
+### 缺点
+
+- 插件开发门槛较高，需要了解 Rust / WebAssembly；
+- Babel 插件生态更成熟，复杂插件迁移成本较高。
+
+### @swc/wasm-web
+
+- [https://swc.rs/docs/usage/wasm](https://swc.rs/docs/usage/wasm)
+
+`@swc/wasm-web` 用于在 Web 环境中通过 WebAssembly 使用 SWC 能力，适合浏览器侧代码转换、在线编辑器、Playground 等场景。
+
+## Rolldown
+
+- 官网：[https://rolldown.rs/](https://rolldown.rs/)
+
+Rolldown 是一个基于 Rust 的快速 JavaScript 打包器，目标是兼容 Rollup 生态，并服务于 Vite 等现代工具链。
+
+### 特点
+
+- Rust 实现，构建性能更强；
+- API 和插件生态向 Rollup 靠拢；
+- 适合承接大型项目的构建性能优化；
+- 是 tsdown 的底层核心能力之一。
+
+### 与 Rollup 的关系
+
+可以把 Rolldown 理解为“性能更强、面向未来工具链”的 Rollup 兼容方向实现。对于已有 Rollup 插件生态的项目，Rolldown 的目标是尽可能降低迁移成本。
 
 ## unbuild
 
-[https://github.com/unjs/unbuild](https://github.com/unjs/unbuild)
+- [https://github.com/unjs/unbuild](https://github.com/unjs/unbuild)
 
-> A unified javascript build system
+`unbuild` 是 unjs 生态中的统一 JavaScript 构建系统，底层基于 Rollup，可生成 CommonJS、ES Module 和类型声明。
 
-Robust [rollup](https://rollupjs.org/) based bundler that supports typescript and generates commonjs and module formats + type declarations.
+### 示例
 
-```tsx
+```ts
 // build.config.ts
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   entries: [
-    './src/index'
+    './src/index',
   ],
   clean: true,
-  declaration: true, // generate .d.ts files
+  declaration: true,
   rollup: {
-    emitCJS: true,  // generate .cjs files
+    emitCJS: true,
     commonjs: true,
     resolve: true,
     inlineDependencies: true,
@@ -215,280 +650,202 @@ export default defineBuildConfig({
 })
 ```
 
-[ERROR] Could not resolve
+### 使用注意
 
-哪怕配置好了 resolve 相关配置 还是会有找不到相关模块的error ，在这种情况下放弃 unbuild
+如果已经配置了 `resolve` 等选项，仍然遇到 `Could not resolve`，需要重点检查：
 
-## turbopack
+- 依赖是否应该 external；
+- 依赖是否为 CJS / ESM 混合产物；
+- `package.json` 的 `exports` / `main` / `module` 是否正确；
+- 是否需要切换到 Rollup、tsup 或 tsdown 获得更强控制。
 
-[https://turbo.build/pack/docs/why-turbopack](https://turbo.build/pack/docs/why-turbopack)
+## Turbopack
 
-Turbopack 是一个新兴的 JavaScript 构建工具，旨在为现代web开发提供高效的打包和编译解决方案。它是 Webpack 的后继者，采用 Rust 语言进行开发，以优化速度和性能。
+- [https://turbo.build/pack/docs/why-turbopack](https://turbo.build/pack/docs/why-turbopack)
 
-1. **速度**: 由于采用了 Rust 语言和增量构建技术，Turbopack 在处理大型项目时可以显著减少构建时间。
-2. **现代化**: 它专门为现代 JavaScript 框架（如 React、Vue 和 Svelte）而设计，优化了这些框架的使用体验。
-3. **易用性**: Turbopack 的配置比 Webpack 更加简洁，帮助开发者更容易上手和使用。
-4. **兼容性**: Turbopack 旨在与现有的工具和生态系统兼容，允许开发者逐步迁移现有项目。
+Turbopack 是一个面向现代 Web 应用的构建工具，由 Rust 编写，可以看作 Webpack 的继任方向之一，尤其常见于 Next.js 生态。
+
+### 特点
+
+1. **速度快**：Rust 实现，支持增量构建；
+2. **面向现代框架**：重点服务 React / Next.js 等现代应用；
+3. **配置简化**：相比 Webpack 更关注开箱即用；
+4. **渐进迁移**：目标是尽量兼容现有生态。
 
 ## father
 
-[https://github.com/umijs/father](https://github.com/umijs/father)
+- [https://github.com/umijs/father](https://github.com/umijs/father)
 
-father 是一款 NPM 包研发工具，能够帮助开发者更高效、高质量地研发 NPM 包、生成构建产物、再完成发布。
+`father` 是 Umi 生态中的 NPM 包研发工具，适合组件库、工具库等包的构建和发布。
 
-## esbuild
+### 适合场景
 
-**esbuild** 是一个现代的 JavaScript 打包工具和构建工具，专门设计用于快速构建项目。其主要特点包括：
+- React 组件库；
+- Umi / Ant Design 生态项目；
+- 需要同时管理构建、类型、发布规范的 NPM 包。
 
-1. **极快的构建速度**：esbuild 用 Go 语言编写，利用并发处理和其他优化技术，使其在构建速度上远超传统的 JavaScript 工具，例如 Webpack 或 Parcel。
-2. **支持现代 JavaScript 功能**：esbuild 支持 ES6、TypeScript 和 JSX 等现代 JavaScript 特性，使其非常适合与现代前端开发框架（如 React 和 Vue）结合使用。
-3. **简单的配置**：虽然 esbuild 支持复杂的构建需求，其配置相对简单，易于上手。许多基本用例只需要少量配置即可运行。
-4. **代码拆分和树摇（Tree Shaking）**：esbuild 支持代码拆分，从而提高应用的加载性能，并能去除未使用的代码，减少最终输出的包体积。
-5. **用于开发和生产**：esbuild 既可以用于快速开发（支持热重载），也能生成适合生产环境的优化代码。
+## Gulp
 
-### 基础
-
-[https://esbuild.github.io/](https://esbuild.github.io/)
-
-```tsx
-esbuild src/main.js --minify --format=esm --target=es6  --bundle --outfile=build/agora-miniapp-sdk.js
-```
-
-minify:  代码压缩
-
-format：模块化 （iife cjs esm）
-
-target： 目标
-
-bundle：打包
-
-outfile： 输出地址
-
-#### serve
-
-[https://esbuild.github.io/api/#serve](https://esbuild.github.io/api/#serve)
-
-#### Inject
-
-[https://esbuild.github.io/api/#inject](https://esbuild.github.io/api/#inject)
-
-注入变量 （效果相当于webpack插件之ProvidePlugin）
-
-#### tree-shaking
-
-[https://esbuild.github.io/api/#tree-shaking](https://esbuild.github.io/api/#tree-shaking)
-
-默认会带tree-shaking功能
-
-#### analyze
-
-[https://esbuild.github.io/api/#analyze](https://esbuild.github.io/api/#analyze)
-
-#### target
-
-[https://esbuild.github.io/api/#target](https://esbuild.github.io/api/#target)
-
-### 缺点
-
-#### tree shaking
-
-[esbuild doesn't remove unused imports from external modules](esbuild doesn't remove unused imports from external modules)
-
-#### target es5
-
-[Lowering for ES5?](https://github.com/evanw/esbuild/issues/297)
-
-**结论：esbuild 还不支持将代码转为es5**
-
-If you use a syntax feature that esbuild doesn't yet have support for transforming to your current language target, esbuild will generate an error where the unsupported syntax is used. This is often the case when targeting the es5 language version, for example, since esbuild only supports transforming most newer JavaScript syntax features to es6.
-
-如果您使用的语法特性esbuild还不支持转换到当前语言目标，则esbuild将在使用不支持的语法时生成一个错误。例如，当目标是es5语言版本时，通常会出现这种情况，因为esbuild只支持将大多数较新的JavaScript语法特性转换为es6。
-
----
-
-举个例子：
-
-当存在 async 函数时 使用esbuild build target 设为 es5
-
-会存在报错：
-
-**Transforming async functions to the configured target environment ("es5") is not supported yet**
-
-如果要支持es5 可以使用 tsup
-
-## swc
-
-[https://swc.rs/](https://swc.rs/)
-
-[https://swc.nodejs.cn/](https://swc.nodejs.cn/)
-
-SWC 是一个基于 Rust 的可扩展平台，适用于下一代快速开发工具。比传统的 JavaScript 编译器（如 Babel）速度更快。它能够显著缩短编译时间，特别是在大型项目中。
-
- 它被 Next.js、Parcel 和 Deno 等工具以及 Vercel、字节跳动、腾讯、Shopify 等公司使用。
-
-缺点：
-
-* 开发一个 SWC 的插件，首先要学习 Rust 和 WebAssembly，上手门槛明显很高
-
-### @swc/wasm-web
-
-[https://swc.rs/docs/usage/wasm](https://swc.rs/docs/usage/wasm)
-
-@swc/wasm-web的作用是提供一个将JavaScript代码转换为WebAssembly二进制格式的工具。通过将JavaScript代码转换为WebAssembly，可以在Web浏览器中更高效地执行代码，提高性能和加载速度。这个工具还可以帮助开发人员利用WebAssembly的并行执行能力来加速应用程序。
-
-## tsup
-
-[https://tsup.egoist.dev/](https://tsup.egoist.dev/)
-
-[必知必会tsup打包库原理分析](https://juejin.cn/post/7148442413420265485)
-
-Bundle your TypeScript library with no config, powered by [esbuild](https://github.com/evanw/esbuild).
-
-可以快速打包 typescript 库，无需任何配置，并且基于`esbuild`进行打包，同时也可以快速生成`ts`类型(rollup进行打包，rollup-plugin-dts这个插件进行打包)，它还支持`Cli`脚手架运行，方便又高效
-
-### es5-support
-
-[https://tsup.egoist.dev/#es5-support](https://tsup.egoist.dev/#es5-support)
-
-your code will be transpiled by esbuild to es2020 first, and then transpiled to es5 by [SWC](https://swc.rs/).
-
-### tree-shaking
-
-[https://tsup.egoist.dev/#tree-shaking](https://tsup.egoist.dev/#tree-shaking)
-
-esbuild has [tree shaking](https://esbuild.github.io/api/#tree-shaking) enabled by default, but sometimes it's not working very well, see [#1794](https://github.com/evanw/esbuild/issues/1794) [#1435](https://github.com/evanw/esbuild/issues/1435), so tsup offers an additional option to let you use Rollup for tree shaking instead:
-
-esbuild 默认启用 Tree Shaking，但有时效果不太好，请参阅 #1794 #1435，因此 tsup 提供了一个附加选项，让您可以使用 Rollup 进行 Tree Shaking
-
-## gulp
+Gulp 更偏向任务流自动化工具，而不是现代意义上的模块打包器。它适合处理文件流，例如复制、压缩、上传、替换内容等。
 
 ### through2
 
-[https://www.npmjs.com/package/through2](https://www.npmjs.com/package/through2)
+- [https://www.npmjs.com/package/through2](https://www.npmjs.com/package/through2)
+- 示例源码：[gulp-aliyun-oss](https://github.com/yangblink/gulp-aliyun-oss/blob/master/index.js)
 
-[https://github.com/yangblink/gulp-aliyun-oss/blob/master/index.js](https://github.com/yangblink/gulp-aliyun-oss/blob/master/index.js)
+`through2` 常用于封装 Node.js Transform Stream，在 Gulp 插件中非常常见。
 
-最近一直写gulp相关的东西，会用到大量gulp相关的插件，偶尔会去看下这些插件的源码，发现基本上都用到了一个库through2
+### Gulp 插件示例
 
-```javascript
-    var stream = through2.obj(function (file, enc, cb) {
-        var filename = file.relative;
-        var self = this;
-        var getFileKey = function(){
-            return option.prefix
-                + ((!option.prefix || (option.prefix[option.prefix.length - 1]) === '/') ? '' : '/')
-                + path.posix.relative(file.base, file.path);
-        };
-        
-        if(file.isBuffer()){
-          // console.log(filename);
-          co(function* () {
-            var result = yield client.put(getFileKey(), file.contents, ossOpt);
-			log('OK:', colors.green(filename));
-            cb(null, file);
-          })
-          .catch(function (err) {
-            log('ERR:', colors.red(filename + "\t" + err.code));
-            cb(err, null);
-          })  
-        }
-        else {
-          cb();
-        }
-    });
+```js
+var stream = through2.obj(function (file, enc, cb) {
+  var filename = file.relative
+  var self = this
+
+  var getFileKey = function () {
+    return option.prefix
+      + ((!option.prefix || option.prefix[option.prefix.length - 1] === '/') ? '' : '/')
+      + path.posix.relative(file.base, file.path)
+  }
+
+  if (file.isBuffer()) {
+    co(function* () {
+      var result = yield client.put(getFileKey(), file.contents, ossOpt)
+      log('OK:', colors.green(filename))
+      cb(null, file)
+    }).catch(function (err) {
+      log('ERR:', colors.red(filename + '\t' + err.code))
+      cb(err, null)
+    })
+  } else {
+    cb()
+  }
+})
 ```
 
-所以，在此深入了解下through2
+### 修改文件内容示例
 
-through2经常被用于处理node的stream
-
-[https://segmentfault.com/a/1190000011740894](https://segmentfault.com/a/1190000011740894)
-
-```javascript
+```js
 gulp.task('rewrite', () => {
   return gulp.src('./through/enter.txt')
-    .pipe(through2.obj(function(chunk, enc, callback) {
-      const { contents } = chunk;
+    .pipe(through2.obj(function (chunk, enc, callback) {
+      const { contents } = chunk
+
       for (var i = 0; i < contents.length; i++) {
         if (contents[i] === 97) {
-          contents[i] = 122;
+          contents[i] = 122
         }
       }
 
-      chunk.contents = contents;
-      this.push(chunk);
-
-      callback();
+      chunk.contents = contents
+      this.push(chunk)
+      callback()
     }))
-    .pipe(gulp.dest('./dist'));
-});
+    .pipe(gulp.dest('./dist'))
+})
 ```
 
-这里将文件中所有的字符a转换为字符z，在写gulp插件时一定会应用到这个包，下面就来窥探一下这个使用率非常高的包。
+这个例子会把文件中的字符 `a` 转成字符 `z`。
 
-#### Transform stream
+### Transform Stream
 
-through2的源码仅仅就100多行，本质上就是对于node原生的transform流进行的封装，先来看下Transform stream。Transform是一个双工流，既可读，也可写，但是与Duplex还是有着一些区别，Duplex的写和读可以说是没有任何的关联，是两个缓冲区和管道互补干扰，而Transform将其输入和输出是存在相互关联的，中间做了处理。具体差别可以参考下面图片对比：
+`through2` 本质上是对 Node.js 原生 `Transform` 流的封装。`Transform` 是一种双工流，既可读也可写，但它的输入和输出有关联：写入的数据会经过 `_transform` 处理后再输出。
 
-#### through2源码
+### through2 源码核心
 
-在了解Transform stream之后，through2的源码非常的简单，就是对于其的一层封装，暴露出三个api(through2，through2.obj，through2.ctor)而且三者接收的参数一致，因为都是由一个工厂方法创造出的：
+`through2` 的源码很小，核心是一个工厂函数，用于统一处理参数并创建 Transform：
 
-```javascript
-function through2 (construct) {
+```js
+function through2(construct) {
   return function (options, transform, flush) {
-    // 做了一些参数整理
-    if (typeof options == 'function') {
-      flush     = transform
+    if (typeof options === 'function') {
+      flush = transform
       transform = options
-      options   = {}
+      options = {}
     }
 
-    if (typeof transform != 'function')
+    if (typeof transform !== 'function') {
       transform = noop
+    }
 
-    if (typeof flush != 'function')
+    if (typeof flush !== 'function') {
       flush = null
+    }
 
     return construct(options, transform, flush)
   }
 }
 ```
 
-来看一下through2对于Transform stream的再加工，也就是源码中的DestroyableTransform，与其名字一样，就是一个替我们实现好了destory方法的Transform stream：
+`DestroyableTransform` 则补充了 `destroy` 行为：
 
-```javascript
-DestroyableTransform.prototype.destroy = function(err) {
+```js
+DestroyableTransform.prototype.destroy = function (err) {
   if (this._destroyed) return
   this._destroyed = true
 
   var self = this
-  // 触发destory后，close掉流
-  process.nextTick(function() {
-    if (err)
+
+  process.nextTick(function () {
+    if (err) {
       self.emit('error', err)
+    }
+
     self.emit('close')
   })
 }
 ```
 
-through2与through2.obj全部是创造出一个再加工后的Transform，区别如下：
+### through2 / through2.obj / through2.ctor
 
-* 后者开启了对象模式（objectMode属性为true），写入的参数不仅仅限制在string or uint8Array
-* 后者降低了阈值（highWaterMark为16，而不是默认的16kb），这样做的原因，是为了和node的默认保持一致，具体可以参见这里
+- `through2`：创建普通 Transform 流；
+- `through2.obj`：创建 object mode 的 Transform 流，写入内容不限于字符串或 Buffer；
+- `through2.ctor`：返回可复用的 Transform 构造函数。
 
-through2.ctor可以用来再次定制，其返回的是一个构造函数，用法可以参考下面：
+```js
+const Tran = through.ctor(function (chunk, enc, callback) {
+  console.log('transform', chunk.toString())
+  callback(null, chunk)
+})
 
-```javascript
-const Tran = through.ctor(function(chunk, enc, callback) {
-  console.log('transform', chunk.toString());
-  callback(null, chunk);
-});
-const transform = new Tran();
+const transform = new Tran()
 ```
 
-## rolldown
+## 选型建议
 
-https://rolldown.rs/
+### 打包 NPM 工具库 / 组件库
 
-**Fast Rust-based bundler for JavaScript**
+优先考虑：
+
+1. `tsdown`：新项目、追求速度、需要 ESM + CJS + d.ts；
+2. `tsup`：成熟稳定、配置简单、已有项目；
+3. `Rollup`：需要高度定制和最精细产物控制。
+
+### 只做极速转译 / 压缩
+
+优先考虑：
+
+- `esbuild`：命令简单，速度极快；
+- `SWC`：更偏编译器替代 Babel。
+
+### 大型 Web 应用
+
+优先考虑：
+
+- `Vite` / `Rolldown` 生态；
+- `Turbopack`：Next.js 场景。
+
+### 文件流自动化
+
+优先考虑：
+
+- `Gulp`：处理文件复制、替换、上传、压缩等流水线任务。
+
+## 总结
+
+- 如果是现代 TypeScript 库，优先关注 `tsdown`；
+- 如果已有 tsup 项目，短期继续使用 `tsup`，新项目可尝试迁移到 `tsdown`；
+- 如果需要最强的库产物控制，使用 `Rollup`；
+- 如果追求极致转译速度，使用 `esbuild` 或 `SWC`；
+- 如果是 Next.js 应用构建，关注 `Turbopack`；
+- 如果是任务流处理，`Gulp + through2` 仍然有价值。
