@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "npm和yarn和pnpm"
-description: "本文整理了《npm和yarn和pnpm》相关的核心知识点、实践经验与参考资料。"
+title:      "npm、Yarn 与 pnpm 包管理器对比总结"
+description: "系统整理「npm、Yarn 与 pnpm 包管理器对比总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2018-11-16 20:19:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

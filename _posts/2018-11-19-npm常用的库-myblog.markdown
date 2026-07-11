@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "npm常用的库"
-description: "本文整理了《npm常用的库》相关的核心知识点、实践经验与参考资料。"
+title:      "前端常用 npm 库与工具清单"
+description: "系统整理「前端常用 npm 库与工具清单」的配置方法、工作机制、工程实践和常见问题。"
 date:       2018-11-19 19:52:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "SVG 基础与常见应用总结"
-description: "本文整理《SVG 基础与常见应用总结》相关的核心知识点、实践经验与参考资料。"
+title:      "SVG 基础语法与图形实践总结"
+description: "围绕「SVG 基础语法与图形实践总结」梳理基础概念、关键属性、实践技巧和常见问题。"
 date:       2018-04-11 15:54:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

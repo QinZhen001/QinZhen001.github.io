@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "React 基础与组件实践总结"
-description: "本文整理《React 基础与组件实践总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「React 基础与组件实践总结」的核心概念、工程实践、常见问题和项目经验。"
 date:       2018-01-11 13:59:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

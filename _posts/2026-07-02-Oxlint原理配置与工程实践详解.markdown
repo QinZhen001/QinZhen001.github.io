@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "Oxlint详解"
+title:      "Oxlint 原理、配置与工程实践详解"
+description: "系统整理「Oxlint 原理、配置与工程实践详解」的配置方法、工作机制、工程实践和常见问题。"
 date:       2026-07-02 11:46:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Electron 桌面应用开发总结"
-description: "本文整理《Electron 桌面应用开发总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「Electron 桌面应用开发总结」的核心概念、工程实践、常见问题和项目经验。"
 date:       2021-07-23 14:57:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

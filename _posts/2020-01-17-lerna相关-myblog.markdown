@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Lerna Monorepo 管理实践总结"
-description: "本文整理《Lerna Monorepo 管理实践总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「Lerna Monorepo 管理实践总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2020-01-17 14:22:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

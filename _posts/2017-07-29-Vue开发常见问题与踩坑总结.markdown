@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Vue开发中的坑"
-description: "本文整理了《Vue开发中的坑》相关的核心知识点、实践经验与参考资料。"
+title:      "Vue 开发常见问题与踩坑总结"
+description: "系统整理「Vue 开发常见问题与踩坑总结」的核心概念、工程实践、常见问题和项目经验。"
 date:       2017-07-29 10:56:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

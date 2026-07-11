@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "TypeScript 类型系统与工程实践总结"
-description: "本文整理了《TypeScript 类型系统与工程实践总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「TypeScript 类型系统与工程实践总结」的语言特性、底层机制、代码示例和实践经验。"
 date:       2020-05-18 15:23:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

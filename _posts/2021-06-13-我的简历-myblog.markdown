@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "我的简历"
-description: "本文整理了《我的简历》相关的核心知识点、实践经验与参考资料。"
+title:      "前端工程师简历与项目经历"
+description: "围绕「前端工程师简历与项目经历」整理核心知识点、实践经验、常见问题和参考资料，便于持续查阅。"
 date:       2021-06-13 17:32:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

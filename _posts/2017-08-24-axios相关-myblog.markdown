@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Axios 使用与请求封装总结"
-description: "本文整理《Axios 使用与请求封装总结》相关的核心知识点、实践经验与参考资料。"
+description: "围绕「Axios 使用与请求封装总结」整理核心知识点、实践经验、常见问题和参考资料，便于持续查阅。"
 date:       2017-08-24 18:19:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

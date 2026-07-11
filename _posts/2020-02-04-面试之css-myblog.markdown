@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "面试之css"
-description: "本文整理了《面试之css》相关的核心知识点、实践经验与参考资料。"
+title:      "前端面试：CSS 高频问题总结"
+description: "整理「前端面试：CSS 高频问题总结」相关的高频问题、核心知识点、答题思路和复盘要点。"
 date:       2020-02-04 21:24:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

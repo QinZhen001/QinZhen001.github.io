@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "原子化css"
-description: "本文整理了《原子化css》相关的核心知识点、实践经验与参考资料。"
+title:      "原子化 CSS 与 Tailwind CSS 实践总结"
+description: "围绕「原子化 CSS 与 Tailwind CSS 实践总结」梳理基础概念、关键属性、实践技巧和常见问题。"
 date:       2022-10-27 18:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

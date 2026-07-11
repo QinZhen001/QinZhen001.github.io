@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "深入理解line-height"
-description: "本文整理了《深入理解line-height》相关的核心知识点、实践经验与参考资料。"
+title:      "深入理解 line-height 行高机制"
+description: "围绕「深入理解 line-height 行高机制」梳理基础概念、关键属性、实践技巧和常见问题。"
 date:       2017-09-18 12:48:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

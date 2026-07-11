@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Node.js 基础与常用实践总结"
-description: "本文整理了《Node.js 基础与常用实践总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「Node.js 基础与常用实践总结」的基础概念、常用配置、实践场景和排查经验。"
 date:       2017-07-26 15:54:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

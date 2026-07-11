@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "后端基础知识：接口、服务与部署"
-description: "本文整理了《后端基础知识：接口、服务与部署》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「后端基础知识：接口、服务与部署」的基础概念、常用配置、实践场景和排查经验。"
 date:       2022-09-10 19:31:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

@@ -1,8 +1,7 @@
 ---
-
 layout:     post
 title:      "package.json 配置与工程化工具总结"
-description: "本文整理 package.json 字段配置、脚本机制以及 TypeDoc 等工程化工具实践。"
+description: "系统整理「package.json 配置与工程化工具总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2020-10-24 11:33:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "微前端与前端架构实践总结"
-description: "本文整理微前端架构、技术栈无关、子应用治理以及低代码平台设计等前端架构实践。"
+description: "围绕「微前端与前端架构实践总结」整理核心知识点、实践经验、常见问题和参考资料，便于持续查阅。"
 date:       2020-09-27 10:27:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "短小精悍css代码"
-description: "本文整理了《短小精悍css代码》相关的核心知识点、实践经验与参考资料。"
+title:      "CSS 实用代码片段与布局技巧总结"
+description: "围绕「CSS 实用代码片段与布局技巧总结」梳理基础概念、关键属性、实践技巧和常见问题。"
 date:       2018-07-23 21:07:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

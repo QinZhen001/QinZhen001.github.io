@@ -1,8 +1,7 @@
 ---
-
 layout:     post
 title:      "HTML 基础语法与语义化总结"
-description: "本文整理《HTML 基础语法与语义化总结》相关的核心知识点、实践经验与参考资料。"
+description: "围绕「HTML 基础语法与语义化总结」梳理基础概念、关键属性、实践技巧和常见问题。"
 date:       2019-10-09 17:33:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

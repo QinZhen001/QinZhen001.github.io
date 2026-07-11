@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "webpack常用的loader"
-description: "本文整理了《webpack常用的loader》相关的核心知识点、实践经验与参考资料。"
+title:      "Webpack Loader 机制与常用 Loader 总结"
+description: "系统整理「Webpack Loader 机制与常用 Loader 总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2018-03-21 16:29:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

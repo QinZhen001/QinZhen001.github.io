@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "JavaScript 重要基础与异步编程总结"
-description: "本文整理 JavaScript 语言基础、运行机制、异步编程和 RxJS 响应式编程等核心知识。"
+description: "系统整理「JavaScript 重要基础与异步编程总结」的语言特性、底层机制、代码示例和实践经验。"
 date:       2018-05-01 16:14:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

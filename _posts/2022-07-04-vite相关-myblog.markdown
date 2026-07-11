@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Vite 原理、配置与工程实践"
-description: "本文整理了《Vite 原理、配置与工程实践》相关的核心知识点、实践经验与参考资料。"
+title:      "Vite 原理、配置与工程实践总结"
+description: "系统整理「Vite 原理、配置与工程实践总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2022-07-04 19:49:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

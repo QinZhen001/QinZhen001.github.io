@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "搞一个基于原生小程序的框架"
-description: "本文整理了《搞一个基于原生小程序的框架》相关的核心知识点、实践经验与参考资料。"
+title:      "从零实现一个原生小程序框架"
+description: "系统整理「从零实现一个原生小程序框架」的核心概念、工程实践、常见问题和项目经验。"
 date:       2019-04-29 11:05:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

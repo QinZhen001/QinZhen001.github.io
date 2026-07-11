@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "MongoDB 基础与使用总结"
-description: "本文整理《MongoDB 基础与使用总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「MongoDB 基础与使用总结」的基础概念、常用配置、实践场景和排查经验。"
 date:       2018-01-05 22:57:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

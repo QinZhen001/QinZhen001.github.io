@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Vue原理"
-description: "本文整理了《Vue原理》相关的核心知识点、实践经验与参考资料。"
+title:      "Vue 响应式原理与渲染机制总结"
+description: "系统整理「Vue 响应式原理与渲染机制总结」的核心概念、工程实践、常见问题和项目经验。"
 date:       2017-12-22 12:45:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

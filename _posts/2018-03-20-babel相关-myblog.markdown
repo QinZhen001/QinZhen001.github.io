@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Babel 编译原理与配置实践总结"
-description: "本文整理《Babel 编译原理与配置实践总结》相关的核心知识点、实践经验与参考资料。"
+title:      "Babel 配置、插件与转译原理总结"
+description: "系统整理「Babel 配置、插件与转译原理总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2018-03-20 22:54:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

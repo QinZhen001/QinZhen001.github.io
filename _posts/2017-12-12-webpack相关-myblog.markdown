@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Webpack 核心概念、配置与优化总结"
-description: "本文整理了《Webpack 核心概念、配置与优化总结》相关的核心知识点、实践经验与参考资料。"
+description: "系统整理「Webpack 核心概念、配置与优化总结」的配置方法、工作机制、工程实践和常见问题。"
 date:       2017-12-12 14:34:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

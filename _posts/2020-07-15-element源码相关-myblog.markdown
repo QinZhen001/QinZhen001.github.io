@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Element 源码阅读与组件实现总结"
-description: "本文整理《Element 源码阅读与组件实现总结》相关的核心知识点、实践经验与参考资料。"
+description: "围绕「Element 源码阅读与组件实现总结」整理核心知识点、实践经验、常见问题和参考资料，便于持续查阅。"
 date:       2020-07-15 16:44:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

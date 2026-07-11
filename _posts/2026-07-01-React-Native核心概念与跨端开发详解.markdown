@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "React Native详解"
+title:      "React Native 核心概念与跨端开发详解"
+description: "系统整理「React Native 核心概念与跨端开发详解」的核心概念、工程实践、常见问题和项目经验。"
 date:       2026-07-01 23:46:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

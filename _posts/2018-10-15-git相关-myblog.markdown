@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Git 常用命令与协作实践总结"
-description: "本文整理《Git 常用命令与协作实践总结》相关的核心知识点、实践经验与参考资料。"
+title:      "Git 工作流与常用命令总结"
+description: "围绕「Git 工作流与常用命令总结」整理核心知识点、实践经验、常见问题和参考资料，便于持续查阅。"
 date:       2018-10-15 23:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

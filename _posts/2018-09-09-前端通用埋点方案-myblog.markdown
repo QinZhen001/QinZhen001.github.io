@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "前端通用埋点方案"
-description: "本文整理了《前端通用埋点方案》相关的核心知识点、实践经验与参考资料。"
+description: "围绕「前端通用埋点方案」整理核心知识点、实践经验、常见问题和参考资料，便于持续查阅。"
 date:       2018-09-09 13:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
