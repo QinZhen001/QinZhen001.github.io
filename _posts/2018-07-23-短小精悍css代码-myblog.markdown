@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "短小精悍css代码"
+description: "本文整理了《短小精悍css代码》相关的核心知识点、实践经验与参考资料。"
 date:       2018-07-23 21:07:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

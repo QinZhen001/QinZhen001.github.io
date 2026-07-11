@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "Property和Attribute的区别"
+description: "本文整理了《Property和Attribute的区别》相关的核心知识点、实践经验与参考资料。"
 date:       2017-12-17 19:37:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

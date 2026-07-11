@@ -1,13 +1,15 @@
 ---
 
 layout:     post
-title:      "package配置相关"
+title:      "package.json 配置与工程化工具总结"
+description: "本文整理 package.json 字段配置、脚本机制以及 TypeDoc 等工程化工具实践。"
 date:       2020-10-24 11:33:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
     - Package
+    - 工程化
 ---
 
 > “Yeah It's on. ”
@@ -411,3 +413,89 @@ The `"style"` attribute in package.json is useful for importing CSS packages. He
 
 package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 json 的结构，会发现与 node_modules 目录的文件层级结构是一一对应的。
 
+---
+
+## TypeDoc 文档生成实践
+
+> 原文：TypeDoc 文档生成实践（2023-10-27 18:06:00）
+
+# typedoc 
+
+[https://typedoc.org/guides/overview/](https://typedoc.org/guides/overview/)
+
+TypeDoc 是 TypeScript 的文档生成器，是一个读取 TypeScript 源文件的工具
+
+
+
+## 使用
+
+```json
+ // pacakage.json
+ 
+ "scripts": {
+    "doc": "typedoc"
+  },
+```
+
+
+
+```json
+// typedoc.json
+
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "out": "docs",
+  "entryPoints": ["src/modules/callApi/index.ts"],
+  "exclude": [],
+  "disableSources": true,  // 重要
+  "includeVersion": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "hideGenerator": true
+}
+```
+
+$schema 键是一个可选属性，TypeDoc 将忽略它，但在 VSCode 和其他支持 JSON 架构的编辑器中编辑文件时将提供自动完成和键验证。
+
+disableSources: true
+
+TypeDoc 的 output 默认带上了每个api的Defined来自的地方，看起来非常的不干净，disableSources可以干掉Defined相关的东西
+
+[Disable "Defined in:"](https://github.com/TypeStrong/typedoc/issues/808)
+
+
+
+
+
+## 问题 
+
+
+
+### not supported in watch mode
+
+```bash
+"doc:watch": "typedoc --watch"
+```
+
+报错 error:
+
+```bash
+[error] The provided tsconfig file looks like a solution style tsconfig, which is not supported in watch mode
+```
+
+在使用 TypeDoc 生成文档时，如果你的项目使用了 TypeScript 的项目引用，你需要手动处理每个子项目的文档生成，或使用脚本来协调这些任务。TypeDoc 目前不支持监视模式，你可以使用 `nodemon` 这样的工具来监视文件变化并在变化时运行生成文档的脚本。通过这些方法，你可以在项目引用的环境中生成 TypeDoc 文档。
+
+---
+
+TypeScript 的项目引用:
+
+```ts
+// tsconfig.json
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+```

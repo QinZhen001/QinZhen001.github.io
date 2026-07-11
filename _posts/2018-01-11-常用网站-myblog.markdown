@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "常用网站"
-date:       2018-01-07 17:05:00
+description: "本文整理了《常用网站》相关的核心知识点、实践经验与参考资料。"
+date:       2018-01-11 17:05:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - 工具
 ---
 
 > “Yeah It's on. ”

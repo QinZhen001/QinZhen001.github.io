@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "lerna相关"
+title:      "Lerna Monorepo 管理实践总结"
+description: "本文整理《Lerna Monorepo 管理实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2020-01-17 14:22:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - 前端工程化
 ---
 
 > “Yeah It's on. ”

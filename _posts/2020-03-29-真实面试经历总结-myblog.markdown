@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "真实面试经历总结"
+description: "本文整理了《真实面试经历总结》相关的核心知识点、实践经验与参考资料。"
 date:       2020-03-29 14:23:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

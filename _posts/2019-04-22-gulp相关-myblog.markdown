@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "gulp相关"
+title:      "Gulp 构建流程与插件实践总结"
+description: "本文整理《Gulp 构建流程与插件实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2019-04-22 10:43:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

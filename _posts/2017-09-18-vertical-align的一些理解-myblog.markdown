@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "vertical-align的一些理解"
+description: "本文整理了《vertical-align的一些理解》相关的核心知识点、实践经验与参考资料。"
 date:       2017-09-18 10:58:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

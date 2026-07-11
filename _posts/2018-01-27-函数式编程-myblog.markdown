@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "函数式编程"
+description: "本文整理了《函数式编程》相关的核心知识点、实践经验与参考资料。"
 date:       2018-01-27 22:34:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

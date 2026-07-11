@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "vue-router相关"
+title:      "Vue Router 路由机制与实践总结"
+description: "本文整理了《Vue Router 路由机制与实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2017-08-30 22:15:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

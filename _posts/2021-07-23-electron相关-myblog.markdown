@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "electron相关"
-date:       2021-04-05 14:57:00
+title:      "Electron 桌面应用开发总结"
+description: "本文整理《Electron 桌面应用开发总结》相关的核心知识点、实践经验与参考资料。"
+date:       2021-07-23 14:57:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Electron 
+    - Electron
 ---
 
 > “Yeah It's on. ”

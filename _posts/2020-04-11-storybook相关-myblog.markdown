@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "storybook相关"
+title:      "Storybook 组件文档与调试实践"
+description: "本文整理了《Storybook 组件文档与调试实践》相关的核心知识点、实践经验与参考资料。"
 date:       2020-04-11 16:20:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - 前端工程化
 ---
 
 > “Yeah It's on. ”

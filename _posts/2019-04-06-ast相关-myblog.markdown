@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "AST相关"
+title:      "AST 抽象语法树与前端工程实践"
+description: "本文整理了《AST 抽象语法树与前端工程实践》相关的核心知识点、实践经验与参考资料。"
 date:       2019-04-06 23:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

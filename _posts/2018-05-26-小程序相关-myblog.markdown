@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "小程序相关"
+title:      "小程序开发实践总结"
+description: "本文整理《小程序开发实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2018-05-26 23:25:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - 微信小程序
+    - 小程序
 ---
 
 > “Yeah It's on. ”

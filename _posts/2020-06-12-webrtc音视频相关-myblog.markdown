@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "webrtc音视频相关"
+title:      "WebRTC 音视频实践总结"
+description: "本文整理《WebRTC 音视频实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2020-06-12 19:16:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - WebRTC
 ---
 
 > “Yeah It's on. ”

@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "jquery相关"
+title:      "jQuery 常用知识点总结"
+description: "本文整理了《jQuery 常用知识点总结》相关的核心知识点、实践经验与参考资料。"
 date:       2018-03-05 15:46:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

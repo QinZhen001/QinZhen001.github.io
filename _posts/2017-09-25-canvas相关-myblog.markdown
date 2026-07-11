@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "canvas相关"
+title:      "Canvas 基础与常见应用总结"
+description: "本文整理了《Canvas 基础与常见应用总结》相关的核心知识点、实践经验与参考资料。"
 date:       2017-09-25 12:56:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

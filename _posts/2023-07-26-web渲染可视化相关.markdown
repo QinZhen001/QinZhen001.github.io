@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "web渲染可视化相关"
+title:      "Web 渲染与可视化实践总结"
+description: "本文整理《Web 渲染与可视化实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2023-07-26 20:32:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - 可视化
 ---
 
 > “Yeah It's on. ”

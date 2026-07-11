@@ -1,13 +1,14 @@
 ---
 
 layout:     post
-title:      "css扩展语言less和sass和scss相关"
+title:      "Less、Sass 与 SCSS 语法实践总结"
+description: "本文整理《Less、Sass 与 SCSS 语法实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2020-05-06 13:46:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "原子化css"
-date:       2022-10-13 18:06:00
+description: "本文整理了《原子化css》相关的核心知识点、实践经验与参考资料。"
+date:       2022-10-27 18:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

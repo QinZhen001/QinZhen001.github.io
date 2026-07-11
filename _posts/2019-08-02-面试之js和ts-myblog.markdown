@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "面试之js和ts"
+description: "本文整理了《面试之js和ts》相关的核心知识点、实践经验与参考资料。"
 date:       2019-08-02 11:22:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

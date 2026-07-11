@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "深入理解z-index"
+description: "本文整理了《深入理解z-index》相关的核心知识点、实践经验与参考资料。"
 date:       2017-10-19 23:27:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

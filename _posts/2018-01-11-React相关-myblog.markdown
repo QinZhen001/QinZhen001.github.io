@@ -1,7 +1,8 @@
 ---
 layout:     post
-title:      "React相关"
-date:       2018-01-07 13:59:00
+title:      "React 基础与组件实践总结"
+description: "本文整理《React 基础与组件实践总结》相关的核心知识点、实践经验与参考资料。"
+date:       2018-01-11 13:59:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true

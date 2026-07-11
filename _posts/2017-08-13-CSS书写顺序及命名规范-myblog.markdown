@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "CSS书写顺序及命名规范"
+description: "本文整理了《CSS书写顺序及命名规范》相关的核心知识点、实践经验与参考资料。"
 date:       2017-08-13 22:52:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Css
+    - CSS
 ---
 
 > “Yeah It's on. ”

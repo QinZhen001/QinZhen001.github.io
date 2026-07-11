@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "Vue原理"
+description: "本文整理了《Vue原理》相关的核心知识点、实践经验与参考资料。"
 date:       2017-12-22 12:45:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

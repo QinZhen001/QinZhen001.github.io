@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "npm常用的库"
+description: "本文整理了《npm常用的库》相关的核心知识点、实践经验与参考资料。"
 date:       2018-11-19 19:52:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

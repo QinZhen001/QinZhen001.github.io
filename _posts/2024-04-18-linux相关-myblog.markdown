@@ -1,6 +1,7 @@
 ---
 layout:     post
-title:      "linux相关"
+title:      "Linux 常用命令与环境配置总结"
+description: "本文整理《Linux 常用命令与环境配置总结》相关的核心知识点、实践经验与参考资料。"
 date:       2024-04-18 10:30:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"

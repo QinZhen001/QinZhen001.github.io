@@ -1,12 +1,13 @@
 ---
 layout:     post
-title:      "seo相关"
+title:      "SEO 基础与前端优化实践总结"
+description: "本文整理《SEO 基础与前端优化实践总结》相关的核心知识点、实践经验与参考资料。"
 date:       2020-05-07 10:21:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Other
+    - SEO
 ---
 
 > “Yeah It's on. ”

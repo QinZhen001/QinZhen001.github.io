@@ -1,7 +1,8 @@
 ---
 layout:     post
-title:      "git相关"
-date:       2018-09-23 23:06:00
+title:      "Git 常用命令与协作实践总结"
+description: "本文整理《Git 常用命令与协作实践总结》相关的核心知识点、实践经验与参考资料。"
+date:       2018-10-15 23:06:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true

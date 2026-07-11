@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "The First blog"
+description: "本文整理了《The First blog》相关的核心知识点、实践经验与参考资料。"
 subtitle:   " \"Hello World, Hello Blog\""
 date:       2017-07-21 18:44:00
 author:     "Qz"
