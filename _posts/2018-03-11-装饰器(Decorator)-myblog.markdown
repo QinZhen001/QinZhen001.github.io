@@ -7,12 +7,12 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - ES7
+    - JavaScript
 ---
 
 > “Yeah It's on. ”
 
-# 正文
+## 正文
 
 [网页链接](http://es6.ruanyifeng.com/#docs/decorator#%E7%B1%BB%E7%9A%84%E4%BF%AE%E9%A5%B0)
 
@@ -20,22 +20,16 @@ tags:
 
 [https://www.typescriptlang.org/docs/handbook/decorators.html#decorators](https://www.typescriptlang.org/docs/handbook/decorators.html#decorators)
 
-
-
 装饰器对类的行为的改变，是代码**编译**时发生的，而不是在运行时。这意味着，装饰器能在编译阶段运行代码。也就是说，装饰器本质就是编译时执行的函数。
 
 - 使用简单，易于理解
 - 在不改变原有代码情况下，扩展类属性和类方法
 - 是一个编译时执行的函数
 
-
-
-
-
-### 类的修饰
+#### 类的修饰
 
 许多面向对象的语言都有修饰器（Decorator）函数，用来修改类的行为。目前，有一个提案将这项功能，引入了 ECMAScript。
-```
+```js
 @testable
 class MyTestableClass {
   // ...
@@ -50,7 +44,7 @@ MyTestableClass.isTestable // true
 上面代码中，@testable就是一个修饰器。它修改了MyTestableClass这个类的行为，为它加上了静态属性isTestable。testable函数的参数target是MyTestableClass类本身。
 
 基本上，修饰器的行为就是下面这样。
-```
+```css
 @decorator
 class A {}
 
@@ -62,7 +56,7 @@ A = decorator(A) || A;
 
 也就是说，修饰器是一个对类进行处理的函数。修饰器函数的第一个参数，就是所要修饰的目标类。
 
-```
+```js
 function testable(target) {
   // ...
 }
@@ -141,8 +135,7 @@ let obj = new MyClass();
 obj.foo() // 'foo'
 ```
 
-
-### 类方法的修饰
+#### 类方法的修饰
 修饰器不仅可以修饰类，还可以修饰类的属性。
 ```ts
 class Person {
@@ -208,9 +201,7 @@ class Example {
 
 除了注释，修饰器还能用来类型检查。所以，对于类来说，这项功能相当有用。从长期来看，它将是 JavaScript 代码静态分析的重要工具。
 
-
-
-### 应用在react的connect中
+#### 应用在react的connect中
 际开发中，React 与 Redux 库结合使用时，常常需要写成下面这样。
 ```ts
 class MyReactComponent extends React.Component {}
@@ -228,10 +219,7 @@ export default class MyReactComponent extends React.Component {}
 1. npm install babel-plugin-transform-decorators-legacy --save-dev
 2. "plugins": ["transform-decorators-legacy"]
 
-
-
-
-### 装饰器不能用于函数
+#### 装饰器不能用于函数
 修饰器只能用于类和类的方法，不能用于函数，因为存在函数提升。
 ```ts
 var counter = 0;
@@ -278,7 +266,7 @@ function foo() {
 readOnly = require("some-decorator");
 ```
 
-### 写一个bound
+#### 写一个bound
 
 ```tsx
 const bound = (proto: any, propertyName: string, descriptor: PropertyDescriptor) => {
@@ -304,9 +292,7 @@ class I18nTranslate {
 }
 ```
 
-
-
-### 记录函数执行时间的装饰器
+#### 记录函数执行时间的装饰器
 
 实现：
 
@@ -355,11 +341,7 @@ let t = new Test()
 t.task()
 ```
 
-
-
-
-
-### 装饰器和注解的区别
+#### 装饰器和注解的区别
 
 [https://zhuanlan.zhihu.com/p/22277764](https://zhuanlan.zhihu.com/p/22277764)
 
@@ -390,15 +372,9 @@ myClass.annotations = [
 
 所有 Angular 中使用的 Decorator 都并不是真正作为 Decorator 使用，只是通过 Decorator + Reflect.metadata 的组合来模拟 Annotation 的功能。即附加元数据走的是 Reflect.metadata，该实现和 Decorator 本身并无联系。
 
+## 补充
 
-
-
-
-# 补充
-
-
-
-## 原理
+### 原理
 
 ```tsx
 function readonly(target, name, descriptor){
@@ -428,13 +404,7 @@ Object.defineProperty(Cat.prototype, 'meow', descriptor);
 
 ```
 
-
-
-
-
-
-
-## vite 中使用装饰器 
+### vite 中使用装饰器
 
 [https://zhuanlan.zhihu.com/p/417263788](https://zhuanlan.zhihu.com/p/417263788)
 
@@ -455,9 +425,7 @@ export default defineConfig({
 })
 ```
 
-
-
-## parameter-decorators
+### parameter-decorators
 
 ```ts
 class BugReport {
@@ -468,13 +436,11 @@ class BugReport {
 }
 ```
 
-默认情况下不支持 parameter decorators 需要使用 babel 插件 
+默认情况下不支持 parameter decorators 需要使用 babel 插件
 
 [https://www.npmjs.com/package/babel-plugin-parameter-decorator](https://www.npmjs.com/package/babel-plugin-parameter-decorator)
 
-
-
-## 依赖注入
+### 依赖注入
 
 [https://angular.cn/guide/dependency-injection](https://angular.cn/guide/dependency-injection)
 
@@ -484,9 +450,7 @@ DI 系统中存在两个主要角色：依赖使用者和依赖提供者。
 
 需要 用到 reflect-metadata 库
 
-
-
-## async function
+### async function
 
 [typescript decorator async function](https://juejin.cn/s/typescript%20decorator%20async%20function)
 
@@ -549,10 +513,6 @@ export const AsyncDecorator: MethodDecorator = (target, propertyKey, descriptor:
 }
 ```
 
-
-
-
-
-## 控制反转
+### 控制反转
 
 IOC（Inversion of Control， 控制反转）就是一个可以自动实例化具体类并且管理各对象之间关系的**容器**，有了这个自动化的容器，我们关注的就不是具体的关系，而是上升到只需关注抽象之间的关系，而且还可以省去手动实例化。

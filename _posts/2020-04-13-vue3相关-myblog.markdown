@@ -13,39 +13,23 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-# 前序
+## 前序
 
 [自己写的vue3基本使用](https://github.com/QinZhen001/test/tree/vue3)
 
 [vue api 查询 https://vuejs.org/api/](https://vuejs.org/api/)
 
-
-
-## Reflect 
-
-
+### Reflect
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect ]( https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect )
 
-
-
- 首先我们要了解一下，为什么会新添加这么一个全局对象？如果你看过Reflect的一些函数，你就会发现，这个对象上的方法基本上都可以从Object上面找到，找不到的那些，也是可以通过对对象命令式的操作去实现的；那么为什么还要新添加一个呢？ 
-
-
-
-
+ 首先我们要了解一下，为什么会新添加这么一个全局对象？如果你看过Reflect的一些函数，你就会发现，这个对象上的方法基本上都可以从Object上面找到，找不到的那些，也是可以通过对对象命令式的操作去实现的；那么为什么还要新添加一个呢？
 
 1. Reflect上面的一些方法并不是专门为对象设计的，比如Reflect.apply方法，它的参数是一个函数，如果使用Object.apply(func)会让人感觉很奇怪。
 
 2. 用一个单一的全局对象去存储这些方法，能够保持其它的JavaScript代码的整洁、干净。不然的话，这些方法可能是全局的，或者要通过原型来调用。
 
 3. 将一些命令式的操作如delete，in等使用函数来替代，这样做的目的是为了让代码更加好维护，更容易向下兼容；也避免出现更多的保留字。
-
-
-
-
 
 ```js
 Reflect.apply
@@ -64,30 +48,15 @@ Reflect.set
 Reflect.setPrototypeOf
 ```
 
-
-
-## Proxy基础
-
-
+### Proxy基础
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler ]( https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler )
 
-
-
 Proxy 对象用于定义基本操作的自定义行为（如属性查找，赋值，枚举，函数调用等），等同于在语言层面做出修改，所以属于一种“元编程”（meta programming），即对编程语言进行编程。
 
-
-
-
-# 正文
-
-
+## 正文
 
 [Vue3 的响应式和以前有什么区别?源码级别详细]( https://juejin.im/post/5e92d863f265da47e57fe065?utm_source=gold_browser_extension#heading-13 )
-
-
-
-
 
 而 Vue3 所使用的 Proxy，则是这样拦截的：
 
@@ -104,11 +73,7 @@ new Proxy(data, {
 
 但是 Proxy 更加强大的地方还在于 Proxy 除了 get 和 set，还可以拦截更多的操作符。
 
-
-
 ---
-
-
 
 先最小化的讲解一下响应式的原理，其实就是在 Proxy 第二个参数 `handler` 也就是[陷阱操作符](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler)中，拦截各种取值、赋值操作，依托 `track` 和 `trigger` 两个函数进行依赖收集和派发更新。
 
@@ -116,7 +81,7 @@ new Proxy(data, {
 
 `trigger` 用来在更新时触发依赖。
 
-### track
+#### track
 
 ```js
 function track(target: object, type: TrackOpTypes, key: unknown) {
@@ -134,7 +99,7 @@ function track(target: object, type: TrackOpTypes, key: unknown) {
 
 `type` 是本次收集的类型，也就是收集依赖的时候用来标识是什么类型的操作，比如上文依赖中的类型就是 `get`，这个后续会详细讲解。
 
-```
+```js
 key` 是指本次访问的是数据中的哪个 key，比如上文例子中收集依赖的 key 就是 `count
 ```
 
@@ -177,7 +142,7 @@ dep: {
 
 这样一层层的下去，就可以通过 `target` 找到 `count` 对应的更新函数 `effection` 了。
 
-### trigger
+#### trigger
 
 这里是最小化的实现，仅仅为了便于理解原理，实际上要复杂很多，
 
@@ -195,13 +160,7 @@ export function trigger(
 }
 ```
 
-
-
-
-
-### 应用程序初始化
-
-
+#### 应用程序初始化
 
 ```js
 // 在 Vue.js 3.0 中，初始化一个应用的方式如下
@@ -211,8 +170,6 @@ const app = createApp(App)
 app.mount('#app')
 
 ```
-
-
 
 ```js
 const createApp = ((...args) => {
@@ -227,15 +184,9 @@ const createApp = ((...args) => {
 })
 ```
 
-
-
-
-
-### diff
+#### diff
 
 [https://mp.weixin.qq.com/s/jW3-icYQaJVITCYi730iIw](https://mp.weixin.qq.com/s/jW3-icYQaJVITCYi730iIw)
-
-
 
 ```js
 // packages/runtime-core/src/renderer.ts
@@ -293,21 +244,11 @@ function getSequence(arr: number[]): number[] {
 
 `getSequence` 的作用就是找到那些不需要移动的元素，在遍历的过程中，我们可以直接跳过不进行其他操作。
 
-
-
 Vue3 通过拷贝一个数组，用来存储正确的结果，然后通过回溯赋值的方式解决了贪心 + 二分查找替换方式可能造成的值不正确的问题。
 
-
-
-
-
-### @vue/reactivity
+#### @vue/reactivity
 
 响应式的功能被封装在 `@vue/reactivity` 模块中，该模块为我们提供了一个 `reactive` 函数来创建响应式对象。
-
-
-
-
 
 ```jsx
 // packages/reactivity/src/reactive.ts
@@ -363,37 +304,17 @@ export const mutableHandlers: ProxyHandler<object> = {
 
 其中 `get` 和 `set` 捕获器是分别用于收集 effect 函数和触发 effect 函数的执行。
 
-
-
-
-
-
-
-
-
-
-
-
-
-### Vue 3 的 `$emit` 与 Vue 2 的 `$emit`
+#### Vue 3 的 `$emit` 与 Vue 2 的 `$emit`
 
 [https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension](https://juejin.cn/post/6938176673292484615?utm_source=gold_browser_extension)
 
 在 Vue 2 中 `$emit` 方法是 `Vue.prototype` 对象上的属性，而 Vue 3 上的 `$emit` 是组件实例上的一个属性，`instance.emit = emit.bind(null, instance)`。
 
-
-
-
-
-### watch vs watchEffect
+#### watch vs watchEffect
 
 [https://www.thisdot.co/blog/vue-3-composition-api-watch-and-watcheffect](https://www.thisdot.co/blog/vue-3-composition-api-watch-and-watcheffect)
 
-
-
-
-
-###  ref vs reactive
+####  ref vs reactive
 
 [ref vs reactive](https://stackoverflow.com/questions/61452458/ref-vs-reactive-in-vue-3)
 
@@ -402,32 +323,17 @@ export const mutableHandlers: ProxyHandler<object> = {
 - Since `reactive()` works for objects and `ref()` calls `reactive()`, objects work for both
 - BUT, `ref()` has a `.value` property for reassigning, `reactive()` does not have this and therefore CANNOT be reassigned
 
+### 优化
 
-
-
-
-
-
-## 优化
-
-
-
-
-
-### **Block Tree 和 PatchFlags**
-
+#### **Block Tree 和 PatchFlags**
 
 [https://zhuanlan.zhihu.com/p/150732926](https://zhuanlan.zhihu.com/p/150732926)
 
 vue3.0它通过编译阶段对静态模板的分析，编译生成了 Block tree。Block tree 是一个将模版基于动态节点指令切割的嵌套区块，每个区块内部的节点结构是固定的，而且每个区块只需要以一个 Array 来追踪自身包含的动态节点。**借助 Block tree，Vue.js 将 vnode 更新性能由与模版整体大小相关提升为与动态内容的数量相关**，这是一个非常大的性能突破。
 
-
-
 **Block 配合 PatchFlags 做到靶向更新**
 
-
-
-#### **v-for 的元素作为 Block**
+##### **v-for 的元素作为 Block**
 
 不仅 `v-if` 会让 `DOM` 结构不稳定，`v-for` 也会，但是 `v-for` 的情况稍微复杂一些。思考如下模板：
 
@@ -466,8 +372,6 @@ const nextBlock = {
 
 `prevBlcok` 中有四个动态节点，`nextBlock` 中有三个动态节点。这时候要如何进行 `Diff`？有的同学可能会说拿 `dynamicChildren` 进行传统 `Diff`，这是不对的，因为传统 `Diff` 的一个前置条件是同层级节点间的 `Diff`，但是 `dynamicChildren` 内的节点未必是同层级的，这一点我们之前就提到过。
 
-
-
 实际上我们只需要让 `v-for` 的元素也作为一个 `Block` 就可以了。这样无论 `v-for` 怎么变化，它始终都是一个 `Block`，这保证了结构稳定，无论 `v-for` 怎么变化，这颗 `Block Tree` 看上去都是：
 
 ```js
@@ -482,9 +386,7 @@ const block = {
 }
 ```
 
-
-
-#### **不稳定的 Fragment**
+##### **不稳定的 Fragment**
 
 刚刚我们使用一个 `Fragment` 并让它充当 `Block` 的角色解决了 `v-for` 元素所在层级的结构稳定，但我们来看一下这个 `Fragment` 本身：
 
@@ -521,8 +423,6 @@ const prevBlock = {
 
 我们发现，`Fragment` 这个 `Block` 仍然面临结构不稳定的情况，**所谓结构不稳定从结果上看指的是更新前后一个 `block` 的 `dynamicChildren` 中收集的动态节点数量或顺序的不一致**。这种不一致会导致我们没有办法直接进行靶向 `Diff`，怎么办呢？其实对于这种情况是没有办法的，我们只能抛弃 `dynamicChildren` 的 `Diff`，并回退到传统 `Diff`：即 `Diff` `Fragment` 的 `children` 而非 `dynamicChildren`。
 
-
-
 但需要注意的是 `Fragment` 的子节点(`children`)仍然可以是 `Block`：
 
 ```js
@@ -537,11 +437,7 @@ const block = {
 
 这样，对于 `<p>` 标签及其子代节点的 `Diff` 将恢复 `Block Tree` 的 `Diff` 模式。
 
-
-
-
-
-### 静态提升
+#### 静态提升
 
 `Vue3` 的 `Compiler` 如果开启了 `hoistStatic` 选项则会提升静态节点，或静态的属性，这可以减少创建 `VNode` 的消耗，如下模板所示：
 
@@ -574,9 +470,7 @@ function render() {
 
 ```
 
-
-
-#### **使用自定义指令的元素**
+##### **使用自定义指令的元素**
 
 实际上一个元素如果使用除 `v-pre/v-cloak` 之外的所有 `Vue` 原生提供的指令，都不会被提升，使用自定义指令也不会被提升，例如：
 
@@ -586,9 +480,7 @@ function render() {
 
 和使用 `key` 一样，会为这段模板对应的 `VNode` 打上 `NEED_PATCH` 标志。顺便讲一下手写渲染函数时如何应用自定义指令，自定义指令是一种运行时指令，与组件的生命周期类似，一个 `VNode` 对象也有它自己生命周期
 
- 
-
-### 手写高性能渲染函数
+#### 手写高性能渲染函数
 
 **几个需要记住的小点：**
 
@@ -602,9 +494,7 @@ render() {
 }
 ```
 
-
-
-### **Slot hint**
+#### **Slot hint**
 
 我们在“稳定的 Fragment”一节中提到了 `slot hint`，当我们为组件编写插槽内容时，为了告诉 runtime：“我们已经能够保证插槽内容的结构稳定”，则需要使用 `slot hint`：
 
@@ -624,11 +514,7 @@ render() {
 
 当然如果你不能保证这一点，或者觉得心智负担大，那么就不要写 `hint` 了。
 
-
-
-
-
-### EffectScope
+#### EffectScope
 
 [聊一聊 Effect Scope API](https://juejin.cn/post/7019241635942760455)
 
@@ -651,15 +537,9 @@ scope.run(() => {
 scope.stop()
 ```
 
+## 补充
 
-
-
-
-
-
-# 补充
-
-## vue3 放弃了 Object.defineProperty
+### vue3 放弃了 Object.defineProperty
 
 Object.defineProperty存在的问题
 
@@ -667,32 +547,20 @@ Object.defineProperty存在的问题
 2. 无法监听 **属性的添加和删除**
 3. 必须遍历对象的每个属性， 必须深层遍历嵌套的对象。`Object.defineProperty`是对对象属性的操作，所以需要对对象进行深度遍历去对属性进行操作。
 
-
-
-**为什么我们在使用vue2的时候，一样可以监听数组索引和长度的变更**? 
+**为什么我们在使用vue2的时候，一样可以监听数组索引和长度的变更**?
 
 我们只是说Object.defineProperty不能，并没说vue2.0不能。并不能说因为vue2.0使Object.defineProperty，vue2.0就不能监听数组内部属性的变化了。而vue2之所以能监听，是vue2.0对数组相关的方法或其他进行了重写。当然vue2.0中还是存在无法监听直接修改数组中某一项值和数组长度，如ar[0]=1, arr.length=12是无法监听的
 
-
-
-## vue-cli-plugin-commitlint
+### vue-cli-plugin-commitlint
 
 `vue-cli-plugin-commitlint` 是以 `vue` 插件的形式写的，可以执行 `vue add commitlint` 直接使用，如果不是 `vue` 的项目也可以根据下面的配置自行配置。
-
-
 
 1. 自动检测 `commit` 是否规范，不规范不允许提交
 2. 自动提示 `commit` 填写格式。不怕忘记规范怎么写
 3. 集成 `git add && git commit` 不需要执行两个命令
 4. 自动生成 `changelog`
 
-
-
-
-
-
-
-## Ref vs Reactive
+### Ref vs Reactive
 
 [https://vuejsdevelopers.com/2022/06/01/ref-vs-reactive/](https://vuejsdevelopers.com/2022/06/01/ref-vs-reactive/)
 
@@ -713,11 +581,7 @@ data.name === 'Peter Griffin' // true
 data.name.value === 'Peter Griffin' // false
 ```
 
-
-
 ----
-
-
 
 `ref` advantages:
 
@@ -730,13 +594,9 @@ data.name.value === 'Peter Griffin' // false
 - Consistency between JavaScript and template
 - Similar to Vue 2’s data object
 
-
-
 **I normally use `ref` as I find it more flexible.**
 
-
-
-## vue-tsc
+### vue-tsc
 
 [https://www.npmjs.com/package/vue-tsc](https://www.npmjs.com/package/vue-tsc)
 

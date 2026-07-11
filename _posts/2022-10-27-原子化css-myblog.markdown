@@ -12,23 +12,15 @@ tags:
 
 > “Yeah It's on. ”
 
-
-
 [重新构想原子化 CSS](https://antfu.me/posts/reimagine-atomic-css-zh)
 
+## tailwindcss
 
-
-# tailwindcss
-
-
-
-## tailwind-merge
+### tailwind-merge
 
 [https://www.npmjs.com/package/tailwind-merge](https://www.npmjs.com/package/tailwind-merge)
 
 Utility function to efficiently merge [Tailwind CSS](https://tailwindcss.com/) classes in JS without style conflicts.
-
-
 
 ```tsx
 import clsx from "clsx";
@@ -45,29 +37,17 @@ className={cn(
 )}
 ```
 
-
-
-
-
-## dark-mode
+### dark-mode
 
 [https://www.tailwindcss.cn/docs/dark-mode](https://www.tailwindcss.cn/docs/dark-mode)
 
-
-
-
-
-
-
-## Just-in-Time Mode
+### Just-in-Time Mode
 
 [https://v2.tailwindcss.com/docs/just-in-time-mode](https://v2.tailwindcss.com/docs/just-in-time-mode)
 
 Tailwind CSS v2.1 introduces a new just-in-time compiler for Tailwind CSS that generates your styles on-demand as you author your templates instead of generating everything in advance at initial build time.
 
-
-
-## postcss-preset-env
+### postcss-preset-env
 
 [https://www.npmjs.com/package/postcss-preset-env](https://www.npmjs.com/package/postcss-preset-env)
 
@@ -105,9 +85,7 @@ module.exports = {
 };
 ```
 
-
-
-## @tailwind
+### @tailwind
 
 ```css
 // tailwind.css
@@ -119,15 +97,9 @@ module.exports = {
 
 当你使用 Tailwind CSS 时，通常有一个构建工具（如 PostCSS）。在构建过程中，这些 `@tailwind` 指令会被处理并替换成对应的 CSS 规则。这样，你的最终 CSS 文件就包含了所需的所有样式，而不仅仅是你在 HTML 中显式使用的类。
 
+### 补充
 
-
-
-
-## 补充
-
-
-
-### group-hover
+#### group-hover
 
 这个类用于控制元素在其父元素为 `group` 类时的样式。
 
@@ -142,46 +114,34 @@ module.exports = {
 
 `group-hover:opacity-10` 这个类用于控制元素在其父元素为 `group` 类时的透明度表现。具体而言，它的作用是当你将鼠标悬停在包含 `group` 类的父元素上时，对应的子元素的透明度将变为 10%。
 
-
-
-# unocss
+## unocss
 
 [https://github.com/unocss/unocss](https://github.com/unocss/unocss)
 
-
-
-
-
-## **@unocss/inspector**
+### **@unocss/inspector**
 
 The inspector UI for UnoCSS. Ships with `unocss` and `@unocss/vite`.
-
-
 
 @unocss/vite 应该已经自带这个了  （无需额外安装）
 
 Visit `http://localhost:3000/__unocss` in your Vite dev server to see the inspector.
 
-就可以看到效果了 
+就可以看到效果了
 
-
-
-
-
-# css in js
+## css in js
 
 Ant Design 5.0放弃了跟随 antd 已久的 less 方案，转而拥抱 CSS-in-JS。
 
 - 更小的 BundleSize；
 - 不依赖任何插件的样式按需引入能力。
 
-## Emotion
+### Emotion
 
-[Emotion](https://emotion.sh/docs/introduction) 
+[Emotion](https://emotion.sh/docs/introduction)
 
 Emotion is a library designed for writing css styles with JavaScript
 
-###  react
+####  react
 
 ```tsx
 // .babelrc
@@ -204,11 +164,7 @@ const AnotherComponent = () =>
 <div css={{ textDecoration: 'underline' }}>Some text with an underline.</div>;
 ```
 
-
-
-
-
-### vite
+#### vite
 
 [https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react)
 
@@ -223,4 +179,3 @@ export default defineConfig({
   })],
 })
 ```
-

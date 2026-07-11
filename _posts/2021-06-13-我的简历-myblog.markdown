@@ -13,159 +13,179 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
-
-
-# 基础信息
+## 基础信息
 
 名字，性别，电话，邮箱，求职岗位，教育经历（略）
 
+## 个人技能
 
+- 扎实掌握 HTML / CSS / JavaScript / TypeScript，熟练运用常见页面布局方案
+- 熟练使用 Less / Sass / Tailwind CSS 等现代化样式工具
+- 熟悉 Vue / React / Next.js 及其核心实现原理，具备复杂前端应用开发能力
+- 熟悉主流 UI 组件库(Ant Design / Element UI / Radix UI / Vant)，熟悉 XYFlow 流式可视化编排及 Pixi.js 渲染引擎
+- 熟悉 Webpack / Rollup / Vite 构建工具，对前端组件化、工程化、自动化有深入理解
+- 熟悉 Babel 原理，具备 Babel 插件及 AST 工具开发经验
+- 熟悉 Node.js 在前端工程中的应用，有 Koa / Nest.js 等后端框架实践经验
+- 熟悉微信小程序及 Electron 桌面端开发
+- 了解 WebRTC 协议及音视频相关技术栈
+- 掌握基本算法与数据结构，了解常用设计模式
+- 了解后端开发相关技术：Go / Nginx / Docker / MySQL / Kubernetes
+- 关注 AI 前沿技术发展，有 AI 能力在业务场景中的落地实践经验，善于利用 AI 辅助开发工具提升研发效能与交付质量
 
-# 个人技能
+## **工作经历**
 
-- 掌握 html/css/js/ts 相关知识，掌握常⻅的⻚面布局方式
-- 掌握现代化css相关工具 less/sass/tailwind 等
-- 熟悉 node.js 在前端中的应用，熟悉koa/nest.js等框架
-- 熟悉微信小程序相关开发
-- 熟悉 electron 相关开发
-- 熟悉 vue/react/nextjs 相关，了解其关键实现原理
-- 熟悉常见的ui组件库: antd/element-ui/radix-ui/vant 等，熟悉xyflow流式可视化编排，熟悉Pixi.js 渲染引擎 
-- 熟悉 webpack, rollup 和 vite，对前端组件化，工程化，自动化有一定的理解
-- 熟悉 babel，写过 babel 插件和 ast 相关处理工具
-- 掌握基本的算法和数据结构，了解设计模式
-- 了解 web rtc，了解音视频相关知识 
-- 了解后端开发相关知识: go/nginx/docker/mysql/kubernetes等
+**2025.01 - 至今　腾讯音乐 TME · QQ音乐业务线 · 社区产品部　　Web 前端开发高级工程师**
 
+- 负责国际化产品 JOOX / WeSing 的 H5 及 Hippy 项目迭代开发
+- 负责玩法大仓 + Game SDK 在 WeSing App 的落地接入
+- 封装跨 App、跨平台的统一视频广告 SDK，编写配套 API 文档，供多业务方开箱即用
+- 推动 AI 能力在业务场景中的探索与落地，提升团队研发效能与交付质量
 
+**2021.04 - 2024.11　声网 Agora · 商业服务与交付中心（CSDC）　　Web 前端开发高级工程师**
 
-# **工作经历**
+- 负责教育场景 aPaaS（灵动课堂）、会议场景 aPaaS、KTV 合唱场景的核心开发，参与架构设计、协议制定与 API 文档编写，协助客户解决集成问题；参与灵动课堂 1.x → 2.0 升级，完成代码结构重构、性能优化与工作流改造
+- 负责 RTC Web 场景化 Demo 及开发者体验工具的设计与开发
+- 负责 AI Agent Playground 及 Graph Designer 可视化编排工具开发
+- 负责微信小程序音视频 SDK 的迭代更新与维护
+- 担任前端技术面试官，参与团队人才选拔
 
-2021.4 - 至今 声网 agora 商业服务与交付中心(CSDC)    web 前端开发高级工程师
+**2020.03 - 2021.03　晓教育集团 · 星火在线一对一事业部　　Web 前端开发工程师**
 
-* 负责教育场景 apaas (灵动课堂) / 会议场景 apaas / ktv合唱场景相关开发，参与架构设计，协议制定，api 文档编写，协助客户解决集成中的问题等。参与灵动课堂 1.x 升级 2.0，进行代码结构重构，性能优化，工作流改造。
-* 负责RTC web场景化和开发者体验工具开发
-* 负责 AI agent的playground 和 graph designer 开发
-* 负责微信小程序音视频sdk的迭代更新
-* 担任前端面试官
+- 负责 OP 运营管理系统的迭代开发与工作流优化
+- 基于 Element 组件库进行二次封装，配合设计师落地统一设计规范
+- 负责家长端公众号及移动端 H5 页面开发
+- 协助前端组长制定团队代码规范
 
-2020.3 - 2021.3 晓教育集团 星火在线一对一事业部    web 前端开发工程师
+**2019.03 - 2020.02　小黑屋科技有限公司　　Web 前端开发工程师**
 
-- 参与 op 运营管理系统迭代开发以及工作流优化
-- 配合设计师基于 element 组件库进行二次封装， 满足设计规范
-- 负责家长公众号以及移动端 h5 相关开发
-- 协助前端组长制定组内代码规范
+- 主导公司内部小程序框架的设计与开发
+- 开发矩阵小程序迁移工具及配套前端工程化工具链
+- 负责 Node.js 数据爬虫的开发与维护
+- 指导实习生完成日常需求开发
 
-2018.9 - 2020.2 小黑屋科技有限公司 web 前端开发工程师
+## 项目经历
 
-* 负责开发公司内部小程序框架
-* 负责开发矩阵小程序框架迁移工具，以及相关前端工作流开发
-* 负责开发 node 数据爬虫
-* 指导实习生完成日常需求
+### 玩法中台解决方案
 
+时间：2025.4 - 2025.11
 
+**项目背景：** 玩法是网赚、直播等业务的关键增长引擎，但以往玩法开发仅针对单一平台，跨平台适配成本高且存在大量重复开发。玩法中台提供统一的跨平台方案，使玩法能在全民K歌、QQ音乐、酷狗音乐、WeSing、JOOX等多个 App 间快速复用。玩法中台解决方案包含玩法大仓和玩法sdk。
 
-# 项目经历
+玩法大仓：
 
+**项目背景：** 多平台游戏玩法活动开发仓库，涵盖：礼物类玩法、博彩/抽奖类、小游戏类、经济类、节日活动类
 
+**核心工作**：
 
-## 教育场景 aPaas (灵动课堂) / 会议场景 aPaas
+* **多平台统一架构**：统一的开发/构建命令，降低多平台开发成本
+* **完善的公共库体系**：公共UI组件，公共资源（字体、图片、样式），公共工具函数等
+* **国际化支持 (i18n)**：集成 **Lingui v5** 国际化方案，自动化文案提取、AI 翻译、编译流程，基于 PostCSS 插件**RTL 布局适配**
 
-2021.4 - 至今     (ts + react + mobx  + electorn + agora rtc/rtm sdk)
+* **自研 tme-build 构建系统**：基于 Rspack/Webpack 5 双引擎，支持多项目并行构建
 
-https://doc.shengwang.cn/doc/flexible-classroom/javascript/landing-page
+**项目成果：**大仓统一管理 **80+** 个互动玩法项目，标准化研发流程，**一套代码多平台复用**，显著提升多人协作效率与产物质量，支撑玩法在多端快速迭代上线。性能优化显著，首屏加载时间 **<2s**，动画帧率稳定 **60fps**，支持多平台部署和国际化，服务日活数千万用户的直播互动场景，相比传统模式节省超 50% 开发工作量
 
-项目概述: vaPaaS 以解决共性问题的核心模型降低 SaaS 每次迭代的成本和效率问题，可以支持客户快速集成RTC到自主品牌的产品方案里，快速搭建出教育/会议场景，打通客户不同的业务流。同时又能保证客户业务数据自主掌控，构建私域流量。
+玩法sdk：
 
-项目成果:  
+**项目背景：**跨平台互动玩法基础能力 SDK，为玩法提供宿主环境无关的统一接口，兼容 Cocos 和 H5 技术栈，为歌房游戏、直播礼物、广告变现等业务线提供统一的原生通信、网络请求、支付、广告、UI 交互等基础能力。
 
-* monorepo 项目管理（先基于lerna 实现，后更改为pnpm），分层架构设计(rtc/rtm sdk => core/ui-kit/widget => classroom/meeting)
+技术栈：TypeScript + Rollup + Nx Monorepo + Jest + Protobuf
 
-* 基于 mobx 最佳实践重构 store(domain store 和 ui store)从网状结构变为树状结构，设计生命周期钩子，采用工厂模式针对不同场景创建不同 rootStore
+**核心工作**：
 
-* 设计统一错误处理机制，自定义Error对象，Logger采用装饰器模式区分等级/环境，结合 web worker 自动存入 IndexedDB。
+* **跨平台抽象层设计：** 通过统一的接口抽象 + 平台适配器模式，让业务代码无需关心底层平台差异
 
-* 支持 widget插件机制，支持使用者开发自定义widget或者使用官方提供的widget。
+- **JSBridge 通信层**：封装统一 Bridge 协议，抹平 iOS/Android 通信差异，端外环境自动降级
+- **请求与鉴权体系**：实现多网关自动切换、WebKey 401 自动刷新重试（含并发控制防重复刷新）、游客登录阻断策略，实现请求层零感知鉴权
+- **广告系统**：完成多种广告类型（激励/原生/Banner/插屏等）的加载-展示-上报全链路，处理多端事件回调顺序差异
+- **支付模块**： 封装下单流程，支持多种流水号类型
+- **UI 与场景适配**：封装多种UI 能力（用户名片、客户端键盘、礼物动画等），设计版本分级策略，按客户端版本渐进增强
 
-* 底层采用适配器模式同时支持 web 和 pc 平台，基于 async-await-retry 封装重试机制，基于mutex封装锁机制处理大量异步任务的情况。
+**项目成果：**SDK 已在 7 个 App 落地运行，实现一套玩法代码多平台复用，迁移跨平台项目成本降低 60% 以上，并提供轻量 Core 版，使得产物体积更小加载更快
 
-* 基于rc-component封装相基础UI库，利用Storybook调试和展示效果，参与花名册，投票器，白板，聊天等业务组件开发。
+### 统一广告 SDK
 
-* 工作流优化: webpack4 升级到 5，手动处理node polyfill，移除 cra 脚手架相关(create react app)，完全自己定制化，基于 lerna 进行子包公共依赖提升，配置 sideEffects，制定不同的静态资源压缩策略，重新设计 ts config，scripts 命令优化，提取   base webpack 配置，优化 babel相关 配置，按需引入 polyfill。
+时间：2025.6 - 2025.4
 
-* 利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts。
+**技术栈：** TypeScript + Rollup + JSBridge + Hippy + JCE 协议
 
-  
+**项目背景：** WeSing 和 JOOX 两款 App 的激励视频广告接入逻辑分散于各端（Web H5 / Hippy），维护成本高且上报口径不统一。设计并开发了跨 App、跨平台的统一广告 SDK，封装广告加载、展示、奖励领取、数据上报的完整生命周期，完善api文档，供各业务方开箱即用。
 
-## Create Agora App
+**核心工作：**
 
-2024.7 - 2024.8
+1. **跨平台分层架构** — 核心逻辑（状态机、上报、错误处理）抽象为平台无关层，平台层仅处理桥调用差异；Rollup 多入口构建支持 Tree-shaking，按需引入。
+2. **广告播放状态机** — 覆盖客户端回调的有限状态机，双标志位机制兼容事件乱序，确保 Promise 在各边界条件下正确 resolve/reject。
+3. **双轨数据上报** — 策略模式实现 JOOX / WeSing 两套上报策略，运行时按 App 标识自动切换，覆盖广告全链路节点。
+4. **性能优化** — Cookie 缓存 + memoize。iOS 端播放后自动预加载提升二次填充率。
+5. **错误与奖励机制** — 自定义AdError精确区分失败原因；奖励领取支持原生 / Web 双通道灵活切换。
 
-[https://github.com/AgoraIO-Community/create-agora-app](https://github.com/AgoraIO-Community/create-agora-app)
+**项目成果：**统一了 2 款 App、2 个平台的广告接入方案，覆盖 35+ 广告场景，业务接入成本从 ~3 天降至 1 天；对外 API 仅 loadAd/ showAd等核心方法，大幅降低使用门槛。
 
-Npm: [https://www.npmjs.com/package/create-agora-app](https://www.npmjs.com/package/create-agora-app)
+### 教育场景/会议场景 aPaaS
 
-Create Agora App 是Agora支持的创建 RTC  web应用程序的快捷方式，它提供了无需配置的现代构建设置，只需一行命令即可快速创建项目。
+时间：**2021.4 - 2024.11**
 
-* 支持yarn/pnpm/npm/bunx
-* 支持vanilla/vue/react/svelte的js/ts项目模版
-* 使用 github workflows 进行 npm 发包
+**技术栈：** TypeScript + React + MobX + Electron + Agora RTC/RTM SDK
 
+**项目概述：** 面向教育/会议场景的低代码 aPaaS 平台，支持客户快速集成 RTC 能力到自有产品中，快速搭建在线教室与会议应用，降低 SaaS 场景的迭代成本，同时保障客户业务数据自主可控。
 
+**核心工作：**
 
+1. **分层架构设计** — 基于 Monorepo 管理，设计三层架构（RTC/RTM SDK → Core/UI Kit/Widget → Classroom/Meeting），底层采用适配器模式同时支持 Web 和 Electron 平台。
+2. **状态管理重构** — 基于 MobX 最佳实践将 Store 从网状结构重构为树状结构（Domain Store + UI Store），设计生命周期钩子，通过工厂模式按场景创建不同 RootStore。
+3. **基础设施建设** — 统一错误处理机制 + 自定义 Error 对象；Logger 采用装饰器模式区分等级与环境，结合 Web Worker 自动存入 IndexedDB；封装 async-await-retry 重试机制与 mutex 锁机制处理高并发异步任务。
+4. **组件与插件体系** — 基于 rc-component 封装基础 UI 库，配合 Storybook 调试展示；设计 Widget 插件机制，支持业务方自定义扩展或直接使用官方 Widget。
+5. **工程化优化** — Webpack 4 → 5 升级，移除 cra 脚手架相关(create react app)， 实现完全自定义构建；Lerna 子包公共依赖提升、sideEffects 配置、静态资源分级压缩策略、Babel 按需 polyfill；通过 TypeDoc 输出 API 文档，TSC + Rollup Plugin 生成类型声明。
 
+### Create Agora App
 
+时间：**2024.7 - 2024.8**
 
+**技术栈：** TypeScript + Node.js + GitHub Workflows
 
-## AI Agent
+**项目概述：** Agora 官方支持的 RTC Web 应用脚手架工具，一行命令即可快速创建项目，零配置开箱即用。
 
-2024.3 - 至今
+**核心工作：**
+
+- 设计并实现 CLI 工具，支持 Yarn / pnpm / npm / Bun 多包管理器适配
+- 内置 Vanilla / Vue / React / Svelte 四大框架的 JS/TS 项目模板
+- 基于 GitHub Workflows 实现 npm 自动化发包流程
+
+### AI Agent Playground
+
+时间：**2024.3 - 2024.7**
+
+**技术栈：** TypeScript + Next.js + XYFlow + Web Audio API
 
 https://github.com/TEN-framework/ASTRA.ai
 
-Playground：[https://agent.theten.ai/](https://agent.theten.ai/)
+**项目概述：** Astra 是基于 TEN Platform 的开源多模态 AI Agent，支持语音交互、视觉识别与知识库检索（RAG）。Graph Designer 为其配套的可视化编排工具，通过拖拽方式构建复杂 AI 应用。
 
-Graph Designer：https://github.com/TEN-framework/graph-designer
+**核心工作：**
 
-Astra是一个开源的多模态 AI agent，可以说话、查看和访问知识库 (RAG)，基于TEN Platform。
+- 负责 Playground 页面搭建与移动端适配，提供 AI Agent 在线体验入口
+- 基于 Web Audio API（AudioContext / AnalyserNode）实现实时音频数据采集与可视化渲染
+- 使用 XYFlow 实现 Graph Designer 可视化工作流编排，支持自定义 Nodes / Edges 拖拽组装
+- 基于 Vitest 编写单元测试，保障数据处理与转换逻辑的正确性
 
-Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RAG 等，轻松构建复杂的 AI 应用程序。
-
-项目成果:  
-
-(ts + next.js + xyflow)
-
-* 负责playground 相关页面搭建以及移动端适配。    
-
-* 利用Audio Context/AnalyserNode/MediaElementAudioSourceNode等获取和处理音频数据，完成音频相关可视化。
-
-* graph-designer使用xyflow实现可视化工作流编排，支持Custom Nodes/Edges。
-
-* 使用vitest编写单元测试用例，保障数据处理/转换的正确性。
-
-  
-
-## 播放器
+### 播放器
 
 2022.1 - 2022.6  m3u8前端播放器
 
-（videojs + react + typescript）
+技术栈：videojs + react + typescript
 
 项目成果：
 
 1. 基于videojs二次封装，支持m3u8自动更新，支持自动加载策略，切片平滑过渡，可根据事件seek到指定进度。
 2. ui调整（进度条 控制栏 首帧海报 样式覆盖），基于videojs事件封装自己的事件，对外暴露控制播放器的api。
 
-
-
-## 音视频小程序sdk
+### 音视频小程序sdk
 
 2021.4 - 至今    音视频小程序sdk
 
  项目概述:  利用微信小程序 [live-player](https://developers.weixin.qq.com/miniprogram/dev/component/live-player.html) 和 [live-pusher](https://developers.weixin.qq.com/miniprogram/dev/component/live-pusher.html) 组件实现音视频通话
 
- 项目成果: 
+ 项目成果:
 
 * 分层架构设计(wx socket => worker => client)，解耦重构日志模块 (日志规范化，切片上传，支持客户自己收集保存日志或通过sdk api上传日志)
 * 支持以小程序原生npm方式集成sdk
@@ -173,60 +193,55 @@ Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RA
 * 协助文档组更新迭代官网api文档，迭代更新集成sdk的demo小程序。
 *  工作流优化: 依赖整理，支持开发环境和生产环境打包，将webpack改为rollup打包，体积优化190kb => 150+kb
 
+### web ktv 场景解决方案
 
+时间：**2023.1 - 2023.6**
 
-## web ktv 场景解决方案
+**技术栈：** TypeScript + Agora RTC SDK + WebAssembly + Canvas
 
-2023.1 - 2023.6  web ktv 场景解决方案
+**项目概述：** 基于 WebRTC SDK 与 WASM 实时人声音调检测模块，实现 Web 端 KTV 实时歌唱场景，支持 Canvas 逐帧绘制音调谱线、实时打分、Combo 激励动画等完整体验。
 
-项目概述:  利用web rtc sdk 和  wasm（实时监听人声声调）模块实现web端ktv实时歌唱场景，采用canvas逐帧绘制歌曲声调视图，当监听到主播端声调进行实时打分，分数满足条件时进行视图着色，combo激励动画等。
+**核心工作：**
 
- 项目成果：
+- **UI 层** — 开发歌词组件、打分组件、音调谱线、粒子效果、Combo 激励动画、等级视图等核心组件
+- **逻辑层 Engine** — 设计歌词解析器（Parser）、任务调度器（Scheduler）、分数计算器（Calculator）、声调转换器（PitchChanger）。封装 MessageHandler 实现主播端与观众端的歌词同步与进度校准
+- **性能优化与多端对齐** — Canvas 分层渲染优化绘制性能，与移动端对齐 API 设计与数据结构，基于 Vitest 编写单元测试保障打分逻辑及边界处理的多端一致性
 
-* 完成UI层（歌词组件，打分组件，激励动画，粒子效果，等级视图，音调谱线组件）等组件开发。
-* 完成逻辑层engine设计开发（包括歌词解析器Parser，任务调度器Scheduler，分数计算器Calculator，声调转换器PitchChanger等）。封装MessageHandler用于主播端和观众端同步歌词信息，进度校准等。
-* 进行canvas性能优化（分层渲染），和移动端对齐相关api设计，数据结构和单元测试用例等。
-* 使用vitest编写单元测试，保证在打分逻辑等一些边界处理上和移动端保持一致。
-
-
-
-## RangeEngine
+### RangeEngine
 
 2024.1 - 至今  RangeEngine
 
 项目概述: RangeEngine是一个基于位置信息和组队信息的音视频流管理模块，它可以让用户在元宇宙虚拟世界时不同的模式下订阅和取消订阅彼此的音视频流，实现更灵活和高效的音视频通信。
 
- 项目成果： 
+ 项目成果：
 
 * 完成RangeEngine SDK 的相关开发工作，实现地图/人物信息配置，实现有效半径可配置，用户位置采用高频/低频更新两种方式，定时更新当前人物的大/小地图信息。
 * 集成公司内部wasm模块SpatialAudioExtension 3D空间音频 和 AIDenoiserExtension ai降噪。
 * UI层实现地图动态渲染，人物移动渲染，自适应屏幕大小缩放，支持原生dom渲染和WebGL渲染(pixi.js)， 实现三种不同layout展示用户音视频列表
 * 工程化相关基于pnpm的monorepo架构，UI app可直接link workspace sdk开发测试，RangeEngine SDK采用rollup打包，对外支持 umd/commonjs/esmodule规范，利用typedoc输出api文档，通过 tsc 和 rollup plugin 生成 ts dts，配置external和peerDependencies减少包体积。
 
+### OP 运营管理系统
 
+时间：**2020.3 - 2021.3**
 
-## op 运营管理系统
+**技术栈：** Vue + Element UI + Webpack
 
-2020.3 - 2021.3 op 运营管理系统
+**项目概述：** B 端内部运营管理系统，服务老师、学规、学管、销售、教培、数据分析等多角色用户。
 
- (vue + element ui + webpack)
+**核心工作：**
 
- 项目概述: 一个 b 端内部运营管理系统，主要使用角色有老师，学规，学管，销售，教培，数据分析等。
+- 负责学规/学管工作台、老师海报编辑、课堂报告等核心模块开发，重构批量导入资源模块
+- 封装通用业务组件：Select（初始化回显 + 高级筛选）、Table（集成分页/索引/Tooltip）、Upload（扫码上传 + 剪贴板上传）
+- 参与权限控制、自定义指令、数据上报封装及系统组织架构模块调整开发
+- Webpack 构建优化：@antv 库拆包、配置缓存、移除 Moment 冗余语言包、整理依赖，编译时间从 90s 降至 70s，包体积减少约 15%
 
- 项目成果：
+### 家长公众号以及移动端 h5
 
-1. 负责学规工作台， 学管工作台， 老师海报编辑， 课堂报告等模块开发， 重构批量导入资源模块。
-2. 参与封装通用业务组件， 通用select组件 （支持初始化回显， 高级筛选）通用table组件（自带索引， 集成分⻚器组件， 文字超出隐藏， 鼠标悬浮显示tooltip等）通用上传组件 （支持扫码上传， 剪贴板复制上传等）。
-3. 参与权限控制，自定义上报自定义命令等封装，参与系统组织架构调整开发。
-4. 工程化优化：分析webpack编译速度以及打包体积， 将@antv相关库移出vendors， 配置cache， 移除moment其他语言包，整理项目依赖， 最终编译时间从1分30s降到1分10s， 体积减少近15%。
+时间：2020.3 - 2021.3
 
+家长公众号以及移动端 h5
 
-
-## 家长公众号以及移动端 h5
-
-2020.3 - 2021.3  家长公众号以及移动端 h5
-
-(vue + vant ui + webpack)
+技术栈：vue + vant ui + webpack
 
  项目成果:
 
@@ -234,65 +249,52 @@ Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RA
 2. 对复杂组件进行懒加载，基于vant组件库二次封装，同时适配部分h5⻚面在pc端的展示效果 。
 3. 基于webView jsBridge封装与app通信的相关函数。
 
+### 公司内部微信小程序框架
 
+时间：**2018.9 - 2020.2**
 
-## 公司内部微信小程序框架
+**技术栈：** 微信小程序api + Gulp + Node.js
 
-2018.9 - 2020.2  公司内部微信小程序框架
+**项目概述：** 因原生小程序 API 迭代频繁、主流框架难以满足公司业务快速迭代需求，从零设计开发内部小程序框架，集成团队沉淀的优化方案，支撑百万 DAU 级别小程序稳定运行。
 
- 项目概述: 由于原生微信小程序更新速度过快， 市面主流框架存在一些 bug， 难以胜任公司业务快速迭代，遂决定从零 开发公司自己的框架 ，集合公司内部沉淀下来的一些优化方案。
+**核心工作：**
 
- 项目成果: 
+- **网络层** — 封装统一请求模块，支持请求模式配置、拦截器、请求依赖、加密、重试机制等
+- **状态管理** — 实现轻量 Store，内部 Observer 监听数据变更自动触发 setData；针对大 Object 进行 diff 优化，减少 setData 数据量
+- **插件化架构** — 采用 IoC 模式实现插件机制，支持内置插件与自定义插件扩展
+- **基础能力增强** — 原生 wx API Promise 化、全局事件通信、长列表渲染优化、页面栈超 10 层问题解决、全局错误监控上报
+- **工程化体系** — 基于 Gulp + npm scripts 搭建工作流（文件监听、分环境打包、Less 预编译、静态资源压缩、精灵图自动生成与 CDN 上传）；结合内部 CLI 实现矩阵小程序切换，集成微信命令行工具支持命令行上传代码包；Husky 钩子 + ESLint 保障代码质量
 
-1. 实现网络请求封装 （请求模式， 请求配置， 拦截器， 请求依赖， 请求加密， 请求重试机制等）。
-2. 实现store对全局数据状态进行管理， 内部实现observer监听数据的变更自动setData更新⻚面。针对大的Object进行diff， 提高setData效率。
-3. 采用Ioc模式实现插件化机制， 可使用内部插件， 可自己编写插件。
-4. 实现全局错误监控上报机制。
-5. 对原生wx api进行promisefy化， 实现全局通信机制， 解决长列表数据加载渲染过慢问题， 解决小程序⻚面栈最多十层的问题等。
-6. 工作流搭建：使用gulp结合npm script搭建工作流， 实现文件监听， 分环境打包， 预编译， 支持less， 静态资源压缩， 配置eslint规则，正式环境将小图标集合自动转为精灵图， 同时将其上传至阿里云。结合内部cli工具，实现矩阵小程序系列切换，集成微信命令行工具，可使用命令上传代码包。利用husky钩子检查代码，保证提交到git代码的一致性。
+**项目成果：** 常规业务迭代从 4 人 4 天降至 4 人 2 天，支撑百万 DAU 小程序稳定运行。
 
-使用框架后，常规业务迭代从原来一星期4人4天降至3人2天，保证百万DAU级别的小程序稳定运行。
+### 数据爬虫
 
+**时间：**2018.9 - 2020.2
 
+**技术栈：** Koa  + PM2
 
-## 数据爬虫
+**项目概述：** 面向运营团队的自动化素材采集与管理系统，提升素材查找与编辑效率。
 
-2018.9 - 2020.2  数据爬虫
+**核心工作：**
 
-(koa + node-schedule + pm2)
+- 通过 Fiddler 抓包分析接口，设计并实现自动化采集流程（数据抓取 → 服务器存储 → JSON 信息生成 → COS 上传 → 水印处理 → 数据库入库），结合 node-schedule 实现定时任务调度，PM2 保障进程稳定运行
+- 开发后台素材管理页面，支持采集素材的可视化展示与二次编辑
 
-项目概述：为了方便运营同学查找素材和编辑素材，提高运营同学工作效率。
-
-项目成果：
-
-1. fiddler抓包分析接口，自动化复杂异步流程（抓取数据，存储服务器，生成json信息文件，上传腾讯云cos桶，添加水印，导入后端数据库，设置定时任务）。
-2. 负责后台系统中素材编辑的相关⻚面开发，使爬取下来的素材可以展示和二次编辑。
-
-
-
-# 个人评价
+## 个人评价
 
 积极乐观，保持良好的代码⻛格和编程习惯，对前端技术保持热情，希望加入技术氛围比较好的团队。
 
+## **个人作品**
 
-
-# **个人作品**
-
-* 我的博客: https://qinzhen001.github.io/ 
-* 算法系列: https://github.com/QinZhen001/leetcode 
+* 我的博客: https://qinzhen001.github.io/
+* 算法系列: https://github.com/QinZhen001/leetcode
 * 手写源码: https://github.com/QinZhen001/front-end-demo
 
-
-
-
-
-# 针对简历问问题
+## 针对简历问问题
 
 * 介绍一下叫你做过比较难的项目？难点在哪？你是怎么解决的？
 
-
-
-# 英语自我介绍
+## 英语自我介绍
 
 你好！我叫qinzhen，我今年28岁，我有着6年前端相关开发经验。我掌握 html/css/js/ts 相关知识，掌握主要的前端框架，像是 React, Vue.is，了解 web rtc，了解音视频相关知识，了解后端开发相关知识:，例如go/nginx/docker等。在过去的三年半时间里，我在agora担任前端开发工程师的岗位，主要负责rtc相关的web场景的开发，如在线教育，在线会议，在线ktv等。Agora是一家美国上市的公司，是实时音视频云计算PaaS平台服务提供商，在agora之前，我在一家名为星火教育的教育机构主要负责B端相关业务的开发，呆了大概一年多，开发了一些如一些CRM/OP 管理后台等。这就是我的基本介绍，谢谢！
 
@@ -300,13 +302,8 @@ Graph Designer 通过简单的拖放编程，集成视听工具、数据库、RA
 
 Hello! My name is Qinzhen, and I'm 29 years old. I've been working in front-end development for six years now, and I’ve accumulated a solid(/ˈsɑː.lɪd/) skill set along the way. I’m well-versed in HTML, CSS, JavaScript, and TypeScript, and I have a good grasp( */ɡræsp*/) of major frameworks like React and Vue.js. I also have some understanding of WebRTC and audio/video technologies, which has been quite useful in my projects. On top of that, I have some knowledge of back-end development tools like Node.js, Go, Nginx, and Docker.
 
-For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke! 
+For the past three and a half years, I’ve been working as a front-end developer(dɪˈveləpə) at Agora, where my primary(ˈpraɪməri) focus has been on developing web applications for real-time communication (RTC). This includes a variety(/vəˈraɪ.ə.t̬i/) of online scenarios(/sɪˈnɑː.ri.əʊ/) like online education, virtual meetings, and even online karaoke!
 
 Before joining Agora, I worked at a company called Xinghuo Education, where I was mainly involved in developing B2B solutions. My work there included creating CRM systems and operational management(ˈmanijmənt) dashboards. This experience gave me a solid(/ˈsɑː.lɪd/) foundation in understanding the needs of businesses.
 
 In summary,  I’m passionate(/ˈpæʃ.ən.ət) about what I do, and I’m always looking for new challenges and opportunities to grow. Thank you for taking the time to get to know me!
-
-
-
-
-

@@ -1,0 +1,1691 @@
+---
+layout:     post
+title:      "nestjs详解"
+date:       2026-06-01 16:46:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - 后端
+---
+
+> “Yeah It's on. ”
+
+
+
+## 正文
+
+### 一、NestJS 是什么
+
+官方文档：[https://docs.nestjs.com/](https://docs.nestjs.com/)
+
+Nest（NestJS）是一个用于构建高效、可扩展 Node.js 服务端应用的框架。它默认基于 Express，也可以切换为 Fastify；上层通过 TypeScript、装饰器、依赖注入、模块化和 AOP 风格的请求管线，给 Node.js 后端项目提供一套更接近企业级工程的应用架构。
+
+一句话概括：**Express / Koa 更像轻量 Web 库，NestJS 更像带工程架构约束的服务端应用框架**。
+
+#### 核心定位
+
+NestJS 解决的不是“如何监听 HTTP 请求”这个问题，而是更上层的问题：
+
+* 如何组织大型后端项目的模块边界；
+* 如何管理服务之间的依赖关系；
+* 如何统一校验、鉴权、日志、异常处理、响应包装等横切逻辑；
+* 如何在 HTTP、WebSocket、微服务、GraphQL 等多种传输层之间复用业务代码；
+* 如何让后端项目更容易测试、扩展和维护。
+
+官方文档对 Nest 的描述是：
+
+> Nest is a framework for building efficient, scalable Node.js server-side applications.
+
+它结合了：
+
+* OOP：类、继承、接口、抽象、封装；
+* FP：函数式组合、管道、拦截器中的流式处理；
+* FRP：基于 RxJS 的 Observable 支持；
+* Angular 风格：模块、装饰器、依赖注入、生命周期。
+
+
+
+可以这样理解：
+
+```txt
+你的业务代码
+Controller / Service / Module / Provider
+        ↓
+NestJS 应用架构层
+DI / Metadata / Pipe / Guard / Interceptor / Filter
+        ↓
+HTTP Adapter
+ExpressAdapter 或 FastifyAdapter
+        ↓
+Express 或 Fastify
+        ↓
+Node.js HTTP Server
+```
+
+
+
+层级	作用
+NestJS	负责模块化、依赖注入、装饰器、请求管线、异常处理
+Express / Fastify	负责底层 HTTP 路由、请求响应、监听端口
+Node.js http	负责真正的网络连接和 HTTP 协议处理
+
+
+
+
+
+### 二、快速开始与项目结构
+
+#### 快速开始
+
+安装 CLI：
+
+```bash
+npm i -g @nestjs/cli
+nest new project-name
+```
+
+最小启动入口：
+
+```ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+`NestFactory.create(AppModule)` 是整个应用的启动入口。Nest 会从根模块 `AppModule` 开始扫描模块图、实例化依赖、注册路由，最后交给底层 HTTP 适配器监听端口。
+
+#### 基本目录结构
+
+一个典型 Nest 项目大概是这样：
+
+```txt
+src
+├── main.ts
+├── app.module.ts
+├── app.controller.ts
+├── app.service.ts
+└── users
+    ├── users.module.ts
+    ├── users.controller.ts
+    ├── users.service.ts
+    ├── dto
+    │   ├── create-user.dto.ts
+    │   └── update-user.dto.ts
+    └── entities
+        └── user.entity.ts
+```
+
+常见分层：
+
+| 文件 | 作用 |
+|---|---|
+| `main.ts` | 应用启动入口 |
+| `*.module.ts` | 模块定义，组织 controllers、providers、imports、exports |
+| `*.controller.ts` | 接收请求、定义路由、处理入参和响应 |
+| `*.service.ts` | 业务逻辑，通常作为 Provider 被注入 |
+| `dto` | 请求/响应数据结构，常配合校验管道使用 |
+| `entity` | 数据库实体或领域模型 |
+
+#### DTO 和 Entity 的区别
+
+`DTO` 是 `Data Transfer Object`，也就是数据传输对象；`Entity` 是实体，通常表示数据库表结构或领域模型。
+
+| 对比项 | DTO | Entity |
+|---|---|---|
+| 关注点 | 接口入参 / 出参结构 | 数据库表结构 / 领域对象 |
+| 使用位置 | `Controller`、`Pipe`、接口边界 | `Service`、`Repository`、ORM |
+| 是否对应数据库 | 不一定 | 通常对应数据库表 |
+| 主要作用 | 限制、校验、转换外部输入 | 描述数据如何存储 |
+| 常见装饰器 | `class-validator` 的 `@IsString()`、`@IsEmail()` 等 | TypeORM 的 `@Entity()`、`@Column()` 等 |
+| 是否暴露给前端 | 可以作为请求 / 响应契约 | 不建议直接暴露完整 Entity |
+
+简单理解：**DTO 管接口传什么，Entity 管数据库存什么**。
+
+比如创建用户时，前端只需要传创建用户需要的字段：
+
+```ts
+export class CreateUserDto {
+  name: string;
+  email: string;
+  password: string;
+}
+```
+
+而数据库里的用户实体可能包含更多持久化相关字段：
+
+```ts
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  passwordHash: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+}
+```
+
+不要直接把 `Entity` 当成 `DTO` 使用，否则可能导致：
+
+* 前端传入不该传的字段，例如 `role: 'admin'`；
+* 响应中泄露敏感字段，例如 `passwordHash`；
+* 数据库结构变化影响接口契约。
+
+典型流程是：
+
+```txt
+请求 Body
+  ↓
+CreateUserDto 校验入参
+  ↓
+Service 处理业务逻辑
+  ↓
+User Entity 保存到数据库
+  ↓
+返回 Response DTO / 普通对象给前端
+```
+
+### 三、核心组成
+
+#### Controller：路由控制器
+
+Controller 负责处理请求和返回响应。Nest 使用装饰器把类和方法映射到路由。
+
+```ts
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  create(@Body() dto: CreateUserDto) {
+    return this.usersService.create(dto);
+  }
+
+  @Get()
+  findAll(@Query('keyword') keyword?: string) {
+    return this.usersService.findAll(keyword);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
+  }
+}
+```
+
+常用装饰器：
+
+| 装饰器 | 说明 |
+|---|---|
+| `@Controller('users')` | 声明控制器和路由前缀 |
+| `@Get()` / `@Post()` / `@Put()` / `@Delete()` | 声明 HTTP 方法 |
+| `@Param()` | 获取路径参数 |
+| `@Query()` | 获取查询参数 |
+| `@Body()` | 获取请求体 |
+| `@Headers()` | 获取请求头 |
+| `@Req()` / `@Res()` | 获取底层平台的 request / response 对象 |
+
+Nest 推荐使用标准返回方式：Controller 方法直接 `return` 数据，框架负责序列化、设置状态码、发送响应。只有在确实需要底层能力时才使用 `@Res()`，否则会降低平台无关性，也可能绕过拦截器等 Nest 特性。
+
+#### Provider 与 Service
+
+Provider 是 Nest 依赖注入系统可以管理的对象。最常见的 Provider 是 Service。
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+@Injectable()
+export class UsersService {
+  private readonly users = [];
+
+  create(dto: CreateUserDto) {
+    const user = { id: Date.now().toString(), ...dto };
+    this.users.push(user);
+    return user;
+  }
+
+  findAll(keyword?: string) {
+    if (!keyword) return this.users;
+    return this.users.filter(user => user.name.includes(keyword));
+  }
+
+  findOne(id: string) {
+    return this.users.find(user => user.id === id);
+  }
+
+  update(id: string, dto: UpdateUserDto) {
+    const user = this.findOne(id);
+    Object.assign(user, dto);
+    return user;
+  }
+
+  remove(id: string) {
+    const index = this.users.findIndex(user => user.id === id);
+    if (index >= 0) this.users.splice(index, 1);
+    return { success: true };
+  }
+}
+```
+
+`@Injectable()` 的核心作用是：告诉 Nest 这个类可以被 IoC 容器创建和注入。
+
+Controller 中通过构造函数声明依赖：
+
+```ts
+constructor(private readonly usersService: UsersService) {}
+```
+
+这不是 Controller 主动 `new UsersService()`，而是 Nest 容器根据类型元数据自动解析并注入实例。
+
+#### Module：模块系统
+
+Module 是 Nest 应用的组织单元。每个应用至少有一个根模块。
+
+```ts
+import { Module } from '@nestjs/common';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
+
+@Module({
+  controllers: [UsersController],
+  providers: [UsersService],
+  exports: [UsersService],
+})
+export class UsersModule {}
+```
+
+`@Module()` 的核心字段：
+
+| 字段 | 说明 |
+|---|---|
+| `imports` | 导入其他模块，获得其导出的 Provider |
+| `controllers` | 当前模块的控制器 |
+| `providers` | 当前模块内部注册的 Provider |
+| `exports` | 对外暴露的 Provider 或模块 |
+
+模块默认是封装的：一个 Provider 只有在当前模块注册，或者从被导入模块的 `exports` 中导出，才能被当前模块注入。
+
+根模块示例：
+
+```ts
+import { Module } from '@nestjs/common';
+import { UsersModule } from './users/users.module';
+
+@Module({
+  imports: [UsersModule],
+})
+export class AppModule {}
+```
+
+#### 动态模块
+
+动态模块用于在运行时根据配置创建模块和 Provider，常见于数据库模块、配置模块、SDK 模块。
+
+```ts
+import { DynamicModule, Module } from '@nestjs/common';
+
+@Module({})
+export class DatabaseModule {
+  static forRoot(options): DynamicModule {
+    return {
+      module: DatabaseModule,
+      providers: [
+        {
+          provide: 'DATABASE_OPTIONS',
+          useValue: options,
+        },
+        DatabaseService,
+      ],
+      exports: [DatabaseService],
+    };
+  }
+}
+```
+
+使用：
+
+```ts
+@Module({
+  imports: [
+    DatabaseModule.forRoot({
+      host: 'localhost',
+      port: 3306,
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+这也是 Nest 生态里大量 `Module.forRoot()`、`Module.forRootAsync()` API 的来源。
+
+#### 依赖注入机制
+
+Nest 的依赖注入能力主要来自三部分：
+
+1. TypeScript 装饰器；
+2. `reflect-metadata` 保存的运行时类型元数据；
+3. Nest 自己实现的 IoC 容器。
+
+例如：
+
+```ts
+@Injectable()
+export class AService {
+  constructor(private readonly bService: BService) {}
+}
+```
+
+当开启 `emitDecoratorMetadata` 后，TypeScript 会为构造函数参数生成类型元数据。Nest 在实例化 `AService` 时读取这些元数据，知道它依赖 `BService`，然后从容器里查找 `BService` 的实例。
+
+自定义 Provider：
+
+```ts
+const redisProvider = {
+  provide: 'REDIS_CLIENT',
+  useFactory: async () => {
+    const client = createRedisClient();
+    await client.connect();
+    return client;
+  },
+};
+```
+
+注入：
+
+```ts
+@Injectable()
+export class CacheService {
+  constructor(@Inject('REDIS_CLIENT') private readonly redisClient) {}
+}
+```
+
+Provider 常见形式：
+
+| 写法 | 场景 |
+|---|---|
+| `useClass` | 根据 token 使用某个类实现 |
+| `useValue` | 注入常量、配置、mock 对象 |
+| `useFactory` | 根据工厂函数动态创建实例 |
+| `useExisting` | 给已有 Provider 创建别名 |
+
+### 四、请求处理流程与 AOP 组件
+
+#### 请求生命周期
+
+一次 HTTP 请求进入 Nest 后，大体顺序如下：
+
+```txt
+Request
+  ↓
+Middleware
+  ↓
+Guards
+  ↓
+Interceptors before
+  ↓
+Pipes
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Interceptors after
+  ↓
+Response
+```
+
+异常流程：
+
+```txt
+Exception
+  ↓
+Exception Filters
+  ↓
+Error Response
+```
+
+不同组件职责：
+
+| 组件 | 执行阶段 | 主要用途 |
+|---|---|---|
+| Middleware | 最早 | 日志、请求预处理、挂载上下文 |
+| Guard | Controller 前 | 鉴权、权限判断、访问控制 |
+| Interceptor | Controller 前后 | 日志、缓存、响应包装、超时、流转换 |
+| Pipe | Controller 参数进入前 | 参数转换、DTO 校验 |
+| Controller | 业务入口 | 路由处理 |
+| Service | Controller 内部调用 | 业务逻辑 |
+| Exception Filter | 异常时 | 统一异常响应 |
+
+#### Middleware
+
+Middleware 更接近 Express / Koa 中间件，适合处理底层请求预处理。
+
+```ts
+import { Injectable, NestMiddleware } from '@nestjs/common';
+
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req, res, next: () => void) {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+  }
+}
+```
+
+注册：
+
+```ts
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+
+@Module({})
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
+```
+
+#### Pipe：参数转换和校验
+
+Pipe 常用于 DTO 校验、类型转换、参数规范化。
+
+DTO：
+
+```ts
+import { IsInt, IsString, Min } from 'class-validator';
+
+export class CreateUserDto {
+  @IsString()
+  name: string;
+
+  @IsInt()
+  @Min(0)
+  age: number;
+}
+```
+
+全局启用校验：
+
+```ts
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: true,
+  }),
+);
+```
+
+参数级 Pipe：
+
+```ts
+@Get(':id')
+findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.usersService.findOne(id);
+}
+```
+
+#### Guard：鉴权和权限控制
+
+Guard 决定请求是否可以继续执行。
+
+```ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    return Boolean(request.headers.authorization);
+  }
+}
+```
+
+使用：
+
+```ts
+@UseGuards(AuthGuard)
+@Get('profile')
+profile() {
+  return { username: 'qz' };
+}
+```
+
+#### Interceptor：拦截器
+
+Interceptor 是 Nest 中非常重要的 AOP 扩展点。它可以包裹 Controller 方法，在执行前后统一处理逻辑。
+
+```ts
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { map, Observable } from 'rxjs';
+
+@Injectable()
+export class ResponseInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      map(data => ({
+        code: 0,
+        message: 'success',
+        data,
+      })),
+    );
+  }
+}
+```
+
+全局注册：
+
+```ts
+app.useGlobalInterceptors(new ResponseInterceptor());
+```
+
+#### Exception Filter：异常过滤器
+
+异常过滤器用于统一异常格式。
+
+```ts
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
+    const status = exception.getStatus();
+
+    response.status(status).json({
+      code: status,
+      message: exception.message,
+      path: request.url,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
+```
+
+#### 生命周期钩子
+
+Nest 支持模块和应用级生命周期事件。
+
+常见钩子：
+
+| 钩子 | 时机 |
+|---|---|
+| `onModuleInit()` | 当前模块依赖初始化完成后 |
+| `onApplicationBootstrap()` | 所有模块初始化完成后，开始监听前 |
+| `onModuleDestroy()` | 模块销毁时 |
+| `beforeApplicationShutdown()` | 应用关闭前 |
+| `onApplicationShutdown()` | 应用关闭时 |
+
+示例：
+
+```ts
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+
+@Injectable()
+export class RedisService implements OnModuleInit, OnModuleDestroy {
+  async onModuleInit() {
+    await this.connect();
+  }
+
+  async onModuleDestroy() {
+    await this.disconnect();
+  }
+}
+```
+
+如果需要监听系统信号：
+
+```ts
+app.enableShutdownHooks();
+```
+
+### 五、架构原理与源码分析
+
+#### NestJS 架构原理
+
+Nest 的核心架构可以理解为：
+
+```txt
+Decorators Metadata
+        ↓
+DependenciesScanner 扫描模块图
+        ↓
+NestContainer 保存模块、Provider、Controller
+        ↓
+InstanceLoader / Injector 实例化依赖
+        ↓
+RouterExplorer 扫描 Controller 路由
+        ↓
+HTTP Adapter 绑定到底层 Express / Fastify
+        ↓
+请求进入 Middleware / Guard / Pipe / Interceptor / Filter 管线
+```
+
+也就是说，Nest 不是替代 Express / Fastify 的底层 HTTP 能力，而是在它们之上增加：
+
+* 模块系统；
+* DI 容器；
+* 装饰器元数据；
+* 请求执行上下文；
+* 跨平台适配器；
+* AOP 风格扩展点。
+
+#### 源码分析：启动流程
+
+源码入口：`@nestjs/core/nest-factory.ts`
+
+典型调用：
+
+```ts
+const app = await NestFactory.create(AppModule);
+```
+
+内部核心流程大概是：
+
+```txt
+NestFactory.create(AppModule)
+  ↓
+创建 ApplicationConfig
+  ↓
+创建 NestContainer
+  ↓
+创建 GraphInspector
+  ↓
+创建 HTTP Adapter，默认 ExpressAdapter
+  ↓
+initialize()
+  ↓
+创建 Injector
+  ↓
+创建 InstanceLoader
+  ↓
+创建 DependenciesScanner
+  ↓
+dependenciesScanner.scan(AppModule)
+  ↓
+instanceLoader.createInstancesOfDependencies()
+  ↓
+dependenciesScanner.applyApplicationProviders()
+  ↓
+new NestApplication(...)
+```
+
+核心点：
+
+* `NestFactory` 是启动门面，负责组装容器、扫描器、注入器和应用实例；
+* `create()` 默认创建 Express adapter，如果传入 Fastify adapter，则切换到底层 Fastify；
+* `initialize()` 中真正完成模块扫描和依赖实例化；
+* 初始化完成后返回 `NestApplication`，再通过 `app.listen()` 启动 HTTP 服务。
+
+#### 源码分析：模块扫描
+
+源码入口：`@nestjs/core/scanner.ts`
+
+核心类：`DependenciesScanner`
+
+`scan()` 的主要工作：
+
+```txt
+registerCoreModule()
+  ↓
+scanForModules()
+  ↓
+scanModulesForDependencies()
+  ↓
+addScopedEnhancersMetadata()
+  ↓
+calculateModulesDistance()
+  ↓
+container.bindGlobalScope()
+```
+
+模块扫描时，Nest 会读取 `@Module()` 装饰器写入的元数据：
+
+* `imports`
+* `providers`
+* `controllers`
+* `exports`
+
+核心方法：
+
+| 方法 | 作用 |
+|---|---|
+| `scanForModules()` | 递归扫描模块树，处理 `imports` 和动态模块 |
+| `reflectImports()` | 读取并注册导入模块 |
+| `reflectProviders()` | 读取并注册 Provider |
+| `reflectControllers()` | 读取并注册 Controller |
+| `reflectExports()` | 读取并注册导出项 |
+| `reflectInjectables()` | 扫描 Guard、Interceptor、Pipe、Filter 等增强器 |
+
+这说明 Nest 的模块系统本质上是：**装饰器元数据 + 递归扫描 + 容器注册**。
+
+#### 源码分析：容器结构
+
+源码入口：`@nestjs/core/injector/container.ts`
+
+核心类：`NestContainer`
+
+它主要保存：
+
+```txt
+NestContainer
+├── modules: ModulesContainer
+├── dynamicModulesMetadata: Map
+├── globalModules: Set
+├── internalProvidersStorage
+└── moduleCompiler
+```
+
+重要职责：
+
+| 方法 | 作用 |
+|---|---|
+| `addModule()` | 编译模块 token，并把模块加入容器 |
+| `addProvider()` | 把 Provider 加入对应模块 |
+| `addController()` | 把 Controller 加入对应模块 |
+| `addImport()` | 建立模块之间的导入关系 |
+| `addExportedProviderOrModule()` | 记录模块导出项 |
+| `addDynamicMetadata()` | 保存动态模块元数据 |
+| `bindGlobalScope()` | 把全局模块绑定到其他模块 |
+
+在容器里，每个模块通常会持有：
+
+* `providers`
+* `controllers`
+* `imports`
+* `exports`
+* `injectables`
+* `middlewares`
+
+所以 Nest 的依赖解析并不是全局随便找，而是沿着模块的 `providers`、`imports`、`exports` 关系查找。
+
+#### 源码分析：依赖实例化
+
+源码入口：`@nestjs/core/injector/injector.ts`
+
+核心类：`Injector`
+
+核心流程：
+
+```txt
+loadProvider()
+  ↓
+loadInstance()
+  ↓
+resolveConstructorParams()
+  ↓
+resolveSingleParam()
+  ↓
+resolveComponentWrapper()
+  ↓
+lookupComponent()
+  ↓
+lookupComponentInImports()
+  ↓
+instantiateClass()
+```
+
+实例化一个 Provider 时，Nest 会：
+
+1. 读取构造函数参数类型；
+2. 根据 token 在当前模块的 `providers` 中查找；
+3. 如果当前模块没有，沿着 `imports` 查找被导出的 Provider；
+4. 先递归实例化依赖；
+5. 再调用构造函数创建当前实例；
+6. 处理属性注入；
+7. 根据作用域缓存实例。
+
+伪代码可以理解为：
+
+```ts
+function createInstance(ClassRef) {
+  const deps = Reflect.getMetadata('design:paramtypes', ClassRef);
+  const args = deps.map(dep => container.get(dep));
+  return new ClassRef(...args);
+}
+```
+
+实际源码比这个复杂得多，因为还要处理：
+
+* `useFactory` 异步工厂；
+* `useValue`、`useClass`、`useExisting`；
+* `@Inject()` 自定义 token；
+* `@Optional()` 可选依赖；
+* `forwardRef()` 循环依赖；
+* 单例、请求级、瞬态作用域；
+* 请求上下文 `ContextId`；
+* 属性注入；
+* 全局增强器。
+
+#### 源码分析：路由注册
+
+源码入口：`@nestjs/core/router/router-explorer.ts`
+
+核心类：`RouterExplorer`
+
+核心流程：
+
+```txt
+RouterExplorer.explore()
+  ↓
+PathsExplorer.scanForPaths(controllerInstance)
+  ↓
+读取 @Controller() 和 @Get() / @Post() 等元数据
+  ↓
+创建 RouterExecutionContext
+  ↓
+创建异常代理 RouterProxy
+  ↓
+通过 RouterMethodFactory 获取 adapter.get/post/put/delete
+  ↓
+routerMethodRef(path, routeHandler)
+```
+
+它会把 Controller 方法转换成底层平台可识别的路由处理函数。
+
+例如：
+
+```ts
+@Controller('users')
+export class UsersController {
+  @Get(':id')
+  findOne() {}
+}
+```
+
+最终会被转换为类似：
+
+```ts
+expressRouter.get('/users/:id', wrappedHandler);
+```
+
+这里的 `wrappedHandler` 不是原始 `findOne`，而是被 Nest 包装后的执行函数，里面包含：
+
+* Guard 执行；
+* Pipe 参数处理；
+* Interceptor 洋葱模型；
+* Exception Filter 异常处理；
+* 请求作用域 Provider 创建；
+* 响应结果处理。
+
+#### 源码分析：装饰器本质
+
+以 Controller 为例，装饰器本身并不直接注册路由，它只是写入元数据。
+
+可以简单理解为：
+
+```ts
+function Controller(path: string): ClassDecorator {
+  return target => {
+    Reflect.defineMetadata('path', path, target);
+  };
+}
+
+function Get(path = ''): MethodDecorator {
+  return (target, key, descriptor) => {
+    Reflect.defineMetadata('method', 'GET', descriptor.value);
+    Reflect.defineMetadata('path', path, descriptor.value);
+  };
+}
+```
+
+真正的注册动作发生在启动阶段：Nest 扫描这些元数据，然后调用底层 adapter 注册路由。
+
+所以 Nest 的核心设计是：
+
+```txt
+编写阶段：装饰器声明意图
+启动阶段：扫描元数据构建应用图
+运行阶段：根据应用图处理请求
+```
+
+#### 源码分析：HTTP Adapter
+
+Nest 默认基于 Express，但可以切换 Fastify：
+
+```ts
+import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+
+const app = await NestFactory.create<NestFastifyApplication>(
+  AppModule,
+  new FastifyAdapter(),
+);
+await app.listen(3000);
+```
+
+Adapter 层屏蔽底层框架差异。Nest 上层调用的是抽象接口，例如：
+
+* `get()`
+* `post()`
+* `listen()`
+* `reply()`
+* `status()`
+* `setHeader()`
+
+底层分别由 ExpressAdapter 或 FastifyAdapter 实现。
+
+这带来的好处是：业务代码可以尽量保持 Nest 风格，而不是强绑定 Express API。
+
+### 六、与其他 Node.js 服务端框架对比
+
+#### 总览对比
+
+| 框架 | 定位 | 风格 | 架构约束 | TypeScript | 性能 | 适合场景 |
+|---|---|---|---|---|---|---|
+| Express | 轻量 Web 框架 | 中间件 | 弱 | 一般 | 中等 | 小型 API、快速原型 |
+| Koa | 轻量中间件框架 | 洋葱模型 | 弱 | 一般 | 中等 | 自定义框架、轻量服务 |
+| Fastify | 高性能 Web 框架 | 插件 + Schema | 中等 | 较好 | 高 | 高性能 API、网关 |
+| Hapi | 配置驱动框架 | 插件 + 配置 | 较强 | 一般 | 中等 | 企业 API、配置化服务 |
+| Egg.js | 企业级 Node 框架 | 约定优于配置 | 强 | 中等 | 中等 | 阿里系风格企业应用 |
+| Midway | 企业级 TypeScript 框架 | IoC + 装饰器 | 强 | 强 | 中等 | 国内 TS 后端、Serverless |
+| NestJS | 企业级应用框架 | Module + DI + Decorator | 强 | 强 | 取决于 Adapter | 大型后端、微服务、团队协作 |
+
+#### Express 和 Fastify 对比
+
+Express 和 Fastify 都是 Node.js HTTP 框架，但定位不同：Express 更经典、更灵活，Fastify 更强调性能、Schema 和插件体系。
+
+| 对比项 | Express | Fastify |
+|---|---|---|
+| 定位 | 经典轻量 Web 框架 | 高性能 Web 框架 |
+| 生态 | 历史久，中间件生态非常丰富 | 生态较新，但官方插件体系更规范 |
+| 性能 | 中等，足够满足大多数业务场景 | 更高，适合高并发 API 场景 |
+| 写法 | 中间件模型，简单直接 | 插件 + Schema 模型，约束更强 |
+| 校验与序列化 | 通常依赖第三方中间件 | 内置 Schema 校验和高性能序列化能力 |
+| TypeScript 体验 | 可用，但不是从 TS 出发设计 | 类型支持更现代，配合 Schema 更自然 |
+| 学习成本 | 低，上手快 | 略高，需要理解插件和 Schema |
+| 适合场景 | 普通 API、后台服务、快速原型 | 高性能 API、网关、对吞吐量敏感的服务 |
+
+简单理解：
+
+* `Express` 更像一个自由度很高的基础 Web 工具箱；
+* `Fastify` 更像一个性能优先、带更多工程约束的 Web 框架。
+
+在 NestJS 中，默认使用 Express：
+
+```ts
+const app = await NestFactory.create(AppModule);
+```
+
+如果要切换为 Fastify，需要显式传入 `FastifyAdapter`：
+
+```ts
+const app = await NestFactory.create<NestFastifyApplication>(
+  AppModule,
+  new FastifyAdapter(),
+);
+```
+
+选择建议：
+
+* 项目更看重生态兼容、团队熟悉度、第三方中间件，优先 Express；
+* 项目更看重性能、吞吐量、Schema 校验和序列化能力，可以考虑 Fastify；
+* 在 NestJS 中，只要业务代码不强依赖 `@Res()`、`@Req()` 里的底层平台 API，Express 和 Fastify 的切换成本通常较低。
+
+#### NestJS vs Express
+
+Express 是 Node.js 生态最经典的 Web 框架。
+
+Express 示例：
+
+```ts
+const express = require('express');
+const app = express();
+
+app.get('/users/:id', async (req, res) => {
+  const user = await userService.findOne(req.params.id);
+  res.json(user);
+});
+
+app.listen(3000);
+```
+
+优点：
+
+* 简单、直接、生态大；
+* 学习成本低；
+* 非常适合小项目和快速原型。
+
+不足：
+
+* 没有内置模块系统；
+* 没有官方 DI；
+* 大项目目录结构容易依赖团队约定；
+* 鉴权、校验、异常、日志需要自行组合；
+* TypeScript 支持不是框架设计核心。
+
+Nest 相比 Express 的优势：
+
+* 内置模块化组织；
+* 内置依赖注入；
+* 内置 Guard / Pipe / Interceptor / Filter；
+* 更适合大型项目和多人协作；
+* 可以继续使用 Express 生态。
+
+结论：
+
+* 小项目：Express 更轻；
+* 中大型项目：Nest 的工程约束更有价值。
+
+#### NestJS vs Koa
+
+Koa 是 Express 原团队设计的下一代中间件框架，核心是 async/await 洋葱模型。
+
+Koa 示例：
+
+```ts
+const Koa = require('koa');
+const app = new Koa();
+
+app.use(async (ctx, next) => {
+  console.log('before');
+  await next();
+  console.log('after');
+});
+
+app.use(async ctx => {
+  ctx.body = 'hello';
+});
+```
+
+Koa 的核心优势：
+
+* 内核非常小；
+* 中间件模型优雅；
+* 适合自己封装上层框架。
+
+不足：
+
+* 本身只提供 Context 和中间件；
+* 路由、参数校验、DI、模块化都要额外选型；
+* 大型项目需要自己设计架构。
+
+Nest 的 Interceptor 和请求生命周期也有洋葱模型思想，但 Nest 在 Koa 这类模型之上增加了完整的工程体系。
+
+结论：
+
+* 想要极简和高度自由：Koa；
+* 想要完整企业级架构：Nest。
+
+#### NestJS vs Fastify
+
+Fastify 是高性能 Node.js Web 框架，特点是 Schema 驱动和插件系统。
+
+Fastify 示例：
+
+```ts
+fastify.get('/users/:id', {
+  schema: {
+    params: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+      },
+    },
+  },
+}, async (request, reply) => {
+  return userService.findOne(request.params.id);
+});
+```
+
+Fastify 优势：
+
+* 性能好；
+* JSON Schema 校验和序列化效率高；
+* 插件封装能力强；
+* 适合高性能 API、BFF、网关。
+
+Nest 与 Fastify 不是完全竞争关系，因为 Nest 可以使用 Fastify 作为底层 adapter。
+
+```ts
+NestFactory.create(AppModule, new FastifyAdapter())
+```
+
+对比：
+
+| 维度 | Fastify | NestJS + Fastify |
+|---|---|---|
+| 性能 | 更直接，开销更低 | 有 Nest 抽象层，略有额外成本 |
+| 架构 | 插件系统 | 模块 + DI + AOP |
+| 开发体验 | 偏底层 | 偏应用框架 |
+| 适合 | 高性能轻框架 | 高性能 + 工程架构 |
+
+结论：
+
+* 极致性能、少抽象：Fastify；
+* 想兼顾性能和架构：Nest + Fastify。
+
+#### NestJS vs Hapi
+
+Hapi 是偏企业级的 Node.js 框架，强调配置化路由、插件、安全默认值。
+
+Hapi 优势：
+
+* 插件体系成熟；
+* 配置驱动明显；
+* 内置较多服务端能力。
+
+Nest 优势：
+
+* TypeScript 和装饰器体验更现代；
+* DI 和模块系统更清晰；
+* 与 Angular 风格接近；
+* 在微服务、GraphQL、WebSocket 等方向集成更统一。
+
+结论：如果团队喜欢配置化、插件化，可以考虑 Hapi；如果团队需要 TypeScript 优先、模块化、DI、AOP，Nest 更合适。
+
+#### NestJS vs Egg.js
+
+Egg.js 是国内企业级 Node 框架，强调约定优于配置。
+
+Egg 的典型特点：
+
+* Controller / Service / Plugin / Middleware 目录约定；
+* 插件机制成熟；
+* 适合传统 MVC 服务端应用；
+* 在国内阿里系生态中使用较多。
+
+Nest 相比 Egg：
+
+* 更 TypeScript-first；
+* 更依赖装饰器和 DI；
+* 模块边界更显式；
+* 更接近 Angular / Spring 的应用架构；
+* 国际生态和官方文档更活跃。
+
+Egg 的优势是约定明确、上手传统；Nest 的优势是类型、模块和依赖管理更强。
+
+#### NestJS vs Midway
+
+Midway 与 Nest 类似，也强调 TypeScript、IoC、装饰器。
+
+Midway 常见优势：
+
+* 国内生态更熟；
+* 对 Serverless、一体化场景支持较好；
+* 与 Egg / 阿里云生态结合较多。
+
+Nest 常见优势：
+
+* 国际生态更大；
+* 官方文档和课程资料丰富；
+* 微服务、GraphQL、WebSocket、OpenAPI 等模块成熟；
+* 与 Express / Fastify 适配成熟。
+
+如果项目强依赖国内云厂商或 Midway 生态，Midway 有优势；如果希望使用更通用的国际 Node.js 后端生态，Nest 更合适。
+
+### 七、优劣势分析
+
+#### NestJS 优势分析
+
+##### 1. 架构清晰，适合大型项目
+
+Nest 通过 Module 划分边界，每个业务域可以独立成模块：
+
+```txt
+UserModule
+OrderModule
+PaymentModule
+NotificationModule
+```
+
+模块之间通过 `imports` 和 `exports` 显式建立依赖，避免所有服务都变成全局可见。
+
+##### 2. DI 降低耦合，方便测试
+
+Controller 依赖抽象的 Service，而不是自己创建实例。
+
+测试时可以替换 Provider：
+
+```ts
+const moduleRef = await Test.createTestingModule({
+  controllers: [UsersController],
+  providers: [
+    {
+      provide: UsersService,
+      useValue: mockUsersService,
+    },
+  ],
+}).compile();
+```
+
+这让单元测试更简单。
+
+##### 3. AOP 能力强
+
+Guard、Pipe、Interceptor、Filter 把横切逻辑从业务代码中抽离出来。
+
+例如：
+
+* 鉴权不写在每个 Controller 里，而是写 Guard；
+* 参数校验不写在业务逻辑里，而是写 DTO + Pipe；
+* 响应包装不写在每个接口里，而是写 Interceptor；
+* 异常格式不散落各处，而是写 Exception Filter。
+
+##### 4. TypeScript 体验好
+
+Nest 从设计上就围绕 TypeScript：
+
+* DTO 类型明确；
+* Provider 注入有类型提示；
+* Controller 入参返回值可描述；
+* 装饰器元数据支撑 DI 和路由映射；
+* 与 class-validator、class-transformer 配合自然。
+
+##### 5. 平台适配能力强
+
+Nest 不强绑定某个底层 HTTP 框架：
+
+* 默认 Express；
+* 可切换 Fastify；
+* 支持微服务传输层；
+* 支持 GraphQL；
+* 支持 WebSocket；
+* 支持 CLI 和测试工具。
+
+##### 6. 生态完整
+
+Nest 官方和社区提供了大量集成：
+
+* `@nestjs/config`
+* `@nestjs/typeorm`
+* `@nestjs/mongoose`
+* `@nestjs/graphql`
+* `@nestjs/websockets`
+* `@nestjs/microservices`
+* `@nestjs/swagger`
+* `@nestjs/testing`
+
+相比 Express/Koa 需要自己拼装，Nest 提供了更统一的工程体验。
+
+#### NestJS 劣势和注意点
+
+Nest 不是所有场景的最优选择。
+
+##### 1. 学习成本更高
+
+初学者需要理解：
+
+* Decorator；
+* Module；
+* Provider；
+* DI；
+* Pipe / Guard / Interceptor / Filter；
+* 生命周期；
+* 作用域。
+
+如果只是写几个简单接口，Nest 可能显得重。
+
+##### 2. 抽象层带来性能成本
+
+Nest 会在底层 HTTP 框架之上增加路由包装、执行上下文、AOP 管线、DI 解析等逻辑。多数业务系统这个开销可以接受，但极致性能场景下，直接使用 Fastify 可能更合适。
+
+##### 3. 过度封装可能降低可读性
+
+如果项目滥用全局模块、动态模块、复杂 Provider token、过深的装饰器组合，代码可能变得难追踪。
+
+建议：
+
+* 模块边界清晰；
+* 少用全局模块；
+* Provider token 命名统一；
+* Interceptor / Guard / Pipe 职责单一；
+* 不要为了模式而模式。
+
+### 八、适用场景与实战建议
+
+#### 适用场景
+
+适合使用 NestJS：
+
+* 中大型后端系统；
+* BFF 层；
+* 多模块业务系统；
+* 需要统一鉴权、校验、日志、异常处理；
+* 团队使用 TypeScript；
+* 项目需要较强测试能力；
+* 未来可能扩展微服务、GraphQL、WebSocket。
+
+不一定适合：
+
+* 只有几个简单接口的小脚本；
+* 极致性能优先且团队能接受底层开发；
+* 不想引入装饰器和 DI 的简单 Node 项目；
+* 团队主要写纯 JavaScript 且不使用 TypeScript。
+
+#### 实战建议
+
+##### 模块划分
+
+按照业务域划分模块，而不是按照技术层随意堆放。
+
+推荐：
+
+```txt
+users
+orders
+payments
+notifications
+```
+
+不推荐所有 Controller 放一个目录、所有 Service 放一个目录，后期业务边界会变得不清晰。
+
+##### Controller 保持薄
+
+Controller 只负责：
+
+* 接收参数；
+* 调用 Service；
+* 返回结果。
+
+业务逻辑放 Service。
+
+##### DTO 明确输入边界
+
+所有写接口尽量使用 DTO：
+
+```ts
+@Post()
+create(@Body() dto: CreateUserDto) {
+  return this.usersService.create(dto);
+}
+```
+
+配合全局 `ValidationPipe` 做白名单和类型转换。
+
+##### Provider 不要滥用请求作用域
+
+默认 Provider 是单例。请求作用域会增加实例创建成本，只有在确实需要请求级上下文时使用。
+
+适合请求作用域的场景：
+
+* 多租户上下文；
+* 请求链路追踪；
+* GraphQL request cache；
+* 当前用户上下文。
+
+##### 全局模块谨慎使用
+
+`@Global()` 可以减少 imports，但也会让依赖关系变隐式。通用工具、配置、数据库连接可以考虑全局，业务模块不建议全局。
+
+### 九、日志、监控与告警
+
+后端服务上线后，能不能快速发现问题、定位问题、复盘问题，主要依赖三类能力：
+
+* 日志：回答“发生了什么”；
+* 指标：回答“系统现在是否健康”；
+* 告警：回答“什么时候需要人介入”。
+
+这三件事不要混在一起。日志适合排障和审计，监控适合看趋势和健康度，告警应该尽量基于稳定的指标触发，而不是简单扫描日志。
+
+#### 推荐组合
+
+一个比较实用的 NestJS 生产方案：
+
+```txt
+NestJS
+  ├─ Pino: JSON 日志
+  ├─ Prometheus: /metrics 指标
+  ├─ Grafana: 看板
+  ├─ Alertmanager: 告警通知
+  └─ Sentry: 异常聚合
+```
+
+对应职责：
+
+| 能力 | 推荐方案 | 作用 |
+|---|---|---|
+| 应用日志 | Pino / nestjs-pino | 输出结构化 JSON 日志 |
+| 指标监控 | Prometheus | 采集 QPS、错误率、延迟、资源水位 |
+| 可视化看板 | Grafana | 展示服务健康状态和趋势 |
+| 告警通知 | Alertmanager / Grafana Alerting | 将异常状态推送到 Slack、飞书、企业微信等 |
+| 异常聚合 | Sentry | 聚合未捕获异常、错误堆栈和上下文 |
+| 链路追踪 | OpenTelemetry + Jaeger / Tempo | 排查跨服务调用和慢请求 |
+
+#### 日志：用 Pino 输出结构化日志
+
+开发阶段用 `console.log` 可以帮助理解流程，但生产环境不建议直接使用。更推荐使用 `nestjs-pino`，把日志统一输出成 JSON，方便被 Loki、ELK、OpenSearch 等系统采集和检索。
+
+安装：
+
+```bash
+npm install nestjs-pino pino-http
+```
+
+注册：
+
+```ts
+import { Module } from '@nestjs/common';
+import { LoggerModule } from 'nestjs-pino';
+
+@Module({
+  imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+        redact: [
+          'req.headers.authorization',
+          'req.headers.cookie',
+          'req.body.password',
+          'req.body.token',
+        ],
+      },
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+在业务代码中注入 Logger：
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
+
+@Injectable()
+export class UsersService {
+  constructor(private readonly logger: PinoLogger) {
+    this.logger.setContext(UsersService.name);
+  }
+
+  async createUser() {
+    this.logger.info({ action: 'create_user' }, 'creating user');
+  }
+}
+```
+
+好的日志应该有稳定字段，而不是只写一段字符串：
+
+```json
+{
+  "level": "info",
+  "time": 1780300800000,
+  "requestId": "6f3b7c9e",
+  "userId": "10001",
+  "module": "UsersService",
+  "action": "create_user",
+  "msg": "creating user"
+}
+```
+
+这样才能按 `requestId`、`userId`、`action`、`module` 快速检索。
+
+#### 监控：暴露 /metrics 给 Prometheus
+
+日志适合排查单个问题，指标适合判断整体健康状态。常见指标包括：
+
+* 请求量：QPS、接口调用次数；
+* 错误率：HTTP 5xx、业务失败数；
+* 延迟：平均耗时、P95、P99；
+* 资源：CPU、内存、事件循环延迟；
+* 依赖：数据库连接数、Redis 延迟、队列积压；
+* 业务：订单创建数、支付成功率、消息发送失败数。
+
+可以在 NestJS 中暴露 `/metrics`，由 Prometheus 定时拉取：
+
+```ts
+import { Controller, Get, Header } from '@nestjs/common';
+import { register } from 'prom-client';
+
+@Controller('metrics')
+export class MetricsController {
+  @Get()
+  @Header('Content-Type', register.contentType)
+  async metrics() {
+    return register.metrics();
+  }
+}
+```
+
+对于接口耗时，可以用 Interceptor 统一记录：
+
+```ts
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
+import { Observable, tap } from 'rxjs';
+
+@Injectable()
+export class MetricsInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const now = Date.now();
+    const request = context.switchToHttp().getRequest();
+
+    return next.handle().pipe(
+      tap(() => {
+        const duration = Date.now() - now;
+        const route = request.route?.path ?? request.url;
+
+        // 这里可以写入 Prometheus Histogram，例如 http_request_duration_ms
+        console.log({
+          method: request.method,
+          route,
+          duration,
+        });
+      }),
+    );
+  }
+}
+```
+
+真实项目里不要只 `console.log`，而是把 `duration` 写入 Prometheus 的 `Histogram`，用于统计 P95 / P99 延迟。
+
+#### 告警：优先基于指标，而不是日志
+
+告警的目标不是“有错误就通知人”，而是“需要人介入时再通知人”。否则告警太多，团队很快就会对告警失去敏感度。
+
+适合告警的指标：
+
+* 5 分钟内 HTTP 5xx 错误率超过阈值；
+* P95 延迟持续高于阈值；
+* 服务实例不可用；
+* CPU / 内存持续过高；
+* 数据库连接池耗尽；
+* 队列消息积压持续增长；
+* 支付成功率、下单成功率等核心业务指标异常下降。
+
+不建议一开始就对所有 Error 日志告警。日志告警适合作为兜底，例如：
+
+* 出现 `fatal` 日志；
+* 支付、订单、资金相关错误连续出现；
+* 某个关键任务连续失败；
+* 出现安全相关异常。
+
+#### 异常聚合：用 Sentry 补足错误上下文
+
+Prometheus 能告诉你“错误率升高了”，日志能告诉你“某次请求发生了什么”，Sentry 更适合聚合异常堆栈，帮助判断：
+
+* 哪个版本开始出现错误；
+* 哪个接口触发最多；
+* 影响了多少用户；
+* 错误堆栈和上下文是什么；
+* 是否已经被修复。
+
+一般可以在全局 Exception Filter 中接入 Sentry，对未处理异常进行上报，同时继续返回统一错误响应。
+
+#### 关键实践
+
+生产环境建议遵守这些原则：
+
+* 不要直接使用 `console.log`，统一使用 Logger；
+* 日志输出 JSON，方便机器采集、过滤和聚合；
+* 每个请求生成 `requestId`，并贯穿日志、错误、链路追踪；
+* 日志中不要输出密码、Token、Cookie、身份证号等敏感信息；
+* 告警优先基于指标，例如错误率、延迟、可用性和资源水位；
+* 日志告警只做兜底，避免因为噪音太多导致告警失效；
+* 业务核心流程要有业务指标，例如下单成功率、支付成功率；
+* 看板要少而关键，优先展示服务健康、接口延迟、错误率和核心业务指标；
+* Sentry 负责异常聚合，Prometheus 负责指标趋势，日志系统负责细节排查。
+
+简单总结：
+
+```txt
+排查单次问题：看日志
+判断系统健康：看指标
+发现需要介入的问题：靠告警
+定位异常堆栈：看 Sentry
+分析跨服务慢请求：看链路追踪
+```
+
+### 十、总结
+
+NestJS 的核心价值不是“比 Express 多几个装饰器”，而是提供了一整套服务端应用架构：
+
+```txt
+Module 负责边界
+Provider 负责能力
+DI 负责组装
+Controller 负责入口
+Pipe 负责校验转换
+Guard 负责访问控制
+Interceptor 负责横切逻辑
+Filter 负责异常处理
+Adapter 负责屏蔽底层平台差异
+```
+
+如果项目规模较小，Express / Koa / Fastify 更轻；如果项目会持续增长、团队协作复杂、需要统一工程规范和可测试性，NestJS 的模块化、依赖注入和 AOP 管线会非常有优势。
+
+参考资料：
+
+* [NestJS 官方文档](https://docs.nestjs.com/)
+* [NestJS Controllers](https://docs.nestjs.com/controllers)
+* [NestJS Providers](https://docs.nestjs.com/providers)
+* [NestJS Modules](https://docs.nestjs.com/modules)
+* [NestJS Request lifecycle](https://docs.nestjs.com/faq/request-lifecycle)
+* [NestJS Core 源码](https://github.com/nestjs/nest/tree/master/packages/core)

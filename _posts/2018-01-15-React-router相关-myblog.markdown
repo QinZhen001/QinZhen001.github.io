@@ -12,11 +12,9 @@ tags:
 
 > “Yeah It's on. ”
 
-# 正文
+## 正文
 
-
-
-## BrowserRouter
+### BrowserRouter
 
 一个使用了 HTML5 history API 的高阶路由组件，保证你的 UI 界面和 URL 保持同步。此组件拥有以下属性：
 
@@ -24,7 +22,7 @@ tags:
 作用：为所有位置添加一个基准URL
 使用场景：假如你需要把页面部署到服务器的二级目录，你可以使用 basename 设置到此目录。
 
-```
+```jsx
 <BrowserRouter basename="/minooo" />
 <Link to="/react" /> // 最终渲染为 <a href="/minooo/react">
 ```
@@ -37,7 +35,7 @@ tags:
 作用：当浏览器不支持 HTML5 的 history API 时强制刷新页面。
 使用场景：同上。
 
-```
+```jsx
 const supportsHistory = 'pushState' in window.history
 <BrowserRouter forceRefresh={!supportsHistory} />
 ```
@@ -47,14 +45,11 @@ const supportsHistory = 'pushState' in window.history
 使用场景：按需设置。
 `<BrowserRouter keyLength={12} />`
 
-
 **children: node**
 作用：渲染唯一子元素。
 使用场景：作为一个 React组件，天生自带 children 属性。
 
-
-
-## Link
+### Link
 
 [https://stackoverflow.com/questions/42914666/react-router-external-link](https://stackoverflow.com/questions/42914666/react-router-external-link)
 
@@ -73,11 +68,7 @@ With Link component of react-router you can do that. In the "**to**" prop you ca
 
 - **a function**: A function to which current location is passed as an argument and which should return location representation as a string or as an object
 
-
-
-
-
-## Route
+### Route
 
 `<Route>` 也许是 RR4 中最重要的组件了，重要到你必须理解它，学会它，用好它。它最基本的职责就是当页面的访问地址与 Route 上的 path 匹配时，就渲染出对应的 UI 界面。
 
@@ -101,7 +92,6 @@ props 分别是：
 在 Route render 中，以 ({ location }) => () 的方式获取，
 在 Route children 中，以 ({ location }) => () 的方式获取，
 
-
 History 和 match的获取方式类似。
 
 如果当前的地址是 `/char/123`
@@ -111,8 +101,6 @@ History 和 match的获取方式类似。
 >**match.url是指向实际的url**
 
 >ps：在这个例子中，match.params.user为123
-
-
 
 component
 
@@ -125,8 +113,6 @@ const User = ({ match }) => {
   return <h1>Hello {match.params.username}!</h1>
 }
 ```
-
-
 
 render: func
 
@@ -147,9 +133,7 @@ const FadingRoute = ({ component: Component, ...rest }) => (
 <FadingRoute path="/cool" component={Something} />
 ```
 
-
-
-### IndexRoute
+#### IndexRoute
 
 > TIP:  在 react-router-dom v6 中 IndexRoute 已经被干掉了，请用index属性代替
 >
@@ -183,15 +167,11 @@ children），但这样配置路由有一个问题，就是我们访问 http://l
 
 如此配置后，我们再次访问 / 路由，你会发现页面渲染了 Home 组件的内容。这就是 IndexRoute 的功能，指定一个路由的默认页。
 
-
-
-
-
-### IndexRedirect
+#### IndexRedirect
 
 上面这种情况比较常见，还有一种非常常见的方式就是当我们尝试访问 / 这个路由时，我们想让其直接跳转到 ‘/Accounts’，直接免去了默认页 Home，这样来的更加直接。由此我们就需要 IndexRedirect 功能。考虑如下路由：
 
-```
+```jsx
 <Router>
   <Route path="/" component={App}>
     <IndexRedirect to="/accounts"/>
@@ -205,14 +185,10 @@ children），但这样配置路由有一个问题，就是我们访问 http://l
 
 ---
 
-
-
 * **IndexRoute 一般情况下用于设计一个默认页且不改变 URL 地址，而 IndexRedirect 则是跳转默认地址且地址会发生改变。**
 * **IndexRoute 指定一个组件作为默认页，而 IndexRedirect 指定一个路由地址作为跳转地址。**
 
-
-
-## 嵌套路由
+### 嵌套路由
 
 ```tsx
 
@@ -245,17 +221,11 @@ export const RouteContainer = () => {
 
 ```
 
-
-
-
-
-## React-Router v6
+### React-Router v6
 
 [https://juejin.cn/post/6844904096059621389#heading-1](https://juejin.cn/post/6844904096059621389#heading-1)
 
-
-
-### **简化路径**
+#### **简化路径**
 
 **React Router v6使用简化的路径格，仅支持2种占位符：动态:`id`样式参数和`\*`通配符**
 
@@ -273,7 +243,7 @@ export const RouteContainer = () => {
 
 使用`RegExp`正则匹配的路径将无效：
 
-```
+```js
 /users/:id?
 /tweets/:id(\d+)
 /files/*/cat.jpg
@@ -281,15 +251,11 @@ export const RouteContainer = () => {
 
 `v6`中的所有路径匹配都将忽略URL上的尾部"`/`"。实际上，`<Route strict>`已被删除并且在v6中无效。这并不意味着您不需要使用斜杠。
 
-
-
-### Outlet
+#### Outlet
 
 > React Router v6 出现，用于处理嵌套路由
 
 [https://segmentfault.com/a/1190000023684163](https://segmentfault.com/a/1190000023684163)
-
-
 
 例子：
 
@@ -323,25 +289,17 @@ function Profile() {
 }
 ```
 
-
-
-### 监听路由变化
+#### 监听路由变化
 
 [监听路由变化](https://segmentfault.com/q/1010000043073192)
 
-useHistory 变为使用 useLocation 代替 
+useHistory 变为使用 useLocation 代替
 
 https://reactrouter.com/en/main/hooks/use-location
 
+## 补充
 
-
-
-
-# 补充
-
-
-
-## react-router 还是 react-router-dom？
+### react-router 还是 react-router-dom？
 
 [https://www.syncfusion.com/blogs/post/react-router-vs-react-router-dom.aspx](https://www.syncfusion.com/blogs/post/react-router-vs-react-router-dom.aspx)
 
@@ -353,15 +311,11 @@ https://reactrouter.com/en/main/hooks/use-location
 
 If you are working on a web application, the better option is to use **react-router-dom**, because it contains all the necessary common components and features essential for routing in a web application. **react-router-dom** installs **react-router** as a dependency, so there is no need to re-install and import anything directly from the **react-router**.
 
-
-
-## 滚动至顶部
+### 滚动至顶部
 
 [https://juejin.cn/post/6844904093694033927#heading-5](https://juejin.cn/post/6844904093694033927#heading-5)
 
 在大多数情况下，您所需要做的只是“滚动到顶部”，因为您有一个较长的内容页面，该页面在导航到该页面时始终保持向下滚动。使用`<ScrollToTop>`组件可以轻松处理此问题，该组件将在每次导航时向上滚动窗口：
-
-
 
 ```tsx
 import { useEffect } from "react";
@@ -391,11 +345,7 @@ function App() {
 }
 ```
 
-
-
-
-
-## Switch和Routes
+### Switch和Routes
 
 React中的Switch和Routes都是React Router库中的组件，用于路由控制和页面切换。
 
@@ -405,15 +355,11 @@ Routes组件则用于定义路由规则，它包含了多个Route组件，并根
 
 **总结起来，Switch是用来选择要渲染的Route组件的，而Routes则是用来定义路由规则的。Switch只渲染第一个匹配到的Route组件，并忽略后续的匹配，而Routes则按照定义的顺序逐个匹配路径，直到找到与URL匹配的路径为止。**
 
-
-
 In *react-router-dom* v6, "Switch" is replaced by routes "Routes"
 
 [https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom](https://stackoverflow.com/questions/63124161/attempted-import-error-switch-is-not-exported-from-react-router-dom)
 
-
-
-# 最佳实践
+## 最佳实践
 
 ```ts
 
@@ -476,14 +422,8 @@ const RootPage = () => {
 
 useNavigate 只能在router 包裹里面使用， 所有当我们有 全局鉴权 全局路由钩子时，一定要使用RootPage 在 `path="/" ` 包裹一层
 
+## 问题
 
-
-
-
-# 问题
-
-
-
-## location.hash after 6.7.0
+### location.hash after 6.7.0
 
 [https://github.com/remix-run/react-router/discussions/9973](https://github.com/remix-run/react-router/discussions/9973)

@@ -1,0 +1,405 @@
+---
+layout:     post
+title:      "Oxlint详解"
+date:       2026-07-02 11:46:00
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - ESLint
+---
+
+> “Yeah It's on. ”
+
+官方文档：https://oxc.rs/docs/guide/usage/linter
+
+Oxlint (`/oʊ-ɛks-lɪnt/`) is a high-performance linter for JavaScript and TypeScript built on the Oxc compiler stack.
+
+Oxlint 是一个基于 **Oxc compiler stack** 的高性能 JavaScript / TypeScript Linter。Oxc 是一组用 **Rust** 编写的高性能 JS/TS 工具链，Oxlint 则是其中专门负责代码检查的工具。
+
+官方给它的定位很明确：
+
+- 专注 JavaScript / TypeScript 的专用 linter；
+- 面向大型仓库、Monorepo 和 CI 场景；
+- 强调极致性能、稳定性和 ESLint 迁移体验；
+- 支持 type-aware linting；
+- 支持 multi-file analysis；
+- 内置大量规则，并尽量兼容 ESLint 生态。
+
+## 什么时候选择 Oxlint
+
+官方建议可以这样判断：
+
+1. **选择 Oxlint**
+   - 你想要一个独立、专注的 JS / TS linter。
+   - 你希望提升本地检查和 CI 的速度。
+   - 你准备从 ESLint 迁移，或者希望和 ESLint 并行一段时间。
+   - 你需要 TypeScript 语义一致的 type-aware lint。
+
+2. **选择 Vite+**
+   - 如果你想要的不只是 linter，而是一整套统一工具链，可以考虑 Vite+。
+   - Vite+ 会把 Oxlint、Oxfmt 等工具整合起来。
+
+3. **继续只用 ESLint**
+   - 如果项目强依赖 Oxlint 还不支持的 ESLint 插件边缘行为，短期内继续使用 ESLint 更稳。
+
+## 优势
+
+1. **Rust 原生性能**
+   - Oxlint 的解析器、AST、规则执行核心都在 Rust 里。
+   - ESLint 本身是 JavaScript 写的，运行在 Node.js 上，规则、插件、AST 遍历也大多在 JS 层执行。
+
+2. **解析器和 linter 一体化设计**
+   - Oxlint 使用 Oxc 自己的高性能 parser。
+   - parser、AST、diagnostics、规则执行围绕性能一起设计，减少跨库、跨抽象层的开销。
+
+3. **适合大仓库和 CI**
+   - Oxlint 面向 large repositories 和 CI environments 设计。
+   - 官方 benchmark 显示，Oxlint 比 ESLint 快 **50 到 100 倍**。
+   - 对 Monorepo、大型前端项目、多包项目来说，lint 时间通常是 CI 体验的关键瓶颈。
+
+4. **正确性优先的默认规则**
+   - Oxlint 默认优先启用 high-signal correctness checks。
+   - 也就是默认更关注“不正确、不安全、无用”的代码，而不是一开始就打开大量风格类规则。
+   - 这样可以降低接入初期的噪音，让团队更容易渐进式采用。
+
+5. **内置大量规则，降低依赖成本**
+   - 官方文档提到 Oxlint 已内置 800+ 规则。
+   - 覆盖范围包括 ESLint core rules、TypeScript rules、React、Jest、Vitest、Import、Unicorn、jsx-a11y 等常见生态。
+   - 相比 ESLint 依赖大量 JS 插件包，Oxlint 更像“内置高性能规则引擎”。
+
+6. **AI 友好的诊断信息**
+   - 官方强调 Oxlint 的 diagnostics 同时面向人和 AI 设计。
+   - 报错中包含清晰 message、精确 span、上下文数据和相关文档链接。
+   - 这类结构化信息有助于 AI 更可靠地理解问题和生成修复。
+
+## 快速开始
+
+官方推荐把 Oxlint 安装为开发依赖：
+
+```bash
+pnpm add -D oxlint
+```
+
+在 `package.json` 中添加脚本：
+
+```json
+{
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
+  }
+}
+```
+
+常用命令：
+
+```bash
+pnpm lint
+pnpm lint:fix
+```
+
+其中：
+
+- `oxlint`：只检查问题；
+- `oxlint --fix`：检查并应用安全的自动修复。
+
+## 支持的文件类型
+
+官方文档中说明 Oxlint 支持：
+
+- JavaScript / TypeScript：`.js`、`.mjs`、`.cjs`、`.ts`、`.mts`、`.cts`；
+- JSX / TSX：`.jsx`、`.tsx`；
+- 框架文件：`.vue`、`.svelte`、`.astro`。
+
+对于 `.vue`、`.svelte`、`.astro` 这类框架文件，Oxlint 主要 lint 其中的 `<script>` 部分。
+
+## 规则体系
+
+Oxlint 的规则覆盖面主要包括：
+
+- ESLint core rules；
+- TypeScript rules，包括 type-aware rules；
+- React；
+- Jest；
+- Vitest；
+- Import；
+- Unicorn；
+- jsx-a11y；
+- JS plugins，兼容部分 ESLint plugin 生态，目前官方标注为 alpha。
+
+这意味着 Oxlint 不是简单地“重新写一个 eslint”，而是尽量把常用 ESLint 生态里的高频规则做成更快的原生规则。
+
+## type-aware lint
+
+type-aware lint 指的是：lint 规则不只看代码语法结构，还会读取 TypeScript 类型信息来判断问题。
+
+普通 lint 只知道代码“长什么样”：
+
+```ts
+const user = getUser()
+user.name()
+```
+
+它能看到 `user.name()` 是一次函数调用，但不知道 `name` 到底是不是函数。
+
+type-aware lint 会结合 TypeScript 类型系统，知道：
+
+```ts
+type User = {
+  name: string
+}
+```
+
+所以它能判断 `user.name()` 错了，因为 `name` 是 `string`，不能当函数调用。
+
+常见能查的问题包括：
+
+- `Promise` 忘了 `await`，例如 floating promises；
+- 调用了不存在或类型不匹配的方法；
+- 把 `any`、`unknown`、`null`、`undefined` 用错；
+- 条件判断永远为真或永远为假；
+- 不安全的类型断言；
+- 函数参数、返回值类型不符合预期。
+
+Oxlint 官方文档提到，它的 type-aware linting 利用了 TypeScript compiler 的 Go 原生移植版本 `tsgo`，也就是 TypeScript 7 相关能力，因此目标是提供和 TypeScript 本身一致的类型系统行为。
+
+代价是：**更慢，也更依赖 TypeScript 配置**。因为工具需要加载 `tsconfig.json`，并构建类型信息。
+
+## multi-file analysis
+
+multi-file analysis 指的是跨文件分析能力。
+
+普通 lint 很多时候只分析单个文件：
+
+```ts
+// a.ts
+export { foo } from './b'
+```
+
+```ts
+// b.ts
+export { foo } from './a'
+```
+
+如果只看单文件，很难准确判断模块之间是否存在循环依赖。
+
+Oxlint 的 multi-file analysis 会构建项目级 module graph，并在规则之间共享解析和模块解析结果。这样可以更好地支持依赖跨文件信息的规则，比如：
+
+- import cycle 检查；
+- import resolution；
+- 跨文件导入关系分析；
+- 更复杂的项目级规则。
+
+官方也特别提到，这可以避免 ESLint 中一些规则在大项目里出现明显性能 cliff，例如 `import/no-cycle`。
+
+### ESLint 有 multi-file analysis 吗
+
+有，但要分情况看：**ESLint 本体默认主要是单文件分析；通过 parser、插件、规则和类型服务，可以做到一定程度的 multi-file analysis。**
+
+ESLint core 里的很多规则只需要分析当前文件 AST，例如：
+
+- `no-unused-vars`；
+- `no-undef`；
+- `eqeqeq`；
+- `no-console`；
+- `prefer-const`。
+
+这些规则基本不需要理解其他文件。
+
+但 ESLint 可以通过插件做跨文件分析。例如 `eslint-plugin-import`：
+
+- `import/no-cycle`：检查循环依赖；
+- `import/no-unresolved`：检查导入路径是否能解析；
+- `import/no-extraneous-dependencies`：检查依赖是否声明在正确位置；
+- `import/no-unused-modules`：检查未使用模块。
+
+这类规则就需要分析多个文件之间的 `import` / `export` 关系。
+
+例如：
+
+```ts
+// a.ts
+import { b } from './b'
+```
+
+```ts
+// b.ts
+import { a } from './a'
+```
+
+`import/no-cycle` 需要构建依赖关系，才能发现 `a.ts` 和 `b.ts` 之间存在循环依赖。
+
+另外，`typescript-eslint` 配合 `parserOptions.project` 或 project service，也可以读取 `tsconfig.json`，创建 TypeScript Program，从而获得类型信息。这样一些 type-aware rules 可以跨文件理解类型。
+
+例如：
+
+```ts
+// user.ts
+export type User = {
+  name: string
+}
+```
+
+```ts
+// main.ts
+import type { User } from './user'
+
+function run(user: User) {
+  user.name()
+}
+```
+
+单看 `main.ts`，普通 AST 规则不一定知道 `User.name` 是 `string`；但 type-aware lint 可以通过 TypeScript 类型系统知道这里把字符串当函数调用了。
+
+所以对比可以总结为：
+
+| 工具 | multi-file analysis 情况 |
+| --- | --- |
+| ESLint core | 默认主要是单文件分析 |
+| ESLint + `eslint-plugin-import` | 可以做 import/export 跨文件分析 |
+| ESLint + `typescript-eslint` type-aware | 可以基于 TypeScript Program 做类型级跨文件分析 |
+| Oxlint | 官方把 multi-file analysis 作为一等能力强调，目标是更高性能地做项目级模块图分析 |
+
+ESLint 跨文件分析通常更慢，主要原因是：
+
+- ESLint 架构更通用，很多规则按文件执行；
+- 插件规则往往自己维护解析、resolver 和缓存；
+- `typescript-eslint` 需要加载 `tsconfig.json` 并创建 TypeScript Program；
+- `import/no-cycle` 这类规则在大项目中容易成为性能瓶颈；
+- 多个插件之间不一定共享同一份 module graph。
+
+而 Oxlint 这类新工具更倾向于在底层统一构建 module graph，让多条规则共享跨文件分析结果。
+
+一句话总结：
+
+> ESLint 有 multi-file analysis 能力，但不是默认核心能力，通常依赖 `eslint-plugin-import`、`typescript-eslint` 等插件实现；Oxlint 则把它作为更原生、更高性能的项目级分析能力来设计。
+
+## 自动修复
+
+Oxlint 支持 automatic fixes。
+
+```bash
+oxlint --fix
+```
+
+适合自动修复一些安全、确定的代码问题，比如：
+
+- 删除无用代码；
+- 修复部分简单规则问题；
+- 规范可安全调整的写法。
+
+但建议在团队项目里这样使用：
+
+1. 本地先执行 `oxlint` 查看问题；
+2. 再执行 `oxlint --fix` 自动修复；
+3. 最后通过 `git diff` 检查修改结果。
+
+## 迁移策略
+
+官方给了两种 adoption paths。
+
+### 1. 直接替换 ESLint
+
+适合大多数规则依赖不复杂的项目。
+
+可以把 Oxlint 作为 primary linter，然后逐步删除不再需要的 ESLint 配置和插件。
+
+官方也提供了迁移工具：
+
+```bash
+npx @oxlint/migrate
+```
+
+它可以帮助迁移已有 ESLint 配置。
+
+### 2. 渐进式迁移
+
+适合特别大、特别复杂的项目。
+
+做法是：
+
+1. 先运行 Oxlint；
+2. 再运行 ESLint；
+3. 在 ESLint 中关闭和 Oxlint 重叠的规则；
+4. 逐步把规则迁移到 Oxlint。
+
+官方推荐可以配合 `eslint-plugin-oxlint`，用来禁用 ESLint 中和 Oxlint 重复的规则。
+
+这种方式的好处是：
+
+- CI 可以先获得一部分性能收益；
+- 老规则不会一次性全部失效；
+- 可以逐步处理不兼容的插件或规则。
+
+## 和 ESLint、Rslint 对比
+
+| 工具       | 核心定位                                                 | 主要优势                                                     | 主要短板                                                     |
+| ---------- | -------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **ESLint** | 最成熟、插件生态最全的 JS/TS lint 标准                   | 插件、规则、社区配置最丰富；可写自定义规则；React、Vue、a11y、安全、测试等生态最完整 | 慢；TypeScript type-aware lint 配置和性能成本更高            |
+| **Oxlint** | 高性能 JS/TS linter，基于 Oxc 编译器栈                   | 极快，官方称比 ESLint 快 50-100 倍；开箱即用；适合 CI 和大仓库；已有 React、Jest、Vitest、Import、Unicorn、jsx-a11y 等常见规则覆盖 | ESLint 插件兼容仍不是 100%；如果项目依赖冷门/复杂 ESLint 插件，可能不够 |
+| **Rslint** | 高性能、ESLint-compatible、偏 TypeScript-first 的 linter | 基于 `typescript-go`；主打 ESLint 配置兼容、type-aware rules、可同一次运行做 type checking | 更年轻，生态、社区验证、规则覆盖和编辑器集成成熟度通常不如 ESLint/Oxlint |
+
+关键区别：
+
+1. **生态成熟度**
+   - ESLint 最成熟，插件生态最完整。
+   - Oxlint 规则覆盖增长很快，但仍可能遇到 ESLint 插件边缘行为不兼容。
+   - Rslint 更年轻，生态和社区验证还需要时间。
+
+2. **性能**
+   - Oxlint 官方 benchmark 显示比 ESLint 快 **50-100 倍**。
+   - ESLint 最慢，但最稳、最全。
+   - Rslint 也主打高性能和 ESLint-compatible，但整体成熟度还在发展中。
+
+3. **TypeScript 支持**
+   - ESLint 依赖 `typescript-eslint` 做 TS 和 type-aware lint。
+   - Oxlint 支持 type-aware lint 和 multi-file analysis。
+   - Rslint 也强调 TypeScript-first 和 type-aware rules。
+
+## Benchmark
+
+官方 benchmark 仓库：
+
+https://github.com/oxc-project/bench-linter
+
+官方文档中的结论是：
+
+> Oxlint is 50 to 100 times faster than ESLint.
+
+不过实际项目中的收益会受这些因素影响：
+
+- 项目文件数量；
+- TypeScript 文件比例；
+- 是否开启 type-aware lint；
+- 是否存在复杂 import 规则；
+- CI 机器性能；
+- 是否和 ESLint 并行运行。
+
+## 接入建议
+
+如果是新项目，可以直接使用：
+
+```json
+{
+  "scripts": {
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
+  }
+}
+```
+
+如果是已有 ESLint 项目，建议：
+
+1. 先跑一次 `oxlint` 看默认规则报错；
+2. 使用 `@oxlint/migrate` 尝试迁移配置；
+3. 如果项目很复杂，先让 Oxlint 和 ESLint 并行；
+4. 使用 `eslint-plugin-oxlint` 关闭重复规则；
+5. 等规则覆盖稳定后，再考虑移除 ESLint。
+
+简单总结：
+
+- 想要最强生态：继续 ESLint；
+- 想要最快 JS/TS lint：优先 Oxlint；
+- 想要一体化工具链：关注 Vite+；
+- 大型老项目：推荐 Oxlint + ESLint 渐进式迁移。

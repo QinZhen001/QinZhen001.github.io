@@ -13,20 +13,9 @@ tags:
 > “Yeah It's on. ”
 >
 
-
-
 ## 组件
 
-
-
-
-
-
 ## utils工具函数
-
-
-
-
 
 ### on
 
@@ -52,13 +41,7 @@ export const on = (function() {
 
 ```
 
-
-
-
-
 ## 自定义命令
-
-
 
 ### clickoutside
 
@@ -76,8 +59,6 @@ export const on = (function() {
  * ```
  */
 ```
-
-
 
 ```js
 const nodeList = [];
@@ -150,10 +131,6 @@ export default {
 };
 ```
 
-
-
-
-
 ### repeat-click
 
 长按点击重复触发事件
@@ -186,25 +163,13 @@ export default {
 }
 ```
 
-
-
-
-
-## 广播 
-
-
+## 广播
 
 ### dispath 和 broadcast
 
-
-
 broadcast 方法的作用是向后代子孙组件传值，它会遍历所有的后代组件，当遍历到后代组件中 componentName 与当前的组件名一样，则触发 $emit 事件，以此来传递数据
 
-
-
 dispatch 的作用是向祖先组件传值，它会一直寻找父组件，直到找到组件名和当前传入的组件名一致的祖先组件，就会触发其身上的 `$emit` 事件，并传递数据
-
-
 
 ```js
 function broadcast(componentName,eventName,params){
@@ -244,25 +209,13 @@ export default {
 
 ```
 
-
-
-
-
 ## 文档是如何实现的
 
 [https://juejin.im/post/6862590339396403208?utm_source=gold_browser_extension](https://juejin.im/post/6862590339396403208?utm_source=gold_browser_extension)
 
-
-
 把用markdown写的文档拼接成vue文件(这个通过他们自己写的md-loader处理)，这个vue文件和我们平时开发项目的vue组件类型(类似`<template>...</template><script>export default{}</script>`),再通过vue-loader处理。
 
-
-
-
-
 ## 补充
-
-
 
 ### 正则获取script中的数据
 
@@ -272,8 +225,3 @@ function stripScript(content) {
   return result && result[2] ? result[2].trim() : '';
 }
 ```
-
-
-
-
-
