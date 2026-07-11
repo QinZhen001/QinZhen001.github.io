@@ -309,3 +309,7 @@ sprite.pivot.set(sprite.width / 2, sprite.height / 2); // 设置为中心
 **`WebGPU` 是一种新的 Web 标准，用于在 Web 浏览器中进行高性能图形渲染和计算**。它旨在提供比 WebGL 更底层、更直接的硬件访问，并且更好地与现代图形 API（如 Vulkan、Metal 和 Direct3D 12）对接。
 
 WebGPU 的设计目标是提供一个**跨平台、高性能**的图形和计算编程接口，使开发者能够更好地利用 GPU 的计算能力。它为开发者提供了更多的控制权和灵活性，以实现更高效、更复杂的图形渲染和计算任务。
+
+## 相关阅读
+
+图形渲染基础：[Canvas 相关（2D 绘图 API、离屏 Canvas 等）]({% post_url 2017-09-25-canvas相关-myblog %})

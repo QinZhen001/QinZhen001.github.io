@@ -850,3 +850,7 @@ const transform = new Tran()
 - 如果追求极致转译速度，使用 `esbuild` 或 `SWC`；
 - 如果是 Next.js 应用构建，关注 `Turbopack`；
 - 如果是任务流处理，`Gulp + through2` 仍然有价值。
+
+## 相关阅读
+
+构建工具演进：[Webpack]({% post_url 2017-12-12-webpack相关-myblog %}) → [Vite]({% post_url 2022-07-04-vite相关-myblog %}) → Bundler 打包器

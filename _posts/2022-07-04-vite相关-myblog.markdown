@@ -1265,3 +1265,7 @@ import { build } from 'vite'
 [https://lightrun.com/answers/unjs-unbuild-how-to-ship-in-cjs-format-when-my-package-has-pure-esm-package-dependencies](https://lightrun.com/answers/unjs-unbuild-how-to-ship-in-cjs-format-when-my-package-has-pure-esm-package-dependencies)
 
 use `rollup.inlineDependencies` and make your ESM-only dependency a development dependency
+
+## 相关阅读
+
+构建工具演进：[Webpack]({% post_url 2017-12-12-webpack相关-myblog %}) → Vite → [Bundler 打包器（esbuild / Rollup / tsup 等）]({% post_url 2023-10-15-bundler打包器相关-myblog %})

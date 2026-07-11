@@ -1853,3 +1853,191 @@ computed: {
 以上利用解构赋值提前把data数据中的`a`、`b`、`c`、`e`、`f`赋值给对应的变量`a`、`b`、`c`、`e`、`f`，然后在计算属性中可以通过这些变量访问data数据的，且不会触发data中对应数据的依赖收集。**这样只用this读取了一次data中的数据，只触发了一次依赖收集，避免了多次重复地依赖收集产生的性能问题。**
 
 [1]: http://img.zhimengzhe.com/d/file/p/2017-03-05/6e69817f1e18ae5389320cc5c00641b4.jpg
+
+## 常见问题与踩坑
+
+### 事件及时销毁
+
+Vue 组件销毁时会自动解绑它的全部指令及事件监听器，但仅限于组件本身的事件。用 `addEventListener` 等方式添加的事件不会自动销毁，需要在组件销毁时手动移除，以免内存泄露：
+
+```javascript
+created() {
+  addEventListener('touchmove', this.touchmove, false)
+},
+beforeDestroy() {
+  removeEventListener('touchmove', this.touchmove, false)
+}
+```
+
+### 改变数组下标不能响应式
+
+```js
+setTimeout(() => {
+  // 错误的做法
+  this.list2[2] = 2222
+  // 正确的做法
+  this.$set(this.list2, 2, 2222)
+}, 2000)
+```
+
+### vue-router 报错 NavigationDuplicated
+
+vue-router 升级到 3.1.x 后，重复点击导航（连续点击相同路由链接）控制台会报 `NavigationDuplicated`，虽不影响功能，可捕获异常：
+
+```js
+this.$router.push(route).catch(err => {
+  console.log('输出报错', err)
+})
+```
+
+### 给组件绑定的事件为什么无法触发
+
+在 Vue 2.0 中，为**自定义**组件绑定**原生**事件必须使用 `.native` 修饰符：
+
+```html
+<my-component @click.native="handleClick">Click Me</my-component>
+```
+
+### 无法监听 scroll 事件
+
+若不想在 document 监听事件（如页面有 fixed 头部时 `document` 的 scroll 不准确），可以在包裹层监听。**只要外面的包裹层拥有固定高度，就能触发滚动事件；如果还不能触发，包裹层加上 `overflow: scroll;` 即可。**
+
+```html
+<div style="height: 300px" @scroll="scrollEvent">
+  <div style="height: 200px"></div>
+  <div style="height: 200px"></div>
+  <div style="height: 200px"></div>
+</div>
+```
+
+### warn：runtime-only build
+
+```text
+[Vue warn]: You are using the runtime-only build of Vue where the template compiler is not available.
+```
+
+vue 有两种形式的代码：`compiler`（模板）模式和 `runtime`（运行时）模式，package.json 的 main 字段默认为 runtime 模式。解决办法：
+
+1. 初始化使用 render 函数：`render: h => h(App)`；
+2. webpack 配置别名 `'vue$': 'vue/dist/vue.esm.js'`；
+3. 引用时写成 `import Vue from 'vue/dist/vue.esm.js'`。
+
+### 组件注册相关报错
+
+- `Unknown custom element ... did you register the component correctly?`：常见于 `components` 多写/少写、路径大小写错误。
+- `There are multiple modules with names that only differ in casing`：引用组件时路径大小写不一致导致，统一用大写驼峰引入组件文件。
+
+### 在 style 标签里使用变量
+
+在 data 里设置一个值来存储动态样式，模板里通过 `:style` 绑定，两个 style 会自动合并：
+
+```jsx
+data() {
+  return {
+    changeStyle: 'background:' + color
+  }
+}
+```
+
+```html
+<span style="margin-top:5px;" :style="changeStyle"></span>
+```
+
+### vue-cli3 CSS minification error
+
+开发时不报错，打包时报 `CSS minification error: Lexical error`，常见原因是单位写成了大写，如 `calc(50% - 270PX)`，改成小写 `px` 即可。
+
+## Vue Router 路由机制补充
+
+### hash 与 history 模式
+
+hash 模式：
+
+* 可以改变 URL 但不会触发页面重新加载（hash 改变记录在 `window.history` 中），不算一次 http 请求，**不利于 SEO**。
+* 只能修改 `#` 后面的部分，只能跳转与当前 URL 同文档的 URL。
+* 通过 `window.onhashchange` 监听 hash 改变，实现无刷新跳转。
+
+history 模式：
+
+* **改变 url 的方式会导致浏览器向服务器发送请求**（需服务端配置：匹配不到静态资源时始终返回同一个 html）。
+* 新 URL 可以是与当前 URL 同源的任意 URL。
+* 通过 `pushState`、`replaceState` 实现无刷新跳转，可添加/修改历史记录条目。
+
+**回车刷新：hash 可以加载到 hash 值对应页面；history 一般就 404 了。**
+
+### history 模式的 404 问题
+
+前端路由跳转时 url 改变但没有重新请求，所以没问题；但刷新时会重新发起请求，若 nginx 没匹配到当前 url 就会 404。hash 模式因为 hash 不包含在 HTTP 请求中，所以不会出现该问题。
+
+解决：服务端在路径匹配不上时指向 `index.html`，具体路由由 vue-router 接管：
+
+```bash
+location / {
+  try_files $uri $uri/ /index.html;
+}
+```
+
+### popstate
+
+调用 `history.pushState()` 或 `history.replaceState()` **不会**触发 `popstate` 事件。只有做出浏览器动作时（如点击回退按钮，或调用 `history.back()` / `history.forward()`）才会触发。
+
+### 路由组件（RouteComponent）
+
+`RouteConfig` 中 `component、components` 定义的组件就是路由组件。路由组件的特殊性：
+
+- 拥有**只在路由组件中生效**的守卫（`beforeRouteEnter`、`beforeRouteUpdate`、`beforeRouteLeave`）。
+- 这些守卫在非路由组件（包括路由组件的后代组件）中不会被调用。想在其中实现类似监听效果，可以 `watch $route`。
+
+### 响应路由参数的变化
+
+从 `/user/foo` 导航到 `/user/bar` 时，原来的组件实例会被复用，生命周期钩子不会再被调用。复用组件时想响应路由参数变化，可以 watch `$route`：
+
+```js
+const User = {
+  watch: {
+    '$route' (to, from) {
+      // 对路由变化作出响应...
+    }
+  }
+}
+```
+
+### 组件内的导航守卫
+
+```js
+const Foo = {
+  beforeRouteEnter (to, from, next) {
+    // 渲染该组件的对应路由被 confirm 前调用
+    // 不能获取组件实例 this（组件实例还没被创建）
+    next(vm => {
+      // 通过 vm 访问组件实例
+    })
+  },
+  beforeRouteUpdate (to, from, next) {
+    // 当前路由改变但组件被复用时调用，可以访问 this
+  },
+  beforeRouteLeave (to, from, next) {
+    // 导航离开该组件对应路由时调用，可以访问 this
+    // 常用来禁止用户在未保存修改前离开，可通过 next(false) 取消导航
+  }
+}
+```
+
+### 多个路由地址绑定同一组件导致 created 不执行
+
+由于路由没有发生变化（组件被复用），切换时只有第一次进入才执行 created。解决方案：
+
+1. watch `$route` 手动处理变化；
+2. 每次点击给 router push 一个不一样的 query（如加时间戳）强制刷新 view，并给 `<router-view>` 加唯一 `key`：
+
+```jsx
+<router-view :key="key"></router-view>
+
+computed: {
+  key() {
+    return this.$route.name !== undefined
+      ? this.$route.name + +new Date()
+      : this.$route + +new Date()
+  }
+}
+```

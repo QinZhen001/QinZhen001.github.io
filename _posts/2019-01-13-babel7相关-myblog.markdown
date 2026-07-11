@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "Babel 7 配置与插件实践总结"
-description: "系统整理「Babel 7 配置与插件实践总结」的配置方法、工作机制、工程实践和常见问题。"
+title:      "Babel 原理、配置、插件与转译总结"
+description: "系统整理 Babel 的配置方法（preset-env / polyfill / transform-runtime）、常用插件、转译原理以及从零实现 Babel 插件的完整实践。"
 date:       2019-01-13 19:44:00
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
@@ -767,4 +767,246 @@ module.exports = {
     require('@babel/preset-env')
   ]
 }
+```
+
+## 常用插件补充
+
+> 以下整理自早期 Babel 配置笔记。
+
+### babel-plugin-dynamic-import-node
+
+[https://www.npmjs.com/package/babel-plugin-dynamic-import-node](https://www.npmjs.com/package/babel-plugin-dynamic-import-node)
+
+它只做一件事：将所有的 `import()` 转化为 `require()`，这样就可以用同步方式引入异步组件。结合 `BABEL_ENV` 环境变量，让它只作用于开发环境，可以大大提升热更新速度。
+
+```js
+{
+  "env": {
+    "development": {
+      "plugins": ["dynamic-import-node"]
+    }
+  }
+}
+```
+
+### babel-plugin-import
+
+[https://www.npmjs.com/package/babel-plugin-import](https://www.npmjs.com/package/babel-plugin-import)
+
+**为组件库实现单组件按需加载并且自动引入其样式**：
+
+```js
+import { Button } from 'antd';
+
+↓ ↓ ↓ ↓ ↓ ↓
+
+var _button = require('antd/lib/button');
+require('antd/lib/button/style');
+```
+
+原理：和普遍的 babel 插件一样遍历 AST，然后：
+
+1. **收集依赖**：找到 `importDeclaration`，分析出包和依赖，若包名和 `libraryName` 一致就收集。
+2. **判断是否使用**：判断收集到的成员是否在代码中被使用（如 `CallExpression`），有使用就调用 `importMethod` 生成新的 `import` 语句。
+3. **生成引入代码**：根据配置项生成代码和样式的 `import` 语句。
+
+三个核心参数：
+
+```js
+{
+  "libraryName": "antd",     // 包名
+  "libraryDirectory": "lib", // 目录，默认 lib
+  "style": true,             // 是否引入 style
+}
+```
+
+### babel-plugin-transform-remove-console
+
+移除所有 `console.*` 调用。
+
+### plugin-transform-typescript
+
+[https://babeljs.io/docs/en/babel-plugin-transform-typescript](https://babeljs.io/docs/en/babel-plugin-transform-typescript)
+
+添加对 TypeScript 类型语法的支持（该插件已包含在 `@babel/preset-typescript` 中），但**不做类型检查**。推荐 `preset-env` 与 `preset-typescript` 配合使用。
+
+### babel-plugin-module-resolver
+
+[https://www.npmjs.com/package/babel-plugin-module-resolver](https://www.npmjs.com/package/babel-plugin-module-resolver)
+
+在编译时为模块添加新的解析器，允许添加“根”目录以及为目录、文件或 npm 模块设置自定义别名。
+
+### loose mode
+
+[https://2ality.com/2015/12/babel6-loose-mode.html](https://2ality.com/2015/12/babel6-loose-mode.html)
+
+许多插件有两种模式：
+
+- **normal 模式**：尽可能遵循 ECMAScript 6 语义（通过 `Object.defineProperty` 定义对象属性）。
+- **loose 模式**：产生更简单的 ES5 代码（用 `=` 直接赋值，更像手写的 ES5）。
+
+一般不推荐使用 loose 模式：生成代码可能更快更兼容旧引擎，但从编译 ES6 切换到原生 ES6 时可能遇到问题。
+
+### Generator
+
+通过 `function*` 定义的“生成器函数”，特点是可以中断函数的执行。每次执行 `yield` 语句后函数暂停，直到调用生成器对象的 `next()` 才继续。Generator 函数是一个状态机，封装了多个内部状态；执行 async/await、yield 需要 `regenerator-runtime` 运行时支持。
+
+## 从零实现一个 Babel 插件
+
+[babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
+
+### babel 工作原理
+
+**Babel 对代码进行转换：先将 JS 代码解析为 AST 抽象语法树（解析），对树做静态分析（转换），再将语法树生成 JS 代码（生成）。每一层树被称为节点，每个节点都有 `type` 属性描述节点类型。**
+
+```javascript
+// 代码
+const result = 1 + 1
+
+// 生成的 AST（节选）
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "VariableDeclaration",
+      "declarations": [
+        {
+          "type": "VariableDeclarator",
+          "id": { "type": "Identifier", "name": "result" },
+          "init": {
+            "type": "BinaryExpression",
+            "left": { "type": "Literal", "value": 1 },
+            "operator": "+",
+            "right": { "type": "Literal", "value": 1 }
+          }
+        }
+      ],
+      "kind": "const"
+    }
+  ],
+  "sourceType": "module"
+}
+```
+
+可以用 [astexplorer](https://astexplorer.net/) 在线查看 AST。
+
+#### @babel/core
+
+“微内核”架构中的“内核”，主要负责：
+
+- 加载和处理配置（config）
+- 加载插件
+- 调用 `Parser` 进行语法解析，生成 `AST`
+- 调用 `Traverser` 遍历 AST，并使用「访问者模式」应用插件对 AST 进行转换
+- 生成代码，包括 SourceMap 转换和源代码生成
+
+#### 遍历与访问者
+
+AST 是树形结构，转换通过访问者对 AST 的遍历实现。**Visitors 访问者是一个对象，不同属性对应不同的 AST 节点类型。注意对每一个节点的遍历会执行两次：进入节点一次，退出节点一次。**
+
+```javascript
+const visitors = {
+  enter (path) {
+    // 进入该节点
+  },
+  exit (path) {
+    // 退出该节点
+  }
+}
+```
+
+#### 路径
+
+每个节点都拥有自身的路径对象（访问者的参数）。`path.node` 代表该节点，`path.parent` 代表父节点，`path.replaceWith` / `path.replaceWithMultiple` 用于替换节点。
+
+**替换一个节点：**
+
+```javascript
+BinaryExpression(path) {
+  path.replaceWith(
+    t.binaryExpression("**", path.node.left, t.numberLiteral(2))
+  );
+}
+```
+
+**用多节点替换单节点：**
+
+```javascript
+ReturnStatement(path) {
+  path.replaceWithMultiple([
+    t.expressionStatement(t.stringLiteral("Is this the real life?")),
+    t.expressionStatement(t.stringLiteral("Is this just fantasy?")),
+  ]);
+}
+```
+
+**停止遍历**用 `path.stop()`：
+
+```js
+const visitor = {
+  FunctionDeclaration(path, state) {
+    console.log("1111")
+    path.stop()
+  },
+}
+```
+
+### 插件选项
+
+如果想让用户自定义插件行为，可以接受插件特定选项，这些选项会通过 `state` 对象传递给访问者：
+
+```javascript
+export default function({ types: t }) {
+  return {
+    visitor: {
+      FunctionDeclaration(path, state) {
+        console.log(state.opts);
+        // { option1: true, option2: false }
+      }
+    }
+  }
+}
+```
+
+### 插件的 pre / post 函数
+
+插件可以具有在插件之前或之后运行的函数，用于设置或清理/分析：
+
+```javascript
+export default function({ types: t }) {
+  return {
+    pre(state) {
+      this.cache = new Map();
+    },
+    visitor: {
+      StringLiteral(path) {
+        this.cache.set(path.node.value, 1);
+      }
+    },
+    post(state) {
+      console.log(this.cache);
+    }
+  };
+}
+```
+
+### 插件开发常见问题
+
+**获取当前文件名：**
+
+```javascript
+Identifier(path, state) {
+  console.log(state.file.opts.filename);
+}
+```
+
+**Maximum call stack size exceeded**：使用 `path.replaceWith` 时若用相同类型节点替换自身，会导致无限递归。例如在 `FunctionDeclaration` 中再 `replaceWith` 一个 `functionDeclaration`，会不断触发该访问者而崩溃。
+
+**函数的 4 种情况：**
+
+```text
+FunctionDeclaration          函数声明        function foo(){}
+FunctionExpression           函数表达式      const func = function () {}
+ObjectMethod                 对象方法        let obj = { fn () {} }
+ArrowFunctionExpression      箭头函数        const func = ()=> {}
 ```

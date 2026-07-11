@@ -647,4 +647,8 @@ const offscreen = canvas.transferControlToOffscreen();
 ```
 
 [1]: http://www.w3school.com.cn/i/arc.gif
+
+## 相关阅读
+
+从 Canvas 2D 到 3D 渲染：[Web 渲染与可视化相关（WebGL / Three.js / WebGPU）]({% post_url 2023-07-26-web渲染可视化相关 %})
 [2]: http://img.alicdn.com/tps/TB1RgLULpXXXXatXVXXXXXXXXXX-667-309.png

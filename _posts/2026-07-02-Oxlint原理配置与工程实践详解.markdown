@@ -404,3 +404,7 @@ https://github.com/oxc-project/bench-linter
 - 想要最快 JS/TS lint：优先 Oxlint；
 - 想要一体化工具链：关注 Vite+；
 - 大型老项目：推荐 Oxlint + ESLint 渐进式迁移。
+
+## 相关阅读
+
+Lint 工具体系对比：Oxlint 追求极致速度，[ESLint 相关（配置、插件与生态）]({% post_url 2017-09-25-ESLint相关-myblog %}) 生态更成熟，实际项目中二者常配合使用。

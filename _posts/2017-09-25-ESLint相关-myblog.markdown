@@ -616,3 +616,7 @@ https://github.com/prettier/eslint-plugin-prettier/blob/main/recommended.js
 ### **eslint-config-** 比较
 
 [https://zenn.dev/tapioca/articles/5685d794f6452b](https://zenn.dev/tapioca/articles/5685d794f6452b)
+
+## 相关阅读
+
+Lint 工具体系对比：ESLint 生态最强、可定制；新一代 Rust 实现的 [Oxlint 原理配置与工程实践]({% post_url 2026-07-02-Oxlint原理配置与工程实践详解 %}) lint 速度更快，二者可渐进式迁移。

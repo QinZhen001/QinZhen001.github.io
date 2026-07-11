@@ -2330,3 +2330,88 @@ figure.fluidratio {
 
 [1]: http://www.topcss.org/wp-content/uploads/2012/11/fluid-ratio.png
 [2]: http://www.topcss.org/wp-content/uploads/2012/11/ratio-calculation.png
+
+## background 属性与背景适配
+
+### background-size
+
+`background-size: length | percentage | cover | contain;`
+
+* **length**：第一个值设宽度，第二个值设高度；只设一个值时另一个为 `auto`。
+* **percentage**：以父元素百分比设置宽高。
+* **cover**：把背景图扩展至足够大，使其完全覆盖背景区域（部分内容可能显示不全），保持宽高比。
+* **contain**：把图像扩展至最大尺寸，使宽高完全适应内容区域，保持宽高比。
+
+利用 `background-size` 让精灵图实现自适应缩放，如 `background-size: 300% 100%;`。
+
+### background-attachment
+
+* **scroll**：默认值，背景相对于元素本身固定（看起来背景静止）。
+* **fixed**：背景相对于视口固定，即使元素有滚动机制背景也不会随内容滚动（看起来背景运动）。
+
+> 类似 `position` 定位的 `absolute` 和 `fixed`。
+
+### background-position
+
+**负值定位**：
+
+1. 原点是外层块元素的左上角，background-position 是图片与坐标原点的偏移量。
+2. 原点不动，移动的是图片：X 为正图片向右平移，为负向左；Y 为正向下，为负向上。
+3. 百分比计算公式：`positionX = (容器宽度 - 图片宽度) * percentX`，`positionY = (容器高度 - 图片高度) * percentY`。
+
+**所以在雪碧图或抠图时 background-position 都用负值。** 这也解释了为什么 `background-position:100% 100%` 定位在容器右下角，以及负百分比可能呈现正值效果（因为 `(容器-图片) * -50%` 结果为正）。
+
+### background-clip
+
+`background-clip: border-box | padding-box | content-box;`
+
+| border-box  | 背景被裁剪到边框盒 |
+| ----------- | ---------------------- |
+| padding-box | 背景被裁剪到内边距框（默认值） |
+| content-box | 背景被裁剪到内容框 |
+
+### background 简写
+
+`background: color url();` 合并写时只有 color 在前、image 在后才生效。
+
+## CSS 书写顺序与命名规范
+
+### 书写顺序
+
+1. 位置属性（position, top, right, z-index, display, float 等）
+2. 大小（width, height, padding, margin）
+3. 文字系列（font, line-height, letter-spacing, color, text-align 等）
+4. 背景（background, border 等）
+5. 其他（animation, transition 等）
+
+### 书写建议
+
+- 使用 CSS 缩写属性（padding、margin、font 等）精简代码。
+- 去掉小数点前的“0”。
+- 简写命名的前提是让人看懂。
+- 不要随意使用 id：id 优先级高于 class 且不可重复使用，应按需使用。
+- 为选择器添加状态前缀（如 `.is-`）让语义更明了。
+- **老司机经验**：设置了宽度就不设置 margin/padding；设置了 margin/padding 就不设置宽度。设置外层容器宽度，对其中元素设置 margin 和 padding。
+
+### 连字符命名规范
+
+1. 长名称或词组用中横线 `-` 命名选择器。
+2. 不建议用 `_` 下划线：少按一个 shift、有浏览器兼容问题（如 `_tips` 在 IE6 无效）、能与 JS 变量命名（用 `_`）区分。
+
+### 常用命名词汇
+
+头 header、内容 content/container、尾 footer、导航 nav、侧栏 sidebar、栏目 column、整体布局宽度 wrapper、左右中 left/right/center、登录条 loginbar、标志 logo、广告 banner、页面主体 main、热点 hot、新闻 news、下载 download、子导航 subnav、菜单 menu/submenu、搜索 search、友情链接 friendlink、版权 copyright、滚动 scroll、标签 tags、文章列表 list、提示信息 msg、小技巧 tips、栏目标题 title、按钮 btn、图标 icon、当前 current。
+
+CSS 文件命名：master.css、module.css、base.css、layout.css、themes.css、columns.css、font.css、forms.css、mend.css、print.css。
+
+### 事件命名
+
+事件命名应以动词（如 `client-api-load`）或名词（如 `drive-upload-success`）结尾。
+
+### BEM
+
+[https://bemcss.com/](https://bemcss.com/)
+
+BEM 通过组件名的唯一性来保证选择器唯一性，从而保证样式不污染组件外。**命名规则：`blockName__elementName--modifier-name`，即模块名 + 元素名 + 修饰器名。**
+
+常见误区：元素名只占一部分，不能出现多个元素名层层嵌套（如 `page-btn__list__item__link` 是错误的，应为 `page-btn__btn`）。**BEM 不考虑结构**，元素命名不应考虑其父级元素，这样无论父元素名、模块构造或层级关系如何变动都不影响元素名字。

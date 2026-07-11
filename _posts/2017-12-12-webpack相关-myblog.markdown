@@ -2439,3 +2439,9 @@ Delete the line `/*# sourceMappingURL=bootstrap.css.map */` from bootstrap.css
 
 
 [1]: http://www.ruanyifeng.com/blogimg/asset/201301/bg2013012204.png
+
+## 相关阅读
+
+- [Webpack Loader 机制与常用 Loader 总结]({% post_url 2018-03-21-Webpack-Loader机制与常用Loader总结 %})
+- [Webpack Plugin 机制与常用 Plugin 总结]({% post_url 2018-05-19-Webpack-Plugin机制与常用Plugin总结 %})
+- 构建工具演进：Webpack → [Vite]({% post_url 2022-07-04-vite相关-myblog %}) → [Bundler 打包器]({% post_url 2023-10-15-bundler打包器相关-myblog %})
