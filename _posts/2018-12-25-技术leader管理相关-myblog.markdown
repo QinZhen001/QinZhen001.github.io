@@ -7,7 +7,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - 管理
+    - 生活
 ---
 
 > “Yeah It's on. ”

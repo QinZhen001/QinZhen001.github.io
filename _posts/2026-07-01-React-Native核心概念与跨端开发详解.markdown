@@ -7,7 +7,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - React Native
+    - React
 ---
 
 > “Yeah It's on. ”

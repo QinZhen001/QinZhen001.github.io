@@ -7,7 +7,7 @@ author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Jquery
+    - jQuery
 ---
 
 > “Yeah It's on. ”
