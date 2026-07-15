@@ -187,3 +187,47 @@ type <string>
 在根项目中
 
 package.json 中 private 必须设置为 true
+
+### 现代 Monorepo 推荐结构
+
+```text
+repo/
+  apps/
+    web/
+    docs/
+  packages/
+    ui/
+    utils/
+    eslint-config/
+  package.json
+  pnpm-workspace.yaml
+  turbo.json 或 nx.json
+```
+
+`pnpm-workspace.yaml` 示例：
+
+```yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+根 `package.json` 可以只保留统一脚本：
+
+```json
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  }
+}
+```
+
+实践建议：
+
+- 共享库放 `packages/*`，应用放 `apps/*`，避免边界混乱。
+- 每个包都保留自己的 `package.json`，明确 `name`、`exports`、`types`。
+- CI 中优先跑受影响包的构建和测试，减少全量任务。
+- 发布 npm 包时可以用 Changesets 或 Lerna 管理版本，不要手工逐个改版本号。

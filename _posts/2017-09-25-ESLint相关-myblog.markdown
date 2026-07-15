@@ -23,6 +23,36 @@ tags:
 
 **ESLint是一个用来识别 ECMAScript 并且按照规则给出报告的代码检测工具，使用它可以避免低级错误和统一代码的风格。**
 
+> 更新说明：ESLint v9 开始默认使用 Flat Config，推荐入口文件为 `eslint.config.js` / `eslint.config.mjs`。旧的 `.eslintrc.*` 仍常见于历史项目，但新项目建议直接使用扁平配置。性能敏感的大型项目可以引入 Oxlint 辅助检查，格式化职责则建议交给 Prettier 或 Biome，避免 ESLint 同时承担过多格式化规则。
+
+现代工程里可以这样分工：
+
+- ESLint：负责 JS/TS/React/Vue 代码质量和潜在问题。
+- TypeScript：负责类型检查，`tsc --noEmit` 不应被 ESLint 完全替代。
+- Prettier / Biome：负责格式化，减少风格规则争议。
+- Oxlint：负责快速发现一部分常见问题，可作为 ESLint 的性能补充。
+- Stylelint：负责 CSS / Less / Sass / Vue style 的样式规则。
+
+Flat Config 基础示例：
+
+```js
+// eslint.config.js
+import js from '@eslint/js'
+import tseslint from 'typescript-eslint'
+
+export default [
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    ignores: ['dist/**', 'coverage/**'],
+    rules: {
+      'no-console': 'warn',
+    },
+  },
+]
+```
+
 ESLint被设计为完全可配置的，主要有两种方式来配置ESLint：
 
 * 在注释中配置：使用JavaScript注释直接把配置嵌入到JS文件中。

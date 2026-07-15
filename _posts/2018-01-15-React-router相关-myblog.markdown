@@ -14,6 +14,46 @@ tags:
 
 ## 正文
 
+> 更新说明：早期内容主要基于 React Router v4/v5，后文已补充 v6 的 `Routes`、`Outlet`、`RouterProvider` 等写法。React Router v7 在 v6 基础上平滑演进，核心迁移成本较低，新项目建议优先使用 Data Router 写法，例如 `createBrowserRouter` + `RouterProvider`，方便统一处理 loader、action、错误边界和懒加载。
+
+### React Router v7 / Data Router 推荐写法
+
+```tsx
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from 'react-router-dom'
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: 'users/:id',
+        loader: async ({ params }) => fetchUser(params.id),
+        element: <UserPage />,
+      },
+    ],
+  },
+])
+
+export function App() {
+  return <RouterProvider router={router} />
+}
+```
+
+适合优先使用 Data Router 的场景：
+
+- 路由级数据加载、权限校验、错误处理较多。
+- 希望页面和数据请求生命周期绑定，减少组件内重复写 `useEffect`。
+- 需要路由级懒加载、嵌套路由和统一 loading/error 体验。
+
 ### BrowserRouter
 
 一个使用了 HTML5 history API 的高阶路由组件，保证你的 UI 界面和 URL 保持同步。此组件拥有以下属性：

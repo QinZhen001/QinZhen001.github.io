@@ -14,6 +14,23 @@ tags:
 
 [重新构想原子化 CSS](https://antfu.me/posts/reimagine-atomic-css-zh)
 
+## 原子化 CSS 适用场景
+
+原子化 CSS 的核心思想是把样式拆成更小的工具类，通过组合工具类完成页面样式，而不是为每个组件反复编写语义化 class。它适合组件化、设计系统、后台系统、活动页等迭代快、样式复用多的场景。
+
+优势：
+
+- 样式就近维护，减少在模板和样式文件之间来回跳转。
+- 约束设计变量，降低随意写颜色、间距、字号导致的视觉不一致。
+- 未使用的工具类不会进入最终产物，生产环境 CSS 体积通常可控。
+- 配合组件封装后，既能保留开发效率，也能避免页面模板过长。
+
+需要注意的问题：
+
+- class 较长时可读性会下降，建议把复杂组合收敛到组件或 `cn` 工具函数中。
+- 不要把原子类当成完全替代 CSS 的银弹，复杂动画、特殊选择器、富文本样式仍适合单独写 CSS。
+- 设计变量要统一维护，否则工具类越写越散，反而破坏一致性。
+
 ## tailwindcss
 
 ### tailwind-merge
@@ -45,7 +62,27 @@ className={cn(
 
 [https://v2.tailwindcss.com/docs/just-in-time-mode](https://v2.tailwindcss.com/docs/just-in-time-mode)
 
-Tailwind CSS v2.1 introduces a new just-in-time compiler for Tailwind CSS that generates your styles on-demand as you author your templates instead of generating everything in advance at initial build time.
+Tailwind CSS v2.1 引入 JIT 编译器，按需生成工具类，避免提前生成全部 CSS。后续版本中 JIT 已经成为默认能力，新项目通常不需要再单独开启 `mode: 'jit'`。
+
+### Tailwind CSS v4 变化
+
+Tailwind CSS v4 的重要变化是更偏向 CSS-first 配置，很多主题变量可以直接在 CSS 中通过 `@theme` 声明，而不是全部写在 `tailwind.config.js` 中。这样更接近原生 CSS，也方便和设计变量、CSS 变量体系结合。
+
+```css
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #1677ff;
+  --spacing-page: 24px;
+  --font-sans: Inter, system-ui, sans-serif;
+}
+```
+
+实践建议：
+
+- 新项目优先按 v4 的 CSS-first 方式组织主题变量。
+- 历史 v3 项目升级时，先梳理 `theme.extend` 中的颜色、间距、字体，再迁移到 `@theme`。
+- 如果项目强依赖旧插件或旧 PostCSS 链路，先评估插件兼容性，不要为了升级而一次性重构全部样式。
 
 ### postcss-preset-env
 

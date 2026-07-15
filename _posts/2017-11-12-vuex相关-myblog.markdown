@@ -27,6 +27,38 @@ Vue 组件间如何通讯
 
 Vuex 是一个专为 Vue.js 应用程序开发的**状态管理模式**。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。Vuex 也集成到 Vue 的官方调试工具 devtools extension，提供了诸如零配置的 time-travel 调试、状态快照导入导出等高级调试功能。
 
+> 更新说明：Vuex 仍然适合维护 Vue 2 / Vuex 3 或 Vue 3 / Vuex 4 的历史项目；新 Vue 3 项目更推荐优先使用 Pinia。Pinia API 更轻量，TypeScript 支持更自然，不再强制区分 mutation 和 action，也更贴合 Composition API。
+
+Vuex 与 Pinia 的选择：
+
+| 场景 | 建议 |
+| --- | --- |
+| Vue 2 老项目 | 继续 Vuex，除非有明确重构窗口 |
+| Vue 3 新项目 | 优先 Pinia |
+| 大量依赖 Vuex module 的项目 | 逐步迁移，不建议一次性重写 |
+| 只需要少量跨组件状态 | 可先考虑 `provide/inject` 或组合式函数 |
+
+Pinia 基础示例：
+
+```ts
+import { defineStore } from 'pinia'
+
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    token: '',
+    profile: null as User | null,
+  }),
+  getters: {
+    isLogin: (state) => Boolean(state.token),
+  },
+  actions: {
+    setToken(token: string) {
+      this.token = token
+    },
+  },
+})
+```
+
 ### 开始
 每一个 Vuex 应用的核心就是 store（仓库）。“store”基本上就是一个容器，它包含着你的应用中大部分的状态 (state)。Vuex 和单纯的全局对象有以下两点不同：
 

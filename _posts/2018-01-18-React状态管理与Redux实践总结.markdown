@@ -23,6 +23,16 @@ Redux 是 JavaScript 状态容器，提供可预测化的状态管理。
 Redux 除了和 React 一起用外，还支持其它界面库。
 它体小精悍（只有2kB）且没有任何依赖。
 
+> 更新说明：早期 Redux 需要手写 action type、action creator、reducer 和 store 配置。现在官方更推荐使用 Redux Toolkit，它内置 `configureStore`、`createSlice`、Immer、Thunk 和 DevTools 配置，可以显著减少模板代码。服务端数据获取和缓存场景优先考虑 RTK Query，不建议手写大量 loading/error/cache 逻辑。
+
+现代 React 状态管理可以按场景选择：
+
+- 本地 UI 状态：优先 `useState` / `useReducer`。
+- 跨组件但范围较小：可以用 Context，但要注意频繁更新导致的重渲染。
+- 复杂客户端状态：Redux Toolkit、Zustand、Jotai 都可以考虑。
+- 服务端状态：优先 React Query、SWR 或 RTK Query。
+- 已经使用 Redux 的大型项目：优先迁移到 Redux Toolkit，而不是继续扩展旧写法。
+
 应用中所有的 state 都以一个对象树的形式储存在一个单一的 store 中。
 惟一改变 state 的办法是触发 action，一个描述发生什么的对象。
 为了描述 action 如何改变 state 树，你需要编写 reducers。
@@ -459,6 +469,32 @@ undoable(reducer, { filter: excludeAction([SOME_ACTION, SOME_OTHER_ACTION]) })
 ----
 
 Redux Toolkit 的设计理念是降低使用 Redux 的复杂性，让开发者能更专注于应用逻辑，而不是底层的状态管理。通过引入 `createSlice` 和 `configureStore` 等工具，Redux Toolkit 极大地提高了 Redux 的可用性和效率。
+
+#### RTK Query
+
+RTK Query 是 Redux Toolkit 内置的数据获取和缓存方案，适合已经使用 Redux 的项目。它可以自动生成请求 hooks，并处理缓存、请求去重、loading、error、重新拉取等常见逻辑。
+
+```ts
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
+export const userApi = createApi({
+  reducerPath: 'userApi',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getUser: builder.query<User, string>({
+      query: (id) => `/users/${id}`,
+    }),
+  }),
+})
+
+export const { useGetUserQuery } = userApi
+```
+
+使用建议：
+
+- 如果项目已经接入 Redux Toolkit，可以优先用 RTK Query 管理接口数据。
+- 如果项目没有 Redux，单纯为了请求缓存不一定要引入 Redux，可以选择 React Query / SWR。
+- 不建议把服务端缓存数据再复制一份到普通 slice 中，容易出现数据双源和同步问题。
 
 #### in next.js
 
