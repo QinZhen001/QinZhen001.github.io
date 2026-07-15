@@ -19,6 +19,16 @@ tags:
 
 **一个后处理器**
 
+> 更新说明：PostCSS 仍然是 CSS 工程化的重要基础设施，Tailwind、Autoprefixer、postcss-preset-env、px-to-rem/viewport 等工具都大量依赖它。但现代构建链路中也出现了 Lightning CSS、Oxide 等更高性能实现，部分场景会替代 Autoprefixer、压缩和语法降级能力。新项目不需要为了“用了 CSS”就默认堆很多 PostCSS 插件，应按需求选择。
+
+常见职责划分：
+
+- Autoprefixer：根据 Browserslist 自动补浏览器前缀。
+- postcss-preset-env：让部分现代 CSS 提前可用，并按目标浏览器做转换。
+- Tailwind / UnoCSS：原子化 CSS 生成和扫描。
+- px-to-rem / px-to-viewport：移动端适配单位转换。
+- cssnano / Lightning CSS：CSS 压缩和优化。
+
 本身是一个 Node.js 模块，可将 CSS 解析为[抽象语法树 (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)；通过任意数量的“插件”函数传递该 AST；然后将该 AST 转换回字符串
 
 [https://segmentfault.com/a/1190000003909268](https://segmentfault.com/a/1190000003909268)

@@ -23,6 +23,15 @@ tags:
 
 >该属性会影响行框的布局。在应用到一个块级元素时，它定义了该元素中基线之间的最小距离而不是最大距离。
 
+现代布局中，很多垂直居中场景已经可以优先使用 Flex/Grid，例如 `align-items: center`、`place-items: center`。但 `line-height`、`vertical-align`、基线、幽灵空白节点仍然很重要，因为它们决定了文字、图标、inline-block、图片和表单控件在同一行内的对齐效果。
+
+实践建议：
+
+- 正文排版优先使用无单位行高，例如 `line-height: 1.5`，避免子元素继承固定计算值。
+- 单行文本垂直居中可以使用 `line-height = height`，但按钮、图标混排更推荐 Flex。
+- 图片底部间隙通常来自基线对齐，可用 `display: block` 或 `vertical-align: middle/bottom` 处理。
+- 图标字体和文本对齐时，要关注字体度量、`line-height` 和 `vertical-align` 的共同影响。
+
 先说一个大家都熟知的现象，有一个空的div，`<div></div>`，如果没有设置至少大于1像素高度height值时，该div的高度就是个0。如果该div里面打入了一个空格或是文字，则此div就会有一个高度。那么您思考过没有，为什么div里面有文字后就会有高度呢？
 
 这是个看上去很简单的问题，是理解line-height非常重要的一个问题。可能有人会跟认为是：文字撑开的！文字占据空间，自然将div撑开。我一开始也是这样理解的，但是事实上，深入理解inline模型后，我发现，**根本不是文字撑开了div的高度，而是line-height**！

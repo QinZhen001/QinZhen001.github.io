@@ -17,6 +17,25 @@ tags:
 
 [总结移动端H5开发常用技巧](https://juejin.cn/post/6844904066301050893)
 
+### 当前移动端适配重点
+
+移动端 H5 适配已经从早期 `rem + flexible` 逐步转向更原生的 viewport、动态视口单位和安全区适配。阅读旧方案时要区分“历史兼容方案”和“当前推荐方案”。
+
+实践建议：
+
+- 页面整体布局优先使用 Flex/Grid + 百分比/viewport 单位，不要所有尺寸都机械转换。
+- 移动端高度优先考虑 `100dvh`、`100svh`、`100lvh`，减少地址栏显示/隐藏导致的 `100vh` 问题。
+- 刘海屏和底部 Home Indicator 使用 `env(safe-area-inset-*)` 处理安全区。
+- 图片优先使用 `srcset`、`picture`、WebP/AVIF 和合适的 DPR 资源，而不是一味使用大图。
+- 适配方案要结合设计稿、业务类型和目标浏览器，不建议在新项目继续默认引入 `lib-flexible`。
+
+```css
+.page {
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
 ### 移动端适配
 
 让网页在各终端上的展示效果就像缩放设计稿图片一样，在不同屏幕上等比缩放，每一个元素与整体比例保持不变，真实还原设计稿。

@@ -13,6 +13,18 @@ tags:
 > “Yeah It's on. ”
 >
 
+## 当前定位
+
+Less、Sass、SCSS 仍然适合大型历史项目和需要复杂样式抽象的组件库，但现代 CSS 已经补齐了很多过去依赖预处理器的能力，例如 CSS 变量、原生嵌套、`@layer`、`color-mix()`、Container Queries 等。新项目选型时不一定要默认引入预处理器。
+
+实践建议：
+
+- 设计 Token 优先使用 CSS Custom Properties，方便运行时主题切换。
+- 复杂函数、循环、mixin 较多的老项目可以继续使用 Sass/Less，但要控制抽象层级。
+- 如果只是为了嵌套语法，优先评估原生 CSS Nesting 或构建工具支持。
+- 主题定制不要过度依赖运行时 Less 编译，现代组件库更常见的是 CSS 变量 + class/data-theme。
+- 与 Tailwind/UnoCSS 共存时，要明确职责边界，避免工具类和预处理器 mixin 同时表达同一套样式规则。
+
 ## less
 
 [https://less.bootcss.com/#%E6%A6%82%E8%A7%88](https://less.bootcss.com/#%E6%A6%82%E8%A7%88)
