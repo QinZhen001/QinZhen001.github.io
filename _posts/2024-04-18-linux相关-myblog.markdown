@@ -30,6 +30,25 @@ tags:
 
 * Linux不靠扩展名区分文件类型，它靠的是权限来区分
 
+## 运维排查重点
+
+Linux 命令不要只背参数，更重要的是能按问题类型快速定位：
+
+- CPU：`top`、`htop`、`pidstat`、`perf`，关注用户态/内核态、load average 和热点进程。
+- 内存：`free`、`vmstat`、`pmap`、`smem`，区分可用内存、缓存、swap 和 OOM。
+- 磁盘：`df`、`du`、`iostat`、`lsof`，关注磁盘满、inode 满、IO wait、已删除但仍被占用的文件。
+- 网络：`ss`、`ip`、`dig`、`curl`、`tcpdump`，关注监听端口、连接状态、DNS、TLS 和链路问题。
+- 日志：`journalctl`、`dmesg`、应用日志，先看时间线，再看错误上下文。
+
+常用排查入口：
+
+```bash
+ss -lntp
+journalctl -u nginx --since "1 hour ago"
+df -h && df -i
+lsof +L1
+```
+
 ### Union FS
 
 Union FS（Unified File System）是一种文件系统层叠技术，可以将不同文件系统挂载到同一个目录下，形成一个统一的虚拟文件系统。它通过将多个目录合并成一个逻辑上的目录，实现对这些目录进行统一管理和访问。

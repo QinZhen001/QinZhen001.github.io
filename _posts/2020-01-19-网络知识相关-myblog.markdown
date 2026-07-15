@@ -12,6 +12,28 @@ tags:
 
 > “Yeah It's on. ”
 
+## 当前网络实践重点
+
+网络知识不只需要理解 OSI/TCP/IP 分层，还要结合现代 Web 的性能、安全和可观测性来看：
+
+- HTTP/2 解决了 HTTP/1.1 多连接和队头阻塞的一部分问题，但 TCP 层队头阻塞仍然存在。
+- HTTP/3 基于 QUIC/UDP，并集成 TLS 1.3，弱网和移动网络切换场景下体验更好。
+- HTTPS 已经是默认要求，TLS 版本、证书链、HSTS、OCSP Stapling 都会影响安全和性能。
+- 缓存策略要区分 HTML、静态资源、接口数据：HTML 通常短缓存或协商缓存，带 hash 的静态资源可长缓存。
+- 排查网络问题时，优先结合 DevTools Network、`curl -v`、`dig/nslookup`、`ping`、`traceroute`、服务端 access log。
+
+常见静态资源缓存策略：
+
+```http
+Cache-Control: public, max-age=31536000, immutable
+```
+
+HTML 入口文件更适合：
+
+```http
+Cache-Control: no-cache
+```
+
 ## 网络协议
 
 [https://mp.weixin.qq.com/s/6DBhbz7eAETXVbPHmOKHww](https://mp.weixin.qq.com/s/6DBhbz7eAETXVbPHmOKHww)

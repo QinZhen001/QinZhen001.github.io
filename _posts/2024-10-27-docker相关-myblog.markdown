@@ -35,6 +35,31 @@ docker可以屏蔽环境差异，也就是说，只要你的程序打包到了do
 * 更轻松地迁移
 * 更轻松地维护和扩展
 
+当前 Docker 实践建议：
+
+- 优先使用 BuildKit，利用缓存挂载、secret 挂载和多阶段构建提升构建速度与安全性。
+- 生产镜像尽量使用多阶段构建，只保留运行时必要文件，避免把源码、构建缓存和开发依赖带入最终镜像。
+- 容器内尽量不要以 root 用户运行，必要时创建专用用户并限制文件权限。
+- 基础镜像不要长期使用 `latest`，应固定主版本或 digest，并定期扫描漏洞。
+- `.dockerignore` 必须维护好，避免把 `node_modules`、`.git`、日志、测试产物复制进构建上下文。
+- 关注 SBOM、镜像签名和漏洞扫描，生产发布不只看镜像能否运行。
+
+```dockerfile
+# syntax=docker/dockerfile:1
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+USER node
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+CMD ["node", "server.js"]
+```
+
 ### Image/Container/Repository
 
 - **Image：** 和 windows 的那种 iso 镜像相比，Docker 中的镜像是分层的，可复用的，而非简单的一堆文件迭在一起（类似于一个压缩包的源码和一个 git 仓库的区别）。

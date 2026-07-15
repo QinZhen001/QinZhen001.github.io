@@ -32,6 +32,24 @@ Nginx更长于底层服务器端资源的处理（静态资源处理转发、反
 - Gzip 压缩
 - 负载均衡
 
+当前实践建议：
+
+- 静态资源服务要配合合理的 `Cache-Control`、`ETag`、`Last-Modified` 和压缩策略。
+- HTTPS 默认开启，优先禁用过旧 TLS 版本，合理配置 HSTS 和安全响应头。
+- 反向代理要正确透传 `Host`、`X-Forwarded-For`、`X-Forwarded-Proto` 等头部，方便后端识别真实来源。
+- WebSocket / SSE 需要单独关注 `Upgrade`、超时和缓冲配置。
+- HTTP/3/QUIC 可以作为高延迟或移动网络场景的优化方向，但要确认 Nginx 版本、编译模块、CDN 和客户端支持。
+- 生产环境修改配置后先 `nginx -t`，再 `nginx -s reload`，避免直接重启导致中断。
+
+常见安全响应头示例：
+
+```nginx
+add_header X-Content-Type-Options nosniff always;
+add_header X-Frame-Options SAMEORIGIN always;
+add_header Referrer-Policy strict-origin-when-cross-origin always;
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+```
+
 nginx模块一般被分成三大类：handler、filter和upstream
 
 ## 基础
