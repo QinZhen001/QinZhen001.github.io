@@ -17,6 +17,16 @@ tags:
 
 这里只写一些比较重要的基础知识，查看更多知识请移步react官网
 
+> 更新说明：早期 React 文章多围绕 class component、生命周期和 HOC 展开。现代 React 项目更常见的是函数组件、Hooks、并发渲染、Server Components、Actions 和编译器优化。旧 API 仍然需要理解，但新项目应优先按函数组件和数据流拆分来设计。
+
+现代 React 实践重点：
+
+- 组件默认使用函数组件和 Hooks，class component 多用于维护老代码。
+- 表单和异步提交可以关注 React 19 的 Actions、`useActionState`、`useOptimistic` 等能力。
+- 服务端渲染框架中要区分 Client Components 和 Server Components，避免把浏览器 API 写进服务端组件。
+- 性能优化不要过早滥用 `useMemo` / `useCallback`，优先保证状态位置合理、组件边界清晰。
+- React Compiler 可以减少一部分手动 memo 成本，但需要关注项目构建链路和代码规范兼容性。
+
 #### 受控组件与非受控组件
 
 ##### 受控组件

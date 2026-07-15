@@ -21,6 +21,16 @@ tags:
 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。
 Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。
 
+> 更新说明：现代 Node.js 已经不只是“服务端 JavaScript 运行时”，还内置了越来越多 Web 标准和工程能力，例如 `fetch`、Web Streams、`node:test`、`AbortController`、`structuredClone`、`BroadcastChannel` 等。新项目应优先选择当前 LTS 版本，并通过 `.nvmrc`、`.node-version`、`volta` 或 `package.json engines` 固定运行时版本。
+
+现代 Node.js 实践重点：
+
+- 新项目优先使用 ESM 或明确约定 CJS/ESM 边界，避免混用导致模块解析问题。
+- 测试可以优先评估内置 `node:test`，复杂断言和生态集成再引入 Vitest/Jest。
+- HTTP 请求优先使用内置 `fetch` 或 Undici，减少不必要的请求库依赖。
+- CPU 密集任务不要阻塞主线程，可以考虑 `worker_threads`、进程池或拆分服务。
+- 权限模型、原生 TypeScript 支持等能力在不同 Node 版本中的稳定程度不同，生产使用前要以目标 LTS 文档为准。
+
 它是单线程单进程模式，nodeJS的单线程指js的引擎只有一个实列。且是在主线程执行的，这样的。
 
 ```text

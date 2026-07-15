@@ -36,6 +36,18 @@ tags:
 
 > 维护建议：后续新增内容优先放入上述分类，不要继续追加到“补充”末尾；错误类内容统一放到“常见错误与排查”。
 
+### 工程实践建议
+
+TypeScript 项目不要只关注语法，还要关注编译边界和类型检查边界：
+
+- 应用项目：建议开启 `strict`，构建工具负责转译，`tsc --noEmit` 负责类型检查。
+- 库项目：重点关注 `declaration`、`exports`、`types`、`moduleResolution`、`verbatimModuleSyntax` 和声明文件产物。
+- Monorepo：优先使用 project references 或按包独立类型检查，避免单个根 `tsconfig` 越来越慢。
+- Node 项目：根据运行时选择 `module: node20` / `nodenext` / `bundler`，不要照搬浏览器项目配置。
+- 前端项目：如果使用 Vite/Rspack/Webpack 转译 TS，要明确它们通常只做转译，不等价于完整类型检查。
+
+推荐把 `tsconfig` 拆成基础配置和场景配置，例如 `tsconfig.base.json`、`tsconfig.app.json`、`tsconfig.node.json`，避免所有环境共用一份配置。
+
 ### TypeScript 5.x / 6.x / 7.x 对比与发布时间
 
 > 日期主要参考 Microsoft TypeScript 官方博客公告；npm / GitHub tag 的发布时间可能因为时区、补丁版本或发布流程存在 1 天左右差异。

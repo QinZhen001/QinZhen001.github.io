@@ -17,6 +17,16 @@ tags:
 
 [浏览器工作原理与实践]( http://blog.poetries.top/browser-working-principle/guide/part1/lesson01.html )
 
+### 阅读重点
+
+浏览器原理类文章很容易停留在“进程、线程、渲染流水线”的概念层面，工程实践中更建议把它和性能优化、稳定性、调试工具结合起来理解：
+
+- 导航阶段：DNS、TCP/TLS、HTTP 缓存、重定向、Service Worker 都会影响首屏。
+- 渲染阶段：HTML 解析、CSSOM、布局、绘制、合成决定页面能否快速可见和可交互。
+- JS 执行：长任务会阻塞主线程，影响输入响应和动画流畅度。
+- 资源加载：图片、字体、脚本、样式的优先级会影响 LCP、CLS、INP 等指标。
+- 调试工具：Chrome DevTools 的 Performance、Network、Memory、Rendering 面板要结合使用。
+
 ### 进程（process）和 线程（thread）
 
 - 进程是 CPU 资源分配的最小单位

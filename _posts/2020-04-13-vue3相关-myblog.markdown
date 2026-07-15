@@ -19,6 +19,18 @@ tags:
 
 [vue api 查询 https://vuejs.org/api/](https://vuejs.org/api/)
 
+### 当前实践重点
+
+Vue 3 经过多个版本迭代后，Composition API、`<script setup>`、Pinia、Vite、TypeScript 已经成为主流组合。维护 Vue 3 项目时，建议把关注点从“Vue 2 到 Vue 3 的差异”转向“响应式边界、类型推导、编译时优化和工程组织”。
+
+实践建议：
+
+- 新组件优先使用 `<script setup>`，减少 `setup()` 样板代码。
+- 跨组件状态优先考虑 Pinia，少量依赖注入场景可用 `provide/inject`。
+- 组件 props 和 emits 尽量类型化，避免运行时和类型定义两套不一致。
+- 大型表单、表格、可视化页面要关注响应式粒度，避免把过大的对象整体 `reactive`。
+- 关注 Vue 3.5+ 的响应式 props 解构、`defineModel`、性能优化等能力；Vapor Mode 等新编译模式适合持续跟进，但生产采用前要验证生态兼容性。
+
 ### Reflect
 
 [ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect ]( https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect )
