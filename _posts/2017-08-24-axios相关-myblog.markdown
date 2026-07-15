@@ -10,7 +10,7 @@ tags:
     - 网络
 ---
 
-> “Yeah It's on.
+> “Yeah It's on. ”
 
 ## 正文
 [网页链接](https://ykloveyxk.github.io/2017/02/25/axios%E5%85%A8%E6%94%BB%E7%95%A5/)
@@ -218,7 +218,7 @@ var instance = axios.create({
   proxy: {
     host: '127.0.0.1',
     port: 9000,
-    auth: : {
+    auth: {
       username: 'mikeymike',
       password: 'rapunz3l'
     }
@@ -286,6 +286,51 @@ axios.interceptors.response.use（function（response）{
 ```js
 var myInterceptor = axios.interceptors.request.use(function () {/*...*/});
 axios.interceptors.request.eject(myInterceptor);
+```
+
+#### 取消请求
+
+Axios 从 `v0.22.0` 开始支持 `AbortController`，`CancelToken` 已不建议在新项目中使用。典型场景包括：路由切换时取消未完成请求、搜索框输入时取消上一次查询、组件卸载时避免继续更新状态。
+
+```ts
+const controller = new AbortController()
+
+axios.get('/api/search', {
+  params: { keyword },
+  signal: controller.signal,
+})
+
+// 需要取消时调用
+controller.abort()
+```
+
+#### 统一鉴权和错误处理
+
+实际项目中通常会创建一个独立实例，把 `baseURL`、超时、token 注入、错误提示、登录失效处理都收敛到一处。
+
+```ts
+const request = axios.create({
+  baseURL: '/api',
+  timeout: 10000,
+})
+
+request.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+request.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    if (error.response?.status === 401) {
+      // 清理登录态并跳转登录页
+    }
+    return Promise.reject(error)
+  },
+)
 ```
 
 ### 处理错误

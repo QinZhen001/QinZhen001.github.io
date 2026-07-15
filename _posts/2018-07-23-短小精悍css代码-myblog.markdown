@@ -396,8 +396,8 @@ backface-visibility 属性定义当元素不面向屏幕时是否可见。
 ```js
 const visible = this.$input.clientWidth < this.$input.scrollWidth
 
-if(visible){
-  // TODO something
+if (visible) {
+  showOverflowTooltip()
 }
 ```
 

@@ -343,7 +343,7 @@ package-lock.json 的作用是**锁定**依赖安装结构，如果查看这个 
 
 > 原文：TypeDoc 文档生成实践（2023-10-27 18:06:00）
 
-# typedoc 
+### typedoc
 
 [https://typedoc.org/guides/overview/](https://typedoc.org/guides/overview/)
 

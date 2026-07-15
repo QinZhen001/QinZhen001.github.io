@@ -14,7 +14,9 @@ tags:
 
 ## 正文
 
-在这里记录一下，使用vue-cli3过程中一些重要的知识点
+在这里记录一下，使用vue-cli3过程中一些重要的知识点。
+
+> 更新说明：Vue CLI 是基于 Webpack 的 Vue 官方脚手架，目前更适合维护历史项目。新项目建议优先使用 `create-vue` 创建基于 Vite 的项目；如果项目仍依赖大量 Webpack 配置、Vue CLI 插件或历史构建链路，再继续维护 Vue CLI 方案。
 
 ### 环境变量和模式
 
@@ -437,7 +439,7 @@ Default: ['es6.array.iterator', 'es6.promise', 'es6.object.assign', 'es7.promise
 
 
 
-# 前序
+### 前序
 
 原op系统是基于webpack4自定义了一套配置，编译速度偏慢，并不能跟上webapck5的潮流
 
@@ -481,7 +483,7 @@ Default: ['es6.array.iterator', 'es6.promise', 'es6.object.assign', 'es7.promise
 
 
 
-# 问题
+### 问题
 
 在此记录一下遇到到问题
 
@@ -773,7 +775,7 @@ Vue JSX support
 
 
 
-# 补充 
+### 补充
 
 
 

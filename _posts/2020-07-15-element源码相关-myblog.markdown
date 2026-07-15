@@ -13,6 +13,17 @@ tags:
 > “Yeah It's on. ”
 >
 
+## 适用范围
+
+这篇主要记录的是 Element UI（Vue 2 生态）的源码阅读笔记。Element UI 的很多设计仍然值得参考，比如工具函数封装、自定义指令、组件间通信、文档构建等；但新项目如果基于 Vue 3，更推荐优先参考 Element Plus 的实现。
+
+阅读这类组件库源码时，可以优先关注几条主线：
+
+- 基础工具函数：事件绑定、DOM 操作、类型判断、兼容处理。
+- 指令封装：如 `clickoutside`、`repeat-click` 等交互能力如何复用。
+- 组件通信：早期 Vue 2 组件库常见的 `dispatch` / `broadcast` 模式。
+- 文档构建：如何把 Markdown、示例代码和组件 Demo 串起来。
+
 ## 组件
 
 ## utils工具函数
@@ -165,7 +176,7 @@ export default {
 
 ## 广播
 
-### dispath 和 broadcast
+### dispatch 和 broadcast
 
 broadcast 方法的作用是向后代子孙组件传值，它会遍历所有的后代组件，当遍历到后代组件中 componentName 与当前的组件名一样，则触发 $emit 事件，以此来传递数据
 
