@@ -20,6 +20,20 @@ tags:
 
 插件目的在于解决 loader 无法实现的其他事。
 
+> 更新说明：很多早期常用插件在 Webpack 4/5 后已经被内置能力或新插件替代。阅读旧配置时要先判断版本，避免把历史写法继续搬到新项目里。
+
+常见替代关系：
+
+| 旧方案 | 新方案 |
+| --- | --- |
+| `CommonsChunkPlugin` | `optimization.splitChunks` / `runtimeChunk` |
+| `clean-webpack-plugin` | `output.clean` |
+| `extract-text-webpack-plugin` | `mini-css-extract-plugin` |
+| `OptimizeCSSAssetsPlugin` | `css-minimizer-webpack-plugin` |
+| `HashedModuleIdsPlugin` / `NamedModulesPlugin` | `optimization.moduleIds: 'deterministic'` |
+| `hard-source-webpack-plugin` | Webpack 5 filesystem cache |
+| `eslint-loader` | `eslint-webpack-plugin` 或独立 lint 命令 |
+
 --------------------
 
 **剖析**

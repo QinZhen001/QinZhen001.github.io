@@ -12,6 +12,34 @@ tags:
 
 > “Yeah It's on. ”
 
+## 包管理器选型建议
+
+现代前端项目选择包管理器时，不只看安装速度，还要看团队一致性、锁文件稳定性、Monorepo 支持、磁盘占用和生态兼容性。
+
+简单建议：
+
+| 场景 | 推荐 |
+| --- | --- |
+| 普通单包项目、追求默认兼容 | npm |
+| Monorepo、多包依赖、磁盘占用敏感 | pnpm |
+| 需要 Yarn Berry / PnP / Zero-Install | Yarn |
+| 团队已有稳定规范 | 优先保持一致，不要频繁切换 |
+
+建议在 `package.json` 中声明 `packageManager`，并配合 Corepack 固定包管理器版本，避免不同成员使用不同版本导致 lockfile 反复变化。
+
+```json
+{
+  "packageManager": "pnpm@9.15.0"
+}
+```
+
+```bash
+corepack enable
+corepack prepare pnpm@9.15.0 --activate
+```
+
+Monorepo 项目优先考虑 `pnpm workspace`，再按需要组合 Changesets、Turborepo、Nx 或 Lerna。
+
 ## npm
 
 [https://www.cnblogs.com/penghuwan/p/6973702.html#_label4](https://www.cnblogs.com/penghuwan/p/6973702.html#_label4)

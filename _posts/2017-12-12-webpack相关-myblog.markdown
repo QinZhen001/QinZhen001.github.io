@@ -24,6 +24,18 @@ tags:
 
 [Webpack设计理念](https://juejin.cn/post/7170852747749621791)
 
+### 当前定位
+
+Webpack 仍然是大型前端工程中非常重要的构建工具，尤其适合历史包袱较多、Loader/Plugin 生态依赖深、需要高度定制构建链路的项目。新项目如果追求开发启动速度和简单配置，可以优先考虑 Vite / Rspack / Rsbuild；如果项目已经深度依赖 Webpack 生态，则更建议升级和优化 Webpack 5，而不是盲目迁移。
+
+Webpack 5 之后几个值得重点关注的能力：
+
+- 持久化缓存：通过 `cache: { type: 'filesystem' }` 缓存构建结果，显著降低二次构建时间。
+- Asset Modules：内置资源模块能力，减少对 `file-loader`、`url-loader`、`raw-loader` 的依赖。
+- Module Federation：支持运行时共享远程模块，是很多微前端方案的底层能力之一。
+- 更稳定的长期缓存：配合 `contenthash`、`runtimeChunk`、`splitChunks` 和确定性的 module/chunk id。
+- Node.js polyfill 默认移除：浏览器端不再自动注入 Node 核心模块 polyfill，需要显式处理。
+
 ### 什么是Webpack
 
 WebPack可以看做是**模块打包机**：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式供浏览器使用。
