@@ -18,6 +18,8 @@ tags:
 
 [20道大厂面试题等你查收](https://juejin.im/post/5d124a12f265da1b9163a28d?utm_source=gold_browser_extension)
 
+> 更新说明：本篇偏基础知识体系，长期有效的部分（浏览器渲染、重排重绘、事件循环、缓存、网络）建议重点掌握。当前面试还会额外关注：TypeScript、React 19 / Vue 3 新特性、构建工具（Vite/Webpack/Rspack）、Core Web Vitals（LCP/INP/CLS）、工程化与性能优化、以及结合项目的系统设计题。建议按“基础原理 + 框架版本差异 + 工程实践 + 项目复盘”四条线准备。
+
 ## 并发和并行的区别
 
 **并发：concurrent**

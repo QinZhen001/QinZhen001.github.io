@@ -14,6 +14,8 @@ tags:
 
 [2 年前端 7～9 月面试经历总结](https://mp.weixin.qq.com/s/AR7MfTwYCK6V4YuN6xnSsA)
 
+> 更新说明：JS 基础（原型链、闭包、执行上下文、事件循环、this、异步）仍然是高频必考项，长期有效。TypeScript 部分建议补充当前重点：泛型、条件类型、`infer`、工具类型、`satisfies`、`as const`、类型收窄，以及 `tsconfig` 中 `strict`、`moduleResolution`、`verbatimModuleSyntax` 的实际影响。TS 已经是中大型项目默认选项，面试更看重类型建模能力而不是死记语法。
+
 ## ES5相关
 
 ### javaScript中有基本数据类型

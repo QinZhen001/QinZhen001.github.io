@@ -12,6 +12,8 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：本篇 Vue 部分主要基于 Vue 2 响应式（`Object.defineProperty`）和虚拟 DOM，React 部分主要基于 React 16 的生命周期、Fiber 和 setState 批处理。这些原理仍值得理解，但当前面试建议补充：Vue 3 的 Proxy 响应式、Composition API、`<script setup>`、编译期优化、Pinia；React 的 Hooks、并发特性、Server Components、Actions（`useActionState`/`useOptimistic`）和 React Compiler。回答时最好点明“Vue2/React16 是这样，Vue3/React18+ 有何变化”。
+
 ## Vue
 
 ### 什么是虚拟 DOM

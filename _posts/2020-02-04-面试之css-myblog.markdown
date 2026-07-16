@@ -12,6 +12,8 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：BFC、层叠上下文、盒模型、百分比参照物、经典布局仍是高频考点。当前面试还会问现代 CSS 能力：Flex/Grid、`gap`、`aspect-ratio`、Container Queries、`:has()`、`@layer`、逻辑属性，以及移动端动态视口单位 `svh/lvh/dvh` 和安全区 `env(safe-area-inset-*)`。建议基础原理和现代特性都能讲清楚适用场景。
+
 ## 页面布局类
 
 ### 经典三栏布局
