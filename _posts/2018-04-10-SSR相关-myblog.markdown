@@ -12,6 +12,16 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：SSR 的形态已经从早期"手写 Node + renderToString 全量字符串渲染"演进为由元框架（meta-framework）主导的多种渲染模式混合方案，不再是 SPA / SSR 的二选一。
+>
+> - **不再是二选一，而是混合渲染**：同一个应用里可以按路由/组件粒度组合 SSG（静态生成）、SSR（请求时渲染）、ISR（增量静态再生成）、CSR（客户端渲染），按需选择。
+> - **React 侧**：React 18 的 `renderToPipeableStream` 带来流式 SSR + Selective Hydration；React 19 + RSC（React Server Components）进一步把"默认在服务端渲染、只把必要交互下发到客户端"作为主线，Next.js App Router 是其主要落地形态。Remix（现已并入 React Router）则强调 Web 标准与嵌套路由数据加载。
+> - **Vue 侧**：Nuxt 3（基于 Nitro 引擎）提供跨部署平台（Node、Serverless、Edge）的统一 SSR/SSG 能力。
+> - **新范式**：Astro 的 Islands 架构（默认零 JS，按需水合）、Qwik 的 Resumability（可恢复性，跳过传统 hydration）、SolidStart 等，都在解决传统 hydration "先渲染再全量激活" 的成本问题。
+> - **Edge 渲染**：SSR 越来越多地跑在边缘运行时（Edge Runtime / Serverless）而非长驻 Node 进程，缓解了下文提到的"单进程 CPU 密集"瓶颈。
+>
+> 本文后续大量内容是围绕早期 React / Vue 手动 SSR 展开的，原理（hydration、避免状态单例、数据预取）依然通用，但工程实践上新项目应优先选用成熟元框架而非从零搭建。
+
 [https://github.com/yacan8/blog/issues/30](https://github.com/yacan8/blog/issues/30)
 
 与传统 SPA (单页应用程序 (Single-Page Application)) 相比，服务器端渲染 (SSR) 的优势主要在于：

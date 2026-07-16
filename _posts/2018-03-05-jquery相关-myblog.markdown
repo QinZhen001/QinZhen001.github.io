@@ -12,6 +12,29 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：jQuery 在现代前端工程中已基本退出主流应用开发。它诞生的核心价值——抹平浏览器 DOM/事件/Ajax 差异、简化选择器操作——如今大多已被原生标准取代：`querySelector` / `querySelectorAll`、`classList`、`fetch`、`addEventListener`、`Element.closest` 等原生 API 覆盖了 jQuery 的绝大部分能力，而框架时代的声明式渲染（React/Vue）也让"手动操作 DOM"这一模式本身变得不必要。
+>
+> 但 jQuery 并未"消亡"，它仍是使用量最大的库之一，适合继续使用的场景：
+>
+> - 维护存量老项目（后台管理系统、CMS、WordPress 主题/插件生态大量依赖 jQuery）。
+> - 无构建、无框架的静态页面或落地页，需要少量交互又不想引入打包链路。
+> - 邮件模板、第三方嵌入脚本等对体积和兼容性敏感、无法保证运行环境的场景。
+>
+> 新项目一般不建议再引入 jQuery：现代浏览器差异已很小，原生 API + 框架即可覆盖需求，避免多引入一份运行时。下面是几个常见 jQuery 操作的原生等价写法：
+>
+> ```javascript
+> // $('.box').addClass('active')
+> document.querySelector('.box').classList.add('active')
+>
+> // $('.item').on('click', fn) —— 事件委托
+> document.addEventListener('click', (e) => {
+>   if (e.target.closest('.item')) fn(e)
+> })
+>
+> // $.ajax / $.get
+> const data = await fetch('/api').then((r) => r.json())
+> ```
+
 ## 正文
 
 ### hover相关

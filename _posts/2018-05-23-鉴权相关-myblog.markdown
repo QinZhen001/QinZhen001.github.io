@@ -12,6 +12,16 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：本文覆盖的 Cookie / Session / Token / JWT / OAuth / SSO 等基础机制依然是鉴权的核心，但工程实践和安全共识这几年有明显更新，尤其在"前端如何安全地存放凭证"上。
+>
+> - **不要把 access token 存 localStorage**：localStorage 无法防御 XSS，一旦被注入脚本读取即泄露。现代主流做法是把凭证放在 **`HttpOnly` + `Secure` + `SameSite` 的 Cookie**，或采用 **BFF（Backend for Frontend）模式**：前端只和自家后端交互，token 由后端持有并转发，浏览器侧不直接接触第三方 token。
+> - **SameSite 默认收紧**：现代浏览器默认 `SameSite=Lax`，跨站携带 Cookie 需显式 `SameSite=None; Secure`，这直接影响了传统跨域鉴权和第三方 iframe 场景，需要重新评估。
+> - **OAuth 2.1 / PKCE**：OAuth 2.1 收敛了最佳实践，**隐式授权（implicit）已被废弃**，SPA / 移动端统一推荐 Authorization Code + PKCE；配合 OIDC（OpenID Connect）做身份认证。
+> - **无密码登录（Passkey / WebAuthn）**：基于公私钥的 Passkey 正在成为替代"账号密码 + 短信验证码"的方向，抗钓鱼、无需服务端存储可逆密码，各大平台已陆续支持。
+> - **JWT 的取舍**：无状态 JWT 依然适合服务间/短时令牌，但"踢人不及时、无法即时吊销"的固有问题仍在，实践中常配合 Redis 维护 refresh token 或黑名单（本文后面的双 token 方案仍是主流思路）。
+>
+> 一句话：机制原理不变，但"前端存 token 的方式"和"授权流程的推荐实践"已升级，新项目应遵循 HttpOnly Cookie / BFF + OAuth 2.1(PKCE) 的现代方案。
+
 ## cookie
 
 [https://juejin.cn/post/6844903829285289998](https://juejin.cn/post/6844903829285289998)

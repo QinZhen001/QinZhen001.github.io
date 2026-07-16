@@ -28,6 +28,15 @@ babel 7 如何解决：
 
 babel 7 废弃了 preset-20xx 和 preset-stage-x 的 preset 包，而换成了 preset-env，preset-env 默认会支持所有 es 标准的特性，如果没进入标准的，不再封装成 preset，需要手动指定 plugin-proposal-xxx。
 
+> 更新说明：Babel 在语法转译、语法提案（proposal）支持、polyfill 按需注入、生态插件丰富度上依然是标杆，短期内不会被完全取代。但在"编译速度"这个维度上，它已被一批 Rust / Go 实现的工具明显挑战和替代：
+>
+> - **esbuild**（Go）：Vite 开发态依赖预构建、以及很多库的打包都用它，转译速度比 Babel 快一到两个数量级，但不做 polyfill、不支持自定义 AST 插件。
+> - **SWC**（Rust）：Next.js 已默认用 SWC 替代 Babel 做编译与压缩（`next/babel` 仅在检测到自定义 `.babelrc` 时回退），Jest 也可用 `@swc/jest` 提速。
+> - **Oxc / Rolldown**（Rust）：新一代工具链（含 Vite 未来的 Rolldown），进一步统一转译、打包、lint。
+> - **tsc / tsgo**：纯 TS 项目可直接用 TypeScript 编译器输出，配合原生 ESM 已能满足很多场景。
+>
+> 现在仍强依赖 Babel 的典型场景：需要自定义 AST 插件（如 `babel-plugin-macros`、埋点/国际化插件）、依赖最新提案语法（装饰器等）、或已有一整套成熟的 Babel 配置难以迁移。新项目做技术选型时，如果没有自定义插件需求，优先考虑 SWC / esbuild 以获得更快的构建体验。
+
 ## 正文
 
 [https://www.jianshu.com/p/cbd48919a0cc](https://www.jianshu.com/p/cbd48919a0cc)

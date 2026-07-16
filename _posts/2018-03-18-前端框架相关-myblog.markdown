@@ -12,6 +12,15 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：本文早期以 Vue2 / React（class 组件 + VDOM）对比为主，如今框架格局和底层范式都有较大变化，但"解决 UI 与状态同步"这一根本诉求不变。
+>
+> - **React**：进入 React 19，主线是函数组件 + Hooks + RSC（服务端组件）+ Actions，class 组件、HoC/mixins 已基本退居历史；配套的 React Compiler（原 React Forget）尝试自动做 memo 优化，减少手动 `useMemo` / `useCallback`。
+> - **Vue**：Vue 3 的 Composition API + `<script setup>` 成为主流写法，Options API 更多存在于存量项目；Vapor Mode 探索去除虚拟 DOM、编译期直接生成 DOM 操作，思路上向 Svelte / Solid 靠拢。
+> - **信号（Signals）成为跨框架潮流**：Solid、Svelte 5（runes）、Vue（`ref`/`reactive`）、Angular（signals）、Preact Signals 等都采用细粒度响应式，绕开"组件级重渲染 + VDOM diff"的开销。这其实是 Vue 1.x 细粒度绑定思路的回归与升级。
+> - **编译时 / 无运行时框架**：Svelte、Solid、Qwik（Resumability）代表"把工作前移到编译期、削减运行时负担"的方向，本文末尾对 Svelte 的介绍正是这一趋势的体现。
+>
+> 选型层面，"不谈场景论好坏都是耍流氓"这句话依然成立：React 生态最大、招聘面最广；Vue 上手成本低、国内生态好；Svelte / Solid 适合追求极致性能与包体积的场景。
+
 ### 正文
 
 Vue2.1.7源码学习

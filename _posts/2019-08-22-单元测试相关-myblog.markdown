@@ -12,6 +12,15 @@ tags:
 
 > “Yeah It's on. ”
 
+> 更新说明：前端单元测试的"技术底座"这几年发生了明显迁移，但方法论保持稳定。
+>
+> - **测试运行器**：Jest 仍是存量项目和 React 生态的主力，但对原生 ESM 和 TypeScript 支持一直不够顺畅（常需 `babel-jest` / `ts-jest` / `@swc/jest`）。新项目尤其是 Vite 技术栈，**Vitest 已成为事实上的默认选择**：与 Vite 共用配置和转译链路，原生支持 ESM / TS / JSX，API 基本兼容 Jest（`describe/it/expect/vi`），迁移成本低，并提供 UI 面板、浏览器模式（browser mode）等能力。
+> - **组件测试理念**：Testing Library 系列（`@testing-library/react` 等）"面向用户行为、不测实现细节"的理念已成主流共识，enzyme 那种深入组件内部 state 的方式基本被淘汰。
+> - **端到端 / 组件级浏览器测试**：Playwright 已经取代 Cypress 成为很多团队的首选，且支持 Component Testing，能在真实浏览器里测组件。
+> - **Mock 网络请求**：MSW（Mock Service Worker）成为跨单测/集成/E2E 复用的标准做法，优于直接 `jest.mock('axios')`。
+>
+> 一句话选型建议：Vite 项目直接用 Vitest；老的 CRA / webpack + Jest 项目可保持现状，无需为了追新而迁移。
+
 ## 正文
 
 ### private
