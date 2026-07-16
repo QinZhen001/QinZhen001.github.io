@@ -1026,6 +1026,22 @@ A spring-physics first animation library giving you flexible tools to confidentl
 
 ## other
 
+
+
+## cloc
+
+https://www.npmjs.com/package/cloc
+
+**cloc 是用来快速统计代码仓库规模和语言构成的命令行工具。**
+
+```
+npx cloc src
+```
+
+
+
+
+
 ### bolt
 
 [https://bolt.new/](https://bolt.new/)
