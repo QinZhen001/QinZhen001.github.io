@@ -1,0 +1,188 @@
+---
+layout:     post
+title:      "React 性能优化与工程问题排查"
+description: "从重新渲染、memo、Context、Strict Mode 到 CSS Modules 和动画测试，整理 React 项目的优化与排障方法。"
+date:       2018-01-13 13:59:00
+updated:    2026-07-30
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - React
+    - Performance
+---
+
+> 本文从原 React 综合笔记中拆出。它不是一份“所有地方都加缓存”的清单，而是一套从定位问题到验证收益的排查顺序。
+
+## 一、先理解重新渲染
+
+组件通常会在以下情况下重新渲染：
+
+- 自己的 state 更新；
+- 父组件重新渲染；
+- 读取的 Context 值变化；
+- 外部状态订阅通知组件更新。
+
+重新渲染是 React 的正常工作方式，并不等于真实 DOM 一定被修改。React 会先重新执行组件，比较新旧结果，再在提交阶段更新必要的 DOM。
+
+优化前先通过 React DevTools Profiler 确认：哪个交互慢、哪些组件耗时高、问题发生在渲染、提交还是业务计算。
+
+## 二、最有效的优化顺序
+
+### 1. 调整状态位置
+
+不要把局部状态放在过高层级。输入框状态如果只服务一个小区域，就让它留在该区域，避免每次输入都让整页参与渲染。
+
+### 2. 保持渲染纯粹
+
+渲染期间不要修改外部变量、操作 DOM 或调用 setState。开发环境 Strict Mode 会重复调用部分逻辑，正是为了暴露这类不纯行为。
+
+### 3. 删除不必要的 Effect
+
+用 Effect 计算派生数据通常会多产生一次渲染：
+
+```tsx
+// 不推荐
+useEffect(() => {
+  setFullName(`${firstName} ${lastName}`);
+}, [firstName, lastName]);
+
+// 推荐
+const fullName = `${firstName} ${lastName}`;
+```
+
+### 4. 再考虑 memo
+
+只有组件渲染确实昂贵，并且 props 大部分时间稳定时，`memo` 才可能带来明显收益。
+
+```tsx
+const Chart = memo(function Chart({ data }: { data: Data[] }) {
+  return renderExpensiveChart(data);
+});
+```
+
+## 三、`memo`、`useMemo` 与 `useCallback`
+
+### 浅比较与不可变更新
+
+`memo` 和旧 class 组件中的 `PureComponent` 默认进行浅比较。直接修改对象不会改变引用，可能让缓存错误地复用旧结果：
+
+```tsx
+// 不推荐
+options.push(nextOption);
+
+// 推荐
+setOptions((previous) => [...previous, nextOption]);
+```
+
+现代 JavaScript 的展开语法、数组方法或 Immer 通常已经足够，不必为了不可变更新默认引入 Immutable.js。
+
+### 稳定引用不是目标本身
+
+下面的空数组每次渲染都会创建新引用：
+
+```tsx
+<Cell options={options ?? []} />
+```
+
+如果 `Cell` 已经通过 `memo` 优化，且这个引用确实导致了无效渲染，可以把默认值移到组件外：
+
+```tsx
+const EMPTY_OPTIONS: readonly Option[] = [];
+
+<Cell options={options ?? EMPTY_OPTIONS} />
+```
+
+同理，`useCallback` 主要用于让传给 memoized 子组件的函数引用保持稳定，或稳定某个 Hook 的依赖。它不会阻止当前组件自身渲染。
+
+## 四、Context 引起的渲染
+
+Provider 每次创建新的对象，会通知所有消费者：
+
+```tsx
+const value = useMemo(
+  () => ({ user, signOut }),
+  [user, signOut],
+);
+
+return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+```
+
+不过缓存 `value` 之前，应先判断 Context 是否承担了过多职责。将主题、用户信息和高频编辑状态拆成不同 Context，通常比给一个巨大对象做深度优化更清晰。
+
+## 五、Effect 常见陷阱
+
+### 不要遗漏依赖
+
+Effect 捕获的是某次渲染中的 props 和 state。遗漏依赖会让它继续读取旧快照，产生难以复现的问题。使用 `eslint-plugin-react-hooks` 的 `exhaustive-deps` 规则帮助检查。
+
+### 不要把 `ref.current` 当响应式值
+
+修改 ref 不触发渲染，因此它不能像 state 一样驱动 Effect。若变化需要被观察并更新 UI，应使用 state 或外部订阅机制。
+
+### 正确清理异步工作
+
+Effect 中的订阅、连接和计时器应在清理函数中撤销。数据请求需要处理竞态，避免较早请求在较晚请求之后返回并覆盖新结果。
+
+## 六、Strict Mode 为什么看起来渲染两次
+
+开发环境中，Strict Mode 会额外调用部分渲染逻辑和 Effect 流程，帮助发现副作用及缺失的清理逻辑。生产环境不会执行这套额外检查。
+
+不建议把“关闭 Strict Mode”作为常规修复。应该定位组件为何无法安全地重复执行；只有暂时无法升级的第三方旧库阻塞开发时，才把关闭视为过渡方案。
+
+## 七、样式隔离
+
+CSS Modules 会将局部类名编译成唯一名称：
+
+```tsx
+import styles from './button.module.css';
+
+export function Button() {
+  return <button className={`${styles.button} ${styles.primary}`}>保存</button>;
+}
+```
+
+需要全局类时可以使用 `:global(...)`，但应控制范围，避免重新引入全局样式冲突。
+
+Vite 项目可以通过 `css.modules.generateScopedName` 调整生成规则。开发和生产规则应保持可预测，不要依赖最终哈希编写业务逻辑。
+
+## 八、动画与测试
+
+`react-transition-group` 适合管理进入、退出和卸载状态：
+
+- `appear`：是否在首次挂载时执行进入动画；
+- `unmountOnExit`：退出完成后是否卸载子组件；
+- 测试中应关闭动画或使用确定的超时，避免快照和交互测试出现随机等待。
+
+动画组件的 key 必须稳定。不要用每次渲染都会变化的随机值，否则 React 会把它当成全新元素，导致反复卸载和挂载。
+
+## 九、常见警告与迁移
+
+### Legacy Context API
+
+旧 Context API 已废弃。警告来自第三方组件时，应优先升级或替换依赖，而不是长期关闭 Strict Mode。
+
+### `ReactDOM.render` 与卸载
+
+React 18 新应用使用 `createRoot`，并通过返回的 root 执行 `unmount()`。不要再以 `unmountComponentAtNode` 作为新代码方案。
+
+### Create React App 脚本
+
+历史项目中可通过 `CI=true react-scripts test` 禁用 Jest watch；新项目应以当前构建工具和 CI 命令为准。Create React App 已不再适合作为新项目默认脚手架。
+
+## 十、性能检查清单
+
+1. 能否稳定复现慢交互？
+2. Profiler 显示时间消耗在哪里？
+3. 状态是否放得过高或重复存储？
+4. 是否存在不必要的 Effect 和级联更新？
+5. Context 是否过大或更新过频？
+6. 列表 key 是否稳定且能表达项目身份？
+7. 昂贵计算能否减少工作量，而不只是缓存结果？
+8. 加入 memo 后，Profiler 是否证明它真的更快？
+
+参考资料：
+
+- [React：性能优化 Hooks](https://react.dev/reference/react/hooks#performance-hooks)
+- [React DevTools Profiler](https://react.dev/learn/react-developer-tools)
+- [React：你可能不需要 Effect](https://react.dev/learn/you-might-not-need-an-effect)

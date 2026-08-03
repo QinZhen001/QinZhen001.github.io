@@ -1,8 +1,9 @@
 ---
 layout:     post
 title:      "React 核心原理与渲染机制总结"
-description: "系统整理「React 核心原理与渲染机制总结」的核心概念、工程实践、常见问题和项目经验。"
+description: "从渲染快照、协调与提交到事件、并发调度、React Refresh、SSR 和 Server Components，梳理 React 的运行机制。"
 date:       2018-01-21 23:15:00
+updated:    2026-07-30
 author:     "Qz"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
@@ -10,574 +11,413 @@ tags:
     - React
 ---
 
-> “Yeah It's on. ”
+> 本文聚焦 React 如何完成一次更新。设计思想已拆到 [React 设计哲学与数据流]({% post_url 2018-01-20-React设计哲学与数据流 %})，组件 API 与 Hooks 见 [React 组件与 Hooks 实践总结]({% post_url 2018-01-11-React组件与Hooks实践总结 %})。
 
-[网页链接](https://github.com/react-guide/react-basic)
+## 一、一次更新经历什么
 
-## React何以称为React
+可以把一次 React 更新概括为三个阶段：
 
-React虽然并不像Rx.js那样高举Reactive Programming（响应式编程）的大旗，但是依然体现了Reactive Programming的思想。
+1. **触发（Trigger）**：首次挂载，或 state、props、Context、外部订阅发生变化。
+2. **渲染（Render）**：React 调用组件，计算新的元素树。
+3. **提交（Commit）**：React 将必要变化应用到 DOM，并运行布局相关逻辑。
 
-Reactive Programming通俗说就是这样的编程风格：改变一个东西，另一个东西会做出响应发生改变，而不用我们的Code去主动让另一个东西做出改变。
+渲染阶段应保持纯粹，可以被暂停、重新执行或放弃。提交阶段才真正修改 DOM。
 
-### 变换（Transformation）
+## 二、每次渲染都是一个快照
 
-设计 React 的核心前提是认为 UI 只是把数据通过映射关系变换成另一种形式的数据。同样的输入必会有同样的输出。这恰好就是纯函数。
-```js
-function NameBox(name) {
-  return { fontWeight: 'bold', labelContent: name };
+函数组件每执行一次，就会形成一份属于本次渲染的 props、state 和事件处理函数。
+
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setTimeout(() => {
+      console.log(count);
+    }, 1000);
+  }
+
+  return <button onClick={handleClick}>{count}</button>;
 }
 ```
 
-```js
-'Sebastian Markbåge' ->
-{ fontWeight: 'bold', labelContent: 'Sebastian Markbåge' };
+`handleClick` 读取的是创建它的那次渲染中的 `count`。之后的 state 更新会触发新渲染，但不会改写旧闭包中的值。
+
+这就是常说的 Capture Value。理解它之后，Effect 依赖、异步回调和“旧状态”问题都会更清晰。
+
+## 三、状态更新与批处理
+
+调用 state setter 不会立刻修改当前渲染中的变量，而是请求下一次渲染：
+
+```tsx
+setCount((count) => count + 1);
+setCount((count) => count + 1);
 ```
 
-### 抽象（Abstraction）
-你不可能仅用一个函数就能实现复杂的 UI。重要的是，你需要把 UI 抽象成多个隐藏内部细节，又可复用的函数。通过在一个函数中调用另一个函数来实现复杂的 UI，这就是抽象。
+函数式更新会依次处理队列，因此最终增加 2。
 
-```js
-function FancyUserBox(user) {
-  return {
-    borderStyle: '1px solid blue',
-    childContent: [
-      'Name: ',
-      NameBox(user.firstName + ' ' + user.lastName)
-    ]
-  };
-}
+React 18 的 `createRoot` 支持自动批处理：React 事件、Promise、定时器和原生事件中的多次更新通常会被合并，减少重复渲染。不要再用“setState 在 React 事件中异步、在 setTimeout 中同步”作为通用规则。
+
+更准确的表述是：state 更新会被调度和批处理；若确实需要同步刷新 DOM，可以谨慎使用 `flushSync`，但它会损失性能优化空间。
+
+## 四、协调：React 如何比较前后结果
+
+React 不会对两棵任意树执行理论上的最优 diff，而是使用适合 UI 的启发式规则：
+
+- 元素类型不同，通常替换对应子树；
+- 类型相同，复用现有节点并更新变化的 props；
+- 列表通过 key 匹配项目身份；
+- 组件在树中的位置、类型和 key 一起决定 state 是否保留。
+
+### 为什么 key 重要
+
+```tsx
+items.map((item) => <Row key={item.id} item={item} />)
 ```
 
-```js
-{ firstName: 'Sebastian', lastName: 'Markbåge' } ->
-{
-  borderStyle: '1px solid blue',
-  childContent: [
-    'Name: ',
-    { fontWeight: 'bold', labelContent: 'Sebastian Markbåge' }
-  ]
-};
-```
+稳定 key 能让 React 在插入、删除和移动后继续识别同一项目。key 只需在当前兄弟列表内唯一，但必须稳定；随机数和易变化的索引都会破坏复用与状态连续性。
 
-### 组合（Composition）
-为了真正达到重用的特性，只重用叶子然后每次都为他们创建一个新的容器是不够的。你还需要可以包含其他抽象的容器再次进行组合。我理解的“组合”就是将两个或者多个不同的抽象合并为一个。
-```js
-function FancyBox(children) {
-  return {
-    borderStyle: '1px solid blue',
-    children: children
-  };
-}
+### 为什么不是简单的“双端对比”
 
-function UserBox(user) {
-  return FancyBox([
-    'Name: ',
-    NameBox(user.firstName + ' ' + user.lastName)
-  ]);
-}
-```
+React 的目标不只是最小化 DOM 操作，还要支持组件、状态、优先级、Suspense 和可中断渲染。协调过程建立在 Fiber 树及其调度模型之上，不能仅用传统虚拟 DOM 的数组双端 diff 来概括。
 
-### 状态（State）
-UI 不单单是对服务器端或业务逻辑状态的复制。实际上还有很多状态是针对具体的渲染目标。举个例子，在一个 text field 中打字。它不一定要复制到其他页面或者你的手机设备。滚动位置这个状态是一个典型的你几乎不会复制到多个渲染目标的。
+## 五、Fiber 与并发调度
 
-我们倾向于使用不可变的数据模型。我们把可以改变 state 的函数串联起来作为原点放置在顶层。
+Fiber 是 React 内部表示工作单元和组件树的结构。它让渲染工作可以被拆分，并为更新记录优先级、父子关系和副作用信息。
 
-```js
-function FancyNameBox(user, likes, onClick) {
-  return FancyBox([
-    'Name: ', NameBox(user.firstName + ' ' + user.lastName),
-    'Likes: ', LikeBox(likes),
-    LikeButton(onClick)
-  ]);
-}
+在并发渲染中，React 可以：
 
-// 实现细节
+- 暂停低优先级渲染；
+- 先处理输入等高优先级更新；
+- 继续或放弃之前尚未提交的工作；
+- 在结果准备好后一次性提交，避免用户看到半成品 UI。
 
-var likes = 0;
-function addOneMoreLike() {
-  likes++;
-  rerender();
-}
+“并发”不等于多个 JavaScript 线程同时修改 DOM，而是 React 在主线程上更灵活地安排可中断工作。
 
-// 初始化
+### 时间切片
 
-FancyNameBox(
-  { firstName: 'Sebastian', lastName: 'Markbåge' },
-  likes,
-  addOneMoreLike
-);
-```
+Scheduler 会在合适的时机把控制权交还浏览器，避免长任务持续阻塞输入和绘制。具体宿主调度实现会随 React 版本和环境演进，不应把它永久等同于某一个 API（例如 `MessageChannel`）。
 
->注意：本例更新状态时会带来副作用（addOneMoreLike 函数中）。我实际的想法是当一个“update”传入时我们返回下一个版本的状态，但那样会比较复杂。此示例待更新
+### `useTransition` 与 `useDeferredValue`
 
-### Memoization
-对于纯函数，使用相同的参数一次次调用未免太浪费资源。我们可以创建一个函数的 memorized 版本，用来追踪最后一个参数和结果。这样如果我们继续使用同样的值，就不需要反复执行它了。
-```js
-function memoize(fn) {
-  var cachedArg;
-  var cachedResult;
-  return function(arg) {
-    if (cachedArg === arg) {
-      return cachedResult;
-    }
-    cachedArg = arg;
-    cachedResult = fn(arg);
-    return cachedResult;
-  };
-}
+- `useTransition`：把某类 state 更新标记为非紧急更新。
+- `useDeferredValue`：允许界面暂时使用某个值的旧版本，同时在后台准备新结果。
 
-var MemoizedNameBox = memoize(NameBox);
+它们不会自动让昂贵计算变快，而是让紧急交互可以优先响应。
 
-function NameAndAgeBox(user, currentTime) {
-  return FancyBox([
-    'Name: ',
-    MemoizedNameBox(user.firstName + ' ' + user.lastName),
-    'Age in milliseconds: ',
-    currentTime - user.dateOfBirth
-  ]);
-}
-```
+## 六、HMR 与 React Refresh 原理
 
-### 列表（Lists）
-大部分 UI 都是展示列表数据中不同 item 的列表结构。这是一个天然的层级。
+开发时修改组件代码，页面经常能在不整页刷新的情况下立即更新。这里其实包含两个不同层次：
 
-为了管理列表中的每一个 item 的 state ，我们可以创造一个 Map 容纳具体 item 的 state。
+- **HMR（Hot Module Replacement）**：构建工具负责发现文件变化、重新编译模块，并在浏览器中替换对应模块。
+- **React Refresh（常称 Fast Refresh）**：React 感知组件类型变化，决定能否保留组件 state，并触发安全的重新渲染。
 
-```js
-function UserList(users, likesPerUser, updateUserLikes) {
-  return users.map(user => FancyNameBox(
-    user,
-    likesPerUser.get(user.id),
-    () => updateUserLikes(user.id, likesPerUser.get(user.id) + 1)
-  ));
-}
+HMR 不理解 React 组件和 Hooks。只使用普通 HMR 虽然可以替换 JavaScript 模块，但无法可靠判断新旧组件是否代表同一个组件，也不知道 Hook state 应该怎样继续复用。React Refresh 是建立在 HMR 之上的 React 专用刷新机制。
 
-var likesPerUser = new Map();
-function updateUserLikes(id, likeCount) {
-  likesPerUser.set(id, likeCount);
-  rerender();
-}
+### Live Reload、HMR 与 Fast Refresh 的区别
 
-UserList(data.users, likesPerUser, updateUserLikes);
-```
+| 能力 | 更新方式 | 是否保留页面状态 |
+|---|---|---|
+| Live Reload | 文件变化后刷新整个页面 | 通常不保留 |
+| HMR | 替换发生变化的 JavaScript 模块 | 由模块自行处理 |
+| React Refresh | 在 HMR 基础上更新 React 组件 | 条件允许时保留组件 state |
 
->注意：现在我们向 FancyNameBox 传了多个不同的参数。这打破了我们的 memoization 因为我们每次只能存储一个值。更多相关内容在下面。
+### HMR 的基本流程
 
-### 连续性（Continuations）
+以 Vite、Webpack 等开发服务器为例，一次热更新通常经历以下步骤：
 
-不幸的是，自从 UI 中有太多的列表，明确的管理就需要大量的重复性样板代码。
+1. 开发服务器监听到源文件变化。
+2. 构建工具重新转换受影响模块，并更新模块图。
+3. 服务器通过 WebSocket 等通道通知浏览器发生了哪些变化。
+4. 浏览器中的 HMR runtime 拉取或接收新模块代码。
+5. 旧模块执行 dispose 清理，新模块重新求值。
+6. 更新沿模块依赖图传播，直到找到能够接受更新的 HMR boundary。
+7. 如果没有模块能够安全接收更新，则退化为整页刷新。
 
-我们可以通过推迟一些函数的执行，进而把一些模板移出业务逻辑。比如，使用“柯里化”（JavaScript 中的 bind）。然后我们可以从核心的函数外面传递 state，这样就没有样板代码了。
+HMR boundary 是模块系统的概念。例如原生 ESM 风格的 HMR API 可以显式接受更新：
 
-下面这样并没有减少样板代码，但至少把它从关键业务逻辑中剥离。
-```js
-function FancyUserList(users) {
-  return FancyBox(
-    UserList.bind(null, users)
-  );
-}
+```ts
+if (import.meta.hot) {
+  import.meta.hot.accept((nextModule) => {
+    // 根据新模块内容更新当前应用
+  });
 
-const box = FancyUserList(data.users);
-const resolvedChildren = box.children(likesPerUser, updateUserLikes);
-const resolvedBox = {
-  ...box,
-  children: resolvedChildren
-};
-```
-
-### State Map
-之前我们知道可以使用组合避免重复执行相同的东西这样一种重复模式。我们可以把执行和传递 state 逻辑挪动到被复用很多的低层级的函数中去。
-```js
-function FancyBoxWithState(
-  children,
-  stateMap,
-  updateState
-) {
-  return FancyBox(
-    children.map(child => child.continuation(
-      stateMap.get(child.key),
-      updateState
-    ))
-  );
-}
-
-function UserList(users) {
-  return users.map(user => {
-    continuation: FancyNameBox.bind(null, user),
-    key: user.id
+  import.meta.hot.dispose(() => {
+    // 清理旧模块创建的订阅或资源
   });
 }
-
-function FancyUserList(users) {
-  return FancyBoxWithState.bind(null,
-    UserList(users)
-  );
-}
-
-const continuation = FancyUserList(data.users);
-continuation(likesPerUser, updateUserLikes);
 ```
 
-### Memoization Map
-一旦我们想在一个 memoization 列表中 memoize 多个 item 就会变得很困难。因为你需要制定复杂的缓存算法来平衡调用频率和内存占有率。
+React 项目通常不需要为每个组件手写这些代码，React 插件会把 React Refresh 接入构建工具的 HMR 生命周期。
 
-还好 UI 在同一个位置会相对的稳定。相同的位置一般每次都会接受相同的参数。这样以来，使用一个集合来做 memoization 是一个非常好用的策略。
+### `react-refresh` 做了什么
 
-我们可以用对待 state 同样的方式，在组合的函数中传递一个 memoization 缓存。
-```js
-function memoize(fn) {
-  return function(arg, memoizationCache) {
-    if (memoizationCache.arg === arg) {
-      return memoizationCache.result;
-    }
-    const result = fn(arg);
-    memoizationCache.arg = arg;
-    memoizationCache.result = result;
-    return result;
-  };
-}
+`react-refresh` 主要由编译转换和运行时两部分组成：
 
-function FancyBoxWithState(
-  children,
-  stateMap,
-  updateState,
-  memoizationCache
-) {
-  return FancyBox(
-    children.map(child => child.continuation(
-      stateMap.get(child.key),
-      updateState,
-      memoizationCache.get(child.key)
-    ))
-  );
-}
+- `react-refresh/babel` 或框架对应的 SWC、esbuild 转换负责给组件和 Hooks 添加标记。
+- `react-refresh/runtime` 在浏览器中登记组件类型、比较更新前后的组件，并通知 React 执行刷新。
 
-const MemoizedFancyNameBox = memoize(FancyNameBox);
-```
-
-### 代数效应（Algebraic Effects）
-多层抽象需要共享琐碎数据时，一层层传递数据非常麻烦。如果能有一种方式可以在多层抽象中快捷地传递数据，同时又不需要牵涉到中间层级，那该有多好。React 中我们把它叫做“context”。
-
-有时候数据依赖并不是严格按照抽象树自上而下进行。举个例子，在布局算法中，你需要在实现他们的位置之前了解子节点的大小。
-
-现在，这个例子有一点超纲。我会使用 代数效应 这个由我发起的 ECMAScript 新特性提议。如果你对函数式编程很熟悉，它们 在避免由 monad 强制引入的仪式一样的编码。
-```js
-function ThemeBorderColorRequest() { }
-
-function FancyBox(children) {
-  const color = raise new ThemeBorderColorRequest();
-  return {
-    borderWidth: '1px',
-    borderColor: color,
-    children: children
-  };
-}
-
-function BlueTheme(children) {
-  return try {
-    children();
-  } catch effect ThemeBorderColorRequest -> [, continuation] {
-    continuation('blue');
-  }
-}
-
-function App(data) {
-  return BlueTheme(
-    FancyUserList.bind(null, data.users)
-  );
-}
-```
-
-### 重新渲染
-
-* 当 state 或者 prop 发生变化的时候，组件就会重渲染自己
-* **当组件的父组件重渲染时，组件也会重渲染自己**
-
-### **Capture Value**
-
-[useEffect 完全指南](https://github.com/ascoders/weekly/blob/master/%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF/96.%E7%B2%BE%E8%AF%BB%E3%80%8AuseEffect%20%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97%E3%80%8B.md)
-
-每次 Render 都有自己的 Props 与 State.
-
-**可以认为每次 Render 的内容都会形成一个快照并保留下来，因此当状态变更而 Rerender 时，就形成了 N 个 Render 状态，而每个 Render 状态都拥有自己固定不变的 Props 与 State。(闭包)**
-
----
-
-**由于 useEffect 符合 Capture Value 的特性，不要对useEffect Dependencies 撒谎。**
-
-### 事件机制原理
-
-[https://toutiao.io/posts/28of14w/preview](https://toutiao.io/posts/28of14w/preview)
-
-react自身实现了一套自己的事件机制，包括事件注册、事件的合成、事件冒泡、事件派发等，虽然和原生的是两码事，但也是基于浏览器的事件机制下完成的。
-
-**我们都知道react 的所有事件并没有绑定到具体的dom节点上而是绑定在了document 上，然后由统一的事件处理程序来处理，同时也是基于浏览器的事件机制（冒泡），所有节点的事件都会在 document 上触发。**
-
-#### 优点
-
-1. 性能优化：DOM 事件处理函数会在每次事件触发时创建一个新的函数实例，如果有大量的 DOM 事件处理函数，会造成大量的函数对象的创建和销毁，导致内存消耗和性能下降。而 React 的合成事件系统会通过事件委托的方式，将事件绑定到顶层的 document 或者最近的 DOM 节点上，所有的事件都会通过一个统一的事件处理函数进行处理，减少了内存消耗和事件绑定的数量，提升了性能。
-2. 跨浏览器兼容性：React 的合成事件系统提供了对浏览器差异性的统一处理，使开发者不需要关心不同浏览器的兼容性问题。React 会根据浏览器的类型和版本，自动选择最佳的方式来创建事件对象，并提供一致的接口给开发者使用。
-3. 事件池管理：React 的合成事件系统利用了事件池管理的概念，将事件对象用过后会进行重置和复用，减少了垃圾回收的压力，提升了性能。在事件处理函数中，获取到的事件对象是一个合成事件对象，而非原生的事件对象。
-
-#### 合成和原生事件
-
-如果一个节点上同时绑定了合成和原生事件，那么禁止冒泡后执行关系是怎样的呢？
-
-因为合成事件的触发是基于浏览器的事件机制来实现的，通过冒泡机制冒泡到最顶层元素，然后再由 dispatchEvent统一去处理。
-
-得出的结论：
-
-* **原生事件阻止冒泡肯定会阻止合成事件的触发。**
-* **合成事件的阻止冒泡不会影响原生事件。**
-
-解释：
-
-浏览器事件的执行需要经过三个阶段，捕获阶段-目标元素阶段-冒泡阶段。
-
-节点上的原生事件的执行是在目标阶段，然而合成事件的执行是在冒泡阶段，所以原生事件会先合成事件执行，然后再往父节点冒泡。
-
-既然原生都阻止冒泡了，那合成还执行个啥嘞。
-
-好，轮到合成的被阻止冒泡了，那原生会执行吗？当然会了。
-
-因为原生的事件先于合成的执行，所以合成事件内阻止的只是合成的事件冒泡。
-
-* 原生事件（阻止冒泡）会阻止合成事件的执行
-* 合成事件（阻止冒泡）不会阻止原生事件的执行
-
-两者最好不要混合使用，避免出现一些奇怪的问题
-
-#### 思考
-
-```js
-handleClick = (e) => {
-    console.log('react click',e)
-}
-```
-
-上面代码是给一个元素添加 click事件的回调方法,方法中的参数 e，其实不是原生事件对象而是react包装过的对象，同时原生事件对象被放在了属性 e.nativeEvent内。
-
-#### 事件注册机制
-
-react 事件注册过程其实主要做了2件事：事件注册、事件存储。
-
-* 事件注册 - 组件挂载阶段，根据组件内的声明的事件类型-onclick，onchange 等，给 document 上添加事件 -addEventListener，并指定统一的事件处理程序 dispatchEvent。
-* 事件存储 - 就是把 react 组件内的所有事件统一的存放到一个对象里，缓存起来，为了在触发事件的时候可以查找到对应的方法去执行。
-
-### 错误捕获机制
-
-#### Error Boundary（错误边界）
-
-[https://zh-hans.reactjs.org/docs/error-boundaries.html#introducing-error-boundaries](https://zh-hans.reactjs.org/docs/error-boundaries.html#introducing-error-boundaries)
-
-部分 UI 的 JavaScript 错误不应该导致整个应用崩溃，为了解决这个问题，React 16 引入了一个新的概念 —— 错误边界。
-
-错误边界是一种 React 组件，这种组件**可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI**，而不是渲染那些崩溃了的子组件树。错误边界在渲染期间、生命周期方法和整个组件树的构造函数中捕获错误。
-
-[https://mp.weixin.qq.com/s/2ZYz0dFWpa5dW3p7gjaqsA](https://mp.weixin.qq.com/s/2ZYz0dFWpa5dW3p7gjaqsA)
-
-为了实现这个特性，就一定需要捕获到错误。
-
-所以在`React`源码中，所有`用户代码`都被包裹在一个方法中执行。
-
-类似如下：
-
-```jsx
-function wrapper(func) {
-  try {
-    func();
-  } catch(e) {
-    // ...处理错误
-  }
-}
-```
-
-本来一切都很完美，但是`React`作为世界级前端框架，受众广泛，凡事都讲究做到极致。
-
-这不，有人提issue：
-
-> 你们这样在`try catch`中执行`用户代码`会让浏览器调试工具的`Pause on exceptions`失效。
-
-对用户来说，我写在`componentDidMount`中的代码明明未捕获错误，可是错误发生时`Pause on exceptions`却失效了，确实有些让人困惑。
-
-所以，在生产环境，`React`继续使用`try catch`实现`wrapper`。
-
-而在开发环境，为了更好的调试体验，需要重新实现一套`try catch`机制，包含如下功能：
-
-- 捕获`用户代码`抛出的错误，使`Error Boundary`功能正常运行
-- 不捕获`用户代码`抛出的错误，使`Pause on exceptions`不失效
-
-#### 捕获用户代码抛出的错误
-
-但是不能使用`try catch`，因为这会让`Pause on exceptions`失效。
-
-解决办法是：监听`window`的`error`事件。
-
-根据**GlobalEventHandlers.onerror MDN**[1]，该事件可以监听到两类错误：
-
-- js运行时错误（包括语法错误）。`window`会触发`ErrorEvent`接口的`error`事件
-- 资源（如`<img>`或`<script>`）加载失败错误。加载资源的元素会触发`Event`接口的`error`事件，可以在`window`上捕获该错误
-
-实现开发环境使用的`wrapperDev`：
-
-```jsx
-// 开发环境wrapper
-function wrapperDev(func) {
-  function handleWindowError(error) {
-    // 收集错误交给Error Boundary处理
-  }
-
-  window.addEventListener('error', handleWindowError);
-  func();
-  window.removeEventListener('error', handleWindowError);
-}
-
-```
-
-开发环境`func`内如果抛出错误，代码的执行会中断。
-
-比如执行如下代码，`finish`会被打印。
-
-```js
-wrapperPrd(() => {throw Error(123)})
-console.log('finish');
-```
-
-但是执行如下代码，代码执行中断，`finish`不会被打印。
-
-```js
-wrapperDev(() => {throw Error(123)})
-console.log('finish');
-```
-
-如何在不捕获`用户代码`抛出错误的前提下，又能让后续代码的执行不中断呢？
-
-#### 如何让代码执行不中断
-
-答案是：通过`dispatchEvent`触发`事件回调`，在`回调`中调用`用户代码`。
-
-根据**EventTarget.dispatchEvent MDN**[2]：
-
-不同于`DOM`节点触发的事件（比如`click`事件）回调是由`event loop`异步触发。
-
-通过`dispatchEvent`触发的事件是同步触发，并且在事件回调中抛出的`错误`不会影响`dispatchEvent`的调用者（caller）。
-
-让我们继续改造`wrapperDev`。
-
-首先创建虚构的`DOM`节点、事件对象、虚构的事件类型：
-
-```js
-// 创建虚构的DOM节点
-const fakeNode = document.createElement('fake');
-// 创建event
-const event = document.createEvent('Event');
-// 创建虚构的event类型
-const evtType = 'fake-event';
-
-```
-
-初始化事件对象，监听事件。在事件回调中调用`用户代码`。触发事件：
-
-```js
-function wrapperDev(func) {
-  function handleWindowError(error) {
-    // 收集错误交给Error Boundary处理
-  }
-  
-  function callCallback() {
-    fakeNode.removeEventListener(evtType, callCallback, false); 
-    func();
-  }
-  
-  const event = document.createEvent('Event');
-  const fakeNode = document.createElement('fake');
-  const evtType = 'fake-event';
-
-  window.addEventListener('error', handleWindowError);
-  fakeNode.addEventListener(evtType, callCallback, false);
-
-  event.initEvent(evtType, false, false);
-  
-
-  fakeNode.dispatchEvent(event);
-  
-  window.removeEventListener('error', handleWindowError);
-}
-```
-
-### render函数
-
-> react16中 render函数允许返回一个数组，单个字符串等，不在只限制为一个顶级DOM节点，可以减少很多不必要的div
-
-render函数会插入jsx生成的dom结构，react会生成一份虚拟dom树，在每一次组件更新时，在此react会通过其diff算法比较更新前后的新旧DOM树，比较以后，找到**最小的有差异的DOM节点**，并重新渲染
-
-意思你现在可以这样：
+编译后的代码可以抽象理解为：
 
 ```tsx
-render () {
-  return " "
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button>{count}</button>;
 }
+
+$RefreshReg$(Counter, 'Counter');
 ```
 
-或者这样：
+使用 Hooks 的组件还会记录一份近似的 Hook signature，用来判断编辑前后的 Hook 调用结构是否兼容：
 
 ```tsx
-render () {
-  return [
-    <div></div>
-    <div></div>
-    ]
+const _s = $RefreshSig$();
+
+function useCustomHook() {
+  _s();
+  const [value, setValue] = useState(0);
+  return [value, setValue] as const;
+}
+
+// 签名字符串由转换插件根据 Hook 调用生成
+_s(useCustomHook, 'useState{[value, setValue](0)}');
+```
+
+`$RefreshReg$` 和 `$RefreshSig$` 是理解原理时常见的占位名称，不是业务代码需要手写的公共 API。
+
+### React Refresh 的更新链路
+
+```text
+文件变化
+  → 构建工具重新编译模块
+  → HMR runtime 执行新模块
+  → Refresh runtime 注册新的组件类型和 Hook signature
+  → 比较新旧组件是否属于同一个 family
+  → React 对受影响根节点安排刷新
+  → 协调阶段使用新的组件实现重新渲染
+  → 兼容时保留 state，不兼容时重新挂载
+```
+
+Refresh runtime 会为组件维护一个稳定的“family”。旧组件函数和编辑后生成的新函数虽然不是同一个 JavaScript 引用，但如果被识别为同一 family，React 在协调时可以把新实现视为原组件的新版本，而不是完全不同的元素类型。
+
+这也是 React Refresh 能保留 state 的关键：它并不是修改旧函数，而是让 React 在开发模式下知道“这个新函数仍然代表原来的组件”。
+
+### 什么是 Refresh Boundary
+
+如果一个模块只导出 React 组件，构建工具通常可以把它视为 Refresh Boundary：
+
+```tsx
+export function Button() {
+  return <button>保存</button>;
+}
+
+export function Toolbar() {
+  return <Button />;
 }
 ```
 
-### 时间切片原理
+模块更新后，只需重新执行该模块并刷新这些组件。
 
-[时间切片原理](https://react.iamkasong.com/concurrent/scheduler.html#%E6%97%B6%E9%97%B4%E5%88%87%E7%89%87%E5%8E%9F%E7%90%86)
+如果模块同时导出组件和会被 React 树之外代码使用的普通值，更新可能继续向上游传播，甚至触发整页刷新：
 
-`Scheduler`的`时间切片`功能是通过`task`（宏任务）实现的。
+```tsx
+export const THEME_VERSION = 2;
 
-最常见的`task`当属`setTimeout`了。但是有个`task`比`setTimeout`执行时机更靠前，那就是[MessageChannel](https://developer.mozilla.org/zh-CN/docs/Web/API/MessageChannel)。
+export function ThemeProvider() {
+  return <div>...</div>;
+}
+```
 
-所以`Scheduler`将需要被执行的回调函数作为`MessageChannel`的回调执行。如果当前宿主环境不支持`MessageChannel`，则使用`setTimeout`。
+因此，组件模块最好主要导出组件；常量、工具函数和环境配置可以拆到独立模块。不同框架对 Refresh Boundary 的校验细节不完全相同，应以所用插件为准。
 
-### 父子组件更新
+### 什么时候可以保留 state
 
-[https://www.jianshu.com/p/ee122bb5b14b](https://www.jianshu.com/p/ee122bb5b14b)
+函数组件通常在以下条件满足时保留本地 state：
 
-父子组件 componentWillMount生命周期是先进入父组件还是子组件？
-componentDidMount呢？
+- 新旧实现被注册为同一个组件 family；
+- 组件在树中的位置和 key 没有变化；
+- Hook 的调用顺序和签名仍然兼容；
+- 模块仍然是有效的 Refresh Boundary。
 
-在react的组件挂载及render过程中，最底层的子组件是最先完成挂载及更新的。
+例如只修改文案或样式，计数值通常可以继续保留：
 
-**constructor()构造函数、componentWillMount执行顺序：**
-顶层父组件--子组件--子组件--...--底层子组件
+```tsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>当前值：{count}</button>;
+}
+```
 
-**render、componentDidMount顺序：**
-底层子组件--子组件--子组件--...--顶层父组件
+### 什么时候会重新挂载或整页刷新
 
-### setState 同步还是异步
+以下变化可能导致组件 state 被重置：
 
-[https://zhuanlan.zhihu.com/p/350332132](https://zhuanlan.zhihu.com/p/350332132)
+- 改变 Hook 的数量或调用顺序；
+- 修改自定义 Hook 后，签名不再兼容；
+- 修改组件的 key 或在树中的身份；
+- class 组件更新——Fast Refresh 通常不能可靠保留其实例 state；
+- 匿名默认导出等写法让工具难以稳定识别组件；
+- 模块不再满足 Refresh Boundary 条件；
+- 更新传播到无法接收 HMR 的模块，最终退化为整页刷新。
 
-只要你进入了 `react` 的调度流程，那就是异步的。只要你没有进入 `react` 的调度流程，那就是同步的。什么东西不会进入 `react` 的调度流程？ `setTimeout` `setInterval` ，直接在 `DOM` 上绑定原生事件等。这些都不会走 `React` 的调度流程，你在这种情况下调用 `setState` ，那这次 `setState` 就是同步的。 否则就是异步的。
+为了让组件身份更稳定，推荐使用具名组件：
 
-### 为什么 React 的 Diff 不采用双端对比
+```tsx
+// 推荐
+export default function Profile() {
+  return <main>...</main>;
+}
 
-[https://juejin.cn/post/7116141318853623839](https://juejin.cn/post/7116141318853623839)
+// 不利于调试和组件识别
+export default () => <main>...</main>;
+```
 
-### 不需要 useMemo 和 useCallback
+某些 React Refresh 集成支持在文件中加入 `// @refresh reset`，强制该文件中的组件每次编辑后重新挂载。它适合调试只在挂载时发生的动画或初始化逻辑，但属于开发工具约定，需要确认当前框架是否支持。
 
-[为什么你可以删除 90% 的 useMemo 和 useCallback ？](https://juejin.cn/post/7251802404877893689?utm_source=gold_browser_extension)
+### Effect 在热更新期间的表现
 
-* `useCallback` 和 `useMemo` 仅仅在后续渲染（也就是重渲染）中起作用，在初始渲染中它们反而是有害的
+为了让代码修改能够立即生效，Fast Refresh 可能在刷新期间重新运行 Effect，并暂时忽略 `useEffect`、`useMemo` 或 `useCallback` 的依赖数组是否发生变化。
 
-* `useCallback` 和 `useMemo` 作用于 `props` 并不能避免组件重渲染。只有当每一个 `prop` 都被缓存，且组件本身也被缓存的情况下，重渲染才能被避免。只要有一丁点疏忽，那么你做的一切努力就打水漂了。所以说，简单点，把它们都删了吧。
+因此 Effect 必须具备正确的清理逻辑，不能假设空依赖数组意味着“整个开发会话只执行一次”：
 
-- 把包裹了“纯 js 操作“的 `useMemo` 也都删了吧。与组件本身的渲染相比，它缓存数据带来的耗时减少是微不足道的，并且会在初始渲染时消耗额外的内存，造成可以被观察到的延迟。
+```tsx
+useEffect(() => {
+  const subscription = source.subscribe(handleMessage);
+  return () => subscription.unsubscribe();
+}, [source]);
+```
 
-### JSX
+React Refresh 和 Strict Mode 都会让不完整的清理逻辑更容易暴露，但二者目的不同：前者服务于代码热更新，后者用于检查组件是否能安全地重复执行。
 
-[https://www.typescriptlang.org/docs/handbook/jsx.html](https://www.typescriptlang.org/docs/handbook/jsx.html)
+### 常见工具如何接入
 
-[JSX](https://facebook.github.io/jsx/) is an embeddable XML-like syntax. It is meant to be transformed into valid JavaScript, though the semantics of that transformation are implementation-specific. JSX rose to popularity with the [React](https://reactjs.org/) framework, but has since seen other implementations as well. TypeScript supports embedding, type checking, and compiling JSX directly to JavaScript.
+- **Vite**：`@vitejs/plugin-react` 或 `@vitejs/plugin-react-swc` 在开发模式下接入 React Refresh。
+- **Webpack**：通常组合 `react-refresh/babel` 与 `@pmmmwh/react-refresh-webpack-plugin`。
+- **Next.js、React Native、Expo**：框架或 Metro 已经集成 Fast Refresh，一般不需要手动配置 runtime。
+- **生产环境**：React Refresh 转换和 runtime 应关闭，它们只服务于开发体验。
+
+### 排查热更新失效
+
+遇到修改组件后整页刷新、状态无法保留或更新不生效，可以依次检查：
+
+1. React 插件是否只在开发环境启用且配置完整。
+2. 文件是否混合导出了组件与被非 React 模块使用的普通值。
+3. 组件是否使用稳定的具名声明。
+4. 是否改变了 Hook 顺序、组件 key 或组件在树中的位置。
+5. 是否有模块级单例、订阅或定时器缺少 HMR dispose 清理。
+6. 浏览器控制台是否出现 Refresh Boundary 或 HMR propagation 错误。
+7. monorepo、软链接或重复 React 依赖是否导致插件未转换目标文件。
+
+## 七、父子组件的渲染与提交顺序
+
+渲染时，React 从父组件开始调用，逐步得到子树。提交阶段则包含 DOM 变更、ref 更新、布局 Effect 和普通 Effect 等不同步骤。
+
+不要再依赖旧 class 生命周期的简单口诀推断所有顺序。尤其在并发渲染、Suspense 和 Strict Mode 下，渲染可能重复或被放弃。业务逻辑应放在正确的事件或 Effect 中，而不是依赖偶然的调用次数。
+
+## 八、事件系统
+
+React 通过 `SyntheticEvent` 提供跨浏览器一致的事件接口：
+
+```tsx
+function Button() {
+  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    console.log(event.currentTarget);
+    console.log(event.nativeEvent);
+  }
+
+  return <button onClick={handleClick}>点击</button>;
+}
+```
+
+需要区分历史实现与现代实现：
+
+- React 17 起，大多数事件监听器委托到 React 根容器，而不是统一绑定到 `document`。
+- React Web 17 起不再使用旧的 SyntheticEvent 事件池，通常不再需要 `event.persist()`。
+- Portal 中的事件仍按 React 组件树传播，而不只按 DOM 树传播。
+
+### 合成事件与原生事件混用
+
+两套监听器的触发先后与阻止传播结果，取决于监听位置、捕获/冒泡阶段及 React 根容器。不要使用“原生事件永远先于合成事件”之类的绝对规则。
+
+确需混用时，应画出具体 DOM 路径并明确每个监听器注册在哪个阶段；常规业务优先统一使用 React 事件。
+
+## 九、错误边界
+
+错误边界可以捕获子树在渲染、构造函数和生命周期中的错误，并展示备用 UI。
+
+```tsx
+class ErrorBoundary extends React.Component<
+  React.PropsWithChildren,
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    reportError(error, info);
+  }
+
+  render() {
+    if (this.state.hasError) return <Fallback />;
+    return this.props.children;
+  }
+}
+```
+
+传统错误边界不会自动捕获：
+
+- 事件处理函数中的错误；
+- 任意异步回调中的错误；
+- 服务端渲染错误；
+- 错误边界自身抛出的错误。
+
+事件和异步流程应在其调用边界中处理，并将异常上报到监控系统。应用通常需要按页面或关键区域设置错误边界，而不是只在根节点放一个兜底。
+
+## 十、服务端渲染、流式传输与水合
+
+传统 SSR 先在服务端生成 HTML，再在客户端通过 hydration 绑定事件并恢复交互。
+
+Suspense 让框架能够进行流式 SSR：页面不必等待所有区域完成后才发送 HTML。较慢区域可以先显示 fallback，准备好后再进入流中。
+
+选择性水合允许 React 优先水合用户正在交互的区域，而不是必须先让整棵页面完成水合。
+
+## 十一、Server Components
+
+React Server Components（RSC）在服务端执行，并将可序列化的结果交给客户端。它与 SSR 相关，但不是同一个概念：
+
+- SSR 关注如何把组件输出为 HTML，并在客户端水合；
+- RSC 关注哪些组件代码和数据读取只留在服务端；
+- Client Components 承担状态、Effect、浏览器 API 和交互；
+- Server Components 可以直接访问服务端资源，并减少发送到客户端的 JavaScript。
+
+RSC 的具体路由、缓存、数据请求和构建约束由 Next.js 等框架实现。不要在没有框架支持的普通 React 客户端项目中直接照搬其边界规则。
+
+## 十二、旧结论更新
+
+| 旧说法 | 更准确的现代结论 |
+|---|---|
+| React 事件都绑定在 `document` | React 17 起主要委托到根容器 |
+| SyntheticEvent 会被事件池回收 | React Web 17 起已不再使用旧事件池 |
+| `setTimeout` 中的 setState 一定同步 | React 18 自动批处理覆盖更多异步来源 |
+| diff 总能找到最小 DOM 差异 | React 使用面向 UI 的启发式协调算法 |
+| 父组件渲染，子组件一定完成并提交 | 渲染可能暂停、重复或放弃，提交才修改 DOM |
+| `useMemo` / `useCallback` 越多越快 | 只有真实性能热点且依赖稳定时才可能获益 |
+| HMR 会自动理解并保留 React 状态 | HMR 只替换模块，状态保留由 React Refresh 判断 |
+
+## 总结
+
+理解 React 原理时，最重要的边界是：渲染只计算结果，提交才改变宿主环境；每次渲染拥有自己的状态快照；协调通过类型、位置和 key 判断复用；Fiber 和调度让未提交的渲染工作具备优先级与可中断能力。
+
+参考资料：
+
+- [React：渲染和提交](https://react.dev/learn/render-and-commit)
+- [React：State 如同一张快照](https://react.dev/learn/state-as-a-snapshot)
+- [React 18：自动批处理](https://github.com/reactwg/react-18/discussions/21)
+- [React 17：事件委托变更](https://legacy.reactjs.org/blog/2020/08/10/react-v17-rc.html#changes-to-event-delegation)
+- [React DOM Server APIs](https://react.dev/reference/react-dom/server)
+- [React Refresh 源码](https://github.com/facebook/react/tree/main/packages/react-refresh)
+- [Webpack React Refresh Plugin](https://github.com/pmmmwh/react-refresh-webpack-plugin)
+- [Vite React Plugin](https://github.com/vitejs/vite-plugin-react)

@@ -1,0 +1,156 @@
+---
+layout:     post
+title:      "React 设计哲学与数据流"
+description: "从变换、抽象、组合、状态和缓存理解 React 为什么采用声明式 UI 与单向数据流。"
+date:       2018-01-20 23:15:00
+updated:    2026-07-30
+author:     "Qz"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - React
+---
+
+> 本文整理 React 的设计思想，内容受 Sebastian Markbåge 的 “Why React” 启发。具体渲染流程、事件、调度与 SSR 见 [React 核心原理与渲染机制总结]({% post_url 2018-01-21-React核心原理与渲染机制总结 %})。
+
+## 一、UI 是数据的变换
+
+React 将 UI 看作输入数据到界面描述的映射：
+
+```js
+function NameBox(name) {
+  return {
+    fontWeight: 'bold',
+    labelContent: name,
+  };
+}
+```
+
+相同输入应得到相同输出，这与纯函数的思想一致。真实 React 组件返回的是元素树，而不是直接修改 DOM：
+
+```tsx
+function NameBox({ name }: { name: string }) {
+  return <strong>{name}</strong>;
+}
+```
+
+声明式 UI 的价值在于，开发者描述“当前状态应该对应什么界面”，React 负责把变化提交到宿主环境。
+
+## 二、通过组件建立抽象
+
+复杂 UI 不可能由一个函数维护。组件隐藏内部细节，通过明确的 props 暴露能力：
+
+```tsx
+function UserCard({ user }: { user: User }) {
+  return (
+    <Card>
+      <Avatar user={user} />
+      <NameBox name={`${user.firstName} ${user.lastName}`} />
+    </Card>
+  );
+}
+```
+
+一个好的组件边界通常满足：
+
+- 职责可以用一句话说明；
+- props 表达业务意图，而不是泄露大量内部状态；
+- 组件内部可以独立演进；
+- 使用者不需要理解实现细节。
+
+## 三、组合优于继承
+
+React 通过 `children`、普通 props 和组件插槽组合能力：
+
+```tsx
+function Dialog({
+  title,
+  actions,
+  children,
+}: {
+  title: string;
+  actions: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <section>
+      <h2>{title}</h2>
+      <div>{children}</div>
+      <footer>{actions}</footer>
+    </section>
+  );
+}
+```
+
+组合让容器和内容分别变化，不需要建立复杂的组件继承树。
+
+## 四、状态与单向数据流
+
+UI 不只是服务端数据的副本，还包含输入值、展开状态、当前选项和滚动位置等本地状态。
+
+React 使用单向数据流：父组件通过 props 向下传递数据，子组件通过事件回调通知父组件发生了什么。
+
+```tsx
+function LikeButton({ count, onLike }: LikeButtonProps) {
+  return <button onClick={onLike}>赞 {count}</button>;
+}
+```
+
+状态设计的关键不是“全部放到全局”，而是找到唯一可信来源：
+
+- 只在一个组件使用的状态留在本地；
+- 多个兄弟组件共享时提升到最近公共父级；
+- 跨越很多层且语义稳定时考虑 Context；
+- 来自服务端的数据交给数据请求与缓存层管理。
+
+## 五、列表、身份与状态连续性
+
+列表不是一组无名节点。React 需要通过 `key` 判断某个项目在前后两次渲染中是否仍是同一个项目：
+
+```tsx
+users.map((user) => (
+  <UserCard key={user.id} user={user} />
+));
+```
+
+稳定身份决定了组件 state 是否保留。使用数组索引作为 key，在插入、删除或排序后可能把旧状态错误地关联到另一个项目。
+
+这也解释了一个重要规律：**状态与组件在树中的位置相关**。改变组件类型或 key，会让 React 将其视为新组件并重置 state。
+
+## 六、Memoization 的取舍
+
+纯函数在相同输入下可以复用旧结果，这就是 memoization 的基础。但缓存不是免费的：它需要保存结果、比较依赖并增加理解成本。
+
+React 的组件位置通常相对稳定，因此框架可以基于树的位置、元素类型和 key 复用已有工作。应用层的 `memo`、`useMemo` 和 `useCallback` 则应只用于已经确认的性能热点。
+
+更完整的实践见 [React 性能优化与工程问题排查]({% post_url 2018-01-13-React性能优化与工程问题排查 %})。
+
+## 七、Context 与跨层数据
+
+当主题等数据需要跨越很多中间组件时，逐层传 props 会产生噪声。Context 允许深层组件读取上层 Provider 提供的数据。
+
+它解决的是“数据如何到达深层组件”，不是“状态应该如何设计”。如果 Context 值变化频繁或包含大量无关字段，仍然会造成耦合和额外渲染。
+
+早期关于“代数效应”的讨论可以帮助理解 Context 的动机：底层逻辑可以声明自己需要某类环境信息，由上层提供具体值，而中间层无需逐个转发。不过 React Context 是具体的工程 API，不应简单等同于语言层面的代数效应。
+
+## 八、React 为什么叫 React
+
+React 的“响应”不是让开发者手动把每个 DOM 节点改成新值，而是：
+
+1. 状态发生变化；
+2. 组件重新计算 UI 描述；
+3. React 比较前后结果；
+4. 提交必要的宿主环境更新。
+
+这套模型将“发生了什么”和“界面如何变化”分开。事件更新状态，组件声明结果，React 负责协调更新。
+
+## 总结
+
+React 的 API 会变化，但设计主线相对稳定：把 UI 看作数据变换，用组件建立抽象，用组合组织复杂界面，用单向数据流管理变化，并通过稳定身份保持状态连续性。
+
+参考资料：
+
+- [Why React](https://github.com/reactjs/react-basic)
+- [React：用组件构建 UI](https://react.dev/learn/your-first-component)
+- [React：选择 State 结构](https://react.dev/learn/choosing-the-state-structure)
+- [React：保留和重置 State](https://react.dev/learn/preserving-and-resetting-state)
