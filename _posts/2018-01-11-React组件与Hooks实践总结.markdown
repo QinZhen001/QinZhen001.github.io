@@ -18,7 +18,6 @@ tags:
 ## 阅读导航
 
 - 本文：组件模型、表单、常用 Hooks 与组件组合
-- [React TypeScript 类型与 Ref 实践]({% post_url 2018-01-12-React-TypeScript类型与Ref实践 %})
 - [React 性能优化与工程问题排查]({% post_url 2018-01-13-React性能优化与工程问题排查 %})
 - [React 设计哲学与数据流]({% post_url 2018-01-20-React设计哲学与数据流 %})
 - [React 核心原理与渲染机制总结]({% post_url 2018-01-21-React核心原理与渲染机制总结 %})
@@ -189,8 +188,6 @@ function focusInput() {
 - 与命令式 DOM API 或第三方库集成。
 
 修改 `ref.current` 不会触发渲染，因此不要用 ref 保存页面必须立即展示的数据。`ref.current` 也不适合作为 Effect 依赖：React 无法通过它的变化触发重新渲染。
-
-更完整的类型和 ref 转发写法见 [React TypeScript 类型与 Ref 实践]({% post_url 2018-01-12-React-TypeScript类型与Ref实践 %})。
 
 ## 六、Context
 
