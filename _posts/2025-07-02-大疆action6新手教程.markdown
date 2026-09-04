@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "DJI Osmo Action 6 新手教程：激活、参数与场景设置"
+title:      "大疆action6新手教程"
 description: "从首次激活到视频参数、防抖、视角、夜景和素材导出，帮助新手快速上手 DJI Osmo Action 6。"
 date:       2026-07-02 11:46:00
 author:     "Qz"
